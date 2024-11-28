@@ -16,9 +16,9 @@ function App() {
               </h1>
             </div>
             <div className="bg-[#d6d6d6] p-5">
-              <div className="border-2 border-black">
-                <div className="p-2 bg-black text-white font-bold">
-                  <h3>List Title</h3>
+              <div className="border-none border-black">
+                <div className="p-2 px-4 bg-black text-white font-bold rounded-xl mb-2">
+                  <h3 className="text-[22px]" >List Title</h3>
                 </div>
                 <div className="h-[60vh] overflow-auto">
                   <table className="w-full">
@@ -45,7 +45,7 @@ function App() {
                 <img className="w-[2.5rem] h-auto m-[2px]" src={dots_svg} alt="dashboard-icon" />
                 <h4 className="text-[32px] font-bold ml-[.5rem]" >Dashboard</h4>
               </div>
-              <div className="bg-[#000000] rounded-[2rem] text-white py-[1.5rem] px-[1.5rem] mt-5" >
+              <div className="bg-[#000000] rounded-[2rem] text-white py-[1.5rem] px-[2rem] mt-5" >
                 <h6 className="text-[22px]">Your Balance</h6>
                 <div className="flex flex-row items-center font-medium leading-[0.9]" >
                   <div className="text-[22px] pr-2" >$</div>
@@ -53,7 +53,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="bg-[#0d9646] rounded-[2rem] text-white py-[1.5rem] px-[1.5rem] mt-5" >
+              <div className="bg-[#0d9646] rounded-[2rem] text-white py-[1.5rem] px-[2rem] mt-5" >
                 <h6 className="text-[22px]">Your Income</h6>
                 <div className="flex flex-row items-center font-medium leading-[0.9]" >
                   <div className="text-[22px] pr-2" >$</div>
@@ -61,7 +61,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="bg-[#a51313] rounded-[2rem] text-white py-[1.5rem] px-[1.5rem] mt-5" >
+              <div className="bg-[#a51313] rounded-[2rem] text-white py-[1.5rem] px-[2rem] mt-5" >
                 <h6 className="text-[22px]">Your Expenses</h6>
                 <div className="flex flex-row items-center font-medium leading-[0.9]" >
                   <div className="text-[22px] pr-2" >$</div>
