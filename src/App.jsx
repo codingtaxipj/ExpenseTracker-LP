@@ -1,3 +1,9 @@
+import dots_svg from "./assets/4dots.svg";
+import MyAppLogo from "./assets/app-logo.svg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleArrowRight, faReceipt, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+
+
 function App() {
   return (
     <>
@@ -14,23 +20,69 @@ function App() {
                 <div className="p-2 bg-black text-white font-bold">
                   <h3>List Title</h3>
                 </div>
-                <div className="h-[20rem] overflow-auto">
+                <div className="h-[60vh] overflow-auto">
                   <table className="w-full">
                     <tbody>
-                   {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map((num,key)=>(
-                    <tr key={key} className="border-black border-b-[1px]">
-                      <td className="p-1" >item {num}</td>
-                    </tr>
-                  
-                   ))}
-                   </tbody>
-                    
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num, key) => (
+                          <div key={key} className="bg-[#000000] rounded-[1rem] text-white py-[.5rem] px-[.5rem] m-2 flex flex-row items-center" >
+                          <div className="bg-white border-none rounded-[.75rem] h-[3rem] w-[3.5rem] flex items-center justify-center" ><FontAwesomeIcon className="text-[black] text-[24px]" icon={faReceipt} /></div>
+                          <div className="px-2 w-full overflow-hidden" >
+                            <p className="text-[16px]" >title</p>
+                            <h6 className="text-[18px]" >$ {num}</h6>
+                          </div>
+                          <button className="bg-tranparent px-2 border-none rounded-[.75rem] h-[2rem] w-[2rem] flex justify-end items-center" ><FontAwesomeIcon className="text-[#f72626] text-[18px]" icon={faTrashCan} /></button>
+                        </div>
+                      ))}
+                    </tbody>
+
                   </table>
                 </div>
               </div>
             </div>
-            <div className="bg-[#b4b4b4] p-5">ff</div>
-            <div className="bg-[#d6d6d6] p-5">ff</div>
+            <div className="bg-[#d6d6d6] p-5">
+
+              <div className="flex flex-row justify-start items-center">
+                <img className="w-[2.5rem] h-auto m-[2px]" src={dots_svg} alt="dashboard-icon" />
+                <h4 className="text-[32px] font-bold ml-[.5rem]" >Dashboard</h4>
+              </div>
+              <div className="bg-[#000000] rounded-[2rem] text-white py-[1.5rem] px-[1.5rem] mt-5" >
+                <h6 className="text-[22px]">Your Balance</h6>
+                <div className="flex flex-row items-center font-medium leading-[0.9]" >
+                  <div className="text-[22px] pr-2" >$</div>
+                  <div className="text-[42px]" >123,123,123</div>
+                </div>
+              </div>
+
+              <div className="bg-[#0d9646] rounded-[2rem] text-white py-[1.5rem] px-[1.5rem] mt-5" >
+                <h6 className="text-[22px]">Your Income</h6>
+                <div className="flex flex-row items-center font-medium leading-[0.9]" >
+                  <div className="text-[22px] pr-2" >$</div>
+                  <div className="text-[42px]" >123,123,123</div>
+                </div>
+              </div>
+
+              <div className="bg-[#a51313] rounded-[2rem] text-white py-[1.5rem] px-[1.5rem] mt-5" >
+                <h6 className="text-[22px]">Your Expenses</h6>
+                <div className="flex flex-row items-center font-medium leading-[0.9]" >
+                  <div className="text-[22px] pr-2" >$</div>
+                  <div className="text-[42px]" >123,123,123</div>
+                </div>
+              </div>
+
+            
+
+            </div>
+            <div className="bg-[#d6d6d6] p-5">
+              <div className="flex flex-col items-start">
+                <img className="h-[8rem] w-auto" src={MyAppLogo} alt="logo-expense-tracker" />
+                <h2 className="text-[32px] text-[black] font-semibold leading-[0.9]" >Easiest way to track your money.</h2>
+                <button className="bg-[black] text-[white] rounded-full p-[0.5rem_1rem] mt-3 cursor-default" >
+                  <span className="font-medium" >Get Started</span>
+                  <span className="ml-5"><FontAwesomeIcon icon={faCircleArrowRight} /></span>
+                </button>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
