@@ -89,7 +89,7 @@ function App() {
 
                 <div className="flex flex-row justify-start items-center">
                 <div className="text-[12px] text-[#10338a] pt-1" ><div ><FontAwesomeIcon icon={faCircle} className="p-[2px]" ></FontAwesomeIcon> <FontAwesomeIcon className="p-[2px]" icon={faCircle} ></FontAwesomeIcon></div><div><FontAwesomeIcon className="p-[2px]" icon={faCircle} ></FontAwesomeIcon> <FontAwesomeIcon className="p-[2px]" icon={faCircle} ></FontAwesomeIcon></div></div>
-                  <h4 className="text-[32px] text-[#050d1e] font-bold ml-[.5rem]" >Dashboard</h4>
+                  <h4 className="text-[32px] text-[#10338a] font-bold ml-[.5rem]" >Dashboard</h4>
                 </div>
 
                 <div className="bg-gradient-to-r from-[#0d9646] to-[#16c25e] rounded-[2rem] text-white py-[2.5rem] px-[2.25rem] mt-5" >
