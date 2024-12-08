@@ -1,20 +1,31 @@
 import { faFileCirclePlus, faIndianRupeeSign, faMessage, faReceipt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
-import { useRef } from "react";
+import { useRef, useState } from "react";
 const AddIncomeModal = ({ closeModal, IncomeModalRef, addIncomeDataInList }) => {
     const IncomeAmountRef = useRef(null);
     const IncomeTitleRef = useRef(null);
     const IncomeDescriptionRef = useRef(null);
+    let [check,updatecheck]=useState(1);
     const IncomeEntry = () => {
-        const dataobject = {
-            entryAmount: IncomeAmountRef.current.value,
-            entryTitle: IncomeTitleRef.current.value,
-            entryDescription: IncomeDescriptionRef.current.value,
-            entryKey: Math.floor(Math.random() * 10 ** 16),
-            entryType: 1,
+
+        if (Number(IncomeAmountRef.current.value) !== 0){
+            const dataobject = {
+                entryAmount: Number(IncomeAmountRef.current.value),
+                entryTitle: IncomeTitleRef.current.value,
+                entryDescription: IncomeDescriptionRef.current.value,
+                entryType: 1,
+            }
+            addIncomeDataInList(dataobject);
+            updatecheck(1);
+        } else{
+            updatecheck(0);
+
         }
-        addIncomeDataInList(dataobject);
+       
+      
+        
+        
     }
     return (
         <>
@@ -33,6 +44,9 @@ const AddIncomeModal = ({ closeModal, IncomeModalRef, addIncomeDataInList }) => 
                                 <span className="text-[16px] text-[#0000009d]">INR</span>
                             </div>
                         </div>
+                        {(check===0)&&(
+                            <p className="text-red-600 pb-3" >Please Enter a Amount</p>
+                        )}
                         <div className="font-bold mb-5" >
                             <h4 className="text-[16px] mb-2 text-[#0000009d] " >Income Title</h4>
                             <div className="flex gap-2 border-b-[2px] border-black pb-2" >
