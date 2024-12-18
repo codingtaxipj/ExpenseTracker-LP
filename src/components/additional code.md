@@ -9,6 +9,8 @@
         <button className="bg-tranparent px-2 border-none rounded-[.75rem] h-[2rem] w-[2rem] flex justify-end items-center" ><FontAwesomeIcon className="text-[#ffffff] text-[18px]" icon={faTrashCan} /></button>
   </div>
 
+ 
+
 
 
 

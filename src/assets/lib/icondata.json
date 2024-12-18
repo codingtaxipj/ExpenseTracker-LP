@@ -1,0 +1,127 @@
+{
+  "utlities": {
+    "thisCategoryTitle": "Utlities & Bills",
+    "thisBgColor": "#FF6F61",
+    "electricity": "Electricity",
+    "water": "Water",
+    "mobile": "Mobile",
+    "internet": "Internet",
+    "tv": "TV",
+    "gas": "Gas",
+    "cc": "Credit Card",
+    "repair": "Service & Repairs",
+    "rent": "Rent"
+  },
+  "travel": {
+    "thisCategoryTitle": "Transportation",
+    "thisBgColor": "#88B04B",
+    "fuel": "Fuel",
+    "parking": "Parking Fees",
+    "taxi": "Taxi",
+    "train": "Train",
+    "bus": "Bus",
+    "aeroplan": "Aeroplan",
+    "toll": "Toll"
+  },
+  "food": {
+    "thisCategoryTitle": "Food & Drinks",
+    "thisBgColor": "#F7CAC9",
+    "groceries": "Groceries",
+    "rest": "Restaurant",
+    "cafe": "Cafe",
+    "order": "Ordering Online",
+    "snack": "Snacks",
+    "drink": "Drinks",
+    "pet": "Pet Food"
+  },
+  "shop": {
+    "thisCategoryTitle": "Shopping",
+    "thisBgColor": "#92A8D1",
+    "cloth": "Clothing",
+    "gadget": "Gadgets",
+    "appliance": "Home Appliances",
+    "furni": "Furniture",
+    "foot": "Footware",
+    "acc": "Accessories",
+    "tool": "Tools",
+    "cleaning": "Cleaning Supplies",
+    "toilet": "Toiletries"
+  },
+  "health": {
+    "thisCategoryTitle": "Medical & Healthcare",
+    "thisBgColor": "#B565A7",
+    "visit": "Doctor Visits",
+    "meds": "Medicines",
+    "checkup": "Health Checkup",
+    "vaccni": "Vaccination",
+    "operation": "Operation & Surgery"
+  },
+
+  "loan": {
+    "thisCategoryTitle": "Loans & Debts",
+    "thisBgColor": "#D65076",
+    "bank": "Bank",
+    "mortage": "Mortgage",
+    "debttaken": "Debt Taken",
+    "debtgiven": "Debt Given",
+    "emi": "EMI",
+    "default": "Default"
+  },
+  "edu": {
+    "thisCategoryTitle": "Education",
+    "thisBgColor": "#45B8AC",
+    "school": "School Fees",
+    "college": "College Fees",
+    "course": "Course Fees",
+    "coaching": "Tuition/Coaching Classes",
+    "online": "Online Learning Subscriptions",
+    "supplies": "Educational Supplies"
+  },
+  "gift": {
+    "thisCategoryTitle": "Gifting & Charity",
+    "thisBgColor": "#5B5EA6",
+    "bday": "Birthday",
+    "wed": "Wedding",
+    "anna": "Anniversary",
+    "festiv": "Festival",
+    "special": "Special Occasions",
+    "gen": "General",
+    "donation": "Donation"
+  },
+  "ent": {
+    "thisCategoryTitle": "Entertainment",
+    "thisBgColor": "#9B2335",
+    "movie": "Movies",
+    "games": "Games",
+    "event": "Events",
+    "hotel": "Hotel Stay",
+    "sub": "Subscriptions",
+    "park": "Amusement Parks/Zoos",
+    "hobbie": "Hobbies"
+  },
+  "personal": {
+    "thisCategoryTitle": "Personal Care",
+    "thisBgColor": "#BC243C",
+    "salon": "Salon",
+    "gym": "GYM/Fitness",
+    "cos": "Cosmetics",
+    "eqp": "Fitness Equipment",
+    "yoga": "Yoga",
+    "wellness": "Wellness"
+  },
+  "tax": {
+    "thisCategoryTitle": "Taxation",
+    "thisBgColor": "#C3447A",
+    "tax": "Tax"
+  },
+  "insurance": {
+    "thisCategoryTitle": "Insurance",
+    "thisBgColor": "#009B77",
+    "insurance": "Insurance"
+  },
+  "misc": {
+    "thisCategoryTitle": "Miscellaneous Expenses",
+    "thisBgColor": "#98B4D4",
+    "misc": "Miscellaneous"
+  }
+}
