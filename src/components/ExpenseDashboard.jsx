@@ -1,10 +1,10 @@
-
+import AddExpenseModal from "./AddExpenseModal";
 const ExpenseDashboard = () => {
-    return (
-        <>
-           this is expense dashboard 
-        </>
-    );
-}
+  return (
+    <>
+      <AddExpenseModal />
+    </>
+  );
+};
 
 export default ExpenseDashboard;

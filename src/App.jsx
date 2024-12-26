@@ -1,12 +1,13 @@
-import { useRef, useState } from "react";
+import {  useState } from "react";
 import HomeDashboard from "./components/HomeDashboard";
 import IncomeDashboard from "./components/IncomeDashboard";
 import ExpenseDashboard from "./components/ExpenseDashboard";
 import AllCategories from "./components/AllCategories";
+import DataEntryForm from "./components/DataEntryForm";
 
 function App() {
-  const [defaultDashboard, setDefaultDashboard] = useState("homeDashboard");
-  const home = useRef();
+  const [defaultDashboard, setDefaultDashboard] = useState("DataEntryForm");
+
 
   function handleClickSideButtons(pageSelected) {
     setDefaultDashboard(pageSelected);
@@ -37,7 +38,7 @@ function App() {
               </div>
               <div className="flex flex-col py-[2rem] font-pop-b text-[#979797]">
                 <button
-                  ref={home}
+                  
                   onClick={() => handleClickSideButtons("homeDashboard")}
                   autoFocus
                   className={setStyle("homeDashboard")}
@@ -62,6 +63,12 @@ function App() {
                 >
                   All Categories
                 </button>
+                <button
+                  onClick={() => handleClickSideButtons("DataEntryForm")}
+                  className={setStyle("DataEntryForm")}
+                >
+                  All Categories
+                </button>
               </div>
             </div>
             <div className="h-full w-full rounded-[20px] bg-[white]">
@@ -69,6 +76,7 @@ function App() {
               {defaultDashboard === "incomeDashboard" && <IncomeDashboard />}
               {defaultDashboard === "expenseDashboard" && <ExpenseDashboard />}
               {defaultDashboard === "AllCategories" && <AllCategories />}
+              {defaultDashboard === "DataEntryForm" && <DataEntryForm />}
             </div>
           </div>
         </div>

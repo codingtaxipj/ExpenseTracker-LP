@@ -21,6 +21,9 @@ export default {
       'personal': '#5D3FD3',
       'tax': '#834333',
       'misc': '#000',
+      'formInput': "#f5f5f5",
+      "expense" : "#0F52BA",
+      "income" : "#228B22",
     },
     fontFamily: {
       'pop-r': 'Popins-Regular',

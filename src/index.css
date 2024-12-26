@@ -2,35 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face{
-    font-family: Popins-Regular;
-    src: url("../src/assets/Fonts/Poppins/Poppins-Regular.ttf");
+@font-face {
+  font-family: Popins-Regular;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Regular.ttf");
 }
-@font-face{
-    font-family: Popins-Italic;
-    src: url("../src/assets/Fonts/Poppins/Poppins-Italic.ttf");
+@font-face {
+  font-family: Popins-Italic;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Italic.ttf");
 }
-@font-face{
-    font-family: Popins-Bold;
-    src: url("../src/assets/Fonts/Poppins/Poppins-Bold.ttf");
+@font-face {
+  font-family: Popins-Bold;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Bold.ttf");
 }
-@font-face{
-    font-family: Popins-Medium;
-    src: url("../src/assets/Fonts/Poppins/Poppins-Medium.ttf");
+@font-face {
+  font-family: Popins-Medium;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Medium.ttf");
 }
-@font-face{
-    font-family: Popins-MediumItalic;
-    src: url("../src/assets/Fonts/Poppins/Poppins-MediumItalic.ttf");
+@font-face {
+  font-family: Popins-MediumItalic;
+  src: url("../src/assets/Fonts/Poppins/Poppins-MediumItalic.ttf");
 }
-@font-face{
-    font-family: Popins-semiBold;
-    src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
+@font-face {
+  font-family: Popins-semiBold;
+  src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
 }
-@font-face{
-    font-family: Popins-semiBoldItalic;
-    src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
+@font-face {
+  font-family: Popins-semiBoldItalic;
+  src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
 }
-
 
 /* width 
 ::-webkit-scrollbar {
@@ -54,7 +53,20 @@
     background: #555;
 }
 
-.input-income::-webkit-outer-spin-button{-webkit-appearance: none;}
-.input-income::-webkit-inner-spin-button{-webkit-appearance: none;}
-.input-income{-moz-appearance: textfield; appearance: textfield;}
    */
+
+.inputType-number::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.inputType-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.inputType-number {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.slectInput-arrow {
+  appearance: none;
+}
+
+

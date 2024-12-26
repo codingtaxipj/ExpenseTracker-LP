@@ -17,7 +17,7 @@ const AllCategories = () => {
         <div>
           {Object.keys(cat).map((key) => (
             <div className="pb-10" key={key}>
-              <div className="flex flex-row items-center justify-start border-b-[1px] border-[#e7e7e7] pb-4 pt-10 mb-2">
+              <div className="mb-2 flex flex-row items-center justify-start border-b-[1px] border-[#e7e7e7] pb-4 pt-10">
                 <h4 className="font-pop-b text-[24px] text-[black]">
                   {cat[key].thisCategoryTitle} Icons
                 </h4>
@@ -36,8 +36,14 @@ const AllCategories = () => {
                       className="flex w-[15rem] items-center gap-2 pr-5 pt-5"
                     >
                       <CircleIcon iconName={cat[key][innerKey]} />
-                      <h4 className="pr-4 font-pop-m text-[18]">
-                        {cat[key][innerKey]} <br /> <span className="italic font-pop-sb" >ICON</span>{" "}
+                      {console.log(cat[key][innerKey])}
+                      <h4>
+                        <span className="font-pop-sb text-[16px]">
+                          {" "}
+                          {cat[key][innerKey]}{" "}
+                        </span>{" "}
+                        <br />{" "}
+                        <span className="font-pop-m text-[14px]">ICON</span>{" "}
                       </h4>
                     </div>
                   ))}
