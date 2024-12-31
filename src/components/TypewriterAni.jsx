@@ -33,10 +33,10 @@ const TypewriterAni = () => {
   }, [currentText, isDeleting, currentNameIndex]);
 
   return (
-    <div>
-      <span>Manage Your Daily </span>
-      <span className="typewriter">{currentText}</span>
-      <span className="cursor"></span>
+    <div className="text-black font-pop-sb text-[32px]" >
+      <span className="" >Manage Your Daily </span>
+      <span className="uppercase font-pop-b text-pupl">{currentText}</span>
+      <span className="cursor pl-[0.5px] border-r-[1px] border-r-black"></span>
     </div>
   );
 };

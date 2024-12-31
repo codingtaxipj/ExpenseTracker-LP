@@ -3,12 +3,36 @@ import { FaSortDown } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { PiTagSimpleFill } from "react-icons/pi";
 import category from "../assets/lib/icondata.json";
-
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import capitalize from "capitalize";
 import moment from "moment";
+import PropTypes from "prop-types";
 
-const DataEntryForm = () => {
+const DataEntryForm = ({ displayForm, onCancelFallback, onCancel }) => {
+  const cat = useMemo(() => JSON.parse(JSON.stringify(category)), []);
+  const catKeysASvalue = useMemo(() => Object.keys(cat), [cat]);
+  const primeCategoriesVals = useMemo(
+    () => Object.keys(cat).map((head) => cat[head].thisCategoryTitle),
+    [cat],
+  );
+  const toSetSubCat = useMemo(
+    () =>
+      primeCategoriesVals.reduce((key, primeCategoriesVals, index) => {
+        key[primeCategoriesVals] = catKeysASvalue[index];
+        return key;
+      }, {}),
+    [primeCategoriesVals, catKeysASvalue],
+  );
+
+  const [selectedSubCats, setSeletedSubCats] = useState(false);
+  const [activeForm, setActiveForm] = useState(displayForm);
+  const [subCats, setSubCats] = useState(false);
+  function displaySubCategiries(primeCategory) {
+    const a = toSetSubCat[primeCategory];
+    const c = Object.values(cat[a]).splice(2);
+    setSubCats(c);
+  }
+
   const {
     register,
     setValue,
@@ -27,29 +51,6 @@ const DataEntryForm = () => {
     },
   });
 
-  const [subCats, setSubCats] = useState(false);
-  function displaySubCategiries(primeCategory) {
-    const a = toSetSubCat[primeCategory];
-    const c = Object.values(cat[a]).splice(2);
-    setSubCats(c);
-  }
-  const [selectedSubCats, setSeletedSubCats] = useState(false);
-  const [activeForm, setActiveForm] = useState("expense");
-
-  let cat = JSON.parse(JSON.stringify(category));
-  const primeCategoriesVals = Object.keys(cat).map(
-    (head) => cat[head].thisCategoryTitle,
-  );
-
-  const catKeysASvalue = Object.keys(cat);
-  const toSetSubCat = primeCategoriesVals.reduce(
-    (key, primeCategoriesVals, index) => {
-      key[primeCategoriesVals] = catKeysASvalue[index];
-      return key;
-    },
-    {},
-  );
-
   function onSubmit(data) {
     data.Date = moment(data.Date).format("DD/MM/YYYY");
     console.log(data);
@@ -64,16 +65,16 @@ const DataEntryForm = () => {
             <button
               onClick={() =>
                 setActiveForm((set) => {
-                  set = "expense";
+                  set = "formExpense";
                   setValue("isIncomeOrExpense", 0);
                   return set;
                 })
               }
               type="button"
               className={
-                (activeForm === "expense"
+                (activeForm === "formExpense"
                   ? "bg-expense text-[white]"
-                  : "hover:bg-expense bg-black text-[white]") +
+                  : "bg-black text-[white] hover:bg-expense") +
                 " " +
                 "mr-[1px] w-full rounded-l-md px-4 py-1"
               }
@@ -83,16 +84,16 @@ const DataEntryForm = () => {
             <button
               onClick={() =>
                 setActiveForm((set) => {
-                  set = "income";
+                  set = "formIncome";
                   setValue("isIncomeOrExpense", 1);
                   return set;
                 })
               }
               type="button"
               className={
-                (activeForm === "income"
+                (activeForm === "formIncome"
                   ? "bg-income text-[white]"
-                  : "hover:bg-income bg-black text-[white]") +
+                  : "bg-black text-[white] hover:bg-income") +
                 " " +
                 "w-full rounded-r-md px-4 py-1"
               }
@@ -134,7 +135,7 @@ const DataEntryForm = () => {
               <input
                 type="text"
                 {...register("Title", {})}
-                className="bg-formInput w-full rounded-md border border-[#d1d1d1] px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
+                className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
               />
             </div>
 
@@ -148,7 +149,7 @@ const DataEntryForm = () => {
               </label>
               <textarea
                 {...register("Description", {})}
-                className="bg-formInput w-full rounded-md border border-[#d1d1d1] px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
+                className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
               />
             </div>
 
@@ -166,7 +167,7 @@ const DataEntryForm = () => {
                   {...register("Date", {
                     valueAsDate: true,
                   })}
-                  className="bg-formInput w-full rounded-md border border-[#d1d1d1] px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
+                  className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
                 />
               </div>
               <input type="hidden" {...register("Time", {})} />
@@ -180,7 +181,7 @@ const DataEntryForm = () => {
                 <div className="relative w-full">
                   <select
                     defaultValue="NAN"
-                    className="slectInput-arrow bg-formInput w-full rounded-md border border-[#d1d1d1] px-4 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
+                    className="slectInput-arrow w-full rounded-md border border-[#d1d1d1] bg-formInput px-4 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
                     {...register("primeCategory", {
                       onChange: (e) => displaySubCategiries(e.target.value),
                       validate: (fieldValue) =>
@@ -269,20 +270,38 @@ const DataEntryForm = () => {
               <input
                 type="text"
                 {...register("userCategory", {})}
-                className="bg-formInput grow rounded-md border border-[#d1d1d1] px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
+                className="grow rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
               />
             </div>
 
             <div className="mt-10 flex w-full justify-end">
-              <button
-                type="submit"
-                className="bg-expense mr-[1px] w-[10rem] rounded-l-md px-4 py-1 text-[white]"
-              >
-                Add Expense
-              </button>
+              {activeForm === "formExpense" ? (
+                <button
+                  type="submit"
+                  className="mr-[1px] w-[10rem] rounded-l-md bg-expense px-4 py-1 text-[white]"
+                >
+                  Add Expense
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="mr-[1px] w-[10rem] rounded-l-md bg-income px-4 py-1 text-[white]"
+                >
+                  Add Income
+                </button>
+              )}
+
               <button
                 type="button"
-                onClick={() => reset()}
+                onClick={() => {
+                  if (onCancelFallback) {
+                    onCancel("dashboard");
+                    reset();
+                  } else {
+                    setSubCats(false);
+                    reset();
+                  }
+                }}
                 className="w-[10rem] rounded-r-md bg-[#da0707] px-4 py-1 text-[white]"
               >
                 Cancel
@@ -293,6 +312,12 @@ const DataEntryForm = () => {
       </div>
     </>
   );
+};
+
+DataEntryForm.propTypes = {
+  displayForm: PropTypes.string,
+  onCancelFallback: PropTypes.bool,
+  onCancel: PropTypes.func,
 };
 
 export default DataEntryForm;

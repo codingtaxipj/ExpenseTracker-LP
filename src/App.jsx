@@ -1,13 +1,13 @@
-import {  useState } from "react";
+import { useState } from "react";
 import HomeDashboard from "./components/HomeDashboard";
 import IncomeDashboard from "./components/IncomeDashboard";
 import ExpenseDashboard from "./components/ExpenseDashboard";
 import AllCategories from "./components/AllCategories";
-import DataEntryForm from "./components/DataEntryForm";
+//import DataEntryForm from "./components/DataEntryForm";
+import TypewriterAni from "./components/TypewriterAni";
 
 function App() {
   const [defaultDashboard, setDefaultDashboard] = useState("DataEntryForm");
-
 
   function handleClickSideButtons(pageSelected) {
     setDefaultDashboard(pageSelected);
@@ -38,7 +38,6 @@ function App() {
               </div>
               <div className="flex flex-col py-[2rem] font-pop-b text-[#979797]">
                 <button
-                  
                   onClick={() => handleClickSideButtons("homeDashboard")}
                   autoFocus
                   className={setStyle("homeDashboard")}
@@ -67,7 +66,7 @@ function App() {
                   onClick={() => handleClickSideButtons("DataEntryForm")}
                   className={setStyle("DataEntryForm")}
                 >
-                  All Categories
+                  Typewriter Ani
                 </button>
               </div>
             </div>
@@ -76,7 +75,7 @@ function App() {
               {defaultDashboard === "incomeDashboard" && <IncomeDashboard />}
               {defaultDashboard === "expenseDashboard" && <ExpenseDashboard />}
               {defaultDashboard === "AllCategories" && <AllCategories />}
-              {defaultDashboard === "DataEntryForm" && <DataEntryForm />}
+              {defaultDashboard === "DataEntryForm" && <TypewriterAni />}
             </div>
           </div>
         </div>

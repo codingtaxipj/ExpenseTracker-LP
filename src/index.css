@@ -69,4 +69,16 @@
   appearance: none;
 }
 
+.cursor {
+  animation: blink 0.8s steps(1) infinite;
+}
 
+@keyframes blink {
+  0%,
+  100% {
+    border-color: black;
+  }
+  50% {
+    border-color: transparent;
+  }
+}
