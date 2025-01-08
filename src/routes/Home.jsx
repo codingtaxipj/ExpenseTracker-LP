@@ -1,7 +1,8 @@
 import NavMenu from "../components/Navigation/NavMenu";
 import { navVars } from "../global/global-variables";
-import Sidebar_Dashboard from "../components/home-page/SideBar_home";
 import { Outlet } from "react-router";
+
+import Sidebar_Dashboard from "../components/home-page/SideBar_home";
 
 const HOME = () => {
   return (

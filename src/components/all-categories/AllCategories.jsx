@@ -1,6 +1,6 @@
-import dots from "../assets/4dots.svg";
-import CircleIcon from "./CircleIcon";
-import category from "../assets/lib/icondata.json";
+import dots from "../../assets/4dots.svg";
+import CircleIcon from "../CircleIcon";
+import category from "../../assets/lib/icondata.json";
 
 const AllCategories = () => {
   let cat = JSON.parse(JSON.stringify(category));
