@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 
 const TypewriterAni = () => {
-  const [currentNameIndex, setCurrentNameIndex] = useState(0);
-  const [currentText, setCurrentText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const typingSpeed = 150;
-  const deletingSpeed = 75;
+const [currentNameIndex, setCurrentNameIndex] = useState(0);
+const [currentText, setCurrentText] = useState("");
+const [isDeleting, setIsDeleting] = useState(false);
+const typingSpeed = 150;
+const deletingSpeed = 75;
 
-  useEffect(() => {
-    const names = ["Income", "Expense"];
-    const currentName = names[currentNameIndex];
-    let timeout;
+useEffect(() => {
+const names = ["Income", "Expense"];
+const currentName = names[currentNameIndex];
+let timeout;
 
     if (isDeleting) {
       timeout = setTimeout(() => {
@@ -30,15 +30,16 @@ const TypewriterAni = () => {
     }
 
     return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, currentNameIndex]);
 
-  return (
-    <div>
-      <span>Manage Your Daily </span>
-      <span className="typewriter">{currentText}</span>
-      <span className="cursor"></span>
-    </div>
-  );
+}, [currentText, isDeleting, currentNameIndex]);
+
+return (
+<div>
+<span>Manage Your Daily </span>
+<span className="typewriter">{currentText}</span>
+<span className="cursor"></span>
+</div>
+);
 };
 
 export default TypewriterAni;
