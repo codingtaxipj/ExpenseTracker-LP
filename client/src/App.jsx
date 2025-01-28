@@ -7,6 +7,7 @@ import Income_Form from "./components/Forms/Income_Form";
 import Categories_and_Icons from "./routes/Categories_and_Icons";
 import Expense from "./routes/Expense";
 import Income from "./routes/Income";
+import Expense_Index from "./components/expense-page/Expense_Index";
 
 const App = () => {
   return (
@@ -33,7 +34,9 @@ const App = () => {
       {/* ----------------------- *NOTE ##END: Home Page Routes ---------------------- */}
 
       {/* ----------------------- *ANCHOR EXPENSES Page ---------------------- */}
-      <Route path={"/" + navVars.EXPENSE} element={<Expense></Expense>}></Route>
+      <Route path={"/" + navVars.EXPENSE} element={<Expense />}>
+        <Route index element={<Expense_Index></Expense_Index>}></Route>
+      </Route>
       {/* ----------------------- *NOTE ##END: EXPENSES Page ---------------------- */}
 
       {/* ----------------------- *ANCHOR INCOME Page ---------------------- */}

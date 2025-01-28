@@ -9,6 +9,7 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import { navVars } from "../../global/global-variables";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Income_Expense_Form = ({ formToDisplay }) => {
   const cat = useMemo(() => JSON.parse(JSON.stringify(category)), []);
@@ -25,6 +26,10 @@ const Income_Expense_Form = ({ formToDisplay }) => {
       }, {}),
     [primeCategoriesVals, catKeysASvalue],
   );
+  let mainCategories;
+  formToDisplay === navVars.ADD_EXPENSE
+    ? (mainCategories = primeCategoriesVals)
+    : (mainCategories = ["Salary"]);
 
   const [selectedSubCats, setSeletedSubCats] = useState(false);
 
@@ -45,20 +50,32 @@ const Income_Expense_Form = ({ formToDisplay }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      isIncomeOrExpense: formToDisplay === navVars.ADD_EXPENSE ? 0 : 1,
-      Date: moment().format(),
-      Time: moment().format("LT"),
-      userCategory: "",
-      subCategory: "",
-      Title: "",
-      Description: "",
+      formTimeStamp: moment().format(),
+      userCategory: null,
+      subCategory: null,
+      title: null,
+      description: null,
     },
   });
 
-  function onSubmit(data) {
-    data.Date = moment(data.Date).format("DD/MM/YYYY");
-    console.log(data);
-  }
+  const onSubmit = async (data) => {
+    data.entryDate = moment(data.entryDate).format(" DD/MM/YYYY ");
+
+    try {
+      const response = await axios.post(
+        formToDisplay === navVars.ADD_EXPENSE
+          ? "http://127.0.0.1:8080/api/expense-form-submit"
+          : "http://127.0.0.1:8080/api/income-form-submit",
+        data,
+      );
+      alert(response.data.message);
+      setSubCats(false);
+      reset();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit form");
+    }
+  };
 
   return (
     <>
@@ -66,7 +83,6 @@ const Income_Expense_Form = ({ formToDisplay }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-[32rem]">
           {/* ---------------- *ANCHOR Top Bar To select Form to Display ---------------- */}
           <div className="mb-5 flex w-full">
-            <input type="hidden" {...register("isIncomeOrExpense", {})} />
             <button
               onClick={() =>
                 navigate("/" + navVars.HOME + "/" + navVars.ADD_EXPENSE)
@@ -111,7 +127,7 @@ const Income_Expense_Form = ({ formToDisplay }) => {
                 <input
                   type="number"
                   onBlur={"This cannot be empty"}
-                  {...register("Amount", {
+                  {...register("amount", {
                     required: "* This cannot be empty",
                     valueAsNumber: true,
                   })}
@@ -134,7 +150,7 @@ const Income_Expense_Form = ({ formToDisplay }) => {
               </label>
               <input
                 type="text"
-                {...register("Title", {})}
+                {...register("title", {})}
                 className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
               />
             </div>
@@ -149,30 +165,37 @@ const Income_Expense_Form = ({ formToDisplay }) => {
                 Description
               </label>
               <textarea
-                {...register("Description", {})}
+                {...register("description", {})}
                 className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
               />
             </div>
             {/* ---------------- *NOTE ##END: DESCRIPTION Field ---------------- */}
             <div className="mt-4 flex w-full gap-6">
-              {/* ---------------- *ANCHOR DATE Field ---------------- */}
+              {/* ---------------- *ANCHOR DATE Field (of actal spending/income) ---------------- */}
               <div className="flex grow flex-col items-start gap-2 font-pop-m text-[14px]">
                 <label
                   htmlFor="Date"
                   className="inline-flex items-center gap-2"
                 >
                   <PiTagSimpleFill />
-                  Date
+                  {formToDisplay === navVars.ADD_EXPENSE ? "Expense" : "Income"}
+                  &nbsp; Date
                 </label>
                 <input
                   type="date"
-                  {...register("Date", {
+                  {...register("entryDate", {
                     valueAsDate: true,
                   })}
                   className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
                 />
               </div>
-              <input type="hidden" {...register("Time", {})} />
+              {/* ---------------- *ANCHOR Date Field (hidden)(form filled timestamp) ---------------- */}
+              <input
+                type="hidden"
+                {...register("formTimeStamp", {
+                  valueAsDate: true,
+                })}
+              />
               {/* ---------------- *NOTE ##END: DATE Field ---------------- */}
               {/* ---------------- *ANCHOR MAIN CATEGORY Selection Field ---------------- */}
               <div className="flex grow flex-col items-start gap-2 font-pop-m text-[14px]">
@@ -195,7 +218,7 @@ const Income_Expense_Form = ({ formToDisplay }) => {
                     <option value={"NAN"} disabled>
                       Select a Category...
                     </option>
-                    {primeCategoriesVals.map((cats) => (
+                    {mainCategories.map((cats) => (
                       <option key={cats} value={cats}>
                         {cats}
                       </option>
@@ -212,57 +235,61 @@ const Income_Expense_Form = ({ formToDisplay }) => {
               {/* ---------------- *NOTE ##END: MAIN CATEGORY Selection Field ---------------- */}
             </div>
             {/* ---------------- *ANCHOR SUB CATEGORY Selection Field ---------------- */}
-            <div className="mt-4 flex w-full flex-col items-start gap-3 font-pop-m text-[14px]">
-              {!subCats && (
-                <label className="inline-flex items-center gap-2">
-                  <PiTagSimpleFill /> Select a main category first ...
-                </label>
-              )}
-              {subCats && (
-                <>
-                  <label
-                    htmlFor="subCategory"
-                    className="inline-flex items-center gap-2"
-                  >
-                    <PiTagSimpleFill />
-                    Sub Category
-                  </label>
-                  <input
-                    type="hidden"
-                    {...register("subCategory", {
-                      required: "* Select a Sub Category",
-                    })}
-                  />
-                  <div className="inline-flex grow flex-wrap gap-2 pb-1">
-                    {subCats.map((buttons) => (
-                      <button
-                        type="button"
-                        key={buttons}
-                        onClick={() => {
-                          setSeletedSubCats(buttons);
-                          setValue("subCategory", buttons, {
-                            shouldValidate: true,
-                          });
-                        }}
-                        className={
-                          selectedSubCats === buttons
-                            ? "rounded-md bg-travel px-4 py-1 text-[white]"
-                            : "rounded-md bg-black px-4 py-1 text-[white] hover:bg-travel"
-                        }
-                      >
-                        {capitalize(buttons)}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
 
-              {errors.subCategory && (
-                <p className="pt-2 font-pop-i text-[12px] text-[red]">
-                  {errors.subCategory.message}
-                </p>
-              )}
-            </div>
+            {formToDisplay === navVars.ADD_EXPENSE && (
+              <div className="mt-4 flex w-full flex-col items-start gap-3 font-pop-m text-[14px]">
+                {!subCats && (
+                  <label className="inline-flex items-center gap-2">
+                    <PiTagSimpleFill /> Select a main category first ...
+                  </label>
+                )}
+                {subCats && (
+                  <>
+                    <label
+                      htmlFor="subCategory"
+                      className="inline-flex items-center gap-2"
+                    >
+                      <PiTagSimpleFill />
+                      Sub Category
+                    </label>
+                    <input
+                      type="hidden"
+                      {...register("subCategory", {
+                        required: "* Select a Sub Category",
+                      })}
+                    />
+                    <div className="inline-flex grow flex-wrap gap-2 pb-1">
+                      {subCats.map((buttons) => (
+                        <button
+                          type="button"
+                          key={buttons}
+                          onClick={() => {
+                            setSeletedSubCats(buttons);
+                            setValue("subCategory", buttons, {
+                              shouldValidate: true,
+                            });
+                          }}
+                          className={
+                            selectedSubCats === buttons
+                              ? "rounded-md bg-travel px-4 py-1 text-[white]"
+                              : "rounded-md bg-black px-4 py-1 text-[white] hover:bg-travel"
+                          }
+                        >
+                          {capitalize(buttons)}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {errors.subCategory && (
+                  <p className="pt-2 font-pop-i text-[12px] text-[red]">
+                    {errors.subCategory.message}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* ---------------- *NOTE ##END: SUB CATEGORY Selection Field ---------------- */}
             {/* ---------------- *ANCHOR USER GIVEN CATEGORY Field ---------------- */}
             <div className="mt-4 flex w-full items-center gap-4 font-pop-m text-[14px]">
@@ -271,7 +298,7 @@ const Income_Expense_Form = ({ formToDisplay }) => {
                 className="inline-flex items-center gap-2"
               >
                 <PiTagSimpleFill />
-                3rd Category <span className="text-[12px]">(Optional)</span>
+                Other Category <span className="text-[12px]">(Optional)</span>
               </label>
               <input
                 type="text"
