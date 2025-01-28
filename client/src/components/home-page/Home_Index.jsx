@@ -25,7 +25,10 @@ const Home_Index = () => {
             className="bg-white mb-2 flex flex-row items-center gap-5 rounded-[12px] px-2 py-2"
           >
             <div>
-              <CircleIcon iconName={data.subCategory} />
+              <CircleIcon
+                iconName={data.subCategory}
+                iconColor={data.primeCategory}
+              />
             </div>
             <div className="grow">
               <div className="flex items-center gap-4 pb-1">
