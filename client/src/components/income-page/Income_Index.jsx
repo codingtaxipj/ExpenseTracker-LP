@@ -5,7 +5,7 @@ import { FaIndianRupeeSign } from "react-icons/fa6";
 import dots from "../../assets/4dots.svg";
 import CircleIcon from "../CircleIcon"; // Import your custom icon component
 
-const ExpenseIndex = () => {
+const IncomeIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
@@ -13,7 +13,7 @@ const ExpenseIndex = () => {
   useEffect(() => {
     // Fetch data on component mount
     axios
-      .get("http://127.0.0.1:8080/api/get-expenseData") // Replace with your API URL
+      .get("http://127.0.0.1:8080/api/get-incomeData") // Replace with your API URL
       .then((response) => {
         setEntries(response.data); // Set fetched data to state
         setLoading(false); // Turn off loading
@@ -40,7 +40,7 @@ const ExpenseIndex = () => {
             </div>
             <div className="mb-2 flex flex-row items-center justify-start border-b-[1px] border-[#e7e7e7] pb-4 pt-10">
               <h4 className="font-pop-b text-[24px] text-[black]">
-                Expense Entries
+                Income Entries
               </h4>
             </div>
 
@@ -94,4 +94,4 @@ const ExpenseIndex = () => {
   );
 };
 
-export default ExpenseIndex;
+export default IncomeIndex;

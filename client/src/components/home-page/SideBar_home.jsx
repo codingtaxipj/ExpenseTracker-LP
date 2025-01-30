@@ -1,67 +1,109 @@
-import { FaIndianRupeeSign } from "react-icons/fa6";
-import { PiTagSimpleFill } from "react-icons/pi";
+import SideBar from "../SideBar";
 import { useNavigate } from "react-router";
 import { navVars } from "../../global/global-variables";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const SideBar_home = () => {
+  const [entriesExpense, setEntriesExpense] = useState([]); // State to hold fetched data
+  const [loadingExpense, setLoadingExpense] = useState(true); // Loading state
+  const [errorExpense, setErrorExpense] = useState(null);
+  const [maxExpense, setMaxExpense] = useState(0);
+  const [entriesIncome, setEntriesIncome] = useState([]); // State to hold fetched data
+  const [loadingIncome, setLoadingIncome] = useState(true); // Loading state
+  const [errorIncome, setErrorIncome] = useState(null);
+  const [maxIncome, setMaxIncome] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8080/api/get-expense-category-totalspend")
+      .then((response) => {
+        const totalSum = response.data.reduce(
+          (sum, item) => sum + item.totalExpenseAmount,
+          0,
+        );
+        setMaxExpense(totalSum);
+        const top5entries = response.data
+          .sort((a, b) => b.totalExpenseAmount - a.totalExpenseAmount)
+          .slice(0, 5);
+        setEntriesExpense(top5entries); // Set fetched data to state
+        setLoadingExpense(false); // Turn off loading
+      })
+      .catch((err) => {
+        setErrorExpense(err.message); // Handle error
+        setLoadingExpense(false); // Turn off loading
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8080/api/get-income-category-totalspend")
+      .then((response) => {
+        const totalSum = response.data.reduce(
+          (sum, item) => sum + item.totalExpenseAmount,
+          0,
+        );
+        setMaxIncome(totalSum);
+        const top5entries = response.data
+          .sort((a, b) => b.totalExpenseAmount - a.totalExpenseAmount)
+          .slice(0, 5);
+        setEntriesIncome(top5entries); // Set fetched data to state
+        setLoadingIncome(false); // Turn off loading
+      })
+      .catch((err) => {
+        setErrorIncome(err.message); // Handle error
+        setLoadingIncome(false); // Turn off loading
+      });
+  }, []);
+
   return (
     <>
-      <div className="h-full w-[30%] rounded-r-[20px] bg-[#f3f4f6]">
-        <div className="flex h-full flex-col justify-center gap-10 px-14">
-          <div>
-            <h6 className="inline-flex items-center gap-2 font-pop-sb text-[16px] text-black">
-              <PiTagSimpleFill className="text-pupl" />
-              How much you spent ?
-            </h6>
+      <div className="flex h-full w-[30%] flex-col items-center justify-center gap-10 rounded-r-[20px] bg-[#f3f4f6]">
+        {loadingExpense && <p>Loading...</p>}
+        {errorExpense && <p>Error: {errorExpense}</p>}
+        {entriesExpense.length === 0 && !errorExpense && !loadingExpense && (
+          <p>Database is Empty</p>
+        )}
+        {entriesExpense.length > 0 && (
+          <>
+            <SideBar
+              sidebar_title={"How much you spent ?"}
+              sidebar_for={navVars.EXPENSE}
+              incomingData={entriesExpense}
+              totalSum={maxExpense}
+            />
+          </>
+        )}
 
-            {[1, 2, 3, 4, 5].map((data) => (
-              <div key={data}>
-                <div className="flex grow flex-row gap-2 pb-1 pt-4 font-pop-m text-[14px]">
-                  <p className="w-full">Utlities & Bills</p>
-                  <p className="flex items-center text-right font-pop-sb">
-                    <FaIndianRupeeSign /> <span>20</span>
-                  </p>
-                </div>
-                <div className="h-1.5 w-full rounded-full bg-[#d1d5db]">
-                  <div className="h-full w-[45%] rounded-full bg-pupl"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div>
-            <h6 className="inline-flex items-center gap-2 font-pop-sb text-[16px] text-black">
-              <PiTagSimpleFill className="text-pupl" /> How much you earned ?
-            </h6>
+        {loadingIncome && <p>Loading...</p>}
+        {errorIncome && <p>Error: {errorIncome}</p>}
+        {entriesIncome.length === 0 && !errorIncome && !loadingIncome && (
+          <p>Database is Empty</p>
+        )}
+        {entriesIncome.length > 0 && (
+          <>
+            <SideBar
+              sidebar_title={"How much you spent ?"}
+              sidebar_for={navVars.INCOME}
+              incomingData={entriesIncome}
+              totalSum={maxIncome}
+            />
+          </>
+        )}
 
-            {[1, 2, 3, 4, 5].map((data) => (
-              <div key={data}>
-                <div className="flex grow flex-row gap-2 pb-1 pt-4 font-pop-m text-[14px]">
-                  <p className="w-full">Utlities & Bills</p>
-                  <p className="flex items-center text-right font-pop-sb">
-                    <FaIndianRupeeSign /> <span>20</span>
-                  </p>
-                </div>
-                <div className="h-1.5 w-full rounded-full bg-[#d1d5db]">
-                  <div className="h-full w-[45%] rounded-full bg-pupl"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="inline-flex justify-center gap-5">
-            <button
-              onClick={() => navigate(navVars.ADD_EXPENSE)}
-              className="rounded-md bg-pupl px-4 py-1 text-[white]"
-            >
-              Add Expence
-            </button>
-            <button
-              onClick={() => navigate(navVars.ADD_INCOME)}
-              className="rounded-md bg-pupl px-4 py-1 text-[white]"
-            >
-              Add Income
-            </button>
-          </div>
+        <div className="inline-flex justify-center gap-5">
+          <button
+            onClick={() => navigate(navVars.ADD_EXPENSE)}
+            className="rounded-md bg-pupl px-4 py-1 text-[white]"
+          >
+            Add Expence
+          </button>
+          <button
+            onClick={() => navigate(navVars.ADD_INCOME)}
+            className="rounded-md bg-pupl px-4 py-1 text-[white]"
+          >
+            Add Income
+          </button>
         </div>
       </div>
     </>

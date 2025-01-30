@@ -35,7 +35,10 @@ const AllCategories = () => {
                       key={innerKey}
                       className="flex w-[15rem] items-center gap-2 pr-5 pt-5"
                     >
-                      <CircleIcon iconName={cat[key][innerKey]} />
+                      <CircleIcon
+                        iconName={cat[key][innerKey]}
+                        iconColor={cat[key].thisCategoryTitle}
+                      />
                       {console.log(cat[key][innerKey])}
                       <h4>
                         <span className="font-pop-sb text-[16px]">

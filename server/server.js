@@ -58,6 +58,20 @@ const IncomeExpenseSchema = new mongoose.Schema({
   },
 });
 
+// ? total Expense of each category database schema
+const categoryTotalSchema = new mongoose.Schema({
+  categoryType: {
+    type: String,
+    required: true,
+    unique: true, // Ensures only one document per primeCategory
+  },
+  totalExpenseAmount: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+});
+
 // NOTE connection to Expense Database
 const connToDB_Expense = async () => {
   try {
@@ -70,13 +84,27 @@ const connToDB_Expense = async () => {
 };
 const ExpenseDB = await connToDB_Expense();
 const ExpenseModal = ExpenseDB.model("dataentries", IncomeExpenseSchema);
+const expenseCategoryTotalModal = ExpenseDB.model(
+  "each_category_max_expense",
+  categoryTotalSchema
+);
+
 // NOTE adding entries to Expense Database
 app.post("/api/expense-form-submit", async (req, res) => {
   try {
     const Data = req.body;
     const Entry = new ExpenseModal(Data);
     await Entry.save();
-    res.status(201).json({ message: "Form submitted successfully!" });
+
+    await expenseCategoryTotalModal.findOneAndUpdate(
+      { categoryType: Data.primeCategory },
+      { $inc: { totalExpenseAmount: Data.amount } },
+      { upsert: true, new: true }
+    );
+    /*  res.status(201).json({ message: "Form submitted successfully!" }); */
+    res.status(201).json({
+      message: "max expense in- " + Data.primeCategory + " -Category updated",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to submit form" });
@@ -86,6 +114,17 @@ app.post("/api/expense-form-submit", async (req, res) => {
 app.get("/api/get-expenseData", async (req, res) => {
   try {
     const entries = await ExpenseModal.find(); // Fetch all entries
+    res.status(200).json(entries);
+  } catch (error) {
+    console.error("Error fetching entries:", error);
+    res.status(500).json({ message: "Failed to fetch entries" });
+  }
+});
+
+// NOTE fetching entries from EACH_CATEGORY_MAX_EXPENSE Database
+app.get("/api/get-expense-category-totalspend", async (req, res) => {
+  try {
+    const entries = await expenseCategoryTotalModal.find(); // Fetch all entries
     res.status(200).json(entries);
   } catch (error) {
     console.error("Error fetching entries:", error);
@@ -105,16 +144,52 @@ const connToDB_Income = async () => {
 };
 const IncomeDB = await connToDB_Income();
 const IncomeModal = IncomeDB.model("dataentries", IncomeExpenseSchema);
+const incomeCategoryTotalModal = ExpenseDB.model(
+  "each_category_max_income",
+  categoryTotalSchema
+);
+
 // NOTE adding entries to Income Database
 app.post("/api/income-form-submit", async (req, res) => {
   try {
     const Data = req.body;
     const Entry = new IncomeModal(Data);
     await Entry.save();
-    res.status(201).json({ message: "Form submitted successfully!" });
+
+    await incomeCategoryTotalModal.findOneAndUpdate(
+      { categoryType: Data.subCategory },
+      { $inc: { totalExpenseAmount: Data.amount } },
+      { upsert: true, new: true }
+    );
+    /*  res.status(201).json({ message: "Form submitted successfully!" }); */
+    res.status(201).json({
+      message: "max expense in- " + Data.subCategory + " -Category updated",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to submit form" });
+  }
+});
+
+// NOTE fetching entries from Income Database
+app.get("/api/get-incomeData", async (req, res) => {
+  try {
+    const entries = await IncomeModal.find(); // Fetch all entries
+    res.status(200).json(entries);
+  } catch (error) {
+    console.error("Error fetching entries:", error);
+    res.status(500).json({ message: "Failed to fetch entries" });
+  }
+});
+
+// NOTE fetching entries from EACH_CATEGORY_MAX_EXPENSE Database
+app.get("/api/get-income-category-totalspend", async (req, res) => {
+  try {
+    const entries = await incomeCategoryTotalModal.find(); // Fetch all entries
+    res.status(200).json(entries);
+  } catch (error) {
+    console.error("Error fetching entries:", error);
+    res.status(500).json({ message: "Failed to fetch entries" });
   }
 });
 

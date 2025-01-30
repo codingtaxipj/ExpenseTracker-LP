@@ -8,7 +8,7 @@ import Categories_and_Icons from "./routes/Categories_and_Icons";
 import Expense from "./routes/Expense";
 import Income from "./routes/Income";
 import Expense_Index from "./components/expense-page/Expense_Index";
-
+import IncomeIndex from "./components/income-page/Income_index";
 const App = () => {
   return (
     <Routes>
@@ -40,7 +40,9 @@ const App = () => {
       {/* ----------------------- *NOTE ##END: EXPENSES Page ---------------------- */}
 
       {/* ----------------------- *ANCHOR INCOME Page ---------------------- */}
-      <Route path={"/" + navVars.INCOME} element={<Income></Income>}></Route>
+      <Route path={"/" + navVars.INCOME} element={<Income></Income>}>
+        <Route index element={<IncomeIndex></IncomeIndex>}></Route>
+      </Route>
       {/* ----------------------- *NOTE ##END: INCOME Page ---------------------- */}
 
       {/* ----------------------- *ANCHOR All Categories Page ---------------------- */}

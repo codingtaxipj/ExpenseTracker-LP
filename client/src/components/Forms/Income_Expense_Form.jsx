@@ -56,8 +56,6 @@ const Income_Expense_Form = ({ formToDisplay }) => {
     }
   }
 
-  console.log(subCats);
-
   const navigate = useNavigate();
 
   const {
@@ -87,7 +85,7 @@ const Income_Expense_Form = ({ formToDisplay }) => {
         data,
       );
       alert(response.data.message);
-      setSubCats(false);
+      setSubCats([]);
       reset();
     } catch (error) {
       console.error(error);
