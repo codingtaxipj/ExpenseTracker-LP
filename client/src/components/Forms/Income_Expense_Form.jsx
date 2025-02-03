@@ -67,15 +67,17 @@ const Income_Expense_Form = ({ formToDisplay }) => {
   } = useForm({
     defaultValues: {
       formTimeStamp: moment().format(),
-      userCategory: null,
-      subCategory: null,
-      title: null,
-      description: null,
     },
   });
 
   const onSubmit = async (data) => {
     data.entryDate = moment(data.entryDate).format(" DD/MM/YYYY ");
+    const title = data.title;
+    const description = data.description;
+    const userCategory = data.userCategory;
+    if (title.trim().length === 0) data.title = null;
+    if (description.trim().length === 0) data.description = null;
+    if (userCategory.trim().length === 0) data.userCategory = null;
 
     try {
       const response = await axios.post(
@@ -196,10 +198,16 @@ const Income_Expense_Form = ({ formToDisplay }) => {
               <input
                 type="date"
                 {...register("entryDate", {
+                  required: "* This cannot be empty",
                   valueAsDate: true,
                 })}
                 className="w-full rounded-md border border-[#d1d1d1] bg-formInput px-2 py-1 shadow-sm focus:border focus:outline-none focus:ring-1 focus:ring-[#9e9e9e]"
               />
+              {errors.entryDate && (
+                <p className="pt-2 font-pop-i text-[12px] text-[red]">
+                  {errors.entryDate.message}
+                </p>
+              )}
             </div>
             {/* ---------------- *ANCHOR Date Field (hidden)(form filled timestamp) ---------------- */}
             <input
@@ -298,8 +306,12 @@ const Income_Expense_Form = ({ formToDisplay }) => {
                       }}
                       className={
                         selectedSubCats === buttons
-                          ? "rounded-md bg-travel px-4 py-1 text-[white]"
-                          : "rounded-md bg-black px-4 py-1 text-[white] hover:bg-travel"
+                          ? formToDisplay === navVars.ADD_EXPENSE
+                            ? "rounded-md bg-travel px-4 py-1 text-[white]"
+                            : "rounded-md bg-income px-4 py-1 text-[white]"
+                          : formToDisplay === navVars.ADD_EXPENSE
+                            ? "rounded-md bg-black px-4 py-1 text-[white] hover:bg-travel"
+                            : "rounded-md bg-black px-4 py-1 text-[white] hover:bg-income"
                       }
                     >
                       {capitalize(buttons)}

@@ -94,13 +94,13 @@ const SideBar_home = () => {
         <div className="inline-flex justify-center gap-5">
           <button
             onClick={() => navigate(navVars.ADD_EXPENSE)}
-            className="rounded-md bg-pupl px-4 py-1 text-[white]"
+            className="rounded-md bg-travel px-4 py-1 text-[white]"
           >
             Add Expence
           </button>
           <button
             onClick={() => navigate(navVars.ADD_INCOME)}
-            className="rounded-md bg-pupl px-4 py-1 text-[white]"
+            className="rounded-md bg-income px-4 py-1 text-[white]"
           >
             Add Income
           </button>

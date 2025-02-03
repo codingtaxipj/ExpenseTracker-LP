@@ -8,7 +8,8 @@ import Categories_and_Icons from "./routes/Categories_and_Icons";
 import Expense from "./routes/Expense";
 import Income from "./routes/Income";
 import Expense_Index from "./components/expense-page/Expense_Index";
-import IncomeIndex from "./components/income-page/Income_index";
+import Income_Index from "./components/income-page/Income_Index";
+import PopupEntryView from "./routes/Popup_Entry_View";
 const App = () => {
   return (
     <Routes>
@@ -35,13 +36,25 @@ const App = () => {
 
       {/* ----------------------- *ANCHOR EXPENSES Page ---------------------- */}
       <Route path={"/" + navVars.EXPENSE} element={<Expense />}>
+        {/* EXPENSE defalult page */}
         <Route index element={<Expense_Index></Expense_Index>}></Route>
+        {/* EXPENSE add Expense page */}
+        <Route
+          path={navVars.ADD_EXPENSE}
+          element={<Expense_Form></Expense_Form>}
+        ></Route>
       </Route>
       {/* ----------------------- *NOTE ##END: EXPENSES Page ---------------------- */}
 
       {/* ----------------------- *ANCHOR INCOME Page ---------------------- */}
       <Route path={"/" + navVars.INCOME} element={<Income></Income>}>
-        <Route index element={<IncomeIndex></IncomeIndex>}></Route>
+        {/* INCOME defalult page */}
+        <Route index element={<Income_Index></Income_Index>}></Route>
+        {/* INCOME add Income page */}
+        <Route
+          path={navVars.ADD_INCOME}
+          element={<Income_Form></Income_Form>}
+        ></Route>
       </Route>
       {/* ----------------------- *NOTE ##END: INCOME Page ---------------------- */}
 
@@ -49,6 +62,13 @@ const App = () => {
       <Route
         path={"/" + navVars.ALL_CATEGORIES}
         element={<Categories_and_Icons></Categories_and_Icons>}
+      ></Route>
+      {/* ----------------------- *NOTE ##END: All Categories Page ---------------------- */}
+
+      {/* ----------------------- *ANCHOR All Categories Page ---------------------- */}
+      <Route
+        path={"/" + navVars.POPUP_VIEW}
+        element={<PopupEntryView></PopupEntryView>}
       ></Route>
       {/* ----------------------- *NOTE ##END: All Categories Page ---------------------- */}
     </Routes>

@@ -64,6 +64,8 @@ const CircleIcon = ({ iconName, iconColor }) => {
       //*Miscellaneous
       case category.misc.misc:
         return { Color: "text-[white] bg-misc" };
+      case "Income":
+        return { Color: "text-[white] bg-income" };
     }
   })();
 

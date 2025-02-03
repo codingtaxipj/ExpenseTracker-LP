@@ -47,7 +47,7 @@ const IncomeIndex = () => {
             {entries.map((data) => (
               <div
                 key={data._id}
-                className="bg-white mb-2 flex flex-row items-center gap-5 rounded-[12px] px-2 py-2"
+                className="bg-white mb-3 flex flex-row items-center gap-5 rounded-[12px] border-[0.5px] border-[#fff] px-2 py-3 hover:border-[.5px] hover:border-[#f2f2f2] hover:bg-[#f6f6f6] hover:shadow-md"
               >
                 <div>
                   <CircleIcon
@@ -58,15 +58,15 @@ const IncomeIndex = () => {
                 <div className="grow">
                   <div className="flex items-center gap-4 pb-1">
                     <p className="pr-2 font-pop-sb text-[20px]">
-                      {data.primeCategory}
+                      {data.subCategory}
                     </p>
                     <p className="flex items-center gap-2 font-pop-m text-[14px]">
-                      <span className="rounded-full bg-travel p-[3px]"></span>
-                      {data.subCategory}
+                      <span className="rounded-full bg-income p-[3px]"></span>
+                      {data.primeCategory}
                     </p>
                     {data.userCategory && (
                       <p className="flex items-center gap-2 font-pop-m text-[14px]">
-                        <span className="rounded-full bg-food p-[3px]"></span>
+                        <span className="rounded-full bg-pupl p-[3px]"></span>
                         {data.userCategory}
                       </p>
                     )}

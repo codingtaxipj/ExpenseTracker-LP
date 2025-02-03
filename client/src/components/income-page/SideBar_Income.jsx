@@ -51,7 +51,7 @@ const SideBarExpense = () => {
         <div className="inline-flex w-[70%]">
           <button
             onClick={() => navigate(navVars.ADD_INCOME)}
-            className="w-full rounded-md bg-pupl px-4 py-1 text-[white]"
+            className="w-full rounded-md bg-income px-4 py-1 text-[white]"
           >
             Add Income
           </button>

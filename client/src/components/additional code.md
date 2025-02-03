@@ -1,45 +1,6 @@
-import { useEffect, useState } from "react";
-
-const TypewriterAni = () => {
-const [currentNameIndex, setCurrentNameIndex] = useState(0);
-const [currentText, setCurrentText] = useState("");
-const [isDeleting, setIsDeleting] = useState(false);
-const typingSpeed = 150;
-const deletingSpeed = 75;
-
-useEffect(() => {
-const names = ["Income", "Expense"];
-const currentName = names[currentNameIndex];
-let timeout;
-
-    if (isDeleting) {
-      timeout = setTimeout(() => {
-        setCurrentText(currentName.slice(0, currentText.length - 1));
-      }, deletingSpeed);
-    } else {
-      timeout = setTimeout(() => {
-        setCurrentText(currentName.slice(0, currentText.length + 1));
-      }, typingSpeed);
-    }
-
-    if (!isDeleting && currentText === currentName) {
-      timeout = setTimeout(() => setIsDeleting(true), 1000);
-    } else if (isDeleting && currentText === "") {
-      setIsDeleting(false);
-      setCurrentNameIndex((currentNameIndex + 1) % names.length);
-    }
-
-    return () => clearTimeout(timeout);
-
-}, [currentText, isDeleting, currentNameIndex]);
-
-return (
-<div>
-<span>Manage Your Daily </span>
-<span className="typewriter">{currentText}</span>
-<span className="cursor"></span>
-</div>
-);
-};
-
-export default TypewriterAni;
+ <div className="absolute inset-0 w-full bg-pupl bg-cover bg-no-repeat">
+        <div className="h-full w-full bg-[linear-gradient(to_right,_rgba(0,0,0,0.2)_1px,_transparent_1px),linear-gradient(to_bottom,_rgba(0,0,0,0.2)_1px,_transparent_1px)] px-[5rem] py-20 [background-size:25px_25px]"> 
+         <div className="inset-x-[8rem] inset-y-[6rem] flex h-full flex-row rounded-[20px] bg-[black] px-8 py-8">
+        </div>
+        </div>
+        </div>

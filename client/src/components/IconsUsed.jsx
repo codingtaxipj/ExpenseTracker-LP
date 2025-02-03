@@ -18,6 +18,7 @@ import {
   FaLightbulb,
   FaMapMarkedAlt,
   FaMobileAlt,
+  FaMoneyCheckAlt,
   FaParking,
   FaPencilRuler,
   FaPlane,
@@ -37,6 +38,8 @@ import {
   GiClothes,
   GiConverseShoe,
   GiGasStove,
+  GiLaptop,
+  GiMoneyStack,
   GiPayMoney,
   GiReceiveMoney,
   GiTakeMyMoney,
@@ -58,18 +61,43 @@ import {
   MdMedication,
   MdMicrowave,
   MdOutlinePets,
+  MdSell,
 } from "react-icons/md";
 import { SiJusteat } from "react-icons/si";
-import { RiDrinksFill } from "react-icons/ri";
+import { RiDrinksFill, RiMoneyRupeeCircleFill } from "react-icons/ri";
 import { TbSunglassesFilled, TbVaccine } from "react-icons/tb";
 import { AiFillGold, AiFillTool } from "react-icons/ai";
 import { BiSolidCalendarStar, BiSolidWasher } from "react-icons/bi";
-import { FaScissors, FaUserDoctor } from "react-icons/fa6";
+import { FaHouseChimneyUser, FaScissors, FaUserDoctor } from "react-icons/fa6";
 import { IoIosSchool, IoIosTv, IoMdMedical } from "react-icons/io";
 import { HiPaintBrush } from "react-icons/hi2";
 import { GrYoga } from "react-icons/gr";
+import { PiClockCountdownFill } from "react-icons/pi";
+
 const IconsUsed = ({ icon }) => {
   switch (icon) {
+    //*Income ICONS
+    case "Salary":
+      return <RiMoneyRupeeCircleFill />;
+    case "Salary Bonus":
+      return <GiMoneyStack />;
+    case "Part-Time Job":
+      return <PiClockCountdownFill />;
+    case "Freelance Work":
+      return <GiLaptop />;
+    case "Reselling":
+      return <MdSell />;
+    case "Rental Income":
+      return <FaHouseChimneyUser />;
+    case "Service Provided":
+      return <FaTools />;
+    case "Loan Repaid":
+      return <GiPayMoney />;
+    case "Prize Money":
+      return <FaMoneyCheckAlt />;
+    case "Loan Taken":
+      return <GiReceiveMoney />;
+
     //*Utilities ICONS
     case category.utlities.electricity:
       return <FaLightbulb />;

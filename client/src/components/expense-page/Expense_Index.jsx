@@ -4,11 +4,15 @@ import { PiDotOutlineFill } from "react-icons/pi";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import dots from "../../assets/4dots.svg";
 import CircleIcon from "../CircleIcon"; // Import your custom icon component
+import EntryPopup from "../Entry_Popup";
 
 const ExpenseIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+
+  const [popModal, setPopModal] = useState(false);
+  const [popData, setPopData] = useState([]);
 
   useEffect(() => {
     // Fetch data on component mount
@@ -23,6 +27,20 @@ const ExpenseIndex = () => {
         setLoading(false); // Turn off loading
       });
   }, []);
+
+  function openPopup(id) {
+    const selected = entries.find((data) => data._id === id);
+    if (selected) {
+      setPopData(selected);
+      setPopModal(true);
+    } else {
+      console.warn("No matching entry found for ID:", id);
+    }
+  }
+
+  /*    {popModal && (
+        <EntryPopup PopModal={setPopModal} data={popData}></EntryPopup>
+      )}  */
 
   return (
     <>
@@ -47,7 +65,8 @@ const ExpenseIndex = () => {
             {entries.map((data) => (
               <div
                 key={data._id}
-                className="bg-white mb-2 flex flex-row items-center gap-5 rounded-[12px] px-2 py-2"
+                onClick={() => openPopup(data._id)}
+                className="bg-white mb-3 flex flex-row items-center gap-5 rounded-[12px] border-[0.5px] border-[#fff] px-2 py-3 hover:border-[.5px] hover:border-[#f2f2f2] hover:bg-[#f6f6f6] hover:shadow-md"
               >
                 <div>
                   <CircleIcon
@@ -58,15 +77,15 @@ const ExpenseIndex = () => {
                 <div className="grow">
                   <div className="flex items-center gap-4 pb-1">
                     <p className="pr-2 font-pop-sb text-[20px]">
-                      {data.primeCategory}
+                      {data.subCategory}
                     </p>
                     <p className="flex items-center gap-2 font-pop-m text-[14px]">
                       <span className="rounded-full bg-travel p-[3px]"></span>
-                      {data.subCategory}
+                      {data.primeCategory}
                     </p>
                     {data.userCategory && (
                       <p className="flex items-center gap-2 font-pop-m text-[14px]">
-                        <span className="rounded-full bg-food p-[3px]"></span>
+                        <span className="rounded-full bg-pupl p-[3px]"></span>
                         {data.userCategory}
                       </p>
                     )}
@@ -88,6 +107,11 @@ const ExpenseIndex = () => {
               </div>
             ))}
           </>
+        )}
+      </div>
+      <div>
+        {popModal && (
+          <EntryPopup PopModal={setPopModal} data={popData}></EntryPopup>
         )}
       </div>
     </>

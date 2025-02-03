@@ -8,7 +8,7 @@ const HOME = () => {
   return (
     <>
       <NavMenu activeBtn={navVars.HOME}>
-        <div className="relative flex h-full flex-row">
+        <div className="flex h-full flex-row">
           <Outlet />
           <Sidebar_Dashboard></Sidebar_Dashboard>
         </div>
