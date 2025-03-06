@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router";
 import { navVars } from "./global/global-variables";
 import Home_Index from "./components/home-page/Home_Index";
-import HOME from "./routes/Home";
+//import HOME from "./routes/Home";
 import Expense_Form from "./components/Forms/Expense_Form";
 import Income_Form from "./components/Forms/Income_Form";
 import Categories_and_Icons from "./routes/Categories_and_Icons";
@@ -10,6 +10,7 @@ import Income from "./routes/Income";
 import Expense_Index from "./components/expense-page/Expense_Index";
 import Income_Index from "./components/income-page/Income_Index";
 import PopupEntryView from "./routes/Popup_Entry_View";
+import Login_Screen from "./routes/Login_Screen";
 const App = () => {
   return (
     <Routes>
@@ -18,7 +19,7 @@ const App = () => {
       {/* ----------------------- *NOTE ##END: base redirect HOME ---------------------- */}
 
       {/* ----------------------- *ANCHOR Home Page Routes ---------------------- */}
-      <Route path={"/" + navVars.HOME} element={<HOME />}>
+      <Route path={"/" + navVars.HOME} element={<Login_Screen />}>
         {/* HOME defalult page */}
         <Route index element={<Home_Index></Home_Index>}></Route>
         {/* HOME add Expense page */}

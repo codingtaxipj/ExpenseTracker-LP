@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 import { navVars } from "../../global/global-variables";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { inc } from "../../redux/slices/sliceOne";
 
 const SideBar_home = () => {
   const [entriesExpense, setEntriesExpense] = useState([]); // State to hold fetched data
@@ -14,6 +16,9 @@ const SideBar_home = () => {
   const [errorIncome, setErrorIncome] = useState(null);
   const [maxIncome, setMaxIncome] = useState(0);
   const navigate = useNavigate();
+
+  const incri = useSelector((state) => state.SOX.val);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -103,6 +108,15 @@ const SideBar_home = () => {
             className="rounded-md bg-income px-4 py-1 text-[white]"
           >
             Add Income
+          </button>
+        </div>
+        <div>
+          <p>val is : {incri}</p>
+          <button
+            onClick={() => dispatch(inc())}
+            className="rounded-md bg-income px-4 py-1 text-[white]"
+          >
+            incriment
           </button>
         </div>
       </div>
