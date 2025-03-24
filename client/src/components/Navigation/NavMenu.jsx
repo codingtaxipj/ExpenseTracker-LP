@@ -56,6 +56,12 @@ function Dashboard({ activeBtn, children }) {
             >
               Popup
             </button>
+            <button
+              onClick={() => navigate("/" + navVars.ELEMENTS)}
+              className={setStyle(navVars.ELEMENTS)}
+            >
+              Elements
+            </button>
           </div>
         </div>
         <div className="h-full w-full rounded-[20px] bg-[white]">

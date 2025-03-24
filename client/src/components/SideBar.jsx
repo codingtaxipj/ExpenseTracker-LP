@@ -14,6 +14,7 @@ const SideBar = ({ sidebar_title, incomingData, totalSum, sidebar_for }) => {
   return (
     <>
       <div className="flex w-[70%] flex-col">
+        
         <h6 className="inline-flex items-center gap-2 font-pop-sb text-[16px] text-black">
           <PiTagSimpleFill
             className={

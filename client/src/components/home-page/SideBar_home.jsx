@@ -5,6 +5,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { inc } from "../../redux/slices/sliceOne";
+import moment from "moment";
+import { PiTagSimpleFill } from "react-icons/pi";
 
 const SideBar_home = () => {
   const [entriesExpense, setEntriesExpense] = useState([]); // State to hold fetched data
@@ -16,6 +18,9 @@ const SideBar_home = () => {
   const [errorIncome, setErrorIncome] = useState(null);
   const [maxIncome, setMaxIncome] = useState(0);
   const navigate = useNavigate();
+
+  const currentDate = moment().format("Do MMMM YYYY");
+  const currentWeek = moment().week();
 
   const incri = useSelector((state) => state.SOX.val);
   const dispatch = useDispatch();
@@ -71,6 +76,16 @@ const SideBar_home = () => {
         )}
         {entriesExpense.length > 0 && (
           <>
+            <div className="flex w-[70%] flex-col gap-2 font-pop-m text-[15px] text-black">
+              <div className="inline-flex items-center">
+                <PiTagSimpleFill className="text-gift" />
+                <p className="pl-2">Today : {currentDate}</p>
+              </div>
+              <div className="inline-flex items-center">
+                <PiTagSimpleFill className="text-gift" />
+                <p className="pl-2">Current Week : {currentWeek}</p>
+              </div>
+            </div>
             <SideBar
               sidebar_title={"How much you spent ?"}
               sidebar_for={navVars.EXPENSE}

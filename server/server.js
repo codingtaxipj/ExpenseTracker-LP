@@ -1,26 +1,25 @@
+/* eslint-disable no-undef */
 import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
+import { mongoConnectHost, mongoConnectDB } from "./database/connection.js";
+import { authRouter } from "./routes/authRoute.js";
+//import { userModal } from "./models/usersModal.js";
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(
+/* app.use(
   cors({
     origin: "http://localhost:5173", // Allow only this origin
     methods: ["GET", "POST"], // Allow only these HTTP methods
   })
-);
+); */
+app.use(cors());
 
 // NOTE connection to mongoDB host
-const makeConnection = async () =>
-  await mongoose
-    .connect("mongodb://127.0.0.1:27017")
-    .then(console.log("Connection Formed"))
-    .catch(err => console.log("Error : " + err));
-makeConnection();
-
+mongoConnectHost(process.env.MONGO_HOST);
+app.use("/auth", authRouter);
 // ? from-database schema
 const IncomeExpenseSchema = new mongoose.Schema({
   entryDate: {
@@ -73,16 +72,7 @@ const categoryTotalSchema = new mongoose.Schema({
 });
 
 // NOTE connection to Expense Database
-const connToDB_Expense = async () => {
-  try {
-    const db = mongoose.connection.useDb("ExpenseDatabase");
-    console.log("DB Expense Connected");
-    return db;
-  } catch (err) {
-    console.log("Error : " + err);
-  }
-};
-const ExpenseDB = await connToDB_Expense();
+const ExpenseDB = await mongoConnectDB("ExpenseDatabase");
 const ExpenseModal = ExpenseDB.model("dataentries", IncomeExpenseSchema);
 const expenseCategoryTotalModal = ExpenseDB.model(
   "each_category_max_expense",

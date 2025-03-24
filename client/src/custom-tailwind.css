@@ -1,0 +1,56 @@
+@theme {
+  --color-pupl: "#7d14b9";
+  --color-black: "#000";
+  --color-white: #fff;
+  --color-util: "#0047AB";
+  --color-travel: "#1F51FF";
+  --color-food: "#E49B0F";
+  --color-shop: "#29a8ab";
+  --color-health: "#880808";
+  --color-insurance: "#31473A";
+  --color-loan: "#228B22";
+  --color-edu: "#8d5524 ";
+  --color-gift: "#F33A6A";
+  --color-ent: "#808000";
+  --color-personal: "#5D3FD3";
+  --color-tax: "#834333";
+  --color-misc: "#000";
+  --color-formInput: "#f5f5f5";
+  --color-expense: "#0F52BA";
+  --color-income: "#228B22";
+}
+@font-face {
+  font-family: Popins-Regular;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Regular.ttf");
+}
+@font-face {
+  font-family: Popins-Italic;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Italic.ttf");
+}
+@font-face {
+  font-family: Popins-Bold;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Bold.ttf");
+}
+@font-face {
+  font-family: Popins-Medium;
+  src: url("../src/assets/Fonts/Poppins/Poppins-Medium.ttf");
+}
+@font-face {
+  font-family: Popins-MediumItalic;
+  src: url("../src/assets/Fonts/Poppins/Poppins-MediumItalic.ttf");
+}
+@font-face {
+  font-family: Popins-semiBold;
+  src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
+}
+@font-face {
+  font-family: Popins-semiBoldItalic;
+  src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
+}
+@theme {
+  --font-pop-r: "Popins-Regular";
+  --font-pop-i: "Popins-Italic";
+  --font-pop-b: "Popins-Bold";
+  --font-pop-sb: "Popins-semiBold";
+  --font-pop-m: "Popins-Medium";
+}

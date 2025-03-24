@@ -10,7 +10,8 @@ import Income from "./routes/Income";
 import Expense_Index from "./components/expense-page/Expense_Index";
 import Income_Index from "./components/income-page/Income_Index";
 import PopupEntryView from "./routes/Popup_Entry_View";
-import Login_Screen from "./routes/Login_Screen";
+import Elements from "./routes/Elements";
+import Login from "./routes/Login";
 const App = () => {
   return (
     <Routes>
@@ -19,7 +20,7 @@ const App = () => {
       {/* ----------------------- *NOTE ##END: base redirect HOME ---------------------- */}
 
       {/* ----------------------- *ANCHOR Home Page Routes ---------------------- */}
-      <Route path={"/" + navVars.HOME} element={<Login_Screen />}>
+      <Route path={"/" + navVars.HOME} element={<Login />}>
         {/* HOME defalult page */}
         <Route index element={<Home_Index></Home_Index>}></Route>
         {/* HOME add Expense page */}
@@ -72,6 +73,13 @@ const App = () => {
         element={<PopupEntryView></PopupEntryView>}
       ></Route>
       {/* ----------------------- *NOTE ##END: All Categories Page ---------------------- */}
+
+      {/* ----------------------- *ANCHOR Elements Page ---------------------- */}
+      <Route
+        path={"/" + navVars.ELEMENTS}
+        element={<Elements></Elements>}
+      ></Route>
+      {/* ----------------------- *NOTE ##END: Elements Page ---------------------- */}
     </Routes>
     /* ----------------------- * ANCHOR END ROUTES PARENT BODY ---------------------- */
   );
