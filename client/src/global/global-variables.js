@@ -7,5 +7,6 @@ export const navVars = {
   ADD_INCOME: "add-income",
   POPUP_VIEW: "popup-view",
   ELEMENTS: "elements",
-  LOGIN:"login"
+  LOGIN: "login",
+  REGISTER: "sign-up",
 };

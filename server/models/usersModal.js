@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { mongoConnectDB } from "../database/connection.js";
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const userRegister = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -14,13 +14,15 @@ const userSchema = new Schema({
   userName: {
     type: String,
     required: true,
-    uniqe: true,
-    minLength: 6,
+    unique: true,
+    minlength: 6,
+    match: /^[a-zA-Z0-9]+$/, // Only letters and numbers
   },
   userEmail: {
     type: String,
     required: true,
-    uniqe: true,
+    unique: true,
+    match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, // Valid email format
   },
   userPassword: {
     type: String,
@@ -28,6 +30,7 @@ const userSchema = new Schema({
     minLength: 8,
   },
 });
+
 const usersDB = await mongoConnectDB("auth-db");
-const userModal = usersDB.model("users", userSchema);
-export { userModal };
+const userRegisterModal = usersDB.model("users", userRegister);
+export { userRegisterModal };

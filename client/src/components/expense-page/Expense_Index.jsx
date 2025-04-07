@@ -44,19 +44,73 @@ const ExpenseIndex = () => {
 
   return (
     <>
-      <div className="bg-white w-[70%] rounded-[20px] px-[4rem] py-[2.5rem]">
+      <div className="w-[70%] overflow-y-scroll rounded-[20px] bg-white px-[4rem] py-[2.5rem]">
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
         {entries.length === 0 && !error && !loading && <p>Database is Empty</p>}
         {entries.length > 0 && (
           <>
-            <div className="flex flex-row items-center justify-start pb-2">
+            <div className="flex pb-5">
               <img className="size-[2rem]" src={dots} alt="dot-icon" />
-              <h4 className="pl-2 font-pop-b text-[24px] text-black">
+              <h4 className="font-pop-b pl-2 text-[24px] text-black">
                 Dashboard
               </h4>
             </div>
-            <div className="mb-2 flex flex-row items-center justify-start border-b-[1px] border-[#e7e7e7] pb-4 pt-10">
+            <div className="flex gap-5 pb-2">
+              <div className="mb-3 flex w-max flex-col gap-1 rounded-[12px] border-[0.5px] border-[#dcdcdc] bg-[#f3f3f3] px-6 py-4">
+                <div>
+                  <p className="font-pop-m flex items-center gap-2 text-[14px]">
+                    <span className="bg-travel rounded-full p-[3px]"></span>
+                    Last Year Spend
+                  </p>
+                </div>
+                <div className="font-pop-b flex items-center text-[28px] text-[black]">
+                  <span>
+                    <FaIndianRupeeSign />
+                  </span>
+                  <span>2000</span>
+                </div>
+              </div>
+              <div className="mb-3 flex w-max flex-col gap-1 rounded-[12px] border-[0.5px] border-[#dcdcdc] bg-[#f3f3f3] px-6 py-4">
+                <div>
+                  <p className="font-pop-m flex items-center gap-2 text-[14px]">
+                    <span className="bg-travel rounded-full p-[3px]"></span>
+                    Last Month Spend
+                  </p>
+                </div>
+                <div className="font-pop-b flex items-center text-[28px] text-[black]">
+                  <span>
+                    <FaIndianRupeeSign />
+                  </span>
+                  <span>2000</span>
+                </div>
+              </div>
+              <div className="mb-3 flex w-max flex-col gap-1 rounded-[12px] border-[0.5px] border-[#dcdcdc] bg-[#f3f3f3] px-6 py-4">
+                <div>
+                  <p className="font-pop-m flex items-center gap-2 text-[14px]">
+                    <span className="bg-travel rounded-full p-[3px]"></span>
+                    Last Week Spend
+                  </p>
+                </div>
+                <div className="font-pop-b flex items-center text-[28px] text-[black]">
+                  <span>
+                    <FaIndianRupeeSign />
+                  </span>
+                  <span>2000</span>
+                </div>
+              </div>
+
+              <div className="mb-3 flex w-max flex-col gap-1 rounded-[12px] border-[0.5px] border-[#dcdcdc] bg-[#f3f3f3] px-6 py-4">
+                <div>
+                  <p className="font-pop-m pb-2 text-[14px]">Trip Expense</p>
+                </div>
+
+                <button className="bg-travel rounded-md px-4 py-1 text-[white]">
+                  Add Now
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-row items-center justify-start border-b-[1px] border-[#e7e7e7] pb-4">
               <h4 className="font-pop-b text-[24px] text-[black]">
                 Expense Entries
               </h4>
@@ -66,7 +120,7 @@ const ExpenseIndex = () => {
               <div
                 key={data._id}
                 onClick={() => openPopup(data._id)}
-                className="bg-white mb-3 flex flex-row items-center gap-5 rounded-[12px] border-[0.5px] border-[#fff] px-2 py-3 hover:border-[.5px] hover:border-[#f2f2f2] hover:bg-[#f6f6f6] hover:shadow-md"
+                className="mb-3 flex flex-row items-center gap-5 rounded-[12px] border-[0.5px] border-[#fff] bg-white px-2 py-3 hover:border-[.5px] hover:border-[#f2f2f2] hover:bg-[#f6f6f6] hover:shadow-md"
               >
                 <div>
                   <CircleIcon
@@ -76,21 +130,21 @@ const ExpenseIndex = () => {
                 </div>
                 <div className="grow">
                   <div className="flex items-center gap-4 pb-1">
-                    <p className="pr-2 font-pop-sb text-[20px]">
+                    <p className="font-pop-sb pr-2 text-[20px]">
                       {data.subCategory}
                     </p>
-                    <p className="flex items-center gap-2 font-pop-m text-[14px]">
-                      <span className="rounded-full bg-travel p-[3px]"></span>
+                    <p className="font-pop-m flex items-center gap-2 text-[14px]">
+                      <span className="bg-travel rounded-full p-[3px]"></span>
                       {data.primeCategory}
                     </p>
                     {data.userCategory && (
-                      <p className="flex items-center gap-2 font-pop-m text-[14px]">
-                        <span className="rounded-full bg-pupl p-[3px]"></span>
+                      <p className="font-pop-m flex items-center gap-2 text-[14px]">
+                        <span className="bg-pupl rounded-full p-[3px]"></span>
                         {data.userCategory}
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 font-pop-r text-[14px] text-[#919191]">
+                  <div className="font-pop-r flex items-center gap-2 text-[14px] text-[#919191]">
                     <span>{data.entryDate}</span>
                     <span>
                       <PiDotOutlineFill />
@@ -98,7 +152,7 @@ const ExpenseIndex = () => {
                     <span>{data.title}</span>
                   </div>
                 </div>
-                <div className="flex flex-row items-center pr-2 font-pop-sb text-[20px] text-[black]">
+                <div className="font-pop-sb flex flex-row items-center pr-2 text-[20px] text-[black]">
                   <span>
                     <FaIndianRupeeSign />
                   </span>

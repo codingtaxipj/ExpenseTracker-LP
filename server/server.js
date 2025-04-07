@@ -3,23 +3,55 @@ import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { mongoConnectHost, mongoConnectDB } from "./database/connection.js";
 import { authRouter } from "./routes/authRoute.js";
 //import { userModal } from "./models/usersModal.js";
+import session from "express-session";
+
 dotenv.config();
 const app = express();
-app.use(express.json());
-/* app.use(
+app.use(
   cors({
-    origin: "http://localhost:5173", // Allow only this origin
-    methods: ["GET", "POST"], // Allow only these HTTP methods
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
   })
-); */
-app.use(cors());
+);
+app.use(
+  session({
+    secret: "05656FA071988918",
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+    },
+  })
+);
+app.use(express.json());
+app.use(cookieParser());
 
 // NOTE connection to mongoDB host
 mongoConnectHost(process.env.MONGO_HOST);
 app.use("/auth", authRouter);
+
+/* app.get("/set-cookies", (req, res) => {
+  res.cookie("cc", "set-cookies", {
+    httpOnly: true,
+    path: "/",
+    domain: "localhost",
+    secure: false,
+    sameSite: "Lax",
+  });
+  console.log(req.cookies.cc);
+  res.status(201).send({ message: "cookie is set" });
+});
+// GET to retrieve cookies
+app.get("/get-cookies", (req, res) => {
+  const cookie = req.cookies.cc;
+  console.log("on after L - " + req.cookies.cc); // Access cookies correctly
+  res.status(200).send({ msg: cookie });
+});
+ */
 // ? from-database schema
 const IncomeExpenseSchema = new mongoose.Schema({
   entryDate: {

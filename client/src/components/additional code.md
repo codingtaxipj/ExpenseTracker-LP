@@ -73,3 +73,31 @@ onGithubClick: PropTypes.func.isRequired,
 };
 
 export default Login;
+
+<div className="relative w-full">
+                <select
+                  defaultValue="NAN"
+                  className="slectInput-arrow bg-formInput w-full rounded-md border border-[#d1d1d1] px-4 py-1 shadow-sm focus:border focus:ring-1 focus:ring-[#9e9e9e] focus:outline-none"
+                  
+                >
+                  {formToDisplay === navVars.ADD_EXPENSE && (
+                    <>
+                      <option value={"NAN"} disabled>
+                        Select a Category...
+                      </option>
+                      {primeCategoriesVals.map((cats) => (
+                        <option key={cats} value={cats}>
+                          {cats}
+                        </option>
+                      ))}
+                    </>
+                  )}
+
+                  {formToDisplay === navVars.ADD_INCOME && (
+                    <>
+                      <option value={"Income"}>Income</option>
+                    </>
+                  )}
+                </select>
+                <FaSortDown className="absolute inset-y-[.3rem] right-3 text-black" />
+              </div>

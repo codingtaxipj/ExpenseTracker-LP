@@ -3,9 +3,7 @@ import { useNavigate } from "react-router";
 import { navVars } from "../../global/global-variables";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { inc } from "../../redux/slices/sliceOne";
-import moment from "moment";
+
 import { PiTagSimpleFill } from "react-icons/pi";
 
 const SideBar_home = () => {
@@ -19,11 +17,7 @@ const SideBar_home = () => {
   const [maxIncome, setMaxIncome] = useState(0);
   const navigate = useNavigate();
 
-  const currentDate = moment().format("Do MMMM YYYY");
-  const currentWeek = moment().week();
-
-  const incri = useSelector((state) => state.SOX.val);
-  const dispatch = useDispatch();
+  
 
   useEffect(() => {
     axios
@@ -76,15 +70,8 @@ const SideBar_home = () => {
         )}
         {entriesExpense.length > 0 && (
           <>
-            <div className="flex w-[70%] flex-col gap-2 font-pop-m text-[15px] text-black">
-              <div className="inline-flex items-center">
-                <PiTagSimpleFill className="text-gift" />
-                <p className="pl-2">Today : {currentDate}</p>
-              </div>
-              <div className="inline-flex items-center">
-                <PiTagSimpleFill className="text-gift" />
-                <p className="pl-2">Current Week : {currentWeek}</p>
-              </div>
+            <div className="font-pop-m flex w-[70%] flex-col gap-2 text-[15px] text-black">
+             
             </div>
             <SideBar
               sidebar_title={"How much you spent ?"}
@@ -114,24 +101,15 @@ const SideBar_home = () => {
         <div className="inline-flex justify-center gap-5">
           <button
             onClick={() => navigate(navVars.ADD_EXPENSE)}
-            className="rounded-md bg-travel px-4 py-1 text-[white]"
+            className="bg-travel rounded-md px-4 py-1 text-[white]"
           >
             Add Expence
           </button>
           <button
             onClick={() => navigate(navVars.ADD_INCOME)}
-            className="rounded-md bg-income px-4 py-1 text-[white]"
+            className="bg-income rounded-md px-4 py-1 text-[white]"
           >
             Add Income
-          </button>
-        </div>
-        <div>
-          <p>val is : {incri}</p>
-          <button
-            onClick={() => dispatch(inc())}
-            className="rounded-md bg-income px-4 py-1 text-[white]"
-          >
-            incriment
           </button>
         </div>
       </div>

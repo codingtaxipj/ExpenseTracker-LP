@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import sliceOneReducer from "./slices/sliceOne";
+import authReducer from "../redux/slices/authUser.js";
 
 export const store = configureStore({
   reducer: {
-    SOX: sliceOneReducer,
+    user: authReducer,
   },
 });

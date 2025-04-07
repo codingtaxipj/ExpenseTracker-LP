@@ -1,6 +1,8 @@
 import { navVars } from "../../global/global-variables";
 import { useNavigate } from "react-router";
 import PropTypes from "prop-types";
+import moment from "moment";
+import { PiTagSimpleFill } from "react-icons/pi";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
@@ -14,17 +16,20 @@ function Dashboard({ activeBtn, children }) {
         baseStyle + " " + "text-slate-600 px-2 hover:px-5 hover:text-[white]"
       );
   }
+  const currentDate = moment().format("Do MMMM YYYY");
+  const currentWeek = moment().week();
 
   return (
     <>
-      <div className="absolute inset-0 flex h-full w-full flex-row bg-[black] px-8 py-8">
-        <div className="w-[22rem]">
-          <div className="py-[2.5rem] text-[white]">
-            <div className="mb-5 size-[5rem] rounded-[12px] bg-pupl"></div>
-            <p className="pb-1 font-pop-m text-[18px]">codingtaxipj</p>
+      <div className="flex-screen flex h-screen w-full overflow-hidden bg-[black]">
+        <div className="flex w-[22rem] flex-col">
+          <div className="flex flex-col items-start py-[2.5rem] text-[white]">
+            <div className="bg-pupl mb-5 size-[4rem] rounded-[12px]"></div>
+            <p className="font-pop-m pb-1 text-[18px]">codingtaxipj</p>
             <p className="font-pop-r text-[12px]">prayasjadli18@gmail.com</p>
+            <button>edit profile</button>
           </div>
-          <div className="flex flex-col py-[2rem] font-pop-b text-[#979797]">
+          <div className="font-pop-b flex grow flex-col border-y-1 py-[2rem] text-[#979797]">
             <button
               onClick={() => navigate("/" + navVars.HOME)}
               autoFocus
@@ -44,6 +49,10 @@ function Dashboard({ activeBtn, children }) {
             >
               Income
             </button>
+            <button className={setStyle(navVars.INCOME)}>Trip Expenses</button>
+            <button className={setStyle(navVars.INCOME)}>Accounts</button>
+            <button className={setStyle(navVars.INCOME)}>Graphical Data</button>
+            <button className={setStyle(navVars.INCOME)}>Analysis</button>
             <button
               onClick={() => navigate("/" + navVars.ALL_CATEGORIES)}
               className={setStyle(navVars.ALL_CATEGORIES)}
@@ -63,11 +72,26 @@ function Dashboard({ activeBtn, children }) {
               Elements
             </button>
           </div>
+
+          <div className="flex flex-col">
+            <button className={setStyle(navVars.INCOME)}>Trip Expenses</button>
+          </div>
         </div>
-        <div className="h-full w-full rounded-[20px] bg-[white]">
-          {/* ------------------------- * ANCHOR childern prop ------------------------- */}
-          {children}
-          {/* -------------------------------------------------------------------------- */}
+        <div className="flex h-auto w-full flex-col bg-[red]">
+          <div className="flex flex-row gap-5">
+            <div>search bar</div>
+            <div>account selected</div>
+            <div className="inline-flex items-center">
+              <PiTagSimpleFill className="text-gift" />
+              <p className="pl-2">Today : {currentDate}</p>
+            </div>
+            <div className="inline-flex items-center">
+              <PiTagSimpleFill className="text-gift" />
+              <p className="pl-2">Current Week : {currentWeek}</p>
+            </div>
+          </div>
+
+          <div className="h-full w-full bg-[white]"> {children}</div>
         </div>
       </div>
     </>

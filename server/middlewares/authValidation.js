@@ -8,7 +8,11 @@ const validateUser = [
     .notEmpty()
     .withMessage("Username is required")
     .isLength({ min: 6 })
-    .withMessage("Username must be at least 3 characters"),
+    .withMessage("Username must be at least 6 characters")
+    .matches(/^[a-zA-Z0-9]+$/)
+    .withMessage(
+      "Username can only contain letters and numbers (no spaces/symbols)"
+    ),
   body("userEmail").isEmail().withMessage("Invalid email format"),
   body("userPassword")
     .isLength({ min: 8 })
