@@ -2,7 +2,7 @@ import moment from "moment";
 import capitalize from "capitalize";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 // global variables
 import { navVars } from "../../global/global-variables";
@@ -28,10 +28,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
 
 const Form = ({ formToDisplay }) => {
   //page navigation
   const navigate = useNavigate();
+  const location = useLocation();
+  // desengemnting path so that parent path remain constant no matter where my form displays
+  const desegmentPath = () => {
+    const currentPath = location.pathname;
+    const segments = currentPath.split("/").filter(Boolean);
+    segments.pop();
+    const parentPath = "/" + segments.join("/");
+    return parentPath;
+  };
+  const handleCancel = () => {
+    const goToPath = desegmentPath();
+    navigate(goToPath);
+  };
+  const navigateToIncome = () => {
+    const Path = desegmentPath();
+    const incomePath = Path + "/" + navVars.ADD_INCOME;
+    navigate(incomePath);
+  };
+  const navigateToExpense = () => {
+    const Path = desegmentPath();
+    const incomePath = Path + "/" + navVars.ADD_EXPENSE;
+    navigate(incomePath);
+  };
+
   //state
   const [selectedPrimeValue, setSelectedPrimeValue] = useState();
   const [selectedSubCats, setSeletedSubCats] = useState(false);
@@ -89,14 +114,32 @@ const Form = ({ formToDisplay }) => {
     defaultValues: {
       formTimeStamp: moment().format(),
       entryDate: moment().format(),
-      userCategory: null,
-      title: null,
-      description: null,
     },
   });
   //NOTE : form handle submit function
   const onSubmit = async (data) => {
-    console.log(data);
+    const { title, description, userCategory } = data;
+    if (!title || title.trim().length === 0) data.title = null;
+    if (!description || description.trim().length === 0)
+      data.description = null;
+    if (!userCategory || userCategory.trim().length === 0)
+      data.userCategory = null;
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8080/form/add-data",
+        data,
+      );
+      alert(response.data.message);
+      reset();
+      setDate(null);
+      setSeletedSubCats(false);
+      setSelectedPrimeValue(null);
+    } catch (error) {
+      console.error(error);
+      const errorMeaage = error.response.data.message || "Submittion Error";
+      alert(errorMeaage);
+    }
   };
   return (
     <>
@@ -105,9 +148,7 @@ const Form = ({ formToDisplay }) => {
           {/* ---------------- *ANCHOR Top Bar To select Form to Display ---------------- */}
           <div className="mb-5 flex w-full gap-2">
             <button
-              onClick={() =>
-                navigate("/" + navVars.HOME + "/" + navVars.ADD_EXPENSE)
-              }
+              onClick={() => navigateToExpense()}
               type="button"
               className={
                 formToDisplay === navVars.ADD_EXPENSE
@@ -118,9 +159,7 @@ const Form = ({ formToDisplay }) => {
               Expense
             </button>
             <button
-              onClick={() =>
-                navigate("/" + navVars.HOME + "/" + navVars.ADD_INCOME)
-              }
+              onClick={() => navigateToIncome()}
               type="button"
               className={
                 formToDisplay === navVars.ADD_INCOME
@@ -377,8 +416,7 @@ const Form = ({ formToDisplay }) => {
               type="button"
               onClick={() => {
                 reset();
-                // setSubCats(false);
-                navigate("/" + navVars.HOME);
+                handleCancel();
               }}
               className="cursor-pointer rounded-md bg-[#da0707] px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
             >

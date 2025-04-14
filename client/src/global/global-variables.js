@@ -10,3 +10,7 @@ export const navVars = {
   LOGIN: "login",
   REGISTER: "sign-up",
 };
+export const btnVars = {
+  expense: "expense",
+  income: "income",
+};

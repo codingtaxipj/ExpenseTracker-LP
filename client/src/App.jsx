@@ -42,10 +42,14 @@ const App = () => {
       <Route path={"/" + navVars.EXPENSE} element={<Expense />}>
         {/* EXPENSE defalult page */}
         <Route index element={<Expense_Index></Expense_Index>}></Route>
-        {/* EXPENSE add Expense page */}
+
         <Route
           path={navVars.ADD_EXPENSE}
           element={<Expense_Form></Expense_Form>}
+        ></Route>
+        <Route
+          path={navVars.ADD_INCOME}
+          element={<Income_Form></Income_Form>}
         ></Route>
       </Route>
       {/* ----------------------- *NOTE ##END: EXPENSES Page ---------------------- */}
@@ -55,6 +59,10 @@ const App = () => {
         {/* INCOME defalult page */}
         <Route index element={<Income_Index></Income_Index>}></Route>
         {/* INCOME add Income page */}
+        <Route
+          path={navVars.ADD_EXPENSE}
+          element={<Expense_Form></Expense_Form>}
+        ></Route>
         <Route
           path={navVars.ADD_INCOME}
           element={<Income_Form></Income_Form>}
