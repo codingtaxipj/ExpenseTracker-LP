@@ -2,7 +2,7 @@
 
 import { formIncomeExpenseModal } from "../models/income-expense-formModal.js";
 
-const formController = async (req, res) => {
+const formController = async (req, res, next) => {
   try {
     const data = req.body;
     const entry = formIncomeExpenseModal(data);
@@ -12,6 +12,9 @@ const formController = async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: "Failed to Submit Form!!" });
   }
+  const { amount, primeCategory, subCategory } = req.body;
+  req.expenseInfo = { amount, primeCategory, subCategory };
+  next();
 };
 export { formController };
 
