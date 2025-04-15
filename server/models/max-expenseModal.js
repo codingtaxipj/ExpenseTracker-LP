@@ -17,6 +17,10 @@ const maxSchema = new Schema(
       required: true,
       min: 0,
     },
+    isExpenseCategory: {
+      type: Boolean,
+      required: true,
+    },
   },
   {
     collection: "default-user-max", // <-- this line overrides pluralization of adding "s" at last of collection name

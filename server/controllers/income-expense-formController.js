@@ -12,16 +12,13 @@ const formController = async (req, res, next) => {
     console.error(error);
     return res.status(500).json({ message: "Failed to Submit Form!!" });
   }
-  const { amount, primeCategory, subCategory } = req.body;
-  req.expenseInfo = { amount, primeCategory, subCategory };
+  const { amount, primeCategory, subCategory, isFormExpense } = req.body;
+  req.expenseInfo = { amount, primeCategory, subCategory, isFormExpense };
   next();
 };
 export { formController };
 
-/* await expenseCategoryTotalModal.findOneAndUpdate(
-    { categoryType: Data.primeCategory },
-    { $inc: { totalExpenseAmount: Data.amount } },
-    { upsert: true, new: true }
+/* 
 
 
 
