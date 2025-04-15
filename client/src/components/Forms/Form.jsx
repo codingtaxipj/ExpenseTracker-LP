@@ -114,6 +114,7 @@ const Form = ({ formToDisplay }) => {
     defaultValues: {
       formTimeStamp: moment().format(),
       entryDate: moment().format(),
+      isFormExpense: formToDisplay === navVars.ADD_INCOME ? false : true,
     },
   });
   //NOTE : form handle submit function
@@ -145,6 +146,9 @@ const Form = ({ formToDisplay }) => {
     <>
       <div className="w-2xl text-sm font-medium">
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* check Field (hidden)(form field to identify type of form) */}
+          <input type="hidden" {...register("isFormExpense")} />
+
           {/* ---------------- *ANCHOR Top Bar To select Form to Display ---------------- */}
           <div className="mb-5 flex w-full gap-2">
             <button

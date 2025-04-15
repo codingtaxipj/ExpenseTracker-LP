@@ -6,6 +6,8 @@ const formIncomeExpenseValidation = [
     .isString()
     .withMessage("entryDate must be a string"),
 
+  body("isFormExpense").notEmpty().isBoolean(),
+
   body("formTimeStamp")
     .notEmpty()
     .withMessage("formTimeStamp is required")
