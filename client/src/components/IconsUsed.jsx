@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import category from "../assets/lib/icondata.json";
+import { expenseCategories } from "@/global/icon-data";
 import { BsBank2, BsFillFuelPumpFill } from "react-icons/bs";
 import {
   FaBirthdayCake,
@@ -99,165 +99,165 @@ const IconsUsed = ({ icon }) => {
       return <GiReceiveMoney />;
 
     //*Utilities ICONS
-    case category.utlities.electricity:
+    case expenseCategories.utlities.electricity:
       return <FaLightbulb />;
-    case category.utlities.water:
+    case expenseCategories.utlities.water:
       return <IoWater />;
-    case category.utlities.mobile:
+    case expenseCategories.utlities.mobile:
       return <FaSimCard />;
-    case category.utlities.internet:
+    case expenseCategories.utlities.internet:
       return <FaWifi />;
-    case category.utlities.tv:
+    case expenseCategories.utlities.tv:
       return <FaSatelliteDish />;
-    case category.utlities.gas:
+    case expenseCategories.utlities.gas:
       return <GiGasStove />;
-    case category.utlities.cc:
+    case expenseCategories.utlities.cc:
       return <FaCreditCard />;
-    case category.utlities.repair:
+    case expenseCategories.utlities.repair:
       return <FaTools />;
-    case category.utlities.rent:
+    case expenseCategories.utlities.rent:
       return <GiTakeMyMoney />;
     //*Transportation ICONS
-    case category.travel.fuel:
+    case expenseCategories.travel.fuel:
       return <BsFillFuelPumpFill />;
-    case category.travel.parking:
+    case expenseCategories.travel.parking:
       return <FaParking />;
-    case category.travel.taxi:
+    case expenseCategories.travel.taxi:
       return <FaTaxi />;
-    case category.travel.train:
+    case expenseCategories.travel.train:
       return <FaTrain />;
-    case category.travel.bus:
+    case expenseCategories.travel.bus:
       return <FaBus />;
-    case category.travel.aeroplan:
+    case expenseCategories.travel.aeroplan:
       return <FaPlane />;
-    case category.travel.toll:
+    case expenseCategories.travel.toll:
       return <FaRoad />;
 
     //* Food and Drinmk ICONS
-    case category.food.groceries:
+    case expenseCategories.food.groceries:
       return <MdLocalGroceryStore />;
-    case category.food.rest:
+    case expenseCategories.food.rest:
       return <SiJusteat />;
-    case category.food.cafe:
+    case expenseCategories.food.cafe:
       return <IoCafe />;
-    case category.food.order:
+    case expenseCategories.food.order:
       return <MdDeliveryDining />;
-    case category.food.snack:
+    case expenseCategories.food.snack:
       return <IoFastFood />;
-    case category.food.drink:
+    case expenseCategories.food.drink:
       return <RiDrinksFill />;
-    case category.food.pet:
+    case expenseCategories.food.pet:
       return <MdOutlinePets />;
 
     //*shopping ICONS
-    case category.shop.cloth:
+    case expenseCategories.shop.cloth:
       return <GiClothes />;
-    case category.shop.gadget:
+    case expenseCategories.shop.gadget:
       return <FaMobileAlt />;
-    case category.shop.appliance:
+    case expenseCategories.shop.appliance:
       return <MdMicrowave />;
-    case category.shop.furni:
+    case expenseCategories.shop.furni:
       return <MdChair />;
-    case category.shop.foot:
+    case expenseCategories.shop.foot:
       return <GiConverseShoe />;
-    case category.shop.acc:
+    case expenseCategories.shop.acc:
       return <TbSunglassesFilled />;
-    case category.shop.tool:
+    case expenseCategories.shop.tool:
       return <AiFillTool />;
-    case category.shop.cleaning:
+    case expenseCategories.shop.cleaning:
       return <BiSolidWasher />;
-    case category.shop.toilet:
+    case expenseCategories.shop.toilet:
       return <FaToiletPaper />;
     //*Medical ICONS
-    case category.health.visit:
+    case expenseCategories.health.visit:
       return <FaUserDoctor />;
-    case category.health.meds:
+    case expenseCategories.health.meds:
       return <MdMedication />;
-    case category.health.checkup:
+    case expenseCategories.health.checkup:
       return <FaFileMedicalAlt />;
-    case category.health.vaccni:
+    case expenseCategories.health.vaccni:
       return <TbVaccine />;
-    case category.health.operation:
+    case expenseCategories.health.operation:
       return <FaHandHoldingMedical />;
     //*insurance ICON
 
-    case category.insurance.insurance:
+    case expenseCategories.insurance.insurance:
       return <IoDocumentText />;
     //*loan and debt ICONS
-    case category.loan.bank:
+    case expenseCategories.loan.bank:
       return <BsBank2 />;
-    case category.loan.mortage:
+    case expenseCategories.loan.mortage:
       return <AiFillGold />;
-    case category.loan.debttaken:
+    case expenseCategories.loan.debttaken:
       return <GiReceiveMoney />;
-    case category.loan.debtgiven:
+    case expenseCategories.loan.debtgiven:
       return <GiPayMoney />;
-    case category.loan.emi:
+    case expenseCategories.loan.emi:
       return <FaCalendarCheck />;
-    case category.loan.default:
+    case expenseCategories.loan.default:
       return <FaCalendarTimes />;
     //*Education ICONS
-    case category.edu.school:
+    case expenseCategories.edu.school:
       return <FaSchool />;
-    case category.edu.college:
+    case expenseCategories.edu.college:
       return <IoIosSchool />;
-    case category.edu.course:
+    case expenseCategories.edu.course:
       return <FaBook />;
-    case category.edu.coaching:
+    case expenseCategories.edu.coaching:
       return <FaChalkboardTeacher />;
-    case category.edu.online:
+    case expenseCategories.edu.online:
       return <MdCastForEducation />;
-    case category.edu.supplies:
+    case expenseCategories.edu.supplies:
       return <FaPencilRuler />;
     //*gifting ICONS
-    case category.gift.bday:
+    case expenseCategories.gift.bday:
       return <FaBirthdayCake />;
-    case category.gift.wed:
+    case expenseCategories.gift.wed:
       return <FaCalendarDay />;
-    case category.gift.anna:
+    case expenseCategories.gift.anna:
       return <FaBirthdayCake />;
-    case category.gift.festiv:
+    case expenseCategories.gift.festiv:
       return <FaCalendarDay />;
-    case category.gift.special:
+    case expenseCategories.gift.special:
       return <BiSolidCalendarStar />;
-    case category.gift.gen:
+    case expenseCategories.gift.gen:
       return <FaGift />;
-    case category.gift.donation:
+    case expenseCategories.gift.donation:
       return <GiPayMoney />;
 
     //* Entertainment ICONS
-    case category.ent.movie:
+    case expenseCategories.ent.movie:
       return <MdLocalMovies />;
-    case category.ent.games:
+    case expenseCategories.ent.games:
       return <IoGameController />;
-    case category.ent.event:
+    case expenseCategories.ent.event:
       return <FaCalendarDay />;
-    case category.ent.hotel:
+    case expenseCategories.ent.hotel:
       return <FaHotel />;
-    case category.ent.sub:
+    case expenseCategories.ent.sub:
       return <IoIosTv />;
-    case category.ent.park:
+    case expenseCategories.ent.park:
       return <FaMapMarkedAlt />;
-    case category.ent.hobbie:
+    case expenseCategories.ent.hobbie:
       return <HiPaintBrush />;
     //*Personal ICONS
-    case category.personal.salon:
+    case expenseCategories.personal.salon:
       return <FaScissors />;
-    case category.personal.gym:
+    case expenseCategories.personal.gym:
       return <GiWeightLiftingUp />;
-    case category.personal.cos:
+    case expenseCategories.personal.cos:
       return <FaUser />;
-    case category.personal.eqp:
+    case expenseCategories.personal.eqp:
       return <FaDumbbell />;
-    case category.personal.yoga:
+    case expenseCategories.personal.yoga:
       return <GrYoga />;
-    case category.personal.wellness:
+    case expenseCategories.personal.wellness:
       return <IoMdMedical />;
     //*Tax ICONS
-    case category.tax.tax:
+    case expenseCategories.tax.tax:
       return <BsBank2 />;
     //*Miscellaneous
-    case category.misc.misc:
+    case expenseCategories.misc.misc:
       return <FaShapes />;
   }
 };

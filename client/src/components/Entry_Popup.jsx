@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import CircleIcon from "./CircleIcon";
+
 import PropTypes from "prop-types";
-import dots from "../assets/4dots.svg";
+
 const EntryPopup = ({ PopModal, data }) => {
   const blurBg = useRef();
   function closeModal(e) {
@@ -14,29 +14,18 @@ const EntryPopup = ({ PopModal, data }) => {
       <div
         ref={blurBg}
         onClick={(e) => closeModal(e)}
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm"
+        className="bg-opacity-30 fixed inset-0 flex items-center justify-center bg-black backdrop-blur-sm"
       >
         <div className="w-[32rem] rounded-[20px] bg-[white] px-8 py-5">
-          <div className="flex flex-row items-center justify-start pb-2">
-            <img className="size-[2rem]" src={dots} alt="dot-icon" />
-            <h4 className="pl-2 font-pop-b text-[24px] text-black">
-              Expense For
-            </h4>
-          </div>
           <div className="inline-flex w-full flex-grow items-center gap-3 py-3">
-            <div>
-              <CircleIcon
-                iconName={data.subCategory}
-                iconColor={data.primeCategory}
-              />
-            </div>
+            <div></div>
             <div className="flex flex-col">
               <div>
                 <p className="font-pop-b text-[24px]">{data.subCategory}</p>
               </div>
-              <div className="flex items-center gap-2 font-pop-m text-[14px]">
+              <div className="font-pop-m flex items-center gap-2 text-[14px]">
                 <p>From</p>
-                <span className="rounded-full bg-travel p-[3px]"></span>
+                <span className="bg-travel rounded-full p-[3px]"></span>
                 <p>{data.primeCategory}</p>
               </div>
             </div>
@@ -61,9 +50,9 @@ const EntryPopup = ({ PopModal, data }) => {
             <div className="grow">
               <p className="font-pop-m text-[14px]">Tagged with </p>
             </div>
-            <div className="text-right font-pop-sb text-[14px]">
+            <div className="font-pop-sb text-right text-[14px]">
               {data.userCategory !== null ? (
-                <p className="rounded-sm bg-travel px-2 text-[white]">
+                <p className="bg-travel rounded-sm px-2 text-[white]">
                   {data.userCategory}
                 </p>
               ) : (
@@ -98,7 +87,7 @@ const EntryPopup = ({ PopModal, data }) => {
           </div>
 
           <div className="flex w-full flex-grow gap-5 py-3">
-            <button className="rounded-md bg-income px-4 py-1 text-[white]">
+            <button className="bg-income rounded-md px-4 py-1 text-[white]">
               Edit
             </button>
             <button className="rounded-md bg-[#d71919] px-4 py-1 text-[white]">
@@ -106,7 +95,7 @@ const EntryPopup = ({ PopModal, data }) => {
             </button>
             <button
               onClick={() => PopModal(false)}
-              className="rounded-md bg-travel px-4 py-1 text-[white]"
+              className="bg-travel rounded-md px-4 py-1 text-[white]"
             >
               close me
             </button>

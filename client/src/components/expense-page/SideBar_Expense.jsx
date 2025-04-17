@@ -11,16 +11,16 @@ const SideBarExpense = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8080/api/get-expense-category-totalspend")
+      .get("http://127.0.0.1:8080/expense/get-expense-prime-max")
       .then((response) => {
         const totalSum = response.data.reduce(
-          (sum, item) => sum + item.totalExpenseAmount,
+          (sum, item) => sum + item.categoryTotal,
           0,
         );
 
         setMaxExpense(totalSum);
         const top10entries = response.data
-          .sort((a, b) => b.totalExpenseAmount - a.totalExpenseAmount)
+          .sort((a, b) => b.categoryTotal - a.categoryTotal)
           .slice(0, 10);
         setEntries(top10entries); // Set fetched data to state
         setLoading(false); // Turn off loading
@@ -50,7 +50,7 @@ const SideBarExpense = () => {
         <div className="inline-flex w-[70%]">
           <button
             onClick={() => navigate(navVars.ADD_EXPENSE)}
-            className="w-full rounded-md bg-travel px-4 py-1 text-[white]"
+            className="bg-travel w-full rounded-md px-4 py-1 text-[white]"
           >
             Add Expence
           </button>

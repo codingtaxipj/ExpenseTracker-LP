@@ -1,5 +1,5 @@
 import { body, validationResult } from "express-validator";
-const formIncomeExpenseValidation = [
+const expenseFormValidation = [
   body("entryDate")
     .notEmpty()
     .withMessage("entryDate is required")
@@ -48,4 +48,4 @@ const formIncomeExpenseValidation = [
   },
 ];
 
-export { formIncomeExpenseValidation };
+export { expenseFormValidation };

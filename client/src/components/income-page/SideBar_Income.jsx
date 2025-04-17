@@ -12,15 +12,15 @@ const SideBarExpense = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8080/api/get-income-category-totalspend")
+      .get("http://127.0.0.1:8080/expense/get-income-prime-max")
       .then((response) => {
         const totalSum = response.data.reduce(
-          (sum, item) => sum + item.totalExpenseAmount,
+          (sum, item) => sum + item.categoryTotal,
           0,
         );
         setMaxIncome(totalSum);
         const top10entries = response.data
-          .sort((a, b) => b.totalExpenseAmount - a.totalExpenseAmount)
+          .sort((a, b) => b.categoryTotal - a.categoryTotal)
           .slice(0, 10);
         setEntries(top10entries);
         setLoading(false); // Turn off loading
@@ -51,7 +51,7 @@ const SideBarExpense = () => {
         <div className="inline-flex w-[70%]">
           <button
             onClick={() => navigate(navVars.ADD_INCOME)}
-            className="w-full rounded-md bg-income px-4 py-1 text-[white]"
+            className="bg-income w-full rounded-md px-4 py-1 text-[white]"
           >
             Add Income
           </button>

@@ -47,5 +47,5 @@ const formSchema = new Schema(
 );
 
 const mainDB = await mongoConnectDB("expense-db");
-const formIncomeExpenseModal = mainDB.model("default-user", formSchema);
-export { formIncomeExpenseModal };
+const expenseModal = mainDB.model("default-user", formSchema);
+export { expenseModal };

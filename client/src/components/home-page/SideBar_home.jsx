@@ -17,21 +17,20 @@ const SideBar_home = () => {
   const [maxIncome, setMaxIncome] = useState(0);
   const navigate = useNavigate();
 
-  
-
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8080/api/get-expense-category-totalspend")
+      .get("http://127.0.0.1:8080/expense/get-expense-prime-max")
       .then((response) => {
         const totalSum = response.data.reduce(
-          (sum, item) => sum + item.totalExpenseAmount,
+          (sum, item) => sum + item.categoryTotal,
           0,
         );
+
         setMaxExpense(totalSum);
-        const top5entries = response.data
-          .sort((a, b) => b.totalExpenseAmount - a.totalExpenseAmount)
-          .slice(0, 5);
-        setEntriesExpense(top5entries); // Set fetched data to state
+        const top10entries = response.data
+          .sort((a, b) => b.categoryTotal - a.categoryTotal)
+          .slice(0, 10);
+        setEntriesExpense(top10entries); // Set fetched data to state
         setLoadingExpense(false); // Turn off loading
       })
       .catch((err) => {
@@ -39,19 +38,20 @@ const SideBar_home = () => {
         setLoadingExpense(false); // Turn off loading
       });
   }, []);
+
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8080/api/get-income-category-totalspend")
+      .get("http://127.0.0.1:8080/expense/get-income-prime-max")
       .then((response) => {
         const totalSum = response.data.reduce(
-          (sum, item) => sum + item.totalExpenseAmount,
+          (sum, item) => sum + item.categoryTotal,
           0,
         );
         setMaxIncome(totalSum);
-        const top5entries = response.data
-          .sort((a, b) => b.totalExpenseAmount - a.totalExpenseAmount)
-          .slice(0, 5);
-        setEntriesIncome(top5entries); // Set fetched data to state
+        const top10entries = response.data
+          .sort((a, b) => b.categoryTotal - a.categoryTotal)
+          .slice(0, 10);
+        setEntriesIncome(top10entries);
         setLoadingIncome(false); // Turn off loading
       })
       .catch((err) => {
@@ -70,9 +70,7 @@ const SideBar_home = () => {
         )}
         {entriesExpense.length > 0 && (
           <>
-            <div className="font-pop-m flex w-[70%] flex-col gap-2 text-[15px] text-black">
-             
-            </div>
+            <div className="font-pop-m flex w-[70%] flex-col gap-2 text-[15px] text-black"></div>
             <SideBar
               sidebar_title={"How much you spent ?"}
               sidebar_for={navVars.EXPENSE}
@@ -90,7 +88,7 @@ const SideBar_home = () => {
         {entriesIncome.length > 0 && (
           <>
             <SideBar
-              sidebar_title={"How much you spent ?"}
+              sidebar_title={"How much you earned ?"}
               sidebar_for={navVars.INCOME}
               incomingData={entriesIncome}
               totalSum={maxIncome}

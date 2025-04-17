@@ -1,9 +1,9 @@
 import moment from "moment";
 import capitalize from "capitalize";
-import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 // global variables
 import { navVars } from "../../global/global-variables";
 import { expenseCategories } from "@/global/icon-data";
@@ -28,7 +28,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios from "axios";
 
 const Form = ({ formToDisplay }) => {
   //page navigation
@@ -128,7 +127,7 @@ const Form = ({ formToDisplay }) => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8080/form/add-data",
+        "http://127.0.0.1:8080/expense/add-data",
         data,
       );
       alert(response.data.message);
@@ -432,10 +431,6 @@ const Form = ({ formToDisplay }) => {
       </div>
     </>
   );
-};
-
-Form.propTypes = {
-  formToDisplay: PropTypes.string,
 };
 
 export default Form;

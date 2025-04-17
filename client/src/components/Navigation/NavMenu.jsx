@@ -49,16 +49,11 @@ function Dashboard({ activeBtn, children }) {
             >
               Income
             </button>
-            <button className={setStyle(navVars.INCOME)}>Trip Expenses</button>
-            <button className={setStyle(navVars.INCOME)}>Accounts</button>
-            <button className={setStyle(navVars.INCOME)}>Graphical Data</button>
-            <button className={setStyle(navVars.INCOME)}>Analysis</button>
-            <button
-              onClick={() => navigate("/" + navVars.ALL_CATEGORIES)}
-              className={setStyle(navVars.ALL_CATEGORIES)}
-            >
-              All Categories
-            </button>
+            <button className={setStyle()}>Trip Expenses</button>
+            <button className={setStyle()}>Accounts</button>
+            <button className={setStyle()}>Graphical Data</button>
+            <button className={setStyle()}>Analysis</button>
+
             <button
               onClick={() => navigate("/" + navVars.POPUP_VIEW)}
               className={setStyle(navVars.POPUP_VIEW)}
@@ -74,7 +69,7 @@ function Dashboard({ activeBtn, children }) {
           </div>
 
           <div className="flex flex-col">
-            <button className={setStyle(navVars.INCOME)}>Trip Expenses</button>
+            <button className={setStyle()}>Trip Expenses</button>
           </div>
         </div>
         <div className="flex h-auto w-full flex-col bg-[red]">
