@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 
 import Sidebar_Dashboard from "../components/home-page/SideBar_home";
 
-const HOME = () => {
+const Home = () => {
   return (
     <>
       <NavMenu activeBtn={navVars.HOME}>
@@ -17,4 +17,4 @@ const HOME = () => {
   );
 };
 
-export default HOME;
+export default Home;
