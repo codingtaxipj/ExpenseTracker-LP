@@ -18,6 +18,16 @@ const formController = async (req, res, next) => {
   next();
 };
 
+const fetchAllData = async (req, res) => {
+  try {
+    const data = await expenseModal.find();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed Fetch All Data" });
+  }
+};
+
 const fetchExpenseData = async (req, res) => {
   try {
     const data = await expenseModal.find({ isFormExpense: true });
@@ -106,6 +116,7 @@ export {
   fetchMaxExpenseSub,
   fetchMaxIncomePrime,
   fetchMaxIncomeSub,
+  fetchAllData,
 };
 
 /* 

@@ -10,6 +10,7 @@ import {
   fetchIncomeData,
   fetchMaxExpensePrime,
   fetchMaxIncomePrime,
+  fetchAllData,
 } from "../controllers/expense-DataController.js";
 
 const expenseRouter = express.Router();
@@ -20,6 +21,8 @@ expenseRouter.post(
   updateSubMax,
   updatePrimeMax
 );
+
+expenseRouter.get("/get-data", fetchAllData);
 
 expenseRouter.get("/get-expesne-data", fetchExpenseData);
 expenseRouter.get("/get-expense-prime-max", fetchMaxExpensePrime);
