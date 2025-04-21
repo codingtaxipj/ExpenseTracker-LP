@@ -1,12 +1,10 @@
-import SideBar from "../SideBar";
-import { useNavigate } from "react-router";
-import { navVars } from "../../global/global-variables";
+import SideBar from "@/components/SideBar";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "@/router/routerConfig";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-import { PiTagSimpleFill } from "react-icons/pi";
-
-const SideBar_home = () => {
+const SideBarHome = () => {
   const [entriesExpense, setEntriesExpense] = useState([]); // State to hold fetched data
   const [loadingExpense, setLoadingExpense] = useState(true); // Loading state
   const [errorExpense, setErrorExpense] = useState(null);
@@ -73,7 +71,7 @@ const SideBar_home = () => {
             <div className="font-pop-m flex w-[70%] flex-col gap-2 text-[15px] text-black"></div>
             <SideBar
               sidebar_title={"How much you spent ?"}
-              sidebar_for={navVars.EXPENSE}
+              sidebar_for={PATH.expense}
               incomingData={entriesExpense}
               totalSum={maxExpense}
             />
@@ -89,7 +87,7 @@ const SideBar_home = () => {
           <>
             <SideBar
               sidebar_title={"How much you earned ?"}
-              sidebar_for={navVars.INCOME}
+              sidebar_for={PATH.income}
               incomingData={entriesIncome}
               totalSum={maxIncome}
             />
@@ -98,13 +96,13 @@ const SideBar_home = () => {
 
         <div className="inline-flex justify-center gap-5">
           <button
-            onClick={() => navigate(navVars.ADD_EXPENSE)}
+            onClick={() => navigate(PATH.addExpense)}
             className="bg-travel rounded-md px-4 py-1 text-[white]"
           >
             Add Expence
           </button>
           <button
-            onClick={() => navigate(navVars.ADD_INCOME)}
+            onClick={() => navigate(PATH.addIncome)}
             className="bg-income rounded-md px-4 py-1 text-[white]"
           >
             Add Income
@@ -115,4 +113,4 @@ const SideBar_home = () => {
   );
 };
 
-export default SideBar_home;
+export default SideBarHome;

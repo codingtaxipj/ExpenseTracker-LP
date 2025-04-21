@@ -1,11 +1,11 @@
-import SideBarIncome from "../components/income-page/SideBar_Income";
-import NavMenu from "../components/Navigation/NavMenu";
-import { navVars } from "../global/global-variables";
-import { Outlet } from "react-router";
+import { PATH } from "@/router/routerConfig";
+import NavMenu from "@/components/Navigation/NavMenu";
+import { Outlet } from "react-router-dom";
+import SideBarIncome from "@/pages/income/SideBarIncome";
 const Expense = () => {
   return (
     <>
-      <NavMenu activeBtn={navVars.INCOME}>
+      <NavMenu activeBtn={PATH.income}>
         <div className="relative flex h-full flex-row">
           <Outlet />
           <SideBarIncome />

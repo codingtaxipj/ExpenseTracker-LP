@@ -1,11 +1,11 @@
-import SideBarExpense from "../components/expense-page/SideBar_Expense";
-import NavMenu from "../components/Navigation/NavMenu";
-import { navVars } from "../global/global-variables";
-import { Outlet } from "react-router";
+import SideBarExpense from "@/pages/expense/SideBarExpense";
+import NavMenu from "@/components/Navigation/NavMenu";
+import { PATH } from "@/router/routerConfig";
+import { Outlet } from "react-router-dom";
 const Expense = () => {
   return (
     <>
-      <NavMenu activeBtn={navVars.EXPENSE}>
+      <NavMenu activeBtn={PATH.expense}>
         <div className="relative flex h-full flex-row">
           <Outlet />
           <SideBarExpense />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import IconsUsed from "../IconsUsed";
+import IconsUsed from "@/components/IconsUsed";
 import moment from "moment";
 
 //react-icons

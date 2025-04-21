@@ -6,7 +6,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDeleteForever } from "react-icons/md";
 import { RiPencilFill } from "react-icons/ri";
 
-import IconsUsed from "../IconsUsed";
+import IconsUsed from "@/components/IconsUsed";
 import moment from "moment";
 
 //Shacdn-UI
@@ -175,7 +175,7 @@ const ExpenseIndex = () => {
                               <BsThreeDotsVertical />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                            <DropdownMenuItem>
+                              <DropdownMenuItem>
                                 <button className="flex w-full items-center">
                                   <span className="flex-grow text-left">
                                     view

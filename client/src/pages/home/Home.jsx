@@ -1,16 +1,15 @@
-import NavMenu from "../components/Navigation/NavMenu";
-import { navVars } from "../global/global-variables";
-import { Outlet } from "react-router";
-
-import Sidebar_Dashboard from "../components/home-page/SideBar_home";
+import NavMenu from "@/components/Navigation/NavMenu";
+import { Outlet } from "react-router-dom";
+import SideBarHome from "@/pages/home/SideBarHome";
+import { PATH } from "@/router/routerConfig";
 
 const Home = () => {
   return (
     <>
-      <NavMenu activeBtn={navVars.HOME}>
+      <NavMenu activeBtn={PATH.home}>
         <div className="flex h-full flex-row">
           <Outlet />
-          <Sidebar_Dashboard></Sidebar_Dashboard>
+          <SideBarHome />
         </div>
       </NavMenu>
     </>

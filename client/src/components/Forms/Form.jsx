@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 // global variables
-import { navVars } from "../../global/global-variables";
+import { PATH } from "@/router/routerConfig";
 import { expenseCategories } from "@/global/icon-data";
 //React-icons
 import { PiTagSimpleFill } from "react-icons/pi";
@@ -47,12 +47,12 @@ const Form = ({ formToDisplay }) => {
   };
   const navigateToIncome = () => {
     const Path = desegmentPath();
-    const incomePath = Path + "/" + navVars.ADD_INCOME;
+    const incomePath = Path + "/" + PATH.addIncome;
     navigate(incomePath);
   };
   const navigateToExpense = () => {
     const Path = desegmentPath();
-    const incomePath = Path + "/" + navVars.ADD_EXPENSE;
+    const incomePath = Path + "/" + PATH.addExpense;
     navigate(incomePath);
   };
 
@@ -113,7 +113,7 @@ const Form = ({ formToDisplay }) => {
     defaultValues: {
       formTimeStamp: moment().format(),
       entryDate: moment().format(),
-      isFormExpense: formToDisplay === navVars.ADD_INCOME ? false : true,
+      isFormExpense: formToDisplay === PATH.addIncome ? false : true,
     },
   });
   //NOTE : form handle submit function
@@ -154,7 +154,7 @@ const Form = ({ formToDisplay }) => {
               onClick={() => navigateToExpense()}
               type="button"
               className={
-                formToDisplay === navVars.ADD_EXPENSE
+                formToDisplay === PATH.addExpense
                   ? "bg-expense w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                   : "hover:bg-expense w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
@@ -165,7 +165,7 @@ const Form = ({ formToDisplay }) => {
               onClick={() => navigateToIncome()}
               type="button"
               className={
-                formToDisplay === navVars.ADD_INCOME
+                formToDisplay === PATH.addIncome
                   ? "bg-income w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                   : "hover:bg-income w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
@@ -301,11 +301,11 @@ const Form = ({ formToDisplay }) => {
                 <SelectValue placeholder="Select a value..." />
               </SelectTrigger>
               <SelectContent>
-                {formToDisplay === navVars.ADD_INCOME && (
+                {formToDisplay === PATH.addIncome && (
                   <SelectItem value="Income">Income</SelectItem>
                 )}
 
-                {formToDisplay === navVars.ADD_EXPENSE &&
+                {formToDisplay === PATH.addExpense &&
                   primeCategoriesVals.map((value) => (
                     <SelectItem key={value} value={value}>
                       {value}
@@ -355,7 +355,7 @@ const Form = ({ formToDisplay }) => {
                         });
                       }}
                       className={
-                        formToDisplay === navVars.ADD_EXPENSE
+                        formToDisplay === PATH.addExpense
                           ? selectedSubCats === buttons
                             ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                             : "hover:bg-expense cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
@@ -408,7 +408,7 @@ const Form = ({ formToDisplay }) => {
             <button
               type="submit"
               className={
-                formToDisplay === navVars.ADD_EXPENSE
+                formToDisplay === PATH.addExpense
                   ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                   : "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }

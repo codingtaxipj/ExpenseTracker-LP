@@ -1,6 +1,6 @@
-import TypewriterAni from "../TypewriterAni";
+import TypewriterAni from "../../components/TypewriterAni";
 
-const Home_Index = () => {
+const HomeIndex = () => {
   return (
     <>
       <div className="w-[70%] overflow-y-scroll rounded-[20px] bg-white px-[4rem] py-[2.5rem]">
@@ -23,4 +23,4 @@ const Home_Index = () => {
   );
 };
 
-export default Home_Index;
+export default HomeIndex;

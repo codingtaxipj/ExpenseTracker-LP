@@ -1,6 +1,5 @@
-import { navVars } from "../../global/global-variables";
-import { useNavigate } from "react-router";
-import PropTypes from "prop-types";
+import { PATH } from "@/router/routerConfig";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { PiTagSimpleFill } from "react-icons/pi";
 
@@ -31,45 +30,24 @@ function Dashboard({ activeBtn, children }) {
           </div>
           <div className="font-pop-b flex grow flex-col border-y-1 py-[2rem] text-[#979797]">
             <button
-              onClick={() => navigate("/" + navVars.HOME)}
+              onClick={() => navigate(PATH.home)}
               autoFocus
-              className={setStyle(navVars.HOME)}
+              className={setStyle(PATH.home)}
             >
               Dashboard
             </button>
             <button
-              onClick={() => navigate("/" + navVars.EXPENSE)}
-              className={setStyle(navVars.EXPENSE)}
+              onClick={() => navigate(PATH.expense)}
+              className={setStyle(PATH.expense)}
             >
               Expenses
             </button>
             <button
-              onClick={() => navigate("/" + navVars.INCOME)}
-              className={setStyle(navVars.INCOME)}
+              onClick={() => navigate(PATH.income)}
+              className={setStyle(PATH.income)}
             >
               Income
             </button>
-            <button className={setStyle()}>Trip Expenses</button>
-            <button className={setStyle()}>Accounts</button>
-            <button className={setStyle()}>Graphical Data</button>
-            <button className={setStyle()}>Analysis</button>
-
-            <button
-              onClick={() => navigate("/" + navVars.POPUP_VIEW)}
-              className={setStyle(navVars.POPUP_VIEW)}
-            >
-              Popup
-            </button>
-            <button
-              onClick={() => navigate("/" + navVars.ELEMENTS)}
-              className={setStyle(navVars.ELEMENTS)}
-            >
-              Elements
-            </button>
-          </div>
-
-          <div className="flex flex-col">
-            <button className={setStyle()}>Trip Expenses</button>
           </div>
         </div>
         <div className="flex h-auto w-full flex-col bg-[red]">
@@ -93,7 +71,3 @@ function Dashboard({ activeBtn, children }) {
   );
 }
 export default Dashboard;
-Dashboard.propTypes = {
-  activeBtn: PropTypes.string,
-  children: PropTypes.node,
-};
