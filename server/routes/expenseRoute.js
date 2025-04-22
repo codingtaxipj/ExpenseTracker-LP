@@ -6,10 +6,6 @@ import {
 } from "../middlewares/update-Max-Expense.js";
 import {
   formController,
-  fetchExpenseData,
-  fetchIncomeData,
-  fetchMaxExpensePrime,
-  fetchMaxIncomePrime,
   fetchAllData,
   fetchMaxData,
 } from "../controllers/expense-DataController.js";
@@ -25,11 +21,5 @@ expenseRouter.post(
 
 expenseRouter.get("/get-data", fetchAllData);
 expenseRouter.get("/get-max-data", fetchMaxData);
-
-expenseRouter.get("/get-expesne-data", fetchExpenseData);
-expenseRouter.get("/get-expense-prime-max", fetchMaxExpensePrime);
-
-expenseRouter.get("/get-income-data", fetchIncomeData);
-expenseRouter.get("/get-income-prime-max", fetchMaxIncomePrime);
 
 export { expenseRouter };
