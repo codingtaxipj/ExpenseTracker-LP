@@ -27,6 +27,15 @@ const fetchAllData = async (req, res) => {
     return res.status(500).json({ message: "Failed Fetch All Data" });
   }
 };
+const fetchMaxData = async (req, res) => {
+  try {
+    const data = await maxExpenseModal.find();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed Fetch All Data" });
+  }
+};
 
 const fetchExpenseData = async (req, res) => {
   try {
@@ -117,6 +126,7 @@ export {
   fetchMaxIncomePrime,
   fetchMaxIncomeSub,
   fetchAllData,
+  fetchMaxData,
 };
 
 /* 

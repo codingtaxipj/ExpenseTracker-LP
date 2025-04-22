@@ -1,6 +1,6 @@
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { PiTagSimpleFill } from "react-icons/pi";
-import { navVars } from "../global/global-variables";
+import { PATH } from "@/router/routerConfig";
 
 const SideBar = ({ sidebar_title, incomingData, totalSum, sidebar_for }) => {
   const spendBar = (inputAmount) => {
@@ -16,7 +16,7 @@ const SideBar = ({ sidebar_title, incomingData, totalSum, sidebar_for }) => {
         <h6 className="font-pop-sb inline-flex items-center gap-2 text-[16px] text-black">
           <PiTagSimpleFill
             className={
-              sidebar_for === navVars.EXPENSE ? "text-travel" : "text-income"
+              sidebar_for === PATH.expense ? "text-travel" : "text-income"
             }
           />
           {sidebar_title}
@@ -33,7 +33,7 @@ const SideBar = ({ sidebar_title, incomingData, totalSum, sidebar_for }) => {
               <div
                 style={spendBar(data.categoryTotal)}
                 className={
-                  sidebar_for === navVars.EXPENSE
+                  sidebar_for === PATH.expense
                     ? "bg-travel h-full rounded-full"
                     : "bg-income h-full rounded-full"
                 }

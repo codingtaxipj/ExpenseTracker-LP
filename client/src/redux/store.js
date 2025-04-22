@@ -1,10 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../redux/slices/authUser.js";
-import expenseReducer from '@/redux/slices/userExpenseData.js'
+import getExpenseReducer from "@/redux/slices/getExpense.js";
+import getMaxExpenseReducer from "@/redux/slices/getMaxExpense.js";
+import filterExpenseReducer from "@/redux/slices/filterExpense.js";
+import filterMaxExpenseReducer from "@/redux/slices/filterMaxExpense.js";
 
 export const store = configureStore({
   reducer: {
     user: authReducer,
-    expense : expenseReducer,
+    expense: getExpenseReducer,
+    maxExpense: getMaxExpenseReducer,
+    filterExpense: filterExpenseReducer,
+    filterMaxExpense: filterMaxExpenseReducer,
   },
 });

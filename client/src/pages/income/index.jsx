@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import IconsUsed from "@/components/IconsUsed";
 import moment from "moment";
 
@@ -32,11 +31,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IoMdEye } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { filterIncomeData } from "@/redux/slices/filterExpense.js";
 
 const IncomeIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
 
   //Pagination
   const ITEMS_PER_PAGE = 10;
@@ -47,27 +47,26 @@ const IncomeIndex = () => {
   const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   const emptyRows = ITEMS_PER_PAGE - currentPageItems.length;
 
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.filterExpense.incomeData);
+  console.log(data);
+
   useEffect(() => {
-    // Fetch data on component mount
-    axios
-      .get("http://127.0.0.1:8080/expense/get-income-data") // Replace with your API URL
-      .then((response) => {
-        setEntries(response.data); // Set fetched data to state
-        setLoading(false); // Turn off loading
-      })
-      .catch((err) => {
-        setError(err.message); // Handle error
-        setLoading(false); // Turn off loading
-      });
-  }, []);
+    dispatch(filterIncomeData());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (data !== null) {
+      setEntries(data);
+      setLoading(false);
+    }
+  }, [data]);
 
   return (
     <>
       <div className="w-[70%] rounded-[20px] bg-white px-[4rem] py-[2.5rem]">
         {loading && <p>Loading...</p>}
-        {error && <p>Error: {error}</p>}
-        {entries.length === 0 && !error && !loading && <p>Database is Empty</p>}
-        {entries.length > 0 && (
+        {!loading && (
           <>
             <div className="flex gap-5 pb-2">
               <div className="mb-3 flex w-1/2 flex-col gap-1 rounded-[12px] border-[0.5px] border-[#dcdcdc] bg-[#f3f3f3] px-6 py-4">
@@ -134,81 +133,76 @@ const IncomeIndex = () => {
                 </TableHeader>
                 <TableBody>
                   {currentPageItems.map((data) => (
-                    <>
-                      <TableRow className="h-14">
-                        <TableCell className="w-0">
-                          <div className="bg-income flex w-fit items-center justify-center rounded-full p-2 text-[20px] text-white">
-                            <IconsUsed icon={data.subCategory} />
-                          </div>
-                        </TableCell>
-                        <TableCell className="w-0 pr-5">
-                          {" "}
-                          {data.subCategory}
-                        </TableCell>
-                        <TableCell className="w-0 pr-5">
-                          {" "}
-                          {data.primeCategory}
-                        </TableCell>
-                        <TableCell className="w-0 pr-5">
-                          {moment(data.entryDate).format("DD/MM/yyy")}
-                        </TableCell>
-                        <TableCell>{data.title}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="inline-flex items-center justify-end">
-                            <span>
-                              <FaIndianRupeeSign />
-                            </span>
-                            {data.amount}
-                          </div>
-                        </TableCell>
-                        <TableCell className="w-0 px-2">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md hover:bg-[#ebebeb]">
-                              <BsThreeDotsVertical />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <DropdownMenuItem>
-                                <button className="flex w-full items-center">
-                                  <span className="flex-grow text-left">
-                                    view
-                                  </span>
-                                  <span>
-                                    <IoMdEye className="size-5" />
-                                  </span>
-                                </button>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <button className="flex w-full items-center">
-                                  <span className="flex-grow text-left">
-                                    edit
-                                  </span>
-                                  <span>
-                                    <RiPencilFill className="size-5" />
-                                  </span>
-                                </button>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <button className="flex w-full items-center">
-                                  <span className="flex-grow text-left">
-                                    delete
-                                  </span>
-                                  <span>
-                                    <MdDeleteForever className="size-5" />
-                                  </span>
-                                </button>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      {/* Empty rows to maintain height */}
-                      {Array.from({ length: emptyRows }).map((_, idx) => (
-                        <TableRow
-                          key={`empty-${idx}`}
-                          className="h-14"
-                        ></TableRow>
-                      ))}
-                    </>
+                    <TableRow key={data._id} className="h-14">
+                      <TableCell className="w-0">
+                        <div className="bg-income flex w-fit items-center justify-center rounded-full p-2 text-[20px] text-white">
+                          <IconsUsed icon={data.subCategory} />
+                        </div>
+                      </TableCell>
+                      <TableCell className="w-0 pr-5">
+                        {" "}
+                        {data.subCategory}
+                      </TableCell>
+                      <TableCell className="w-0 pr-5">
+                        {" "}
+                        {data.primeCategory}
+                      </TableCell>
+                      <TableCell className="w-0 pr-5">
+                        {moment(data.entryDate).format("DD/MM/yyy")}
+                      </TableCell>
+                      <TableCell>{data.title}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="inline-flex items-center justify-end">
+                          <span>
+                            <FaIndianRupeeSign />
+                          </span>
+                          {data.amount}
+                        </div>
+                      </TableCell>
+                      <TableCell className="w-0 px-2">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md hover:bg-[#ebebeb]">
+                            <BsThreeDotsVertical />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem>
+                              <button className="flex w-full items-center">
+                                <span className="flex-grow text-left">
+                                  view
+                                </span>
+                                <span>
+                                  <IoMdEye className="size-5" />
+                                </span>
+                              </button>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <button className="flex w-full items-center">
+                                <span className="flex-grow text-left">
+                                  edit
+                                </span>
+                                <span>
+                                  <RiPencilFill className="size-5" />
+                                </span>
+                              </button>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <button className="flex w-full items-center">
+                                <span className="flex-grow text-left">
+                                  delete
+                                </span>
+                                <span>
+                                  <MdDeleteForever className="size-5" />
+                                </span>
+                              </button>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {/* Empty rows to maintain height */}
+                  {Array.from({ length: emptyRows }).map((_, idx) => (
+                    <TableRow key={`empty-${idx}`} className="h-14"></TableRow>
                   ))}
                 </TableBody>
               </Table>

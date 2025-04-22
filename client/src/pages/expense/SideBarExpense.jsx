@@ -1,43 +1,36 @@
 import SideBar from "@/components/SideBar";
+import { filterMaxExpensePrime } from "@/redux/slices/filterMaxExpense";
 import { PATH } from "@/router/routerConfig";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const SideBarExpense = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null);
   const [maxExpense, setMaxExpense] = useState(0);
   const navigate = useNavigate();
-  useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8080/expense/get-expense-prime-max")
-      .then((response) => {
-        const totalSum = response.data.reduce(
-          (sum, item) => sum + item.categoryTotal,
-          0,
-        );
 
-        setMaxExpense(totalSum);
-        const top10entries = response.data
-          .sort((a, b) => b.categoryTotal - a.categoryTotal)
-          .slice(0, 10);
-        setEntries(top10entries); // Set fetched data to state
-        setLoading(false); // Turn off loading
-      })
-      .catch((err) => {
-        setError(err.message); // Handle error
-        setLoading(false); // Turn off loading
-      });
-  }, []);
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.filterMaxExpense.maxExpensePrime);
+
+  useEffect(() => {
+    dispatch(filterMaxExpensePrime());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (data !== null) {
+      setEntries(data);
+      setLoading(false);
+      const totalSum = data.reduce((sum, item) => sum + item.categoryTotal, 0);
+      setMaxExpense(totalSum);
+    }
+  }, [data]);
 
   return (
     <>
       <div className="flex h-full w-[30%] flex-col items-center justify-center gap-10 rounded-r-[20px] bg-[#f3f4f6]">
         {loading && <p>Loading...</p>}
-        {error && <p>Error: {error}</p>}
-        {entries.length === 0 && !error && !loading && <p>Database is Empty</p>}
-        {entries.length > 0 && (
+        {!loading && (
           <>
             <SideBar
               sidebar_title={"How much you spent ?"}
