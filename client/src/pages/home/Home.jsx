@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllData } from "@/redux/slices/getExpense.js";
 import { useEffect, useState } from "react";
 import { fetchMaxData } from "@/redux/slices/getMaxExpense";
-import {
-  setExpenseData,
-} from "@/redux/slices/filterExpense";
 import { setMaxExpenseData } from "@/redux/slices/filterMaxExpense";
+import {
+  configExpenseData,
+  fetchCurrentMonthExpense,
+  filterExpenseData,
+} from "@/redux/slices/configExpense";
 
 const Home = () => {
   const [loading, setLoading] = useState(true); // Loading state
@@ -25,11 +27,19 @@ const Home = () => {
 
   useEffect(() => {
     if (formData !== null && maxFormData !== null) {
-      dispatch(setExpenseData(formData));
+      dispatch(configExpenseData(formData));
       dispatch(setMaxExpenseData(maxFormData));
+      dispatch(filterExpenseData());
+
       setLoading(false);
     }
   }, [formData, maxFormData, dispatch]);
+  const xp = useSelector((state) => state.configExpense.dataExpense);
+  console.log(xp);
+
+  /*  dispatch(filterExpenseData());
+  const xp = dispatch(fetchCurrentMonthExpense());
+  console.log(xp); */
 
   return (
     <>

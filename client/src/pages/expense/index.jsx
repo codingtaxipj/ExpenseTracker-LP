@@ -31,8 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IoMdEye } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
-import { filterExpenseData } from "@/redux/slices/filterExpense";
+import { useSelector } from "react-redux";
 
 const ExpenseIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
@@ -47,12 +46,7 @@ const ExpenseIndex = () => {
   const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   const emptyRows = ITEMS_PER_PAGE - currentPageItems.length;
 
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.filterExpense.expenseData);
-
-  useEffect(() => {
-    dispatch(filterExpenseData());
-  }, [dispatch]);
+  const data = useSelector((state) => state.configExpense.dataExpense);
 
   useEffect(() => {
     if (data !== null) {
