@@ -14,6 +14,6 @@ export const useQueryToFetch = () =>{
         console.log(data);
         
         if (!isLoading) return data ;
-}
+        }
 
 export const useQueryToUpdate = () =>{}
