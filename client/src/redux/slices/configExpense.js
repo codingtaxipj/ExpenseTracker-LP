@@ -4,6 +4,7 @@ import moment from "moment";
 const initialState = {
   data: null,
   dataExpense: null,
+  dataIncome: null,
 };
 
 const currMonth = moment().month();
@@ -31,10 +32,9 @@ const configExpense = createSlice({
     },
     /* NOTE: get only Expense data entries */
     filterIncomeData: (state) => {
-      const IncData = state.data.filter(
+      state.dataIncome = state.data.filter(
         (items) => items.isFormExpense === false,
       );
-      return IncData;
     },
 
     /* NOTE: get only current week Expense data entries */

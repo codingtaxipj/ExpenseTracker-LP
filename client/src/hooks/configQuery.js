@@ -1,10 +1,9 @@
-import {} from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useQueryToFetch = () => {
   const fetchData = async () => {
-    const response = await axios.get("http://localhost:8080/expense/get-data");
+    const response = await axios.get("http://127.0.0.1:8080/expense/get-data");
     return response.data;
   };
 

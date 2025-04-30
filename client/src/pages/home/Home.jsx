@@ -9,8 +9,8 @@ import { fetchMaxData } from "@/redux/slices/getMaxExpense";
 import { setMaxExpenseData } from "@/redux/slices/filterMaxExpense";
 import {
   configExpenseData,
-  fetchCurrentMonthExpense,
   filterExpenseData,
+  filterIncomeData,
 } from "@/redux/slices/configExpense";
 
 const Home = () => {
@@ -30,12 +30,11 @@ const Home = () => {
       dispatch(configExpenseData(formData));
       dispatch(setMaxExpenseData(maxFormData));
       dispatch(filterExpenseData());
+      dispatch(filterIncomeData());
 
       setLoading(false);
     }
   }, [formData, maxFormData, dispatch]);
-  const xp = useSelector((state) => state.configExpense.dataExpense);
-  console.log(xp);
 
   /*  dispatch(filterExpenseData());
   const xp = dispatch(fetchCurrentMonthExpense());
