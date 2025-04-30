@@ -24,13 +24,13 @@ const configExpense = createSlice({
       state.data = action.payload;
     },
 
-    /* NOTE: get only Income data entries */
+    /* NOTE: get only Expense data entries */
     filterExpenseData: (state) => {
       state.dataExpense = state.data.filter(
         (items) => items.isFormExpense === true,
       );
     },
-    /* NOTE: get only Expense data entries */
+    /* NOTE: get only Income data entries */
     filterIncomeData: (state) => {
       state.dataIncome = state.data.filter(
         (items) => items.isFormExpense === false,
@@ -51,12 +51,10 @@ const configExpense = createSlice({
     /* NOTE: get only current month Expense data entries */
     fetchCurrentMonthExpense: () => {
       const data = filterExpenseData();
-      console.log(data);
-
-      /* const monthData = data.filter(
+      const monthData = data.filter(
         (items) => moment(items.entryDate).month() === currMonth,
       );
-      return monthData; */
+      return monthData;
     },
     /* NOTE: get current Month Total Expenses */
     fetchTotalExpenseCurrentMonth: () => {
