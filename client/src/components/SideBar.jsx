@@ -1,6 +1,7 @@
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { PiTagSimpleFill } from "react-icons/pi";
 import { PATH } from "@/router/routerConfig";
+import { FaChartBar } from "react-icons/fa";
 
 const SideBar = ({ sidebar_title, incomingData, totalSum, sidebar_for }) => {
   const spendBar = (inputAmount) => {
@@ -12,24 +13,20 @@ const SideBar = ({ sidebar_title, incomingData, totalSum, sidebar_for }) => {
 
   return (
     <>
-      <div className="flex w-[70%] flex-col">
-        <h6 className="font-pop-sb inline-flex items-center gap-2 text-[16px] text-black">
-          <PiTagSimpleFill
-            className={
-              sidebar_for === PATH.expense ? "text-travel" : "text-income"
-            }
-          />
+      <div className="flex flex-col gap-4 ">
+        <h6 className="flex items-center gap-2 text-base font-medium">
+          <FaChartBar />
           {sidebar_title}
         </h6>
         {incomingData.map((data) => (
-          <div key={data._id}>
-            <div className="font-pop-m flex grow flex-row gap-2 pt-4 pb-1 text-[14px]">
+          <div key={data._id} className="text-sm">
+            <div className="flex gap-2 pb-1">
               <p className="w-full">{data.categoryName}</p>
-              <p className="font-pop-sb flex items-center text-right">
+              <p className="flex items-center">
                 <FaIndianRupeeSign /> <span>{data.categoryTotal}</span>
               </p>
             </div>
-            <div className="h-1.5 w-[100%] rounded-full bg-[#d1d5db]">
+            <div className="h-1.25 w-full rounded-full bg-[#ffffff]">
               <div
                 style={spendBar(data.categoryTotal)}
                 className={

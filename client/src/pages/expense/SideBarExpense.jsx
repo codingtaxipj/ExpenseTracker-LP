@@ -28,7 +28,7 @@ const SideBarExpense = () => {
 
   return (
     <>
-      <div className="flex h-full w-[30%] flex-col items-center justify-center gap-10 rounded-r-[20px] bg-[#f3f4f6]">
+      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-6 px-10 text-white">
         {loading && <p>Loading...</p>}
         {!loading && (
           <>
@@ -40,10 +40,10 @@ const SideBarExpense = () => {
             />
           </>
         )}
-        <div className="inline-flex w-[70%]">
+        <div className="">
           <button
             onClick={() => navigate(PATH.addExpense)}
-            className="bg-travel w-full rounded-md px-4 py-1 text-[white]"
+            className="bg-travel w-full rounded-md px-4 py-1"
           >
             Add Expence
           </button>

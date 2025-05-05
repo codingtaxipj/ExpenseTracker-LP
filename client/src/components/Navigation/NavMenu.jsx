@@ -2,69 +2,96 @@ import { PATH } from "@/router/routerConfig";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { PiTagSimpleFill } from "react-icons/pi";
+import { MdSpaceDashboard } from "react-icons/md";
+import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import {
+  FaCalendarDay,
+  FaCalendarWeek,
+  FaMapPin,
+  FaUser,
+} from "react-icons/fa";
+import { IoIosMail } from "react-icons/io";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
 
   function setStyle(toSet) {
-    let baseStyle = "w-full py-2 text-left text-[24px] font-medium outline-0";
+    let baseStyle =
+      "flex w-full items-center gap-2.5 rounded-md px-2 py-1  text-base ";
     if (activeBtn === toSet)
-      return baseStyle + " " + "rounded-l-[12px] bg-[white] px-5 text-[black]";
-    else
-      return (
-        baseStyle + " " + "text-slate-600 px-2 hover:px-5 hover:text-[white]"
-      );
+      return baseStyle + " " + "text-black bg-white font-normal";
+    else return baseStyle + " " + "hover:bg-[#2c2c2c] font-medium";
   }
   const currentDate = moment().format("Do MMMM YYYY");
   const currentWeek = moment().week();
 
   return (
     <>
-      <div className="flex-screen flex h-screen w-full overflow-hidden bg-[black]">
-        <div className="flex w-[22rem] flex-col">
-          <div className="flex flex-col items-start py-[2.5rem] text-[white]">
-            <div className="bg-pupl mb-5 size-[4rem] rounded-[12px]"></div>
-            <p className="font-pop-m pb-1 text-[18px]">codingtaxipj</p>
-            <p className="font-pop-r text-[12px]">prayasjadli18@gmail.com</p>
-            <button>edit profile</button>
+      <div className="absolute inset-0 flex w-full text-white">
+        <div className="bg-greyBlack flex w-80 flex-col p-5">
+          <div className="flex flex-col gap-1.5 py-10">
+            <div className="bg-pupl mx-2 my-1 size-[4rem] rounded-[12px]"></div>
+            <button className="flex w-full items-center gap-2.5 rounded-md px-2 text-base">
+              <FaUser />
+              <span>codingtaxipj</span>
+            </button>
+            <button className="flex w-full items-center gap-2.5 rounded-md px-2 text-sm">
+              <span>prayasjadli18@gamil.com</span>
+            </button>
           </div>
-          <div className="font-pop-b flex grow flex-col border-y-1 py-[2rem] text-[#979797]">
+          <div className="flex grow flex-col gap-2">
+            <button className="flex w-full items-center gap-2.5 rounded-md px-2 py-1 text-sm font-medium text-[#a6a6a6]">
+              <span>Menu</span>
+            </button>
             <button
               onClick={() => navigate(PATH.home)}
-              autoFocus
               className={setStyle(PATH.home)}
             >
-              Dashboard
+              <MdSpaceDashboard />
+              <span>Dashboard</span>
             </button>
             <button
               onClick={() => navigate(PATH.expense)}
               className={setStyle(PATH.expense)}
             >
-              Expenses
+              <GiPayMoney />
+              <span>Expense</span>
             </button>
             <button
               onClick={() => navigate(PATH.income)}
               className={setStyle(PATH.income)}
             >
-              Income
+              <GiReceiveMoney />
+              <span>Income</span>
             </button>
           </div>
         </div>
-        <div className="flex h-auto w-full flex-col bg-[red]">
-          <div className="flex flex-row gap-5">
-            <div>search bar</div>
-            <div>account selected</div>
-            <div className="inline-flex items-center">
-              <PiTagSimpleFill className="text-gift" />
-              <p className="pl-2">Today : {currentDate}</p>
+        <div className="bg-greyBlack flex w-full flex-col p-2.5">
+          <div className="flex cursor-default flex-row gap-2.5 px-1 pb-2.5 text-xs">
+            <div className="flex grow justify-start gap-2.5">
+              <div className="flex items-center gap-1 pl-0.5 text-sm">
+                <FaMapPin />
+                {activeBtn === PATH.home && <span>Dashboard</span>}
+                {activeBtn === PATH.expense && <span>Expense Data</span>}
+                {activeBtn === PATH.income && <span>Income Data</span>}
+              </div>
             </div>
-            <div className="inline-flex items-center">
-              <PiTagSimpleFill className="text-gift" />
-              <p className="pl-2">Current Week : {currentWeek}</p>
+            <div className="flex grow justify-end gap-2.5 pr-2">
+              <div className="flex items-center gap-2 rounded-sm p-0.5">
+                <FaCalendarDay />
+                <span>{currentDate}</span>
+              </div>
+              <span className="border-r"></span>
+              <div className="flex items-center gap-2 rounded-sm p-0.5">
+                <FaCalendarWeek />
+                <span>{currentWeek}th Week</span>
+              </div>
             </div>
           </div>
 
-          <div className="h-full w-full bg-[white]"> {children}</div>
+          <div className="bg-darkBlack overflow-hidden rounded-md">
+            {children}
+          </div>
         </div>
       </div>
     </>
