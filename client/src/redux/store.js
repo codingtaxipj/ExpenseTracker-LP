@@ -10,13 +10,11 @@ import filterMaxExpenseReducer from "@/redux/slices/filterMaxExpense.js";
 import configExpenseReducer from "@/redux/slices/configExpense.js";
 
 export const rootReducer = combineReducers({
- 
-    user: authReducer,
-    expense: getExpenseReducer,
-    maxExpense: getMaxExpenseReducer,
-    filterMaxExpense: filterMaxExpenseReducer,
-    configExpense: configExpenseReducer,
-
+  user: authReducer,
+  expense: getExpenseReducer,
+  maxExpense: getMaxExpenseReducer,
+  filterMaxExpense: filterMaxExpenseReducer,
+  configExpense: configExpenseReducer,
 });
 
 // Persist config

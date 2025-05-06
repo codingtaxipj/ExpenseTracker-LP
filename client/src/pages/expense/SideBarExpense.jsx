@@ -28,7 +28,7 @@ const SideBarExpense = () => {
 
   return (
     <>
-      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-6 px-10 text-white">
+      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-6 py-4 px-10 text-white">
         {loading && <p>Loading...</p>}
         {!loading && (
           <>
@@ -40,7 +40,7 @@ const SideBarExpense = () => {
             />
           </>
         )}
-        <div className="">
+        <div>
           <button
             onClick={() => navigate(PATH.addExpense)}
             className="bg-travel w-full rounded-md px-4 py-1"

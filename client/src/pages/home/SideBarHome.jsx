@@ -50,35 +50,36 @@ const SideBarHome = () => {
 
   return (
     <>
-      <div className="flex h-full w-[30%] flex-col items-center justify-center gap-10 rounded-r-[20px] bg-[#f3f4f6]">
+      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-12 px-10 py-4 text-white">
         {loading && <p>Loading...</p>}
         {!loading && (
           <>
-            <div className="font-pop-m flex w-[70%] flex-col gap-2 text-[15px] text-black"></div>
-            <SideBar
-              sidebar_title={"How much you spent ?"}
-              sidebar_for={PATH.expense}
-              incomingData={entriesExpense}
-              totalSum={maxExpense}
-            />
-            <SideBar
-              sidebar_title={"How much you earned ?"}
-              sidebar_for={PATH.income}
-              incomingData={entriesIncome}
-              totalSum={maxIncome}
-            />
-            <div className="inline-flex justify-center gap-5">
+            <div className="flex flex-col gap-6">
+              <SideBar
+                sidebar_title={"How much you spent ?"}
+                sidebar_for={PATH.expense}
+                incomingData={entriesExpense}
+                totalSum={maxExpense}
+              />
               <button
                 onClick={() => navigate(PATH.addExpense)}
-                className="bg-travel rounded-md px-4 py-1 text-[white]"
+                className="bg-expense w-full rounded-md px-4 py-1"
               >
                 Add Expence
               </button>
+            </div>
+            <div className="flex flex-col gap-6">
+              <SideBar
+                sidebar_title={"How much you earned ?"}
+                sidebar_for={PATH.income}
+                incomingData={entriesIncome}
+                totalSum={maxIncome}
+              />
               <button
                 onClick={() => navigate(PATH.addIncome)}
-                className="bg-income rounded-md px-4 py-1 text-[white]"
+                className="bg-income w-full rounded-md px-4 py-1"
               >
-                Add Income
+                Add Expence
               </button>
             </div>
           </>
