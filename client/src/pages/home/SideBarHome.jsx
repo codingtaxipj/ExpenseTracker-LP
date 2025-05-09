@@ -3,50 +3,48 @@ import { useNavigate } from "react-router-dom";
 import { PATH } from "@/router/routerConfig";
 
 import { useEffect, useState } from "react";
-import {
-  filterMaxExpensePrime,
-  filterMaxIncomePrime,
-} from "@/redux/slices/filterMaxExpense";
-import { useDispatch, useSelector } from "react-redux";
+import useInitalReduxLoad from "@/components/useInitalReduxLoad";
 
 const SideBarHome = () => {
+  const navigate = useNavigate();
   const [entriesExpense, setEntriesExpense] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [maxExpense, setMaxExpense] = useState(0);
   const [entriesIncome, setEntriesIncome] = useState([]); // State to hold fetched data // Loading state
   const [maxIncome, setMaxIncome] = useState(0);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const incomeData = useSelector(
-    (state) => state.filterMaxExpense.maxIncomePrime,
-  );
-  const expenseData = useSelector(
-    (state) => state.filterMaxExpense.maxExpensePrime,
-  );
+  const { expenseMaxData } = useInitalReduxLoad({
+    isExpenseMaxData: true,
+    isPrimeCategory: true,
+  });
 
+  const { incomeMaxData } = useInitalReduxLoad({
+    isExpenseMaxData: false,
+    isPrimeCategory: true,
+  });
   useEffect(() => {
-    dispatch(filterMaxIncomePrime());
-    dispatch(filterMaxExpensePrime());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (incomeData !== null && expenseData !== null) {
-      const totalSumExpense = expenseData.reduce(
+    if (incomeMaxData) {
+      setEntriesIncome(incomeMaxData);
+      const totalSum = incomeMaxData.reduce(
         (sum, item) => sum + item.categoryTotal,
         0,
       );
-      const totalSumIncome = incomeData.reduce(
-        (sum, item) => sum + item.categoryTotal,
-        0,
-      );
-      setMaxIncome(totalSumIncome);
-      setMaxExpense(totalSumExpense);
-      setEntriesIncome(incomeData);
-      setEntriesExpense(expenseData);
+      setMaxIncome(totalSum);
       setLoading(false);
     }
-  }, [incomeData, expenseData]);
+  }, [incomeMaxData]);
+
+  useEffect(() => {
+    if (expenseMaxData) {
+      setEntriesExpense(expenseMaxData);
+      const totalSum = expenseMaxData.reduce(
+        (sum, item) => sum + item.categoryTotal,
+        0,
+      );
+      setMaxExpense(totalSum);
+      setLoading(false);
+    }
+  }, [expenseMaxData]);
 
   return (
     <>

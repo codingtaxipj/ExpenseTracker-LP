@@ -1,4 +1,4 @@
-import { btnVars } from "@/global/global-variables";
+import { btnVars } from "@/global/globalVariables";
 
 const Button = ({ btnStyle, btnType = "button", children, ...props }) => {
   const style = () => {

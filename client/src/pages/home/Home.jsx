@@ -2,43 +2,15 @@ import NavMenu from "@/components/Navigation/NavMenu";
 import { Outlet } from "react-router-dom";
 import SideBarHome from "@/pages/home/SideBarHome";
 import { PATH } from "@/router/routerConfig";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchAllData } from "@/redux/slices/getExpense.js";
+import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
 import { useEffect, useState } from "react";
-import { fetchMaxData } from "@/redux/slices/getMaxExpense";
-import { setMaxExpenseData } from "@/redux/slices/filterMaxExpense";
-import {
-  configExpenseData,
-  filterExpenseData,
-  filterIncomeData,
-} from "@/redux/slices/configExpense";
 
 const Home = () => {
   const [loading, setLoading] = useState(true); // Loading state
-
-  const dispatch = useDispatch();
+  const { incomingData } = useInitalReduxLoad();
   useEffect(() => {
-    dispatch(fetchAllData()); // Fetch expense data on mount
-    dispatch(fetchMaxData()); // Fetch max expense data on mount
-  }, [dispatch]);
-
-  const formData = useSelector((state) => state.expense.data);
-  const maxFormData = useSelector((state) => state.maxExpense.data);
-
-  useEffect(() => {
-    if (formData !== null && maxFormData !== null) {
-      dispatch(configExpenseData(formData));
-      dispatch(setMaxExpenseData(maxFormData));
-      dispatch(filterExpenseData());
-      dispatch(filterIncomeData());
-
-      setLoading(false);
-    }
-  }, [formData, maxFormData, dispatch]);
-
-  /*  dispatch(filterExpenseData());
-  const xp = dispatch(fetchCurrentMonthExpense());
-  console.log(xp); */
+    if (incomingData) setLoading(false);
+  }, [incomingData]);
 
   return (
     <>

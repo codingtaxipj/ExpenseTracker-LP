@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { navVars } from "@/global/global-variables";
+import { navVars } from "@/global/globalVariables";
 import { useDispatch } from "react-redux";
 import { setOnLogin } from "@/redux/slices/authUser";
 

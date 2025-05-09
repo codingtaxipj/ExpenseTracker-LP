@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { navVars } from "@/global/global-variables";
+import { navVars } from "@/global/globalVariables";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 

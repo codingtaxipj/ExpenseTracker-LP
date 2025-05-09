@@ -1,23 +1,22 @@
-import { useState, useEffect } from "react";
-
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import TotalCard from "@/components/TotalCard";
 import TableSection from "@/components/TableSection";
 import { FaListUl } from "react-icons/fa";
 import { CheckAnalysisCard } from "@/components/ButtonCard";
+import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
 
 const IncomeIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
-
-  const data = useSelector((state) => state.configExpense.dataIncome);
+  const { incomeData } = useInitalReduxLoad({ isExpenseData: false });
+  console.log(incomeData);
 
   useEffect(() => {
-    if (data !== null) {
-      setEntries(data);
+    if (incomeData) {
+      setEntries(incomeData);
       setLoading(false);
     }
-  }, [data]);
+  }, [incomeData]);
 
   return (
     <>

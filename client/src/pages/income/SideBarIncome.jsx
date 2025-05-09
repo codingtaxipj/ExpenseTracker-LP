@@ -1,32 +1,29 @@
 import SideBar from "@/components/SideBar";
-import { filterMaxIncomePrime } from "@/redux/slices/filterMaxExpense";
+import useInitalReduxLoad from "@/components/useInitalReduxLoad";
 import { PATH } from "@/router/routerConfig";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const SideBarIncome = () => {
+  const navigate = useNavigate();
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [maxIncome, setMaxIncome] = useState(0);
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const data = useSelector((state) => state.filterMaxExpense.maxIncomePrime);
-
+  const { incomeMaxData } = useInitalReduxLoad({
+    isExpenseMaxData: false,
+    isPrimeCategory: true,
+  });
   useEffect(() => {
-    dispatch(filterMaxIncomePrime());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (data !== null) {
-      setEntries(data);
-      setLoading(false);
-      const totalSum = data.reduce((sum, item) => sum + item.categoryTotal, 0);
+    if (incomeMaxData) {
+      setEntries(incomeMaxData);
+      const totalSum = incomeMaxData.reduce(
+        (sum, item) => sum + item.categoryTotal,
+        0,
+      );
       setMaxIncome(totalSum);
+      setLoading(false);
     }
-  }, [data]);
+  }, [incomeMaxData]);
 
   return (
     <>

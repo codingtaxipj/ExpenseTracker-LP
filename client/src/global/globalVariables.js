@@ -13,3 +13,8 @@ export const btnVars = {
   expense: "expense",
   income: "income",
 };
+
+export const FILTER = {
+  byExpense: true,
+  byIncome: false,
+};

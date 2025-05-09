@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import NavMenu from "../components/Navigation/NavMenu";
-import { navVars } from "../global/global-variables";
+import { navVars } from "../global/globalVariables";
 
 const PopupEntryView = () => {
   const [popupView, setPopupView] = useState(true);

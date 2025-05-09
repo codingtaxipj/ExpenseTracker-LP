@@ -1,34 +1,33 @@
 import SideBar from "@/components/SideBar";
-import { filterMaxExpensePrime } from "@/redux/slices/filterMaxExpense";
+import useInitalReduxLoad from "@/components/useInitalReduxLoad";
 import { PATH } from "@/router/routerConfig";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 const SideBarExpense = () => {
+  const navigate = useNavigate();
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [maxExpense, setMaxExpense] = useState(0);
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.filterMaxExpense.maxExpensePrime);
-
+  const { expenseMaxData } = useInitalReduxLoad({
+    isExpenseMaxData: true,
+    isPrimeCategory: true,
+  });
   useEffect(() => {
-    dispatch(filterMaxExpensePrime());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (data !== null) {
-      setEntries(data);
-      setLoading(false);
-      const totalSum = data.reduce((sum, item) => sum + item.categoryTotal, 0);
+    if (expenseMaxData) {
+      setEntries(expenseMaxData);
+      const totalSum = expenseMaxData.reduce(
+        (sum, item) => sum + item.categoryTotal,
+        0,
+      );
       setMaxExpense(totalSum);
+      setLoading(false);
     }
-  }, [data]);
+  }, [expenseMaxData]);
 
   return (
     <>
-      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-6 py-4 px-10 text-white">
+      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-6 px-10 py-4 text-white">
         {loading && <p>Loading...</p>}
         {!loading && (
           <>

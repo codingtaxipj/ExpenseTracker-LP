@@ -3,20 +3,18 @@ import { FaListUl } from "react-icons/fa";
 import TotalCard from "@/components/TotalCard";
 import { CheckAnalysisCard } from "@/components/ButtonCard";
 import TableSection from "@/components/TableSection";
-import { useSelector } from "react-redux";
+import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
 
 const ExpenseIndex = () => {
-  const [loading, setLoading] = useState(true); // Loading state
-
   const [entries, setEntries] = useState([]); // State to hold fetched data
-  const data = useSelector((state) => state.configExpense.dataExpense);
-
+  const [loading, setLoading] = useState(true); // Loading state
+  const { expenseData } = useInitalReduxLoad({ isExpenseData: true });
   useEffect(() => {
-    if (data !== null) {
-      setEntries(data);
+    if (expenseData) {
+      setEntries(expenseData);
       setLoading(false);
     }
-  }, [data, setLoading]);
+  }, [expenseData]);
   return (
     <>
       <div className="[&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover max-h-screen w-3/4 overflow-y-auto rounded-md p-10 text-white [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
