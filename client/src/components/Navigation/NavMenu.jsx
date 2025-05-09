@@ -1,7 +1,6 @@
 import { PATH } from "@/router/routerConfig";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { PiTagSimpleFill } from "react-icons/pi";
 import { MdSpaceDashboard } from "react-icons/md";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import {
@@ -10,7 +9,6 @@ import {
   FaMapPin,
   FaUser,
 } from "react-icons/fa";
-import { IoIosMail } from "react-icons/io";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();

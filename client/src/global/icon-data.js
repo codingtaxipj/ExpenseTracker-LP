@@ -112,3 +112,9 @@ export const expenseCategories = {
     misc: "Miscellaneous",
   },
 };
+
+export const incomeCategories = {
+  income: {
+    thisCategoryTitle: "Income",
+  },
+};

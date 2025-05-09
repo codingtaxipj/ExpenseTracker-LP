@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { expenseCategories } from "@/global/icon-data";
 import { BsBank2, BsFillFuelPumpFill } from "react-icons/bs";
 import {
@@ -74,7 +73,7 @@ import { HiPaintBrush } from "react-icons/hi2";
 import { GrYoga } from "react-icons/gr";
 import { PiClockCountdownFill } from "react-icons/pi";
 
-const IconsUsed = ({ icon }) => {
+const IconAvatar = ({ icon }) => {
   switch (icon) {
     //*Income ICONS
     case "Salary":
@@ -261,8 +260,5 @@ const IconsUsed = ({ icon }) => {
       return <FaShapes />;
   }
 };
-IconsUsed.propTypes = {
-  icon: PropTypes.string,
-};
 
-export default IconsUsed;
+export default IconAvatar;

@@ -17,21 +17,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 //Icons
-import IconsUsed from "./IconsUsed";
 import { FaCalendarDay } from "react-icons/fa";
 import { FaFileLines, FaIndianRupeeSign } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoMdEye } from "react-icons/io";
-import { RiPencilFill } from "react-icons/ri";
-import { MdDeleteForever } from "react-icons/md";
+import IconCircle from "./IconCircle";
 
 const TableSection = ({ entries }) => {
   //Pagination
@@ -66,9 +57,10 @@ const TableSection = ({ entries }) => {
                 className="hover:bg-grey-hover border-b-grey-hover h-15"
               >
                 <TableCell className="w-0 px-2.5">
-                  <div className="bg-food flex w-fit items-center justify-center rounded-full p-2 text-[20px] text-white">
-                    <IconsUsed icon={data.subCategory} />
-                  </div>
+                  <IconCircle
+                    bgColor={data.primeCategory}
+                    setIcon={data.subCategory}
+                  />
                 </TableCell>
                 <TableCell className="min-w-36 px-2.5">
                   <div className="text-base font-medium">
@@ -99,37 +91,7 @@ const TableSection = ({ entries }) => {
                   </div>
                 </TableCell>
                 <TableCell className="w-0 px-2.5">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="hover:bg-grey-border flex size-8 cursor-pointer items-center justify-center rounded-sm">
-                      <BsThreeDotsVertical />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>
-                        <button className="flex w-full items-center">
-                          <span className="flex-grow text-left">view</span>
-                          <span>
-                            <IoMdEye className="size-5" />
-                          </span>
-                        </button>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <button className="flex w-full items-center">
-                          <span className="flex-grow text-left">edit</span>
-                          <span>
-                            <RiPencilFill className="size-5" />
-                          </span>
-                        </button>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <button className="flex w-full items-center">
-                          <span className="flex-grow text-left">delete</span>
-                          <span>
-                            <MdDeleteForever className="size-5" />
-                          </span>
-                        </button>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <BsThreeDotsVertical />
                 </TableCell>
               </TableRow>
             ))}
