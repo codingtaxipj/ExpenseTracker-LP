@@ -18,11 +18,21 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 //Icons
 import { FaCalendarDay } from "react-icons/fa";
 import { FaFileLines, FaIndianRupeeSign } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import IconCircle from "./IconCircle";
+import { IoMdEye } from "react-icons/io";
+import { RiPencilFill } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
 
 const TableSection = ({ entries }) => {
   //Pagination
@@ -91,7 +101,37 @@ const TableSection = ({ entries }) => {
                   </div>
                 </TableCell>
                 <TableCell className="w-0 px-2.5">
-                  <BsThreeDotsVertical />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="hover:bg-grey-border inline-flex size-8 cursor-pointer items-center justify-center rounded-md">
+                      <BsThreeDotsVertical />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>
+                        <button className="flex w-full items-center">
+                          <span className="flex-grow text-left">view</span>
+                          <span>
+                            <IoMdEye className="size-5" />
+                          </span>
+                        </button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <button className="flex w-full items-center">
+                          <span className="flex-grow text-left">edit</span>
+                          <span>
+                            <RiPencilFill className="size-5" />
+                          </span>
+                        </button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <button className="flex w-full items-center">
+                          <span className="flex-grow text-left">delete</span>
+                          <span>
+                            <MdDeleteForever className="size-5" />
+                          </span>
+                        </button>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}
