@@ -21,10 +21,8 @@ const Home = () => {
       )}
       {!loading && (
         <NavMenu activeBtn={PATH.home}>
-          <div className="flex h-full flex-row">
-            <Outlet />
-            <SideBarHome />
-          </div>
+          <Outlet />
+          <SideBarHome />
         </NavMenu>
       )}
     </>

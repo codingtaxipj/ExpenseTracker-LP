@@ -5,6 +5,14 @@ import { CheckAnalysisCard } from "@/components/ButtonCard";
 import TableSection from "@/components/TableSection";
 import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 const ExpenseIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
@@ -17,7 +25,7 @@ const ExpenseIndex = () => {
   }, [expenseData]);
   return (
     <>
-      <div className="[&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover max-h-screen w-3/4 overflow-y-auto rounded-md p-10 text-white [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
+      <div className="bg-darkBlack w-full overflow-y-auto p-10 [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
         {loading && <p>Loading...</p>}
         {!loading && (
           <>
@@ -29,6 +37,19 @@ const ExpenseIndex = () => {
             </div>
             <div className="pt-6 pb-2">
               <div className="flex py-2.75">
+                <div>
+                  <Select>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="light">Light</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="flex items-center gap-2 pl-0.5 text-base font-medium">
                   <FaListUl />
                   Expense Entries

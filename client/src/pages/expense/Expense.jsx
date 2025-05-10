@@ -6,10 +6,8 @@ const Expense = () => {
   return (
     <>
       <NavMenu activeBtn={PATH.expense}>
-        <div className="relative flex h-full flex-row">
-          <Outlet />
-          <SideBarExpense />
-        </div>
+        <Outlet />
+        <SideBarExpense />
       </NavMenu>
     </>
   );

@@ -24,7 +24,8 @@ const SideBarHome = () => {
   });
   useEffect(() => {
     if (incomeMaxData) {
-      setEntriesIncome(incomeMaxData);
+      const data = incomeMaxData.slice(0, 8);
+      setEntriesIncome(data);
       const totalSum = incomeMaxData.reduce(
         (sum, item) => sum + item.categoryTotal,
         0,
@@ -36,7 +37,8 @@ const SideBarHome = () => {
 
   useEffect(() => {
     if (expenseMaxData) {
-      setEntriesExpense(expenseMaxData);
+      const data = expenseMaxData.slice(0, 8);
+      setEntriesExpense(data);
       const totalSum = expenseMaxData.reduce(
         (sum, item) => sum + item.categoryTotal,
         0,

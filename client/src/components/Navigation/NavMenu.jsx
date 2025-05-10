@@ -25,8 +25,8 @@ function Dashboard({ activeBtn, children }) {
 
   return (
     <>
-      <div className="absolute inset-0 flex w-full text-white">
-        <div className="bg-greyBlack flex w-80 flex-col p-5">
+      <div className="flex h-screen w-screen text-white">
+        <div className="bg-greyBlack flex w-1/6 flex-col p-5">
           <div className="flex flex-col gap-1.5 py-10">
             <div className="bg-pupl mx-2 my-1 size-[4rem] rounded-[12px]"></div>
             <button className="flex w-full items-center gap-2.5 rounded-md px-2 text-base">
@@ -87,7 +87,7 @@ function Dashboard({ activeBtn, children }) {
             </div>
           </div>
 
-          <div className="bg-darkBlack overflow-hidden rounded-md">
+          <div className="flex h-full flex-row overflow-y-auto rounded-md">
             {children}
           </div>
         </div>

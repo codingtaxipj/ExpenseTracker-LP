@@ -27,7 +27,7 @@ const SideBarExpense = () => {
 
   return (
     <>
-      <div className="bg-greyBlack flex w-1/4 flex-col justify-center gap-6 px-10 py-4 text-white">
+      <div className="bg-greyBlack flex h-full w-1/4 flex-col justify-center gap-6 px-10 py-4 text-white">
         {loading && <p>Loading...</p>}
         {!loading && (
           <>
