@@ -24,7 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { sortByMonth, sortByYear } from "./utility";
+import {
+  sortByYearAsMonths,
+  sortByMonthAsWeeks,
+  sortByMonthAsDates,
+  sortByWeekAsDates,
+} from "./utility";
 
 const BarChartSection = ({ entries, isExpense }) => {
   const currentYear = moment().year();
@@ -32,9 +37,11 @@ const BarChartSection = ({ entries, isExpense }) => {
   const [sortedData, updateSortedData] = useState([]);
   const [shortDataBy, setSortDataBy] = useState(currentYear);
   const [showBy, updateShowBy] = useState("year");
+  const [showMonthBy, updateShowMonthBy] = useState(null);
   const [config, setConfig] = useState({});
 
   const selectedFilterBtn = (btn) => {
+    if ((btn === showMonthBy) & (showMonthBy !== null)) return "bg-expense";
     if (showBy === btn) return "bg-expense";
     else return "bg-darkBlack hover:bg-expense";
   };
@@ -90,12 +97,24 @@ const BarChartSection = ({ entries, isExpense }) => {
 
   useEffect(() => {
     if (showBy === "year") {
-      const data = sortByYear(entries, shortDataBy);
+      const data = sortByYearAsMonths(entries, shortDataBy);
       updateSortedData(data);
+      updateShowMonthBy(null);
     }
-    if (showBy === "month") {
-      const data = sortByMonth(entries, shortDataBy);
+    if (showBy === "monthAsWeeks") {
+      const data = sortByMonthAsWeeks(entries, shortDataBy);
       updateSortedData(data);
+      updateShowMonthBy("mWeeks");
+    }
+    if (showBy === "monthAsDays") {
+      const data = sortByMonthAsDates(entries, shortDataBy);
+      updateSortedData(data);
+      updateShowMonthBy("mDays");
+    }
+    if (showBy === "week") {
+      const data = sortByWeekAsDates(entries, shortDataBy);
+      updateSortedData(data);
+      updateShowMonthBy(null);
     }
     showChartBy(showBy);
   }, [showBy, shortDataBy, entries]);
@@ -107,6 +126,18 @@ const BarChartSection = ({ entries, isExpense }) => {
     },
   };
   const chartData = sortedData;
+
+  const handleSelectChange = (value) => {
+    console.log(value);
+  };
+  const handleSelectMonthChange = (value) => {
+    console.log(value);
+    if (value === "mWeeks") {
+      updateShowBy("monthAsWeeks");
+    } else {
+      updateShowBy("monthAsDays");
+    }
+  };
 
   return (
     <>
@@ -124,34 +155,136 @@ const BarChartSection = ({ entries, isExpense }) => {
         <button
           onClick={() => {
             setSortDataBy(3);
-            updateShowBy("month");
+            updateShowBy("monthAsWeeks");
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${selectedFilterBtn("month")}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${selectedFilterBtn(showMonthBy)}`}
         >
           By Month
         </button>
         <button
           onClick={() => {
+            setSortDataBy(16);
             updateShowBy("week");
           }}
           className={`rounded-sm border-0 px-5 py-1.5 text-xs ${selectedFilterBtn("week")}`}
         >
           By Week
         </button>
-        <div>
-          <Select>
-            <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-              <SelectValue placeholder="Sort By Type" />
-            </SelectTrigger>
-            <SelectContent className="w-40">
-              <SelectItem value="subCat">Category</SelectItem>
-              <SelectItem value="primeCat">Category From</SelectItem>
-              <SelectItem value="date">Date</SelectItem>
-              <SelectItem value="amount">Amount</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
       </div>
+      {showBy === "year" && (
+        <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
+          <button className="px-2 text-sm">Filter By</button>
+          <div>
+            <Select onValueChange={handleSelectChange}>
+              <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                <SelectValue placeholder="Sort By Type" />
+              </SelectTrigger>
+              <SelectContent className="w-40">
+                <SelectItem value="2026">2026</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
+      {(showBy === "monthAsWeeks" || showBy === "monthAsDays") && (
+        <>
+          <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
+            <div>
+              <Select
+                defaultValue="mWeeks"
+                onValueChange={handleSelectMonthChange}
+              >
+                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                  <SelectValue placeholder="Sort By Type" />
+                </SelectTrigger>
+                <SelectContent className="w-40">
+                  <SelectItem value="mWeeks">Show in Weeks</SelectItem>
+                  <SelectItem value="mDays">Show in Days</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <button className="px-2 text-sm">Filter By</button>
+            <div>
+              <Select onValueChange={handleSelectChange}>
+                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                  <SelectValue placeholder="Select Year" />
+                </SelectTrigger>
+                <SelectContent className="w-40">
+                  <SelectItem value="2025">2025</SelectItem>
+                  <SelectItem value="2026">2026</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Select onValueChange={handleSelectChange}>
+                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                  <SelectValue placeholder="Select Month" />
+                </SelectTrigger>
+                <SelectContent className="w-40">
+                  <SelectItem value="1">January</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {showMonthBy === "mWeeks" && (
+              <div>
+                <Select onValueChange={handleSelectChange}>
+                  <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                    <SelectValue placeholder="Select Week" />
+                  </SelectTrigger>
+                  <SelectContent className="w-40">
+                    <SelectItem value="1 week">1st Week</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {showBy === "week" && (
+        <>
+          <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
+            <button className="px-2 text-sm">Filter By</button>
+            <div>
+              <Select onValueChange={handleSelectChange}>
+                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                  <SelectValue placeholder="Select Year" />
+                </SelectTrigger>
+                <SelectContent className="w-40">
+                  <SelectItem value="2025">2025</SelectItem>
+                  <SelectItem value="2026">2026</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Select onValueChange={handleSelectChange}>
+                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                  <SelectValue placeholder="Select Month" />
+                </SelectTrigger>
+                <SelectContent className="w-40">
+                  <SelectItem value="1">January</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {showMonthBy === "mWeeks" && (
+              <div>
+                <Select onValueChange={handleSelectChange}>
+                  <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                    <SelectValue placeholder="Select Week" />
+                  </SelectTrigger>
+                  <SelectContent className="w-40">
+                    <SelectItem value="1 week">1st Week</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
       <Card className="bg-greyBlack border-grey-border border text-white">
         <CardHeader>
           <CardTitle>{config.cardTitle}</CardTitle>
@@ -166,7 +299,7 @@ const BarChartSection = ({ entries, isExpense }) => {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={(value) => value.slice(0, 3)}
+                tickFormatter={(value) => value}
               />
               <ChartTooltip
                 cursor={false}
