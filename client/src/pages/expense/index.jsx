@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { FaListUl } from "react-icons/fa";
 import TotalCard from "@/components/TotalCard";
 import { CheckAnalysisCard } from "@/components/ButtonCard";
 import TableSection from "@/components/TableSection";
 import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
+import BarChartSection from "@/components/BarChartSection";
 
 import {
   Select,
@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Demo } from "@/components/demo";
 
 const ExpenseIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
@@ -72,6 +71,9 @@ const ExpenseIndex = () => {
               </div>
             </div>
             <TableSection entries={entries} />
+            <div className="pt-6">
+              <BarChartSection isExpense={true} entries={entries} />
+            </div>
           </>
         )}
       </div>
