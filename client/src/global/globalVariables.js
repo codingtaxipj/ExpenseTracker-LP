@@ -18,3 +18,5 @@ export const FILTER = {
   byExpense: true,
   byIncome: false,
 };
+
+

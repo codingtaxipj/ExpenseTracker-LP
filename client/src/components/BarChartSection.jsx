@@ -26,116 +26,129 @@ import {
 } from "@/components/ui/select";
 import {
   sortByYearAsMonths,
+  Graph,
   sortByMonthAsWeeks,
   sortByMonthAsDates,
   sortByWeekAsDates,
+  getEntriesOfYear,
+  getYearOfDate,
+  getMonthOfDate,
+  getWeekOfDate,
 } from "./utility";
 
 const BarChartSection = ({ entries, isExpense }) => {
-  const currentYear = moment().year();
+  const [filter, setFilter] = useState({
+    byYear: moment().year(),
+    byMonth: moment().month(),
+    byWeek: moment().week(),
+  });
+  const [showGraphBy, setShowGraphBy] = useState(Graph.byYear);
+  const [GraphConfig, setGraphConfig] = useState({
+    Title: "",
+    SubText: "",
+    BottomText: "",
+    barLabel: "",
+    barColor: "",
+    barBtnStyle: "",
+    graphData: [],
+    graphDataByYear: [],
+    firstEntry: "",
+    lastEntry: "",
+  });
 
-  const [sortedData, updateSortedData] = useState([]);
-  const [shortDataBy, setSortDataBy] = useState(currentYear);
-  const [showBy, updateShowBy] = useState("year");
-  const [showMonthBy, updateShowMonthBy] = useState(null);
-  const [config, setConfig] = useState({});
-
-  const selectedFilterBtn = (btn) => {
-    if ((btn === showMonthBy) & (showMonthBy !== null)) return "bg-expense";
-    if (showBy === btn) return "bg-expense";
-    else return "bg-darkBlack hover:bg-expense";
-  };
+  useEffect(() => {
+    const FY = getYearOfDate(entries[0].entryDate);
+    const LY = getYearOfDate(entries[entries.length - 1].entryDate);
+    const LM = getMonthOfDate(entries[entries.length - 1].entryDate);
+    const LW = getWeekOfDate(entries[entries.length - 1].entryDate);
+    setGraphConfig((prev) => ({
+      ...prev,
+      firstEntry: {
+        year: FY,
+      },
+      lastEntry: {
+        year: LY,
+        month: LM,
+        week: LW,
+      },
+    }));
+  }, [entries]);
 
   useEffect(() => {
     if (isExpense) {
-      setConfig({
-        barLabel: "Expense",
+      setGraphConfig((prev) => ({
+        ...prev,
         barColor: "var(--color-expense)",
-        cardTitle: "Your Expense",
-      });
-    } else {
-      setConfig({
-        barLabel: "Income",
-        barColor: "var(--color-income)",
-        cardTitle: "Your Income",
-        cardBottomText: "Your Income This Year by Month",
-      });
+        Title: "Your Expense",
+      }));
     }
-  }, [isExpense]);
-
-  const showChartBy = (filterBy) => {
-    switch (filterBy) {
-      case "year": {
-        setConfig((prev) => ({
-          ...prev,
-          cardSubTitle: "Month by Month - " + moment().year(),
-          cardBottomText: `Your Expense of Year ${moment().year()} by Month`,
-        }));
-        break;
-      }
-      case "month": {
-        const val = moment().month();
-        setConfig((prev) => ({
-          ...prev,
-          cardSubTitle: "Week by Week - " + moment().month(val).format("MMMM"),
-          cardBottomText: `Your Expense of Month ${moment().month(val).format("MMMM")} by Weeks`,
-        }));
-        break;
-      }
-      case "week": {
-        const val = moment().week();
-        setConfig((prev) => ({
-          ...prev,
-          cardSubTitle:
-            "Day by Day - " + moment().week(val).format("wo") + " Week",
-          cardBottomText: `Your Expense of Week ${moment().week(val).format("wo")} Week by Days`,
-        }));
-        break;
-      }
-    }
-  };
+  }, [isExpense, filter]);
 
   useEffect(() => {
-    if (showBy === "year") {
-      const data = sortByYearAsMonths(entries, shortDataBy);
-      updateSortedData(data);
-      updateShowMonthBy(null);
+    const YearList = getEntriesOfYear(entries, filter.byYear);
+    setGraphConfig((prev) => ({
+      ...prev,
+      graphDataByYear: YearList,
+    }));
+  }, [filter.byYear, entries]);
+
+  useEffect(() => {
+    if (showGraphBy === Graph.byYear) {
+      const data = sortByYearAsMonths(GraphConfig.graphDataByYear);
+      setGraphConfig((prev) => ({
+        ...prev,
+        graphData: data,
+        SubText: `Year ${filter.byYear} in Months.`,
+        BottomText: "Your Expense By Months in Year",
+      }));
     }
-    if (showBy === "monthAsWeeks") {
-      const data = sortByMonthAsWeeks(entries, shortDataBy);
-      updateSortedData(data);
-      updateShowMonthBy("mWeeks");
+    if (showGraphBy === Graph.byMonth.asWeek) {
+      const data = sortByMonthAsWeeks(GraphConfig.graphDataByYear, 3);
+      setGraphConfig((prev) => ({
+        ...prev,
+        graphData: data,
+        SubText: `${moment().month(filter.byMonth).format("MMMM")}, ${filter.byYear} in Weeks`,
+        BottomText: "Your Expense By Weeks in Month ",
+      }));
     }
-    if (showBy === "monthAsDays") {
-      const data = sortByMonthAsDates(entries, shortDataBy);
-      updateSortedData(data);
-      updateShowMonthBy("mDays");
+    if (showGraphBy === Graph.byMonth.asDate) {
+      const data = sortByMonthAsDates(GraphConfig.graphDataByYear, 3);
+      setGraphConfig((prev) => ({
+        ...prev,
+        graphData: data,
+        SubText: `Dates of ${moment().month(filter.byMonth).format("MMMM")}, ${filter.byYear}`,
+        BottomText: "Your Expense in Month on Dates ",
+      }));
     }
-    if (showBy === "week") {
-      const data = sortByWeekAsDates(entries, shortDataBy);
-      updateSortedData(data);
-      updateShowMonthBy(null);
+
+    if (showGraphBy === Graph.byWeek) {
+      const data = sortByWeekAsDates(GraphConfig.graphDataByYear, 16);
+      setGraphConfig((prev) => ({
+        ...prev,
+        graphData: data,
+        SubText: `Dates of ${moment().week(filter.byWeek).format("Do")} Week of Year ${filter.byYear}`,
+        BottomText: "Your Expense in Week by Dates ",
+      }));
     }
-    showChartBy(showBy);
-  }, [showBy, shortDataBy, entries]);
+  }, [entries, filter, showGraphBy, GraphConfig.graphDataByYear]);
 
   const chartConfig = {
     barChart: {
-      label: config.label,
-      color: config.barColor,
+      label: GraphConfig.barLabel,
+      color: GraphConfig.barColor,
     },
   };
-  const chartData = sortedData;
+  const chartData = GraphConfig.graphData;
 
-  const handleSelectChange = (value) => {
-    console.log(value);
+  const handleChangeYear = (value) => {
+    setFilter((prev) => ({ ...prev, byYear: Number(value) }));
+    console.log("Selected Year : " + value);
   };
-  const handleSelectMonthChange = (value) => {
-    console.log(value);
-    if (value === "mWeeks") {
-      updateShowBy("monthAsWeeks");
+  const handleShowMonthIn = (value) => {
+    if (value === Graph.inMonth.asWeek) {
+      setShowGraphBy(Graph.byMonth.asWeek);
     } else {
-      updateShowBy("monthAsDays");
+      setShowGraphBy(Graph.byMonth.asDate);
     }
   };
 
@@ -145,150 +158,102 @@ const BarChartSection = ({ entries, isExpense }) => {
         <button className="px-2 text-sm">Show Chart</button>
         <button
           onClick={() => {
-            setSortDataBy(currentYear);
-            updateShowBy("year");
+            setShowGraphBy(Graph.byYear);
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${selectedFilterBtn("year")}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${showGraphBy === Graph.byYear ? (isExpense ? "bg-expense" : "bg-income") : isExpense ? "hover:bg-expense bg-darkBlack" : "hover:bg-income bg-darkBlack"}`}
         >
           By Year
         </button>
         <button
           onClick={() => {
-            setSortDataBy(3);
-            updateShowBy("monthAsWeeks");
+            setShowGraphBy(Graph.byMonth.asWeek);
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${selectedFilterBtn(showMonthBy)}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${showGraphBy === Graph.byMonth.asWeek || showGraphBy === Graph.byMonth.asDate ? (isExpense ? "bg-expense" : "bg-income") : isExpense ? "hover:bg-expense bg-darkBlack" : "hover:bg-income bg-darkBlack"}`}
         >
           By Month
         </button>
         <button
           onClick={() => {
-            setSortDataBy(16);
-            updateShowBy("week");
+            setShowGraphBy(Graph.byWeek);
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${selectedFilterBtn("week")}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${showGraphBy === Graph.byWeek ? (isExpense ? "bg-expense" : "bg-income") : isExpense ? "hover:bg-expense bg-darkBlack" : "hover:bg-income bg-darkBlack"}`}
         >
           By Week
         </button>
       </div>
-      {showBy === "year" && (
+      {showGraphBy === Graph.byYear && (
         <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
           <button className="px-2 text-sm">Filter By</button>
           <div>
-            <Select onValueChange={handleSelectChange}>
+            <Select defaultValue="2025" onValueChange={handleChangeYear}>
               <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
                 <SelectValue placeholder="Sort By Type" />
               </SelectTrigger>
               <SelectContent className="w-40">
+                <SelectItem value="2025">2025</SelectItem>
                 <SelectItem value="2026">2026</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
       )}
-
-      {(showBy === "monthAsWeeks" || showBy === "monthAsDays") && (
-        <>
-          <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
-            <div>
-              <Select
-                defaultValue="mWeeks"
-                onValueChange={handleSelectMonthChange}
-              >
-                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                  <SelectValue placeholder="Sort By Type" />
-                </SelectTrigger>
-                <SelectContent className="w-40">
-                  <SelectItem value="mWeeks">Show in Weeks</SelectItem>
-                  <SelectItem value="mDays">Show in Days</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <button className="px-2 text-sm">Filter By</button>
-            <div>
-              <Select onValueChange={handleSelectChange}>
-                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                  <SelectValue placeholder="Select Year" />
-                </SelectTrigger>
-                <SelectContent className="w-40">
-                  <SelectItem value="2025">2025</SelectItem>
-                  <SelectItem value="2026">2026</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Select onValueChange={handleSelectChange}>
-                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                  <SelectValue placeholder="Select Month" />
-                </SelectTrigger>
-                <SelectContent className="w-40">
-                  <SelectItem value="1">January</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {showMonthBy === "mWeeks" && (
-              <div>
-                <Select onValueChange={handleSelectChange}>
-                  <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                    <SelectValue placeholder="Select Week" />
-                  </SelectTrigger>
-                  <SelectContent className="w-40">
-                    <SelectItem value="1 week">1st Week</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+      {(showGraphBy === Graph.byMonth.asWeek ||
+        showGraphBy === Graph.byMonth.asDate) && (
+        <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
+          <button className="px-2 text-sm">Filter By</button>
+          <div>
+            <Select
+              defaultValue={Graph.inMonth.asWeek}
+              onValueChange={handleShowMonthIn}
+            >
+              <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                <SelectValue placeholder="Sort By Type" />
+              </SelectTrigger>
+              <SelectContent className="w-40">
+                <SelectItem value={Graph.inMonth.asWeek}>
+                  Show in Weeks
+                </SelectItem>
+                <SelectItem value={Graph.inMonth.asDate}>
+                  Show in Dates
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </>
+        </div>
       )}
 
-      {showBy === "week" && (
-        <>
-          <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
-            <button className="px-2 text-sm">Filter By</button>
-            <div>
-              <Select onValueChange={handleSelectChange}>
-                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                  <SelectValue placeholder="Select Year" />
-                </SelectTrigger>
-                <SelectContent className="w-40">
-                  <SelectItem value="2025">2025</SelectItem>
-                  <SelectItem value="2026">2026</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Select onValueChange={handleSelectChange}>
-                <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                  <SelectValue placeholder="Select Month" />
-                </SelectTrigger>
-                <SelectContent className="w-40">
-                  <SelectItem value="1">January</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {showMonthBy === "mWeeks" && (
-              <div>
-                <Select onValueChange={handleSelectChange}>
-                  <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                    <SelectValue placeholder="Select Week" />
-                  </SelectTrigger>
-                  <SelectContent className="w-40">
-                    <SelectItem value="1 week">1st Week</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+      {showGraphBy === Graph.byWeek && (
+        <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
+          <button className="px-2 text-sm">Filter By</button>
+          <div>
+            <Select defaultValue="2025" onValueChange={handleChangeYear}>
+              <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                <SelectValue placeholder="Select Year" />
+              </SelectTrigger>
+              <SelectContent className="w-40">
+                <SelectItem value="2025">2025</SelectItem>
+                <SelectItem value="2026">2026</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </>
+          <div>
+            <Select>
+              <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                <SelectValue placeholder="Select Week" />
+              </SelectTrigger>
+              <SelectContent className="w-40">
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       )}
 
       <Card className="bg-greyBlack border-grey-border border text-white">
         <CardHeader>
-          <CardTitle>{config.cardTitle}</CardTitle>
-          <CardDescription>{config.cardSubTitle}</CardDescription>
+          <CardTitle>{GraphConfig.Title}</CardTitle>
+          <CardDescription>{GraphConfig.SubText}</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>
@@ -305,7 +270,7 @@ const BarChartSection = ({ entries, isExpense }) => {
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="Amount" fill={config.barColor} radius={8}>
+              <Bar dataKey="Amount" fill={GraphConfig.barColor} radius={8}>
                 <LabelList
                   position="top"
                   offset={12}
@@ -318,7 +283,7 @@ const BarChartSection = ({ entries, isExpense }) => {
         </CardContent>
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <div className="flex w-full justify-center gap-2 leading-none font-medium">
-            {config.cardBottomText}
+            {GraphConfig.BottomText}
           </div>
         </CardFooter>
       </Card>
