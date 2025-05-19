@@ -24,7 +24,52 @@ export const getEntriesOfMonth = (entries, date) =>
 export const getEntriesOfWeek = (entries, date) =>
   entries.filter((items) => moment(items.entryDate).week() === date);
 
+export const getEntryDatesData = (entries) => {
+  // First Entry
+  const FY = getYearOfDate(entries[0].entryDate);
+  const FM = getMonthOfDate(entries[0].entryDate);
+  const FW = getWeekOfDate(entries[0].entryDate);
+  const FD = getDateOfDate(entries[0].entryDate);
 
+  // Last Entry
+  const LY = getYearOfDate(entries[entries.length - 1].entryDate);
+  const LM = getMonthOfDate(entries[entries.length - 1].entryDate);
+  const LW = getWeekOfDate(entries[entries.length - 1].entryDate);
+  const LD = getDateOfDate(entries[entries.length - 1].entryDate);
+
+  return {
+    year: { start: FY, end: LY },
+    month: { start: FM, end: LM },
+    week: { start: FW, end: LW },
+    date: { start: FD, end: LD },
+  };
+};
+
+export const getYearObjArray = (start, end) => {
+  const years = Array.from({ length: end - start + 1 }, (_, i) => ({
+    value: start + i,
+    title: start + i,
+  }));
+  return years;
+};
+
+export const getMonthObjArray = (start, end) => {
+  const months = Array.from({ length: end - start + 1 }, (_, i) => ({
+    value: start + i,
+    title: moment().month(start).format("MMMM"),
+  }));
+
+  return months;
+};
+
+export const getWeekObjArray = (start, end) => {
+  const months = Array.from({ length: end - start + 1 }, (_, i) => ({
+    value: start + i,
+    title: moment().week(start).format("wo") + " Week",
+  }));
+
+  return months;
+};
 
 export const sortByYearAsMonths = (entries) => {
   const stack = [];
