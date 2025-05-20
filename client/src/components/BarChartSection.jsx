@@ -46,7 +46,6 @@ const BarChartSection = ({ entries, isExpense }) => {
   });
   const [showGraphBy, setShowGraphBy] = useState(Graph.byYear);
   const [GraphConfig, setGraphConfig] = useState({
-    Title: "",
     SubText: "",
     BottomText: "",
     barLabel: "",
@@ -98,7 +97,13 @@ const BarChartSection = ({ entries, isExpense }) => {
       setGraphConfig(prev => ({
         ...prev,
         barColor: "var(--color-expense)",
-        Title: "Your Expense",
+        barLabel: "Your Expense",
+      }));
+    } else {
+      setGraphConfig(prev => ({
+        ...prev,
+        barColor: "var(--color-income)",
+        barLabel: "Your Income",
       }));
     }
   }, [isExpense, filter]);
@@ -118,7 +123,7 @@ const BarChartSection = ({ entries, isExpense }) => {
         ...prev,
         graphData: data,
         SubText: `Year ${filter.byYear} in Months.`,
-        BottomText: "Your Expense By Months in Year",
+        BottomText: `${GraphConfig.barLabel} By Months in Year`,
       }));
     }
     if (showGraphBy === Graph.byMonth.asWeek) {
@@ -129,7 +134,7 @@ const BarChartSection = ({ entries, isExpense }) => {
         SubText: `${moment().month(filter.byMonth).format("MMMM")}, ${
           filter.byYear
         } in Weeks`,
-        BottomText: "Your Expense By Weeks in Month ",
+        BottomText: `${GraphConfig.barLabel} By Weeks in Month `,
       }));
     }
     if (showGraphBy === Graph.byMonth.asDate) {
@@ -140,7 +145,7 @@ const BarChartSection = ({ entries, isExpense }) => {
         SubText: `Dates of ${moment().month(filter.byMonth).format("MMMM")}, ${
           filter.byYear
         }`,
-        BottomText: "Your Expense in Month on Dates ",
+        BottomText: `${GraphConfig.barLabel} in Month on Dates `,
       }));
     }
 
@@ -152,7 +157,7 @@ const BarChartSection = ({ entries, isExpense }) => {
         SubText: `Dates of ${moment()
           .week(filter.byWeek)
           .format("Do")} Week of Year ${filter.byYear}`,
-        BottomText: "Your Expense in Week by Dates ",
+        BottomText: `${GraphConfig.barLabel} in Week by Dates `,
       }));
     }
   }, [entries, filter, showGraphBy, GraphConfig.graphDataByYear]);
@@ -306,7 +311,7 @@ const BarChartSection = ({ entries, isExpense }) => {
 
       <Card className="bg-greyBlack border-grey-border border text-white">
         <CardHeader>
-          <CardTitle>{GraphConfig.Title}</CardTitle>
+          <CardTitle>{GraphConfig.barLabel}</CardTitle>
           <CardDescription>{GraphConfig.SubText}</CardDescription>
         </CardHeader>
         <CardContent>
