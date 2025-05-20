@@ -12,19 +12,19 @@ export const Graph = {
   },
 };
 
-export const getYearOfDate = (date) => moment(date).year();
-export const getMonthOfDate = (date) => moment(date).month();
-export const getWeekOfDate = (date) => moment(date).week();
-export const getDateOfDate = (date) => moment(date).date();
+export const getYearOfDate = date => moment(date).year();
+export const getMonthOfDate = date => moment(date).month();
+export const getWeekOfDate = date => moment(date).week();
+export const getDateOfDate = date => moment(date).date();
 
 export const getEntriesOfYear = (entries, year) =>
-  entries.filter((items) => moment(items.entryDate).year() === year);
+  entries.filter(items => moment(items.entryDate).year() === year);
 export const getEntriesOfMonth = (entries, date) =>
-  entries.filter((items) => moment(items.entryDate).month() === date);
+  entries.filter(items => moment(items.entryDate).month() === date);
 export const getEntriesOfWeek = (entries, date) =>
-  entries.filter((items) => moment(items.entryDate).week() === date);
+  entries.filter(items => moment(items.entryDate).week() === date);
 
-export const getEntryDatesData = (entries) => {
+export const getEntryDatesData = entries => {
   // First Entry
   const FY = getYearOfDate(entries[0].entryDate);
   const FM = getMonthOfDate(entries[0].entryDate);
@@ -71,11 +71,11 @@ export const getWeekObjArray = (start, end) => {
   return months;
 };
 
-export const sortByYearAsMonths = (entries) => {
+export const sortByYearAsMonths = entries => {
   const stack = [];
   for (let i = 0; i <= 11; i++) {
     const total = entries
-      .filter((items) => moment(items.entryDate).month() === i)
+      .filter(items => moment(items.entryDate).month() === i)
       .reduce((sum, items) => sum + items.amount, 0);
     stack.push({
       Title: moment().month(i).format("MMM"),
@@ -94,7 +94,7 @@ export const sortByMonthAsWeeks = (entries, month) => {
 
   for (let i = startBy; i <= endBy; i++) {
     const total = MonthList.filter(
-      (items) => moment(items.entryDate).week() === i,
+      items => moment(items.entryDate).week() === i
     ).reduce((sum, items) => sum + items.amount, 0);
     stack.push({
       Title: moment().week(i).format("wo") + " Week",
@@ -114,7 +114,7 @@ export const sortByMonthAsDates = (entries, month) => {
 
   for (let i = startBy; i <= endBy; i++) {
     const total = MonthList.filter(
-      (items) => moment(items.entryDate).date() === i,
+      items => moment(items.entryDate).date() === i
     ).reduce((sum, items) => sum + items.amount, 0);
     stack.push({
       Title: moment().date(i).format("DD"),
@@ -133,7 +133,7 @@ export const sortByWeekAsDates = (entries, week) => {
   const endBy = moment().week(week).endOf("week").date();
   for (let i = startBy; i <= endBy; i++) {
     const total = WeekList.filter(
-      (items) => moment(items.entryDate).date() === i,
+      items => moment(items.entryDate).date() === i
     ).reduce((sum, items) => sum + items.amount, 0);
     stack.push({
       Title:
