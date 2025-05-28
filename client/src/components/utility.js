@@ -12,20 +12,20 @@ export const Graph = {
   },
 };
 
-export const getYearOfDate = (date) => moment(date).year();
-export const getMonthOfDate = (date) => moment(date).month();
-export const getWeekOfDate = (date) => moment(date).week();
-export const getDateOfDate = (date) => moment(date).date();
+export const getYearOfDate = date => moment(date).year();
+export const getMonthOfDate = date => moment(date).month();
+export const getWeekOfDate = date => moment(date).week();
+export const getDateOfDate = date => moment(date).date();
 
 export const getTotalOfEntries = (entries) =>
   entries.reduce((sum, items) => sum + items.amount, 0);
 
 export const getEntriesOfYear = (entries, year) =>
-  entries.filter((items) => moment(items.entryDate).year() === year);
+  entries.filter(items => moment(items.entryDate).year() === year);
 export const getEntriesOfMonth = (entries, date) =>
-  entries.filter((items) => moment(items.entryDate).month() === date);
+  entries.filter(items => moment(items.entryDate).month() === date);
 export const getEntriesOfWeek = (entries, date) =>
-  entries.filter((items) => moment(items.entryDate).week() === date);
+  entries.filter(items => moment(items.entryDate).week() === date);
 
 export const getOldestDate = (entries) =>
   entries.reduce((oldest, current) => {
@@ -96,7 +96,7 @@ export const getWeekObjArray = (start, end) => {
   return months;
 };
 
-export const sortByYearAsMonths = (entries) => {
+export const sortByYearAsMonths = entries => {
   const stack = [];
   for (let i = 0; i <= 11; i++) {
     const filteredEntries = entries.filter(

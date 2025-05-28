@@ -45,6 +45,8 @@ const BarChartSection = ({ entries, isExpense }) => {
   };
   const chartData = GraphConfig.graphData;
 
+
+
   return (
     <>
       <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
@@ -53,7 +55,15 @@ const BarChartSection = ({ entries, isExpense }) => {
           onClick={() => {
             setShowGraphBy(Graph.byYear);
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${showGraphBy === Graph.byYear ? (isExpense ? "bg-expense" : "bg-income") : isExpense ? "hover:bg-expense bg-darkBlack" : "hover:bg-income bg-darkBlack"}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${
+            showGraphBy === Graph.byYear
+              ? isExpense
+                ? "bg-expense"
+                : "bg-income"
+              : isExpense
+              ? "hover:bg-expense bg-darkBlack"
+              : "hover:bg-income bg-darkBlack"
+          }`}
         >
           By Year
         </button>
@@ -61,7 +71,16 @@ const BarChartSection = ({ entries, isExpense }) => {
           onClick={() => {
             setShowGraphBy(Graph.byMonth.asWeek);
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${showGraphBy === Graph.byMonth.asWeek || showGraphBy === Graph.byMonth.asDate ? (isExpense ? "bg-expense" : "bg-income") : isExpense ? "hover:bg-expense bg-darkBlack" : "hover:bg-income bg-darkBlack"}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${
+            showGraphBy === Graph.byMonth.asWeek ||
+            showGraphBy === Graph.byMonth.asDate
+              ? isExpense
+                ? "bg-expense"
+                : "bg-income"
+              : isExpense
+              ? "hover:bg-expense bg-darkBlack"
+              : "hover:bg-income bg-darkBlack"
+          }`}
         >
           By Month
         </button>
@@ -69,7 +88,15 @@ const BarChartSection = ({ entries, isExpense }) => {
           onClick={() => {
             setShowGraphBy(Graph.byWeek);
           }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${showGraphBy === Graph.byWeek ? (isExpense ? "bg-expense" : "bg-income") : isExpense ? "hover:bg-expense bg-darkBlack" : "hover:bg-income bg-darkBlack"}`}
+          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${
+            showGraphBy === Graph.byWeek
+              ? isExpense
+                ? "bg-expense"
+                : "bg-income"
+              : isExpense
+              ? "hover:bg-expense bg-darkBlack"
+              : "hover:bg-income bg-darkBlack"
+          }`}
         >
           By Week
         </button>
@@ -156,7 +183,7 @@ const BarChartSection = ({ entries, isExpense }) => {
 
       <Card className="bg-greyBlack border-grey-border border text-white">
         <CardHeader>
-          <CardTitle>{GraphConfig.Title}</CardTitle>
+          <CardTitle>{GraphConfig.barLabel}</CardTitle>
           <CardDescription>{GraphConfig.SubText}</CardDescription>
         </CardHeader>
         <CardContent>
@@ -174,7 +201,7 @@ const BarChartSection = ({ entries, isExpense }) => {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={(value) => value}
+                tickFormatter={value => value}
               />
               <ChartTooltip
                 cursor={false}
