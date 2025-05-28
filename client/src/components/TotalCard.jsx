@@ -1,31 +1,204 @@
-import { BsBarChartFill, BsDatabaseFillAdd } from "react-icons/bs";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { BsBarChartFill } from "react-icons/bs";
 import { FaIndianRupeeSign } from "react-icons/fa6";
+import {
+  getEntriesOfMonth,
+  getEntriesOfWeek,
+  getEntriesOfYear,
+  getNewestDate,
+  getOldestDate,
+  getTotalOfEntries,
+} from "./utility";
 
-const TotalCard = ({ isExpense = true, cardFor = null }) => {
-  const data = {};
-  data.totalValue = 2000;
+const TotalCard = ({ isExpense, cardFor, entries }) => {
+  const [cardConfig, setCardConfig] = useState({
+    year: {
+      current: moment().year(),
+      firstEntry: null,
+    },
+    month: {
+      current: moment().month(),
+      firstEntry: null,
+    },
+    week: {
+      current: moment().week(),
+      firstEntry: null,
+    },
+    total: 0,
+    title: null,
+    setFor: isExpense ? "Expense" : "Income",
+  });
 
-  if (cardFor.toLowerCase().trim() === "year") {
-    data.title = isExpense ? "Last Year Expense" : "Last Year Income";
-  }
-  if (cardFor.toLowerCase().trim() === "month") {
-    data.title = isExpense ? "Last Month Expense" : "Last Month Income";
-  }
-  if (cardFor.toLowerCase().trim() === "week") {
-    data.title = isExpense ? "Last Week Expense" : "Last Week Income";
-  }
+  useEffect(() => {
+    const yearOf = getOldestDate(entries);
+    const yearIs = moment(yearOf.entryDate).year();
+    const monthIs = moment(yearOf.entryDate).month();
+    const weekIs = moment(yearOf.entryDate).week();
+    setCardConfig((prev) => ({
+      ...prev,
+      year: { firstEntry: yearIs },
+      month: { firstEntry: monthIs },
+      week: { firstEntry: weekIs },
+    }));
+  }, [entries]);
+
+  useEffect(() => {
+    if (cardConfig.year.current == cardConfig.year.firstEntry) {
+      const listSameYear = getEntriesOfYear(entries, cardConfig.year.current);
+      if (cardFor.toLowerCase().trim() === "year") {
+        const yearTotal = getTotalOfEntries(listSameYear);
+        setCardConfig((prev) => ({
+          ...prev,
+          title: `This Year ${cardConfig.setFor}`,
+          total: yearTotal,
+        }));
+      }
+      if (cardFor.toLowerCase().trim() === "month") {
+        if (cardConfig.month.current == cardConfig.month.firstEntry) {
+          const monthEntries = getEntriesOfMonth(
+            listSameYear,
+            cardConfig.month.current,
+          );
+          const monthTotal = getTotalOfEntries(monthEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `This Month ${cardConfig.setFor}`,
+            total: monthTotal,
+          }));
+        }
+        if (cardConfig.month.current > 0) {
+          const monthEntries = getEntriesOfMonth(
+            listSameYear,
+            cardConfig.year.current - 1,
+          );
+          const monthTotal = getTotalOfEntries(monthEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `Last Month ${cardConfig.setFor}`,
+            total: monthTotal,
+          }));
+        }
+      }
+      if (cardFor.toLowerCase().trim() === "week") {
+        if (cardConfig.week.current == cardConfig.week.firstEntry) {
+          const weekEntries = getEntriesOfWeek(
+            listSameYear,
+            cardConfig.week.current,
+          );
+          const yearTotal = getTotalOfEntries(weekEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `This Week ${cardConfig.setFor}`,
+            total: yearTotal,
+          }));
+        }
+        if (cardConfig.week.current > 1) {
+          const weekEntries = getEntriesOfWeek(
+            listSameYear,
+            cardConfig.week.current - 1,
+          );
+          const yearTotal = getTotalOfEntries(weekEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `Last Week ${cardConfig.setFor}`,
+            total: yearTotal,
+          }));
+        }
+      }
+    }
+
+    if (cardConfig.year.current > cardConfig.year.firstEntry) {
+      const listPrevYear = getEntriesOfYear(
+        entries,
+        cardConfig.year.current - 1,
+      );
+      if (cardFor.toLowerCase().trim() === "year") {
+        const yearTotal = getTotalOfEntries(listPrevYear);
+        setCardConfig((prev) => ({
+          ...prev,
+          title: `Last Year ${cardConfig.setFor}`,
+          total: yearTotal,
+        }));
+      }
+
+      if (cardFor.toLowerCase().trim() === "month") {
+        if (
+          cardConfig.month.current == 0 &&
+          cardConfig.month.firstEntry <= 11
+        ) {
+          const monthEntries = getEntriesOfMonth(listPrevYear, 11);
+          const monthTotal = getTotalOfEntries(monthEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `Last Month ${cardConfig.setFor}`,
+            total: monthTotal,
+          }));
+        }
+        if (cardConfig.month.current > 0) {
+          const listSameYear = getEntriesOfYear(
+            entries,
+            cardConfig.year.current,
+          );
+          const monthEntries = getEntriesOfMonth(
+            listSameYear,
+            cardConfig.month.current - 1,
+          );
+          const monthTotal = getTotalOfEntries(monthEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `Last Month ${cardConfig.setFor}`,
+            total: monthTotal,
+          }));
+        }
+      }
+
+      if (cardFor.toLowerCase().trim() === "week") {
+        if (cardConfig.week.current == 1) {
+          const lastEntryOfYear = getNewestDate(listPrevYear);
+          const lastWeek = moment(lastEntryOfYear.entryDate).week();
+          const weekEntries = getEntriesOfWeek(listPrevYear, lastWeek);
+          const weekTotal = getTotalOfEntries(weekEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `Last Week ${cardConfig.setFor}`,
+            total: weekTotal,
+          }));
+        }
+        if (cardConfig.week.current > 1) {
+          const listSameYear = getEntriesOfYear(
+            entries,
+            cardConfig.year.current,
+          );
+          const weekEntries = getEntriesOfWeek(
+            listSameYear,
+            cardConfig.week.current - 1,
+          );
+
+          console.log(`curr week = ${cardConfig.week.current}`);
+
+          const weekTotal = getTotalOfEntries(weekEntries);
+          setCardConfig((prev) => ({
+            ...prev,
+            title: `Last Week ${cardConfig.setFor}`,
+            total: weekTotal,
+          }));
+        }
+      }
+    }
+  }, [cardConfig, cardFor, entries]);
 
   return (
     <>
       <div className="border-grey-border flex w-1/2 flex-col gap-2 rounded-md border p-5">
         <div className="flex items-center gap-2 text-sm">
           <BsBarChartFill />
-          <span>{data.title}</span>
+          <span>{cardConfig.title}</span>
         </div>
 
         <div className="flex items-center gap-1 text-3xl font-bold">
           <FaIndianRupeeSign />
-          <span>{data.totalValue}</span>
+          <span>{cardConfig.total}</span>
         </div>
       </div>
     </>

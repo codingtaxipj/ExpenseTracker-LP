@@ -30,9 +30,9 @@ const ExpenseIndex = () => {
         {!loading && (
           <>
             <div className="flex gap-5 pt-6">
-              <TotalCard cardFor="year" />
-              <TotalCard cardFor="month" />
-              <TotalCard cardFor="year" />
+              <TotalCard isExpense={true} cardFor="year" entries={entries} />
+              <TotalCard isExpense={true} cardFor="month" entries={entries} />
+              <TotalCard isExpense={true} cardFor="week" entries={entries} />
               <CheckAnalysisCard />
             </div>
             <div className="mt-6 py-4">

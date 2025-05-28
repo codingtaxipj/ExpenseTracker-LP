@@ -6,14 +6,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const BarChartSelectFilter = ({ list }) => {
+const BarChartSelectFilter = ({ list, handleSelect, defaultSelected }) => {
   return (
     <>
-      <Select>
+      <Select
+        defaultValue={String(defaultSelected)}
+        onValueChange={handleSelect}
+      >
         <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
           <SelectValue placeholder="Sort By Type" />
         </SelectTrigger>
-        <SelectContent className="w-40">
+        <SelectContent className="max-h-100 w-40">
           {list.map((items) => (
             <SelectItem key={items.value} value={String(items.value)}>
               {items.title}

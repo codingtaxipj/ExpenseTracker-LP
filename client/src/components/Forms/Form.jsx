@@ -155,8 +155,8 @@ const Form = ({ formToDisplay }) => {
               type="button"
               className={
                 formToDisplay === PATH.addExpense
-                  ? "bg-expense w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "hover:bg-expense w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  ? "bg-expense w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  : "hover:bg-expense w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
             >
               Expense
@@ -166,8 +166,8 @@ const Form = ({ formToDisplay }) => {
               type="button"
               className={
                 formToDisplay === PATH.addIncome
-                  ? "bg-income w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "hover:bg-income w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  ? "bg-income w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  : "hover:bg-income w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
             >
               Income
@@ -180,7 +180,7 @@ const Form = ({ formToDisplay }) => {
               <PiTagSimpleFill />
               Amount
             </label>
-            <div className="inline-flex w-full items-center border-b-2 bg-white">
+            <div className="inline-flex w-full items-center border-b-2">
               <span className="text-[18px]">
                 <FaIndianRupeeSign />
               </span>
@@ -242,7 +242,7 @@ const Form = ({ formToDisplay }) => {
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-full justify-start text-left",
+                    "w-full justify-start bg-transparent text-left hover:bg-transparent hover:text-white",
                     !date && "text-muted-foreground",
                   )}
                 >
@@ -297,7 +297,7 @@ const Form = ({ formToDisplay }) => {
                 setSelectedPrimeValue(value);
               }}
             >
-              <SelectTrigger className="focus-visible:border-ring w-full bg-white focus-visible:ring-[1px] focus-visible:ring-gray-200">
+              <SelectTrigger className="focus-visible:border-ring w-full focus-visible:ring-[1px] focus-visible:ring-gray-200">
                 <SelectValue placeholder="Select a value..." />
               </SelectTrigger>
               <SelectContent>
@@ -357,11 +357,11 @@ const Form = ({ formToDisplay }) => {
                       className={
                         formToDisplay === PATH.addExpense
                           ? selectedSubCats === buttons
-                            ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                            : "hover:bg-expense cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            : "hover:bg-expense cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                           : selectedSubCats === buttons
-                            ? "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                            : "hover:bg-income cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            ? "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            : "hover:bg-income cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                       }
                     >
                       {capitalize(buttons)}
@@ -409,8 +409,8 @@ const Form = ({ formToDisplay }) => {
               type="submit"
               className={
                 formToDisplay === PATH.addExpense
-                  ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  : "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
             >
               Add Now
@@ -421,7 +421,7 @@ const Form = ({ formToDisplay }) => {
                 reset();
                 handleCancel();
               }}
-              className="cursor-pointer rounded-md bg-[#da0707] px-5 py-1 text-sm font-medium text-white shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+              className="cursor-pointer rounded-md bg-[#da0707] px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
             >
               Cancel
             </button>

@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import TotalCard from "@/components/TotalCard";
 import TableSection from "@/components/TableSection";
-import { FaListUl } from "react-icons/fa";
 import { CheckAnalysisCard } from "@/components/ButtonCard";
 import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
+import BarChartSection from "@/components/BarChartSection";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const IncomeIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
@@ -24,22 +32,51 @@ const IncomeIndex = () => {
         {loading && <p>Loading...</p>}
         {!loading && (
           <>
-            <div className="flex gap-5">
-              <TotalCard isExpense={false} cardFor="year" />
-              <TotalCard isExpense={false} cardFor="month" />
-              <TotalCard isExpense={false} cardFor="year" />
+            <div className="flex gap-5 pt-6">
+              <TotalCard isExpense={false} cardFor="year" entries={entries} />
+              <TotalCard isExpense={false} cardFor="month" entries={entries} />
+              <TotalCard isExpense={false} cardFor="week" entries={entries} />
               <CheckAnalysisCard isExpense={false} />
             </div>
-            <div className="pt-6 pb-2">
-              <div className="flex py-2.75">
-                <div className="flex items-center gap-2 pl-0.5 text-base font-medium">
-                  <FaListUl />
-                  Income Entries
+            <div className="mt-6 py-4">
+              <div className="bg-grey-hover flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
+                <div>
+                  <span className="h-7 rounded-md px-2 text-sm">
+                    Filter Table
+                  </span>
+                </div>
+                <div>
+                  <Select>
+                    <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                      <SelectValue placeholder="Sort By Type" />
+                    </SelectTrigger>
+                    <SelectContent className="w-40">
+                      <SelectItem value="subCat">Category</SelectItem>
+                      <SelectItem value="primeCat">Category From</SelectItem>
+                      <SelectItem value="date">Date</SelectItem>
+                      <SelectItem value="amount">Amount</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Select>
+                    <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+                      <SelectValue placeholder="Sort By Value" />
+                    </SelectTrigger>
+                    <SelectContent className="w-40">
+                      <SelectItem value="subCat">Category</SelectItem>
+                      <SelectItem value="primeCat">Category From</SelectItem>
+                      <SelectItem value="date">Date</SelectItem>
+                      <SelectItem value="amount">Amount</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
-
             <TableSection entries={entries} />
+            <div className="pt-6">
+              <BarChartSection isExpense={false} entries={entries} />
+            </div>
           </>
         )}
       </div>
