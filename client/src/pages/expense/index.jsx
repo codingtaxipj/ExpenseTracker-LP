@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useCalculate from "@/components/useCalculate";
 
 const ExpenseIndex = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
@@ -23,6 +24,9 @@ const ExpenseIndex = () => {
       setLoading(false);
     }
   }, [expenseData]);
+
+  useCalculate(entries);
+
   return (
     <>
       <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover w-full overflow-y-auto p-10 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">

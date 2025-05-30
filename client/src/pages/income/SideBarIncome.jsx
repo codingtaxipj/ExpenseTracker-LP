@@ -1,7 +1,7 @@
 import SideBar from "@/components/SideBar";
-import useInitalReduxLoad from "@/components/useInitalReduxLoad";
+
 import { PATH } from "@/router/routerConfig";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SideBarIncome = () => {
@@ -9,21 +9,6 @@ const SideBarIncome = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [maxIncome, setMaxIncome] = useState(0);
-  const { incomeMaxData } = useInitalReduxLoad({
-    isExpenseMaxData: false,
-    isPrimeCategory: true,
-  });
-  useEffect(() => {
-    if (incomeMaxData) {
-      setEntries(incomeMaxData);
-      const totalSum = incomeMaxData.reduce(
-        (sum, item) => sum + item.categoryTotal,
-        0,
-      );
-      setMaxIncome(totalSum);
-      setLoading(false);
-    }
-  }, [incomeMaxData]);
 
   return (
     <>

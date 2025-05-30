@@ -9,21 +9,6 @@ const SideBarExpense = () => {
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [maxExpense, setMaxExpense] = useState(0);
-  const { expenseMaxData } = useInitalReduxLoad({
-    isExpenseMaxData: true,
-    isPrimeCategory: true,
-  });
-  useEffect(() => {
-    if (expenseMaxData) {
-      setEntries(expenseMaxData);
-      const totalSum = expenseMaxData.reduce(
-        (sum, item) => sum + item.categoryTotal,
-        0,
-      );
-      setMaxExpense(totalSum);
-      setLoading(false);
-    }
-  }, [expenseMaxData]);
 
   return (
     <>

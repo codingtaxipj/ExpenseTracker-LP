@@ -1,17 +1,11 @@
-import { filterMyData } from "@/redux/slices/configExpense";
-import { filterMaxData } from "@/redux/slices/configMaxExpense";
+import { setDataExpense, setDataIncome } from "@/redux/slices/configExpense";
 import { fetchAllData } from "@/redux/slices/getExpense";
 import { fetchMaxData } from "@/redux/slices/getMaxExpense";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { filterByExpense, sortByDateNewest } from "./utilityFilter";
 
-const useInitalReduxLoad = (parameters = {}) => {
-  const {
-    isExpenseData = null,
-    isExpenseMaxData = null,
-    isPrimeCategory = null,
-  } = parameters;
-
+const useInitalReduxLoad = () => {
   //NOTE: inital fetch by redux
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,47 +14,26 @@ const useInitalReduxLoad = (parameters = {}) => {
   }, [dispatch]);
 
   const incomingData = useSelector((state) => state.expense.data);
-  const maxExpenseData = useSelector((state) => state.maxExpense.data);
 
   //NOTE: filtering data by type income or expense
   useEffect(() => {
-    if (incomingData && isExpenseData !== null) {
-      dispatch(
-        filterMyData({ data: incomingData, filterValue: isExpenseData }),
-      );
+    if (incomingData) {
+      const expList = filterByExpense(incomingData);
+      const sortedExpList = sortByDateNewest(expList);
+      dispatch(setDataExpense(sortedExpList));
+      const incList = filterByExpense(incomingData);
+      const sortedIncList = sortByDateNewest(incList);
+      dispatch(setDataIncome(sortedIncList));
     }
-  }, [dispatch, incomingData, isExpenseData]);
+  }, [incomingData, dispatch]);
 
   const expenseData = useSelector((state) => state.configExpense.dataExpense);
   const incomeData = useSelector((state) => state.configExpense.dataIncome);
 
-  //NOTE: filtering Max income and expense data by type
-  useEffect(() => {
-    if (maxExpenseData && isExpenseMaxData !== null) {
-      dispatch(
-        filterMaxData({
-          data: maxExpenseData,
-          filterByValue: isExpenseMaxData,
-          filterByCategory: isPrimeCategory,
-        }),
-      );
-    }
-  }, [dispatch, maxExpenseData, isExpenseMaxData, isPrimeCategory]);
-
-  const expenseMaxData = useSelector(
-    (state) => state.configMaxExpense.maxExpenseData,
-  );
-  const incomeMaxData = useSelector(
-    (state) => state.configMaxExpense.maxIncomeData,
-  );
-
   return {
-    maxExpenseData,
     incomingData,
     expenseData,
     incomeData,
-    expenseMaxData,
-    incomeMaxData,
   };
 };
 
