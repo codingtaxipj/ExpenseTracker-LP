@@ -113,6 +113,8 @@ export const expenseCategories = {
   },
 };
 
-
-
-
+export const incomeCategories = {
+  income: {
+    thisCategoryTitle: "Income",
+  },
+};

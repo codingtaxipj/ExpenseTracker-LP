@@ -13,11 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useCalculate from "@/components/useCalculate";
+import { calander } from "@/global/globalVariables";
 
 const ExpenseIndex = () => {
+  const isExpense = true;
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
-  const { expenseData } = useInitalReduxLoad({ isExpenseData: true });
+  const { expenseData } = useInitalReduxLoad({ isExpenseData: isExpense });
+
   useEffect(() => {
     if (expenseData) {
       setEntries(expenseData);
@@ -25,7 +28,7 @@ const ExpenseIndex = () => {
     }
   }, [expenseData]);
 
-  useCalculate(entries);
+  useCalculate(entries, isExpense);
 
   return (
     <>
@@ -34,10 +37,9 @@ const ExpenseIndex = () => {
         {!loading && (
           <>
             <div className="flex gap-5 pt-6">
-              <TotalCard isExpense={true} cardFor="year" entries={entries} />
-              <TotalCard isExpense={true} cardFor="month" entries={entries} />
-              <TotalCard isExpense={true} cardFor="week" entries={entries} />
-              <CheckAnalysisCard />
+              <TotalCard isExpense={true} cardFor={calander.year} />
+              <TotalCard isExpense={true} cardFor={calander.month} />
+              <CheckAnalysisCard isExpense={true} />
             </div>
             <div className="mt-6 py-4">
               <div className="bg-grey-hover flex w-max flex-row gap-1 rounded-md px-1.5 py-1">

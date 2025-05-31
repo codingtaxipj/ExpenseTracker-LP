@@ -6,19 +6,18 @@ import {
   Graph,
   sortByMonthAsWeeks,
   sortByMonthAsDates,
-  sortByWeekAsDates,
   getEntriesOfYear,
-  getEntryDatesData,
-  getYearObjArray,
-  getMonthObjArray,
-  getWeekObjArray,
 } from "./utility";
+import {
+  getUniqueMonths,
+  getUniqueWeeks,
+  getUniqueYears,
+} from "./utilityCalculate";
 
 const useBarCharConfig = (entries, isExpense) => {
   const [filter, setFilter] = useState({
     byYear: moment().year(),
     byMonth: moment().month(),
-    byWeek: moment().week(),
   });
   const [showGraphBy, setShowGraphBy] = useState(Graph.byYear);
   const [GraphConfig, setGraphConfig] = useState({
@@ -30,44 +29,26 @@ const useBarCharConfig = (entries, isExpense) => {
     barBtnStyle: "",
     graphData: [],
     graphDataByYear: [],
-    arrayOf: null,
-    years: 0,
-    months: 0,
-    weeks: 0,
+    entriesByYear: [],
+    years: [],
+    months: [],
+    weeks: [],
   });
 
   useEffect(() => {
-    const data = getEntryDatesData(entries);
+    const reversed = [...entries].reverse();
+    const entriesByYear = getEntriesOfYear(reversed, filter.byYear);
+    const months = getUniqueMonths(entriesByYear);
+    const weeks = getUniqueWeeks(entriesByYear);
 
     setGraphConfig((prev) => ({
       ...prev,
-      arrayOf: data,
+      entriesByYear,
+      months,
+      weeks,
+      years: getUniqueYears(reversed),
     }));
-  }, [entries]);
-
-  useEffect(() => {
-    if (GraphConfig.arrayOf !== null) {
-      const yearsArr = getYearObjArray(
-        GraphConfig.arrayOf.year.start,
-        GraphConfig.arrayOf.year.end,
-      );
-      const monthsArr = getMonthObjArray(
-        GraphConfig.arrayOf.month.start,
-        GraphConfig.arrayOf.month.end,
-      );
-
-      const weekArr = getWeekObjArray(
-        GraphConfig.arrayOf.week.start,
-        GraphConfig.arrayOf.week.end,
-      );
-      setGraphConfig((prev) => ({
-        ...prev,
-        years: yearsArr,
-        months: monthsArr,
-        weeks: weekArr,
-      }));
-    }
-  }, [GraphConfig.arrayOf]);
+  }, [entries, filter.byYear]);
 
   useEffect(() => {
     if (isExpense) {
@@ -94,6 +75,10 @@ const useBarCharConfig = (entries, isExpense) => {
   }, [filter.byYear, entries]);
 
   useEffect(() => {
+    const setDefaultMonth =
+      GraphConfig.months.find((item) => item === filter.byMonth) ||
+      GraphConfig.months[0];
+
     if (showGraphBy === Graph.byYear) {
       const data = sortByYearAsMonths(GraphConfig.graphDataByYear);
       setGraphConfig((prev) => ({
@@ -106,38 +91,25 @@ const useBarCharConfig = (entries, isExpense) => {
     if (showGraphBy === Graph.byMonth.asWeek) {
       const data = sortByMonthAsWeeks(
         GraphConfig.graphDataByYear,
-        filter.byMonth,
+        setDefaultMonth,
       );
       setGraphConfig((prev) => ({
         ...prev,
         graphData: data,
-        SubText: `${moment().month(filter.byMonth).format("MMMM")}, ${filter.byYear} in Weeks`,
+        SubText: `${moment().month(setDefaultMonth).format("MMMM")}, ${filter.byYear} in Weeks`,
         BottomText: `${GraphConfig.Title} By Weeks in Month `,
       }));
     }
     if (showGraphBy === Graph.byMonth.asDate) {
       const data = sortByMonthAsDates(
         GraphConfig.graphDataByYear,
-        filter.byMonth,
+        setDefaultMonth,
       );
       setGraphConfig((prev) => ({
         ...prev,
         graphData: data,
-        SubText: `Dates of ${moment().month(filter.byMonth).format("MMMM")}, ${filter.byYear}`,
+        SubText: `Dates of ${moment().month(setDefaultMonth).format("MMMM")}, ${filter.byYear}`,
         BottomText: `${GraphConfig.Title} in Month on Dates `,
-      }));
-    }
-
-    if (showGraphBy === Graph.byWeek) {
-      const data = sortByWeekAsDates(
-        GraphConfig.graphDataByYear,
-        filter.byWeek,
-      );
-      setGraphConfig((prev) => ({
-        ...prev,
-        graphData: data,
-        SubText: `Dates of ${moment().week(filter.byWeek).format("Do")} Week of Year ${filter.byYear}`,
-        BottomText: `${GraphConfig.Title}  in Week by Dates `,
       }));
     }
   }, [
@@ -146,6 +118,7 @@ const useBarCharConfig = (entries, isExpense) => {
     showGraphBy,
     GraphConfig.graphDataByYear,
     GraphConfig.Title,
+    GraphConfig.months,
   ]);
 
   const handleShowMonthIn = (value) => {
@@ -167,12 +140,6 @@ const useBarCharConfig = (entries, isExpense) => {
       byMonth: Number(val),
     }));
   };
-  const handleSelectWeek = (val) => {
-    setFilter((prev) => ({
-      ...prev,
-      byWeek: Number(val),
-    }));
-  };
 
   return {
     Graph,
@@ -183,7 +150,6 @@ const useBarCharConfig = (entries, isExpense) => {
     handleShowMonthIn,
     handleSelectYear,
     handleSelectMonth,
-    handleSelectWeek,
   };
 };
 

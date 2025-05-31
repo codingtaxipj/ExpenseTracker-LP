@@ -12,12 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useCalculate from "@/components/useCalculate";
+import { calander } from "@/global/globalVariables";
 
 const IncomeIndex = () => {
+  const isExpense = false;
   const [entries, setEntries] = useState([]); // State to hold fetched data
   const [loading, setLoading] = useState(true); // Loading state
-  const { incomeData } = useInitalReduxLoad({ isExpenseData: false });
-  console.log(incomeData);
+  const { incomeData } = useInitalReduxLoad({ isExpenseData: isExpense });
 
   useEffect(() => {
     if (incomeData) {
@@ -26,6 +28,8 @@ const IncomeIndex = () => {
     }
   }, [incomeData]);
 
+  useCalculate(entries, isExpense);
+
   return (
     <>
       <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover w-full overflow-y-auto p-10 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
@@ -33,9 +37,9 @@ const IncomeIndex = () => {
         {!loading && (
           <>
             <div className="flex gap-5 pt-6">
-              <TotalCard isExpense={false} cardFor="year" entries={entries} />
-              <TotalCard isExpense={false} cardFor="month" entries={entries} />
-              <TotalCard isExpense={false} cardFor="week" entries={entries} />
+              <TotalCard isExpense={false} cardFor={calander.year} />
+              <TotalCard isExpense={false} cardFor={calander.month} />
+
               <CheckAnalysisCard isExpense={false} />
             </div>
             <div className="mt-6 py-4">

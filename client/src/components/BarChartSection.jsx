@@ -35,7 +35,6 @@ const BarChartSection = ({ entries, isExpense }) => {
     handleShowMonthIn,
     handleSelectYear,
     handleSelectMonth,
-    handleSelectWeek,
   } = useBarCharConfig(entries, isExpense);
   const chartConfig = {
     barChart: {
@@ -45,7 +44,12 @@ const BarChartSection = ({ entries, isExpense }) => {
   };
   const chartData = GraphConfig.graphData;
 
-
+  const setDefaultYear =
+    GraphConfig.years.find((item) => item === filter.byYear) ||
+    GraphConfig.years[0];
+  const setDefaultMonth =
+    GraphConfig.months.find((item) => item === filter.byMonth) ||
+    GraphConfig.months[0];
 
   return (
     <>
@@ -61,8 +65,8 @@ const BarChartSection = ({ entries, isExpense }) => {
                 ? "bg-expense"
                 : "bg-income"
               : isExpense
-              ? "hover:bg-expense bg-darkBlack"
-              : "hover:bg-income bg-darkBlack"
+                ? "hover:bg-expense bg-darkBlack"
+                : "hover:bg-income bg-darkBlack"
           }`}
         >
           By Year
@@ -78,27 +82,11 @@ const BarChartSection = ({ entries, isExpense }) => {
                 ? "bg-expense"
                 : "bg-income"
               : isExpense
-              ? "hover:bg-expense bg-darkBlack"
-              : "hover:bg-income bg-darkBlack"
+                ? "hover:bg-expense bg-darkBlack"
+                : "hover:bg-income bg-darkBlack"
           }`}
         >
           By Month
-        </button>
-        <button
-          onClick={() => {
-            setShowGraphBy(Graph.byWeek);
-          }}
-          className={`rounded-sm border-0 px-5 py-1.5 text-xs ${
-            showGraphBy === Graph.byWeek
-              ? isExpense
-                ? "bg-expense"
-                : "bg-income"
-              : isExpense
-              ? "hover:bg-expense bg-darkBlack"
-              : "hover:bg-income bg-darkBlack"
-          }`}
-        >
-          By Week
         </button>
       </div>
       {showGraphBy === Graph.byYear && GraphConfig.years !== 0 && (
@@ -106,7 +94,7 @@ const BarChartSection = ({ entries, isExpense }) => {
           <button className="px-2 text-sm">Filter By</button>
           <div>
             <BarChartSelectFilter
-              defaultSelected={filter.byYear}
+              defaultSelected={setDefaultYear}
               list={GraphConfig.years}
               handleSelect={handleSelectYear}
             />
@@ -140,40 +128,17 @@ const BarChartSection = ({ entries, isExpense }) => {
               <button className="px-2 text-sm">Filter By</button>
               <div>
                 <BarChartSelectFilter
-                  defaultSelected={filter.byYear}
+                  defaultSelected={setDefaultYear}
                   list={GraphConfig.years}
                   handleSelect={handleSelectYear}
                 />
               </div>
               <div>
                 <BarChartSelectFilter
-                  defaultSelected={filter.byMonth}
+                  defaultSelected={setDefaultMonth}
                   list={GraphConfig.months}
                   handleSelect={handleSelectMonth}
-                />
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {showGraphBy === Graph.byWeek && (
-        <div className="bg-grey-hover mb-5 flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
-          <button className="px-2 text-sm">Filter By</button>
-          {GraphConfig.weeks !== 0 && GraphConfig.years !== 0 && (
-            <>
-              <div>
-                <BarChartSelectFilter
-                  list={GraphConfig.years}
-                  defaultSelected={filter.byYear}
-                  handleSelect={handleSelectYear}
-                />
-              </div>
-              <div>
-                <BarChartSelectFilter
-                  list={GraphConfig.weeks}
-                  defaultSelected={filter.byWeek}
-                  handleSelect={handleSelectWeek}
+                  listforMonth={true}
                 />
               </div>
             </>
@@ -201,7 +166,7 @@ const BarChartSection = ({ entries, isExpense }) => {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={value => value}
+                tickFormatter={(value) => value}
               />
               <ChartTooltip
                 cursor={false}
