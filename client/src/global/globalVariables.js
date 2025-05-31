@@ -19,4 +19,8 @@ export const FILTER = {
   byIncome: false,
 };
 
-
+export const calander = {
+  year: "Year",
+  month: "Month",
+  week: "Week",
+};

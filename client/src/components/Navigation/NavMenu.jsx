@@ -69,7 +69,10 @@ function Dashboard({ activeBtn, children }) {
               <span>Trip Expense</span>
             </button>
 
-             <button className={setStyle()}>
+            <button
+              onClick={() => navigate(PATH.analysis)}
+              className={setStyle(PATH.analysis)}
+            >
               <MdCalculate />
               <span>Analysis</span>
             </button>
@@ -83,6 +86,7 @@ function Dashboard({ activeBtn, children }) {
                 {activeBtn === PATH.home && <span>Dashboard</span>}
                 {activeBtn === PATH.expense && <span>Expense Data</span>}
                 {activeBtn === PATH.income && <span>Income Data</span>}
+                {activeBtn === PATH.analysis && <span>Data Analysis</span>}
               </div>
             </div>
             <div className="flex grow justify-end gap-2.5 pr-2">
