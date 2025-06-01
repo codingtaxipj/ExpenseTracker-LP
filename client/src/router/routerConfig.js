@@ -4,7 +4,8 @@ const PATH = {
   income: "/income",
   addExpense: "add-expense",
   addIncome: "add-income",
-  analysis: "/analysis",
+  expenseAnalysis: "/expense-analysis",
+  incomeAnalysis: "/income-analysis",
 };
 
 export { PATH };

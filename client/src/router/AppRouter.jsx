@@ -4,12 +4,12 @@ import Income from "@/pages/income/Income.jsx";
 import HomeIndex from "@/pages/home/index.jsx";
 import ExpenseIndex from "@/pages/expense/index.jsx";
 import IncomeIndex from "@/pages/income/index.jsx";
-import AnalysisIndex from "@/pages/analysis/index.jsx";
 import ExpenseForm from "@/components/Forms/Expense_Form.jsx";
 import IncomeForm from "@/components/Forms/Income_Form.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { PATH } from "./routerConfig.js";
-import Analysis from "@/pages/analysis/Analysis.jsx";
+import ExpenseAnalysis from "@/pages/analysis/ExpenseAnalysis.jsx";
+import IncomeAnalysis from "@/pages/analysis/IncomeAnalysis.jsx";
 
 const AppRouter = () => {
   return (
@@ -27,9 +27,16 @@ const AppRouter = () => {
         <Route index element={<IncomeIndex />} />
         {formRoutes()}
       </Route>
-      <Route path={PATH.analysis} element={<Analysis />}>
-        <Route index element={<AnalysisIndex />} />
-      </Route>
+      <Route
+        index
+        path={PATH.expenseAnalysis}
+        element={<ExpenseAnalysis />}
+      ></Route>
+      <Route
+        index
+        path={PATH.incomeAnalysis}
+        element={<IncomeAnalysis />}
+      ></Route>
     </Routes>
   );
 };

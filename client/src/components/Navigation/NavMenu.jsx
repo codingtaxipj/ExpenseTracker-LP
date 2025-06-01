@@ -57,24 +57,30 @@ function Dashboard({ activeBtn, children }) {
               <span>Expense</span>
             </button>
             <button
+              onClick={() => navigate(PATH.expenseAnalysis)}
+              className={setStyle(PATH.expenseAnalysis)}
+            >
+              <MdCalculate />
+              <span>Expense Analysis</span>
+            </button>
+            <button
               onClick={() => navigate(PATH.income)}
               className={setStyle(PATH.income)}
             >
               <GiReceiveMoney />
               <span>Income</span>
             </button>
+            <button
+              onClick={() => navigate(PATH.incomeAnalysis)}
+              className={setStyle(PATH.incomeAnalysis)}
+            >
+              <MdCalculate />
+              <span>Income Analysis</span>
+            </button>
 
             <button className={setStyle()}>
               <FaCarSide />
               <span>Trip Expense</span>
-            </button>
-
-            <button
-              onClick={() => navigate(PATH.analysis)}
-              className={setStyle(PATH.analysis)}
-            >
-              <MdCalculate />
-              <span>Analysis</span>
             </button>
           </div>
         </div>
@@ -86,7 +92,12 @@ function Dashboard({ activeBtn, children }) {
                 {activeBtn === PATH.home && <span>Dashboard</span>}
                 {activeBtn === PATH.expense && <span>Expense Data</span>}
                 {activeBtn === PATH.income && <span>Income Data</span>}
-                {activeBtn === PATH.analysis && <span>Data Analysis</span>}
+                {activeBtn === PATH.expenseAnalysis && (
+                  <span>Expense Data Analysis</span>
+                )}
+                {activeBtn === PATH.incomeAnalysis && (
+                  <span>Income Data Analysis</span>
+                )}
               </div>
             </div>
             <div className="flex grow justify-end gap-2.5 pr-2">

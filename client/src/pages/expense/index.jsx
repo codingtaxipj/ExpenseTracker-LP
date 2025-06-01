@@ -26,6 +26,7 @@ const ExpenseIndex = () => {
       setEntries(expenseData);
       setLoading(false);
     }
+    0;
   }, [expenseData]);
 
   useCalculate(entries, isExpense);
