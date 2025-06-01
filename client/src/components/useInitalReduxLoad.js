@@ -17,7 +17,7 @@ const useInitalReduxLoad = () => {
     dispatch(fetchMaxData());
   }, [dispatch]);
 
-  const incomingData = useSelector((state) => state.expense.data);
+  const incomingData = useSelector((state) => state.expense.data) || false;
 
   //NOTE: filtering data by type income or expense
   useEffect(() => {
@@ -31,8 +31,10 @@ const useInitalReduxLoad = () => {
     }
   }, [incomingData, dispatch]);
 
-  const expenseData = useSelector((state) => state.configExpense.dataExpense);
-  const incomeData = useSelector((state) => state.configExpense.dataIncome);
+  const expenseData =
+    useSelector((state) => state.configExpense.dataExpense) || false;
+  const incomeData =
+    useSelector((state) => state.configExpense.dataIncome) || false;
 
   return {
     incomingData,

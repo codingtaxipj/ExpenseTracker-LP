@@ -14,27 +14,26 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-export const description = "A bar chart";
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-  { month: "June", desktop: 214 },
-  { month: "June", desktop: 214 },
-  { month: "June", desktop: 214 },
-  { month: "June", desktop: 214 },
-];
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
-  },
-};
 
-const SubCategoryBarChart = () => {
+const SingleBarChart = () => {
+  const chartData = [
+    { month: "January", desktop: 186 },
+    { month: "February", desktop: 305 },
+    { month: "March", desktop: 237 },
+    { month: "April", desktop: 73 },
+    { month: "May", desktop: 209 },
+    { month: "June", desktop: 214 },
+    { month: "June", desktop: 214 },
+    { month: "June", desktop: 214 },
+    { month: "June", desktop: 214 },
+    { month: "June", desktop: 214 },
+  ];
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "var(--chart-1)",
+    },
+  };
   return (
     <>
       <Card className="bg-greyBlack border-grey-border flex flex-1 flex-col gap-0.5 border text-white">
@@ -77,4 +76,4 @@ const SubCategoryBarChart = () => {
   );
 };
 
-export default SubCategoryBarChart;
+export default SingleBarChart;

@@ -1,6 +1,5 @@
 import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -14,33 +13,26 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-export const description = "A multiple line chart";
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-  { month: "July", desktop: 56, mobile: 358 },
-  { month: "August", desktop: 256, mobile: 657 },
-  { month: "September", desktop: 652, mobile: 556 },
-  { month: "Octuber", desktop: 458, mobile: 845 },
-  { month: "November", desktop: 956, mobile: 42 },
-  { month: "December", desktop: 55, mobile: 135 },
-];
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
-  },
-};
 
-const YearVSYearCompare = () => {
+const DoubleLineChart = () => {
+  const chartData = [
+    { month: "January", desktop: 186, mobile: 80 },
+    { month: "February", desktop: 305, mobile: 200 },
+    { month: "March", desktop: 237, mobile: 120 },
+    { month: "April", desktop: 73, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+    { month: "June", desktop: 214, mobile: 140 },
+  ];
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "var(--chart-1)",
+    },
+    mobile: {
+      label: "Mobile",
+      color: "var(--chart-2)",
+    },
+  };
   return (
     <>
       <Card className="bg-greyBlack border-grey-border flex flex-1 flex-col border text-white">
@@ -49,7 +41,7 @@ const YearVSYearCompare = () => {
           <CardDescription>January - June 2024</CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer className="h-[300px] w-full" config={chartConfig}>
+          <ChartContainer config={chartConfig}>
             <LineChart
               accessibilityLayer
               data={chartData}
@@ -102,4 +94,4 @@ const YearVSYearCompare = () => {
   );
 };
 
-export default YearVSYearCompare;
+export default DoubleLineChart;

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import TotalCard from "@/components/TotalCard";
 import { CheckAnalysisCard } from "@/components/ButtonCard";
 import TableSection from "@/components/TableSection";
-import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
 import BarChartSection from "@/components/BarChartSection";
 
 import {
@@ -12,30 +10,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useCalculate from "@/components/useCalculate";
+
 import { calander } from "@/global/globalVariables";
+import usePageConfig from "@/components/usePageConfig";
 
 const ExpenseIndex = () => {
-  const isExpense = true;
-  const [entries, setEntries] = useState([]); // State to hold fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const { expenseData } = useInitalReduxLoad({ isExpenseData: isExpense });
-
-  useEffect(() => {
-    if (expenseData) {
-      setEntries(expenseData);
-      setLoading(false);
-    }
-    0;
-  }, [expenseData]);
-
-  useCalculate(entries, isExpense);
+  const { dataConfig } = usePageConfig();
 
   return (
     <>
       <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover w-full overflow-y-auto p-10 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
-        {loading && <p>Loading...</p>}
-        {!loading && (
+        {dataConfig.expense.loading && <p>Loading...</p>}
+        {!dataConfig.expense.loading && (
           <>
             <div className="flex gap-5 pt-6">
               <TotalCard isExpense={true} cardFor={calander.year} />
@@ -77,9 +63,12 @@ const ExpenseIndex = () => {
                 </div>
               </div>
             </div>
-            <TableSection entries={entries} />
+            <TableSection entries={dataConfig.expense.entries} />
             <div className="pt-6">
-              <BarChartSection isExpense={true} entries={entries} />
+              <BarChartSection
+                isExpense={true}
+                entries={dataConfig.expense.entries}
+              />
             </div>
           </>
         )}

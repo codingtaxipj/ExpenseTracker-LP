@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import TotalCard from "@/components/TotalCard";
 import TableSection from "@/components/TableSection";
 import { CheckAnalysisCard } from "@/components/ButtonCard";
-import useInitalReduxLoad from "@/components/useInitalReduxLoad.js";
 import BarChartSection from "@/components/BarChartSection";
 
 import {
@@ -12,29 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useCalculate from "@/components/useCalculate";
 import { calander } from "@/global/globalVariables";
+import usePageConfig from "@/components/usePageConfig";
 
 const IncomeIndex = () => {
-  const isExpense = false;
-  const [entries, setEntries] = useState([]); // State to hold fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const { incomeData } = useInitalReduxLoad({ isExpenseData: isExpense });
-
-  useEffect(() => {
-    if (incomeData) {
-      setEntries(incomeData);
-      setLoading(false);
-    }
-  }, [incomeData]);
-
-  useCalculate(entries, isExpense);
+  const { dataConfig } = usePageConfig();
 
   return (
     <>
       <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover w-full overflow-y-auto p-10 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
-        {loading && <p>Loading...</p>}
-        {!loading && (
+        {dataConfig.income.loading && <p>Loading...</p>}
+        {!dataConfig.income.loading && (
           <>
             <div className="flex gap-5 pt-6">
               <TotalCard isExpense={false} cardFor={calander.year} />
@@ -77,9 +63,12 @@ const IncomeIndex = () => {
                 </div>
               </div>
             </div>
-            <TableSection entries={entries} />
+            <TableSection entries={dataConfig.income.entries} />
             <div className="pt-6">
-              <BarChartSection isExpense={false} entries={entries} />
+              <BarChartSection
+                isExpense={false}
+                entries={dataConfig.income.entries}
+              />
             </div>
           </>
         )}
