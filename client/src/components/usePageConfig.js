@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import useInitalReduxLoad from "./useInitalReduxLoad";
-import useCalculate from "./useCalculate";
+import calculateTotal from "./calculateTotal";
+import { useDispatch } from "react-redux";
 
 const usePageConfig = () => {
-  const { incomeData, expenseData } = useInitalReduxLoad();
+  const dispatch = useDispatch();
+  const { incomeData, expenseData, isExpense } = useInitalReduxLoad();
 
-  const isExpense = true;
   const [dataConfig, setDataConfig] = useState({
     income: {
       entries: [],
@@ -18,25 +19,25 @@ const usePageConfig = () => {
   });
 
   useEffect(() => {
-    if (incomeData)
-      setDataConfig((prev) => ({
-        ...prev,
-        income: { entries: incomeData, loading: false },
-      }));
-  }, [incomeData]);
-
-  useEffect(() => {
-    if (expenseData)
+    if (expenseData.length > 0) {
       setDataConfig((prev) => ({
         ...prev,
         expense: { entries: expenseData, loading: false },
       }));
-  }, [expenseData]);
+      calculateTotal(dispatch, expenseData, true);
+    }
+  }, [expenseData, dispatch]);
 
-  useCalculate(dataConfig.income.entries, !isExpense);
-  useCalculate(dataConfig.expense.entries, isExpense);
+  useEffect(() => {
+    if (incomeData.length > 0)
+      setDataConfig((prev) => ({
+        ...prev,
+        income: { entries: incomeData, loading: false },
+      }));
+    //calculateTotal(dispatch, incomeData, false);
+  }, [incomeData, dispatch]);
 
-  return { dataConfig };
+  return { dataConfig, isExpense };
 };
 
 export default usePageConfig;

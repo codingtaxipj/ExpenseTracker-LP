@@ -1,5 +1,4 @@
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, LabelList } from "recharts";
 
 import {
   Card,
@@ -15,62 +14,76 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const SingleBarChart = () => {
-  const chartData = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-    { month: "June", desktop: 214 },
-    { month: "June", desktop: 214 },
-    { month: "June", desktop: 214 },
-    { month: "June", desktop: 214 },
-  ];
+const SingleBarChart = ({
+  barInfo = {
+    data: [],
+    label: [],
+    color: false,
+  },
+  chartInfo = {
+    title: false,
+    subtext: false,
+    footertext: false,
+  },
+}) => {
+  const chartData = barInfo.data;
   const chartConfig = {
-    desktop: {
-      label: "Desktop",
-      color: "var(--chart-1)",
+    barChart: {
+      label: barInfo.label,
+      color: barInfo.color,
     },
   };
   return (
     <>
       <Card className="bg-greyBlack border-grey-border flex flex-1 flex-col gap-0.5 border text-white">
         <CardHeader>
-          <CardTitle>Bar Chart</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
+          {chartInfo.subtext && (
+            <CardDescription>{chartInfo.subtext}</CardDescription>
+          )}
         </CardHeader>
         <CardContent>
           <ChartContainer
             config={chartConfig}
             className={"max-h-[450px] w-full"}
           >
-            <BarChart accessibilityLayer data={chartData}>
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                top: 50,
+              }}
+            >
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="month"
+                dataKey="Title"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={(value) => value.slice(0, 3)}
+                tickFormatter={(value) => value}
               />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
+              <Bar dataKey="Amount" fill="var(--color-barChart)" radius={8}>
+                <LabelList
+                  position="top"
+                  offset={12}
+                  className="fill-[white]"
+                  fontSize={12}
+                />
+              </Bar>
             </BarChart>
           </ChartContainer>
         </CardContent>
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-          <div className="flex gap-2 leading-none font-medium">
-            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-          </div>
-          <div className="text-muted-foreground leading-none">
-            Showing total visitors for the last 6 months
-          </div>
-        </CardFooter>
+        {chartInfo.footertext && (
+          <CardFooter className="flex-col items-start gap-2 text-sm">
+            <div className="flex w-full justify-center gap-2 leading-none font-medium">
+              {chartInfo.footertext}
+            </div>
+          </CardFooter>
+        )}
       </Card>
     </>
   );

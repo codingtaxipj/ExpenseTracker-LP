@@ -71,7 +71,6 @@ export const expenseCategories = {
   },
   gift: {
     thisCategoryTitle: "Gifting & Charity",
-    thisBgColor: "#5B5EA6",
     bday: "Birthday",
     wed: "Wedding",
     anna: "Anniversary",
@@ -118,3 +117,16 @@ export const incomeCategories = {
     thisCategoryTitle: "Income",
   },
 };
+
+export const incomeSubCat = [
+  "Salary",
+  "Salary Bonus",
+  "Part-Time Job",
+  "Freelance Work",
+  "Reselling",
+  "Rental Income",
+  "Service Provided",
+  "Loan Repaid",
+  "Prize Money",
+  "Loan Taken",
+];

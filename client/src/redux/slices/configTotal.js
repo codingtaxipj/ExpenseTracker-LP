@@ -5,7 +5,7 @@ const initialState = {
   expense: {
     byYear: {},
     byMonth: {},
-    byPrime: {},     
+    byPrime: {},
     bySub: {},
   },
   income: {

@@ -31,18 +31,6 @@ export const getEntriesOfPrimeCat = (entries, prime) =>
 export const getEntriesOfSubCat = (entries, sub) =>
   entries.filter((items) => items.subCategory === sub);
 
-export const getPrimeCategories = (list) => [
-  ...new Set(Object.values(list).map((item) => item.thisCategoryTitle)),
-];
-
-export const getSubCategories = (list) => {
-  const L1 = Object.values(list);
-  const L2 = L1.map((cc) =>
-    Object.keys(cc).filter((k) => k !== "thisCategoryTitle"),
-  );
-  return [...new Set(L2.flat())];
-};
-
 export const getOldestDate = (entries) =>
   entries.reduce((oldest, current) => {
     return moment(current.entryDate).isBefore(moment(oldest.entryDate))

@@ -5,20 +5,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import moment from "moment";
 
-const SelectFilter = ({ placeHolder, items }) => {
+const SelectFilter = ({
+  list,
+  placeholder,
+  onValueChange,
+  defaultValue,
+  isMonthSelect = false,
+}) => {
+ 
+
   return (
     <>
-      <Select>
+      <Select value={defaultValue} onValueChange={onValueChange}>
         <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-          <SelectValue placeholder={placeHolder} />
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="w-40">
-          {items.map((data) => (
-            <SelectItem key={data * 0.55} value={String(data)}>
-              {data}
-            </SelectItem>
-          ))}
+          {list.map((items) => {
+            return (
+              <SelectItem key={items} value={String(items)}>
+                {isMonthSelect ? moment().month(items).format("MMMM") : items}
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
     </>

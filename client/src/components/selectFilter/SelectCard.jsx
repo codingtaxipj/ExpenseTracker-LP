@@ -5,7 +5,7 @@ const SelectCard = ({ title, children, isExpense }) => {
     <>
       <MdFilterAlt className={isExpense ? "text-expense" : "text-income"} />
       <button className="pr-2 text-sm">{title}</button>
-      <div> {children}</div>
+      <div className="flex flex-row gap-2"> {children}</div>
     </>
   );
 };

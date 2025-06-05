@@ -10,6 +10,7 @@ import {
 } from "./utilityFilter";
 
 const useInitalReduxLoad = () => {
+  const isExpense = true;
   //NOTE: inital fetch by redux
   const dispatch = useDispatch();
   useEffect(() => {
@@ -40,6 +41,7 @@ const useInitalReduxLoad = () => {
     incomingData,
     expenseData,
     incomeData,
+    isExpense,
   };
 };
 
