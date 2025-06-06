@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useInitalReduxLoad from "./useInitalReduxLoad";
 import calculateTotal from "./calculateTotal";
 import { useDispatch } from "react-redux";
+import { expenseCategories, incomeCategories } from "@/global/categories";
 
 const usePageConfig = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const usePageConfig = () => {
         ...prev,
         expense: { entries: expenseData, loading: false },
       }));
-      calculateTotal(dispatch, expenseData, true);
+      calculateTotal(dispatch, expenseData, true, expenseCategories);
     }
   }, [expenseData, dispatch]);
 
@@ -34,7 +35,7 @@ const usePageConfig = () => {
         ...prev,
         income: { entries: incomeData, loading: false },
       }));
-    //calculateTotal(dispatch, incomeData, false);
+    calculateTotal(dispatch, incomeData, false, incomeCategories);
   }, [incomeData, dispatch]);
 
   return { dataConfig, isExpense };

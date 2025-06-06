@@ -17,13 +17,7 @@ const SubCategoryBarChart = ({
     };
   });
 
-  return (
-    <>
-      <SingleBarChart
-        barInfo={{ data: FF, label: "sub", color: "var(--color-expense)" }}
-      ></SingleBarChart>
-    </>
-  );
+  return <></>;
 };
 
 export default SubCategoryBarChart;

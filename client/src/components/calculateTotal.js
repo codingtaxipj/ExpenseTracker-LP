@@ -17,27 +17,18 @@ import {
   setIncomeSubTotal,
 } from "@/redux/slices/configTotal";
 
-import {
-  getPrimeCategoriesExpense,
-  getPrimeCategoriesIncome,
-  getSubCategoriesExpense,
-  getSubCategoriesIncome,
-} from "@/global/categories";
+import { getPrimeCategories, getSubCategories } from "@/global/categories";
 import { getUniqueMonths, getUniqueYears } from "./utilityCalculate";
 
-const calculateTotal = (dispatch, entries, isExpense) => {
+const calculateTotal = (dispatch, entries, isExpense, listTotal) => {
   if (!Array.isArray(entries) || entries.length === 0) {
     return;
   } else {
     const uniqueYears = getUniqueYears(entries);
     const categories = { prime: {}, sub: {} };
-    if (isExpense) {
-      categories.prime = getPrimeCategoriesExpense();
-      categories.sub = getSubCategoriesExpense();
-    } else {
-      categories.prime = getPrimeCategoriesIncome();
-      categories.sub = getSubCategoriesIncome();
-    }
+    categories.prime = getPrimeCategories(listTotal);
+    categories.sub = getSubCategories(listTotal);
+
     const total = {
       Y: {},
       PC: {},

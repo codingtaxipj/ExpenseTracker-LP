@@ -13,39 +13,19 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart.jsx";
+import moment from "moment";
 
-const SimplePieChart = () => {
-  const chartData = [
-    { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-    { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-    { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-    { browser: "other", visitors: 90, fill: "var(--color-other)" },
-  ];
+const SimplePieChart = ({ barInfo, colorPalette }) => {
+  const chartData = Object.values(barInfo).map((item, index) => ({
+    Title: moment().month(String(item.Title)).format("MMMM"),
+    Amount: item.Amount || 0, // fallback in case value is undefined
+    fill: colorPalette[index], // mod to prevent index overflow
+  }));
 
   const chartConfig = {
-    visitors: {
-      label: "Visitors",
-    },
-    chrome: {
-      label: "Chrome",
-      color: "var(--chart-1)",
-    },
-    safari: {
-      label: "Safari",
-      color: "var(--chart-2)",
-    },
-    firefox: {
-      label: "Firefox",
-      color: "var(--chart-3)",
-    },
-    edge: {
-      label: "Edge",
-      color: "var(--chart-4)",
-    },
-    other: {
-      label: "Other",
-      color: "var(--chart-5)",
+    Amount: {
+      label: "Amount",
+      color: "fill",
     },
   };
 
@@ -66,7 +46,7 @@ const SimplePieChart = () => {
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Pie data={chartData} dataKey="visitors" nameKey="browser" />
+              <Pie data={chartData} dataKey="Amount" nameKey="Title" />
             </PieChart>
           </ChartContainer>
         </CardContent>

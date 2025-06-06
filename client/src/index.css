@@ -27,6 +27,7 @@
   --color-grey-hover: #2c2c2c;
   --color-dim-text: #dbdbdb;
 }
+
 @font-face {
   font-family: Popins-Regular;
   src: url("../src/assets/Fonts/Poppins/Poppins-Regular.ttf");

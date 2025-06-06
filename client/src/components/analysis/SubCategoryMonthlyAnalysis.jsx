@@ -3,33 +3,40 @@ import SelectFilter from "@/components/selectFilter/SelectFilter";
 import OuterBar from "@/components/selectFilter/OuterBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 
-import { geSubOfPrime, getPrimeCategoriesExpense } from "@/global/categories";
-import { useState } from "react";
-import moment from "moment";
+import { useEffect, useState } from "react";
+import useAnalysisConfig from "./useAnalysisConfig";
+import SingleBarChart from "../charts/SingleBarChart";
 
-const SubCategoryMonthlyAnalysis = ({ totalData }) => {
-  const categories = { prime: {}, sub: {} };
-  categories.prime = getPrimeCategoriesExpense();
 
-  const [filter, setFilter] = useState({
-    byYear: String(moment().year()),
-    byMonth: String(moment().month()),
-    byPrime: categories.prime[0],
+const SubCategoryMonthlyAnalysis = () => {
+  const {
+    filter,
+    categories,
+    Years,
+    Months,
+    handleYearSelector,
+    handleMonthSelector,
+    handlePrimeSelector,
+    expense,
+  } = useAnalysisConfig();
+
+  const [chartData, setChartData] = useState({
+    Title: [],
+    Amount: 0,
   });
 
-  const Years = Object.keys(totalData);
-  const Months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-  const handleYearSelector = (val) => {
-    console.log("Year is", typeof val);
-    setFilter((prev) => ({ ...prev, byYear: val }));
-  };
-  const handleMonthSelector = (val) => {
-    setFilter((prev) => ({ ...prev, byMonth: val }));
-  };
-  const handlePrimeSelector = (val) => {
-    setFilter((prev) => ({ ...prev, byPrime: val }));
-  };
-  categories.sub = geSubOfPrime(filter.byPrime, true);
+  useEffect(() => {
+    if (Object.keys(expense.sub).length > 0) {
+      const list = expense.sub[filter.byYear]?.[filter.byMonth];
+      if (!list) return;
+
+      const data = categories.sub.map((item) => ({
+        Title: item,
+        Amount: list?.[item]?.total || 0,
+      }));
+      setChartData(data);
+    }
+  }, [expense.sub, filter.byYear, filter.byMonth, categories.sub]);
 
   return (
     <>
@@ -65,11 +72,14 @@ const SubCategoryMonthlyAnalysis = ({ totalData }) => {
             </OuterBar>
           </div>
           <div className="flex flex-row">
-            <SubCategoryBarChart
-              list={categories.sub}
-              year={filter.byYear}
-              month={filter.byMonth}
-            ></SubCategoryBarChart>
+            <SingleBarChart
+            
+              barInfo={{
+                data: chartData,
+                label: "Sub Category",
+                color: "var(--color-expense)",
+              }}
+            ></SingleBarChart>
           </div>
         </div>
       </>

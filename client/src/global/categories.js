@@ -164,19 +164,15 @@ export const incomeCategories = [
   },
 ];
 
-export const getPrimeCategoriesExpense = () =>
-  expenseCategories.map((item) => item.title);
-export const getSubCategoriesExpense = () =>
-  expenseCategories.flatMap((item) =>
-    item.subcategories.map((sub) => sub.name),
+export const getPrimeCategories = (cats = []) =>
+  Object.values(cats).map((item) => item.title);
+
+export const getSubCategories = (cats = []) =>
+  Object.values(cats).flatMap(
+    (item) => item.subcategories?.map((sub) => sub.name) || [],
   );
 
-export const getPrimeCategoriesIncome = () =>
-  incomeCategories.map((item) => item.title);
-export const getSubCategoriesIncome = () =>
-  incomeCategories.flatMap((item) => item.subcategories.map((sub) => sub.name));
-
-export const geSubOfPrime = (prime, isExpense) => {
+export const getSubOfPrime = (prime, isExpense) => {
   const list = isExpense ? expenseCategories : incomeCategories;
   const category = list.find((item) => item.title === prime);
   return category ? category.subcategories.map((item) => item.name) : [];
