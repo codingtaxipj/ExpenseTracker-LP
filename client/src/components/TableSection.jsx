@@ -51,7 +51,7 @@ const TableSection = ({ entries }) => {
           <TableHeader>
             <TableRow className="hover:bg-grey-hover bg-grey-hover border-b-grey-hover">
               <TableHead className="p-2.5"></TableHead>
-              <TableHead className="text-dim-text p-2.5">Category</TableHead>
+             <TableHead className="text-dim-text p-2.5">Category</TableHead>
               <TableHead className="text-dim-text p-2.5">From</TableHead>
               <TableHead className="text-dim-text p-2.5">Date</TableHead>
               <TableHead className="text-dim-text p-2.5">For</TableHead>

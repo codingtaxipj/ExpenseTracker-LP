@@ -1,14 +1,11 @@
-import SubCategoryBarChart from "./SubCategoryBarChart";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 import OuterBar from "@/components/selectFilter/OuterBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
-
 import { useEffect, useState } from "react";
 import useAnalysisConfig from "./useAnalysisConfig";
 import SingleBarChart from "../charts/SingleBarChart";
 
-
-const SubCategoryMonthlyAnalysis = () => {
+const SubCategoryMonthlyAnalysis = ({ isExpense }) => {
   const {
     filter,
     categories,
@@ -17,8 +14,8 @@ const SubCategoryMonthlyAnalysis = () => {
     handleYearSelector,
     handleMonthSelector,
     handlePrimeSelector,
-    expense,
-  } = useAnalysisConfig();
+    totalBy,
+  } = useAnalysisConfig(isExpense);
 
   const [chartData, setChartData] = useState({
     Title: [],
@@ -26,8 +23,8 @@ const SubCategoryMonthlyAnalysis = () => {
   });
 
   useEffect(() => {
-    if (Object.keys(expense.sub).length > 0) {
-      const list = expense.sub[filter.byYear]?.[filter.byMonth];
+    if (Object.keys(totalBy.sub).length > 0) {
+      const list = totalBy.sub[filter.byYear]?.[filter.byMonth];
       if (!list) return;
 
       const data = categories.sub.map((item) => ({
@@ -36,7 +33,7 @@ const SubCategoryMonthlyAnalysis = () => {
       }));
       setChartData(data);
     }
-  }, [expense.sub, filter.byYear, filter.byMonth, categories.sub]);
+  }, [totalBy.sub, filter.byYear, filter.byMonth, categories.sub]);
 
   return (
     <>
@@ -44,7 +41,7 @@ const SubCategoryMonthlyAnalysis = () => {
         <div className="flex flex-1 flex-col gap-5 p-5">
           <div className="flex flex-1 flex-row pb-5">
             <OuterBar>
-              <SelectCard isExpense={true} title={"Show Sub Categories of"}>
+              <SelectCard isExpense={isExpense} title={"Show Sub Categories of"}>
                 <SelectFilter
                   placeholder={"Select Prime Category"}
                   onValueChange={handlePrimeSelector}
@@ -52,7 +49,7 @@ const SubCategoryMonthlyAnalysis = () => {
                   list={categories.prime}
                 ></SelectFilter>
               </SelectCard>
-              <SelectCard isExpense={true} title={"By Year"}>
+              <SelectCard isExpense={isExpense} title={"By Year"}>
                 <SelectFilter
                   placeholder={"Select Year"}
                   onValueChange={handleYearSelector}
@@ -60,7 +57,7 @@ const SubCategoryMonthlyAnalysis = () => {
                   list={Years}
                 ></SelectFilter>
               </SelectCard>
-              <SelectCard isExpense={true} title={"In Month Of"}>
+              <SelectCard isExpense={isExpense} title={"In Month Of"}>
                 <SelectFilter
                   placeholder={"Select Month"}
                   onValueChange={handleMonthSelector}
@@ -73,7 +70,6 @@ const SubCategoryMonthlyAnalysis = () => {
           </div>
           <div className="flex flex-row">
             <SingleBarChart
-            
               barInfo={{
                 data: chartData,
                 label: "Sub Category",

@@ -8,8 +8,24 @@ import {
 } from "@/global/categories";
 import moment from "moment";
 
-const useAnalysisConfig = () => {
+const useAnalysisConfig = (isExpense) => {
   //NOTE :: color codes for pie chart
+
+  const categoryColors = [
+    "#0047ab",
+    "#1f51ff",
+    "#e49b0f",
+    "#29a8ab",
+    "#880808",
+    "#31473a",
+    "#228b22",
+    "#8d5524",
+    "#f33a6a",
+    "#808000",
+    "#5d3fd3",
+    "#834333",
+    "#000000",
+  ];
 
   const colorPalette = [
     "#f44336",
@@ -32,6 +48,7 @@ const useAnalysisConfig = () => {
   //Note - Filter State variable
   const [filter, setFilter] = useState({
     byYear: String(moment().year()),
+    toYear: String(moment().year()),
     byMonth: String(moment().month()),
     byPrime: expenseCategories[0].title,
   });
@@ -100,32 +117,45 @@ const useAnalysisConfig = () => {
   }, [incomeTotal]);
 
   //NOTE :: onchangeSelect Functions
-
-  //LINK - For Year
+  //**  - For Year
   const handleYearSelector = (val) => {
     console.log("Year is", typeof val);
     setFilter((prev) => ({ ...prev, byYear: val }));
   };
-  //LINK - For Month
+  //** - For Year Comparision
+  const compareToYearSelector = (val) => {
+    console.log("Year is", typeof val);
+    setFilter((prev) => ({ ...prev, toYear: val }));
+  };
+  //** - For Month
   const handleMonthSelector = (val) => {
     setFilter((prev) => ({ ...prev, byMonth: val }));
   };
-  //LINK - For Prime Category
+  //** - For Prime Category
   const handlePrimeSelector = (val) => {
     setFilter((prev) => ({ ...prev, byPrime: val }));
   };
+
+  //NOTE :: conatins data based on component
+  const totalBy = useMemo(
+    () => (isExpense ? expense : income),
+    [expense, income, isExpense],
+  );
 
   return {
     handleYearSelector,
     handleMonthSelector,
     handlePrimeSelector,
+    compareToYearSelector,
     filter,
     categories,
     Years,
     Months,
     expense,
     income,
+    totalBy,
     colorPalette,
+    categoryColors,
   };
 };
 

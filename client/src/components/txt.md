@@ -1,157 +1,103 @@
-useEffect(() => {
-    const yearOf = getOldestDate(entries);
-    const yearIs = moment(yearOf.entryDate).year();
-    const monthIs = moment(yearOf.entryDate).month();
-    const weekIs = moment(yearOf.entryDate).week();
-    setCardConfig((prev) => ({
-      ...prev,
-      year: { firstEntry: yearIs },
-      month: { firstEntry: monthIs },
-      week: { firstEntry: weekIs },
-    }));
-  }, [entries]);
+"use client"
 
-  useEffect(() => {
-    if (cardConfig.year.current == cardConfig.year.firstEntry) {
-      const listSameYear = getEntriesOfYear(entries, cardConfig.year.current);
-      if (cardFor.toLowerCase().trim() === "year") {
-        const yearTotal = getTotalOfEntries(listSameYear);
-        setCardConfig((prev) => ({
-          ...prev,
-          title: `This Year ${cardConfig.setFor}`,
-          total: yearTotal,
-        }));
-      }
-      if (cardFor.toLowerCase().trim() === "month") {
-        if (cardConfig.month.current == cardConfig.month.firstEntry) {
-          const monthEntries = getEntriesOfMonth(
-            listSameYear,
-            cardConfig.month.current,
-          );
-          const monthTotal = getTotalOfEntries(monthEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `This Month ${cardConfig.setFor}`,
-            total: monthTotal,
-          }));
-        }
-        if (cardConfig.month.current > 0) {
-          const monthEntries = getEntriesOfMonth(
-            listSameYear,
-            cardConfig.year.current - 1,
-          );
-          const monthTotal = getTotalOfEntries(monthEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `Last Month ${cardConfig.setFor}`,
-            total: monthTotal,
-          }));
-        }
-      }
-      if (cardFor.toLowerCase().trim() === "week") {
-        if (cardConfig.week.current == cardConfig.week.firstEntry) {
-          const weekEntries = getEntriesOfWeek(
-            listSameYear,
-            cardConfig.week.current,
-          );
-          const yearTotal = getTotalOfEntries(weekEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `This Week ${cardConfig.setFor}`,
-            total: yearTotal,
-          }));
-        }
-        if (cardConfig.week.current > 1) {
-          const weekEntries = getEntriesOfWeek(
-            listSameYear,
-            cardConfig.week.current - 1,
-          );
-          const yearTotal = getTotalOfEntries(weekEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `Last Week ${cardConfig.setFor}`,
-            total: yearTotal,
-          }));
-        }
-      }
-    }
+import { TrendingUp } from "lucide-react"
+import { Bar, BarChart, XAxis, YAxis } from "recharts"
 
-    if (cardConfig.year.current > cardConfig.year.firstEntry) {
-      const listPrevYear = getEntriesOfYear(
-        entries,
-        cardConfig.year.current - 1,
-      );
-      if (cardFor.toLowerCase().trim() === "year") {
-        const yearTotal = getTotalOfEntries(listPrevYear);
-        setCardConfig((prev) => ({
-          ...prev,
-          title: `Last Year ${cardConfig.setFor}`,
-          total: yearTotal,
-        }));
-      }
+import {
+Card,
+CardContent,
+CardDescription,
+CardFooter,
+CardHeader,
+CardTitle,
+} from "@/components/ui/card"
+import {
+ChartConfig,
+ChartContainer,
+ChartTooltip,
+ChartTooltipContent,
+} from "@/components/ui/chart"
 
-      if (cardFor.toLowerCase().trim() === "month") {
-        if (
-          cardConfig.month.current == 0 &&
-          cardConfig.month.firstEntry <= 11
-        ) {
-          const monthEntries = getEntriesOfMonth(listPrevYear, 11);
-          const monthTotal = getTotalOfEntries(monthEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `Last Month ${cardConfig.setFor}`,
-            total: monthTotal,
-          }));
-        }
-        if (cardConfig.month.current > 0) {
-          const listSameYear = getEntriesOfYear(
-            entries,
-            cardConfig.year.current,
-          );
-          const monthEntries = getEntriesOfMonth(
-            listSameYear,
-            cardConfig.month.current - 1,
-          );
-          const monthTotal = getTotalOfEntries(monthEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `Last Month ${cardConfig.setFor}`,
-            total: monthTotal,
-          }));
-        }
-      }
+export const description = "A mixed bar chart"
 
-      if (cardFor.toLowerCase().trim() === "week") {
-        if (cardConfig.week.current == 1) {
-          const lastEntryOfYear = getNewestDate(listPrevYear);
-          const lastWeek = moment(lastEntryOfYear.entryDate).week();
-          const weekEntries = getEntriesOfWeek(listPrevYear, lastWeek);
-          const weekTotal = getTotalOfEntries(weekEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `Last Week ${cardConfig.setFor}`,
-            total: weekTotal,
-          }));
-        }
-        if (cardConfig.week.current > 1) {
-          const listSameYear = getEntriesOfYear(
-            entries,
-            cardConfig.year.current,
-          );
-          const weekEntries = getEntriesOfWeek(
-            listSameYear,
-            cardConfig.week.current - 1,
-          );
+const chartData = [
+{ browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
+{ browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+{ browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
+{ browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+{ browser: "other", visitors: 90, fill: "var(--color-other)" },
+]
 
-          console.log(`curr week = ${cardConfig.week.current}`);
+const chartConfig = {
+visitors: {
+label: "Visitors",
+},
+chrome: {
+label: "Chrome",
+color: "var(--chart-1)",
+},
+safari: {
+label: "Safari",
+color: "var(--chart-2)",
+},
+firefox: {
+label: "Firefox",
+color: "var(--chart-3)",
+},
+edge: {
+label: "Edge",
+color: "var(--chart-4)",
+},
+other: {
+label: "Other",
+color: "var(--chart-5)",
+},
+} satisfies ChartConfig
 
-          const weekTotal = getTotalOfEntries(weekEntries);
-          setCardConfig((prev) => ({
-            ...prev,
-            title: `Last Week ${cardConfig.setFor}`,
-            total: weekTotal,
-          }));
-        }
-      }
-    }
-  }, [cardConfig, cardFor, entries]);
+export function ChartBarMixed() {
+return (
+<Card>
+<CardHeader>
+<CardTitle>Bar Chart - Mixed</CardTitle>
+<CardDescription>January - June 2024</CardDescription>
+</CardHeader>
+<CardContent>
+<ChartContainer config={chartConfig}>
+<BarChart
+accessibilityLayer
+data={chartData}
+layout="vertical"
+margin={{
+              left: 0,
+            }} >
+<YAxis
+dataKey="browser"
+type="category"
+tickLine={false}
+tickMargin={10}
+axisLine={false}
+tickFormatter={(value) =>
+chartConfig[value as keyof typeof chartConfig]?.label
+}
+/>
+<XAxis dataKey="visitors" type="number" hide />
+<ChartTooltip
+cursor={false}
+content={<ChartTooltipContent hideLabel />}
+/>
+<Bar dataKey="visitors" layout="vertical" radius={5} />
+</BarChart>
+</ChartContainer>
+</CardContent>
+<CardFooter className="flex-col items-start gap-2 text-sm">
+
+<div className="flex gap-2 leading-none font-medium">
+Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+</div>
+<div className="text-muted-foreground leading-none">
+Showing total visitors for the last 6 months
+</div>
+</CardFooter>
+</Card>
+)
+}

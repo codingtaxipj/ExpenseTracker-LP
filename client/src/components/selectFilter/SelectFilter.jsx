@@ -14,8 +14,6 @@ const SelectFilter = ({
   defaultValue,
   isMonthSelect = false,
 }) => {
- 
-
   return (
     <>
       <Select value={defaultValue} onValueChange={onValueChange}>

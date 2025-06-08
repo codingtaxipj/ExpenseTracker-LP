@@ -9,11 +9,9 @@ const IncomeAnalysis = () => {
     <div>
       <NavMenu activeBtn={PATH.incomeAnalysis}>
         <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover w-full overflow-y-auto p-10 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
-          <YearlyAnalysis isExpense={false}></YearlyAnalysis>
-          <YearByYearComparision isExpense={false}></YearByYearComparision>
-          <SubCategoryMonthlyAnalysis
-            isExpense={false}
-          ></SubCategoryMonthlyAnalysis>
+          <YearlyAnalysis></YearlyAnalysis>
+          <YearByYearComparision></YearByYearComparision>
+          <SubCategoryMonthlyAnalysis></SubCategoryMonthlyAnalysis>
         </div>
       </NavMenu>
     </div>
