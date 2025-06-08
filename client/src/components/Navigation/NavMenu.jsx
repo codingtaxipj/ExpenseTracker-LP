@@ -1,9 +1,10 @@
 import { PATH } from "@/router/routerConfig";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { MdCalculate, MdSpaceDashboard } from "react-icons/md";
+import { MdCalculate, MdEventRepeat, MdSpaceDashboard } from "react-icons/md";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import {
+  FaCalculator,
   FaCalendarDay,
   FaCalendarWeek,
   FaCarSide,
@@ -56,6 +57,10 @@ function Dashboard({ activeBtn, children }) {
               <GiPayMoney />
               <span>Expense</span>
             </button>
+            <button className={setStyle()}>
+              <FaCarSide />
+              <span>Trip Expense</span>
+            </button>
             <button
               onClick={() => navigate(PATH.expenseAnalysis)}
               className={setStyle(PATH.expenseAnalysis)}
@@ -78,9 +83,13 @@ function Dashboard({ activeBtn, children }) {
               <span>Income Analysis</span>
             </button>
 
-            <button className={setStyle()}>
-              <FaCarSide />
-              <span>Trip Expense</span>
+            <button onClick={"#"} className={setStyle()}>
+              <FaCalculator />
+              <span>Budgeting</span>
+            </button>
+            <button onClick={"#"} className={setStyle()}>
+              <MdEventRepeat />
+              <span>Recurring Expenses</span>
             </button>
           </div>
         </div>
