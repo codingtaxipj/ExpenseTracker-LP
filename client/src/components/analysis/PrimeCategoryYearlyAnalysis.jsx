@@ -5,6 +5,7 @@ import HorizontalBarChart from "../charts/HorizontalBarChart";
 import useAnalysisConfig from "./useAnalysisConfig";
 import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
+import { FaCalendarCheck } from "react-icons/fa";
 
 const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
   const {
@@ -28,7 +29,7 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
 
       const data = categories.prime.map((item) => ({
         Title: item,
-        isPrime: true,
+
         Amount: list?.[item]?.total || 0,
       }));
       setChartData(data);
@@ -38,7 +39,7 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
   return (
     <>
       <div className="flex flex-1 flex-col gap-5 p-5">
-        <div className="flex flex-row pb-5">
+        <div className="flex flex-row">
           <OuterBar>
             <SelectCard isExpense={isExpense} title={"By Year"}>
               <SelectFilter
@@ -53,28 +54,33 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
         <div className="flex flex-row gap-5">
           <div className="flex flex-3/4">
             <HorizontalBarChart
+              isPrime
               colorPalette={categoryColors}
               barInfo={chartData}
               chartInfo={{
-                title: "title",
-                subtext: "sub text",
-                footertext: "footer text",
+                title: `Bar Graph - ${filter.byYear}`,
+                subtext: `${isExpense ? "Expenses" : "Income"} in Year by Prime Categories`,
+                footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Year`,
               }}
             ></HorizontalBarChart>
           </div>
-          <div className="flex flex-1/4 flex-col">
-            <div className="flex">
+          <div className="flex flex-1/4 flex-col justify-center pl-5">
+            <div className="flex flex-row items-center gap-2 pb-1 text-lg font-medium">
+              <FaCalendarCheck />
               <h2>Year {filter.byYear} </h2>
             </div>
-            <div className="flex pb-5">
-              <h2>Expense Breakdown by Prime Category</h2>
+            <div className="text-14 text-dimText flex pb-2.5">
+              <h2>
+                {isExpense ? "Expenses" : "Income"} Breakdown by Prime
+                Categories{" "}
+              </h2>
             </div>
             <div className="flex flex-col gap-1">
-              <Table className="w-max px-5">
+              <Table className="text-16 w-max">
                 <TableBody className="border-0">
                   {Object.values(chartData).map((item, index) => (
                     <TableRow
-                      className="hover:bg-grey-hover border-b-grey-hover h-10"
+                      className="hover:bg-greyBlack border-b-greyMedium h-10"
                       key={index}
                     >
                       <TableCell className="w-0 px-2.5">
@@ -83,10 +89,10 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
                           style={{ backgroundColor: categoryColors[index] }}
                         ></div>
                       </TableCell>
-                      <TableCell className="w-[10rem] px-2.5">
+                      <TableCell className="w-[8rem] text-left">
                         {item.Title}
                       </TableCell>
-                      <TableCell className="w-[5rem] px-2.5">
+                      <TableCell className="text-right">
                         {item.Amount}
                       </TableCell>
                     </TableRow>

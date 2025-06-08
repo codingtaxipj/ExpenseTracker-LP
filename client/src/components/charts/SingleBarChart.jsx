@@ -13,6 +13,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { ImParagraphLeft } from "react-icons/im";
 
 const SingleBarChart = ({
   barInfo = {
@@ -35,31 +36,39 @@ const SingleBarChart = ({
   };
   return (
     <>
-      <Card className="bg-greyBlack border-grey-border flex flex-1 flex-col gap-0.5 border text-white">
-        <CardHeader>
+      <Card className="bg-greyBlack flex flex-1 flex-col gap-0.5 border-0 px-3 py-9 text-white">
+        <CardHeader className="items-center pb-5 pl-10">
           {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
           {chartInfo.subtext && (
-            <CardDescription>{chartInfo.subtext}</CardDescription>
+            <CardDescription className="text-dimText">
+              {chartInfo.subtext}
+            </CardDescription>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className={"max-h-[450px] w-full"}
+            className={"max-h-[500px] w-full"}
           >
             <BarChart
               accessibilityLayer
               data={chartData}
               margin={{
-                top: 50,
+                top: 25,
+                left: 20,
+                right: 20,
               }}
             >
-              <CartesianGrid vertical={false} />
+              <CartesianGrid
+                stroke="var(--color-greyMedium)"
+                vertical={false}
+              />
               <XAxis
                 dataKey="Title"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
+                className="[&_.recharts-cartesian-axis-tick_text]:fill-white"
                 tickFormatter={(value) => value}
               />
               <ChartTooltip
@@ -78,9 +87,9 @@ const SingleBarChart = ({
           </ChartContainer>
         </CardContent>
         {chartInfo.footertext && (
-          <CardFooter className="flex-col items-start gap-2 text-sm">
-            <div className="flex w-full justify-center gap-2 leading-none font-medium">
-              {chartInfo.footertext}
+          <CardFooter className="flex-col gap-2">
+            <div className="text-dimText flex gap-2 pt-5 text-sm leading-none">
+              <ImParagraphLeft /> {chartInfo.footertext}
             </div>
           </CardFooter>
         )}

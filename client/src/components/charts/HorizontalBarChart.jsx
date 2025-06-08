@@ -1,5 +1,6 @@
-import { CartesianGrid, Pie, PieChart } from "recharts";
+import { CartesianGrid } from "recharts";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { ImParagraphLeft } from "react-icons/im";
 import {
   Card,
   CardContent,
@@ -14,8 +15,10 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import moment from "moment";
+import { Slice } from "lucide-react";
 
 const HorizontalBarChart = ({
+  isPrime,
   barInfo,
   colorPalette,
   chartInfo = {
@@ -25,28 +28,27 @@ const HorizontalBarChart = ({
   },
 }) => {
   const chartData = Object.values(barInfo).map((item, index) => ({
-    Title: !item.isPrime
-      ? moment().month(String(item.Title)).format("MMMM")
-      : item.Title,
-    Amount: item.Amount || 0, // fallback in case value is undefined
-    fill: colorPalette[index], // mod to prevent index overflow
+    Title: !isPrime
+      ? moment().month(String(item.Title)).format("MMM")
+      : item.Title?.slice(0, 3),
+    Amount: item.Amount || 0,
+    fill: colorPalette[index],
   }));
 
   const chartConfig = {
     Amount: {
-      label: !barInfo.isPrime
-        ? moment().month(String(barInfo.Title)).format("MMMM")
-        : barInfo.Title,
-      color: "fill",
+      label: "Expense",
     },
   };
 
   return (
     <>
-      <Card className="bg-greyBlack border-grey-border flex flex-1 flex-col gap-0.5 border text-white">
-        <CardHeader className="items-center pb-0">
+      <Card className="bg-greyBlack flex flex-1 flex-col gap-0.5 border-0 px-3 py-9 text-white">
+        <CardHeader className="items-center pb-5 pl-10">
           <CardTitle>{chartInfo.title}</CardTitle>
-          <CardDescription>{chartInfo.subtext}</CardDescription>
+          <CardDescription className="text-dimText">
+            {chartInfo.subtext}
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           <ChartContainer
@@ -59,15 +61,16 @@ const HorizontalBarChart = ({
               barCategoryGap={5}
               layout="vertical"
               margin={{
-                left: 5,
-                top: 10,
-                bottom: 10,
-                right: 5,
+                right: 20,
               }}
             >
-              <CartesianGrid vertical={true} horizontal={false} />
+              <CartesianGrid
+                stroke="var(--color-greyMedium)"
+                vertical={true}
+                horizontal={false}
+              />
               <YAxis
-                dataKey={"Amount"}
+                dataKey={"Title"}
                 type="category"
                 tickLine={false}
                 tickMargin={10}
@@ -84,8 +87,10 @@ const HorizontalBarChart = ({
             </BarChart>
           </ChartContainer>
         </CardContent>
-        <CardFooter className="flex-col gap-2 text-sm">
-          <div>{chartInfo.footertext}</div>
+        <CardFooter className="flex-col gap-2">
+          <div className="text-dimText flex gap-2 pt-5 text-sm leading-none">
+            <ImParagraphLeft /> {chartInfo.footertext}
+          </div>
         </CardFooter>
       </Card>
     </>

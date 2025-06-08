@@ -13,6 +13,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { ImParagraphLeft } from "react-icons/im";
 
 const DoubleLineChart = ({ barInfo, chartInfo }) => {
   const chartData = barInfo.data;
@@ -28,30 +29,50 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
   };
   return (
     <>
-      <Card className="bg-greyBlack border-grey-border flex flex-1 flex-col border text-white">
-        <CardHeader>
-          <CardTitle>{chartInfo.title}</CardTitle>
-          <CardDescription>{chartInfo.subtext}</CardDescription>
+      <Card className="bg-greyBlack flex flex-1 flex-col gap-0.5 border-0 px-3 py-9 text-white">
+        <CardHeader className="items-center pb-5 pl-10">
+          <CardTitle>
+            <div className="flex flex-row items-center gap-2">
+              {chartInfo.title}
+              <div className={`size-4 rounded-xs bg-[#5d3fd3]`}></div>
+              {barInfo.lableOne}
+              <div className={`size-4 rounded-xs bg-[#f33a6a]`}></div>
+              {barInfo.labelTwo}
+            </div>
+          </CardTitle>
+          <CardDescription className="text-dimText">
+            {chartInfo.subtext}
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig}>
+        <CardContent className="flex-1 pb-0">
+          <ChartContainer
+            config={chartConfig}
+            className={"max-h-[500px] w-full"}
+          >
             <LineChart
               accessibilityLayer
               data={chartData}
               margin={{
-                left: 12,
-                right: 12,
+                left: 20,
+                right: 20,
               }}
             >
-              <CartesianGrid vertical={false} />
+              <CartesianGrid
+                stroke="var(--color-greyMedium)"
+                vertical={false}
+              />
               <XAxis
                 dataKey="month"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
+                className="[&_.recharts-cartesian-axis-tick_text]:fill-white"
                 tickFormatter={(value) => value.slice(0, 3)}
               />
-              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
               <Line
                 dataKey={barInfo.lableOne}
                 type="monotone"
@@ -69,11 +90,9 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
             </LineChart>
           </ChartContainer>
         </CardContent>
-        <CardFooter>
-          <div className="flex w-full items-start gap-2 text-sm">
-            <div className="grid gap-2">
-              <div>{chartInfo.footertext}</div>
-            </div>
+        <CardFooter className="flex-col gap-2">
+          <div className="text-dimText flex gap-2 pt-5 text-sm leading-none">
+            <ImParagraphLeft /> {chartInfo.footertext}
           </div>
         </CardFooter>
       </Card>

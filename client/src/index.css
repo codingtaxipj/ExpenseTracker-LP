@@ -4,6 +4,9 @@
 @theme {
   --color-darkBlack: #0d0d0d;
   --color-greyBlack: #151515;
+  --color-greyMedium: #252525;
+  --color-dimText: #919191;
+
   --color-pupl: #7d14b9;
   --color-black: #000;
   --color-white: #fff;
@@ -25,7 +28,10 @@
   --color-income: #228b22;
   --color-grey-border: #676767;
   --color-grey-hover: #2c2c2c;
-  --color-dim-text: #dbdbdb;
+}
+@theme {
+  --text-14: 14px;
+  --text-16: 16px;
 }
 
 @font-face {

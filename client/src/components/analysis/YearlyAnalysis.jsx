@@ -7,6 +7,7 @@ import useAnalysisConfig from "./useAnalysisConfig";
 import moment from "moment";
 import HorizontalBarChart from "../charts/HorizontalBarChart";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
+import { FaCalendarCheck } from "react-icons/fa";
 
 const YearlyAnalysis = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, totalBy, colorPalette } =
@@ -23,7 +24,7 @@ const YearlyAnalysis = ({ isExpense }) => {
 
       const data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((item) => ({
         Title: item,
-        isPrime: false,
+
         Amount: list[item]?.total || 0,
       }));
       setChartData(data);
@@ -33,7 +34,7 @@ const YearlyAnalysis = ({ isExpense }) => {
   return (
     <>
       <div className="flex flex-1 flex-col gap-5 p-5">
-        <div className="flex flex-row pb-5">
+        <div className="flex flex-row">
           <OuterBar>
             <SelectCard isExpense={isExpense} title={"By Year"}>
               <SelectFilter
@@ -51,38 +52,38 @@ const YearlyAnalysis = ({ isExpense }) => {
               colorPalette={colorPalette}
               barInfo={chartData}
               chartInfo={{
-                title: "title",
-                subtext: "sub text",
-                footertext: "footer text",
+                title: `Bar Graph - ${filter.byYear}`,
+                subtext: `${isExpense ? "Expenses" : "Income"} in Year by Months`,
+                footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Year`,
               }}
             ></HorizontalBarChart>
           </div>
-          <div className="flex flex-1/4 flex-col">
-            <div className="flex">
+          <div className="flex flex-1/4 flex-col justify-center pl-5">
+            <div className="flex flex-row items-center gap-2 pb-1 text-lg font-medium">
+              <FaCalendarCheck />
               <h2>Year {filter.byYear} </h2>
             </div>
-            <div className="flex pb-5">
-              <h2>Expense Breakdown by Month </h2>
+            <div className="text-14 text-dimText flex pb-2.5">
+              <h2>{isExpense ? "Expenses" : "Income"} Breakdown by Month </h2>
             </div>
             <div className="flex flex-col gap-1">
-              <Table className="w-max px-5">
-                <TableBody className="border-0">
+              <Table className="text-16 w-max">
+                <TableBody>
                   {Object.values(chartData).map((item, index) => (
                     <TableRow
-                      className="hover:bg-grey-hover border-b-grey-hover h-10"
+                      className="hover:bg-greyBlack border-b-greyMedium h-10"
                       key={index}
                     >
-                      <TableCell className="w-0 px-2.5">
+                      <TableCell>
                         <div
                           className={`size-4 rounded-xs`}
                           style={{ backgroundColor: colorPalette[index] }}
                         ></div>
                       </TableCell>
-                      <TableCell className="w-[10rem] px-2.5">
-                        {" "}
+                      <TableCell className="w-[8rem] text-left">
                         {moment().month(String(item.Title)).format("MMMM")}
                       </TableCell>
-                      <TableCell className="w-[5rem] px-2.5">
+                      <TableCell className="text-right">
                         {item.Amount}
                       </TableCell>
                     </TableRow>

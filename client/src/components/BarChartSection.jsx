@@ -133,9 +133,9 @@ const BarChartSection = ({ entries, isExpense }) => {
           color: GraphConfig.barColor,
         }}
         chartInfo={{
-          title: GraphConfig.barLabel,
-          subtext: GraphConfig.SubText,
-          footertext: GraphConfig.BottomText,
+          title: `Bar Graph - ${filter.byYear}`,
+          subtext: `${isExpense ? "Expenses" : "Income"} in Year by Month`,
+          footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Year`,
         }}
       ></SingleBarChart>
     </>

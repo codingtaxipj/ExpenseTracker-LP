@@ -59,7 +59,7 @@ const YearByYearComparision = ({ isExpense }) => {
                 list={Years}
               ></SelectFilter>
             </SelectCard>
-            <SelectCard isExpense={isExpense} title={"By Year"}>
+            <SelectCard isExpense={isExpense} title={"To Year"}>
               <SelectFilter
                 placeholder={"Select Year"}
                 onValueChange={compareToYearSelector}
@@ -99,9 +99,9 @@ const YearByYearComparision = ({ isExpense }) => {
                 labelTwo: String(filter.toYear),
               }}
               chartInfo={{
-                title: "title",
-                subtext: "sub text",
-                footertext: "footer text",
+                title: `Double Line Graph of Years `,
+                subtext: `${isExpense ? "Expenses" : "Income"} Comparision in Years by Months`,
+                footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Years`,
               }}
             ></DoubleLineChart>
           </div>
