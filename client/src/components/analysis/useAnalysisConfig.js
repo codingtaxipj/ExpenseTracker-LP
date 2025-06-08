@@ -48,7 +48,7 @@ const useAnalysisConfig = (isExpense) => {
   //Note - Filter State variable
   const [filter, setFilter] = useState({
     byYear: String(moment().year()),
-    toYear: String(moment().year()),
+    toYear: String(moment().year()-1),
     byMonth: String(moment().month()),
     byPrime: expenseCategories[0].title,
   });
