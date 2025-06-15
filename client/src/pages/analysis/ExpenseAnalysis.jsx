@@ -6,7 +6,6 @@ import YearByYearComparision from "@/components/analysis/YearByYearComparision";
 import YearlyAnalysis from "@/components/analysis/YearlyAnalysis";
 import TotalCard from "@/components/analysis/TotalCard";
 
-
 const ExpenseAnalysis = () => {
   return (
     <div>
@@ -43,7 +42,7 @@ const ExpenseAnalysis = () => {
                 date={2025}
               ></TotalCard>
             </div>
-          
+
             <YearlyAnalysis isExpense></YearlyAnalysis>
             <YearByYearComparision isExpense></YearByYearComparision>
             <PrimeCategoryYearlyAnalysis

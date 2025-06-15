@@ -1,9 +1,4 @@
-import {
-  FaArrowTrendDown,
-  FaArrowTrendUp,
-  FaIndianRupeeSign,
-} from "react-icons/fa6";
-import { LuArrowDownUp } from "react-icons/lu";
+
 
 import OuterBar from "../selectFilter/OuterBar";
 import SelectCard from "../selectFilter/SelectCard";
@@ -13,7 +8,6 @@ import useAnalysisConfig from "./useAnalysisConfig";
 import moment from "moment";
 
 import { useEffect, useState } from "react";
-import { getPercent } from "../utilityCalculate";
 
 import TotalCard from "./TotalCard";
 import YearCompareCard from "./YearCompareCard";
