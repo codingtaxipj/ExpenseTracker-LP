@@ -1,0 +1,118 @@
+{
+  "byYear": [
+    {
+      "year": 2025,
+      "total": 0
+    },
+    {
+      "year": 2026,
+      "total": 0
+    }
+  ],
+  "byMonth": [
+    {
+      "year": 2025,
+      "list": [
+        {
+          "month": 0,
+          "total": 0
+        },
+        {
+          "month": 1,
+          "total": 0
+        }
+      ]
+    },
+    {
+      "year": 2026,
+      "list": [
+        {
+          "month": 0,
+          "total": 0
+        },
+        {
+          "month": 1,
+          "total": 0
+        }
+      ]
+    }
+  ],
+  "byPrime": [
+    {
+      "year": 2025,
+      "primes": [
+        {
+          "primeCat": "prime 1",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        },
+        {
+          "primeCat": "prime 2",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2026,
+      "primes": [
+        {
+          "catName": "cat1",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        },
+        {
+          "catName": "cat2",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        }
+      ]
+    }
+  ],
+  "bySub": [
+    {
+      "year": 2025,
+      "sub": [
+        {
+          "primeCat": "prime 1",
+          "subName": "sub 1",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        },
+        {
+          "primeCat": "prime 1",
+          "subName": "sub 2",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        },
+        {
+          "primeCat": "prime 2",
+          "subName": "sub 1",
+          "total": 0,
+          "monthList": [
+            { "month": 0, "total": 0 },
+            { "month": 1, "total": 0 }
+          ]
+        }
+      ]
+    }
+  ]
+}
