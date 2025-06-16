@@ -7,14 +7,16 @@ import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
 import { FaCalendarCheck } from "react-icons/fa";
-
-import { Slider } from "../ui/slider";
+import { Checkbox } from "../ui/checkbox";
+import InfoStrip from "./InfoStrip";
 
 const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
   const {
     filter,
+    Months,
     Years,
     handleYearSelector,
+    handleMonthSelector,
     totalBy,
     categories,
     categoryColors,
@@ -24,6 +26,14 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
     Title: [],
     Amount: 0,
   });
+  const [selected, setSelected] = useState(0);
+  const handleChange = (index) => {
+    if (selected === index) {
+      setSelected(null); // uncheck if already selected
+    } else {
+      setSelected(index);
+    }
+  };
 
   useEffect(() => {
     if (Object.keys(totalBy.prime).length > 0) {
@@ -52,7 +62,7 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
   return (
     <>
       <div className="flex w-full flex-col gap-5 p-5">
-        <div className="flex flex-row">
+        <div className="flex">
           <OuterBar>
             <SelectCard isExpense={isExpense} title={"By Year"}>
               <SelectFilter
@@ -64,48 +74,65 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
             </SelectCard>
           </OuterBar>
         </div>
-        <div className="flex flex-row gap-5">
-          <div className="flex flex-1/4 flex-col justify-center pl-5">
-            <div className="flex flex-row items-center gap-2 pb-1 text-lg font-medium">
-              <FaCalendarCheck />
-              <h2>Year {filter.byYear} </h2>
-            </div>
-            <div className="text-14 text-dimText flex pb-2.5">
-              <h2>
-                {isExpense ? "Expenses" : "Income"} Breakdown by Prime
-                Categories{" "}
-              </h2>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Table className="text-16 w-full">
-                <TableBody className="border-0">
-                  {Object.values(chartData).map((item, index) => (
-                    <TableRow
-                      className="hover:bg-greyBlack border-b-greyMedium h-10"
-                      key={index}
-                      onClick={() => console.log(item.Title)}
-                    >
-                      <TableCell className="w-[5rem] px-2.5">
-                        <Slider defaultValue={[33]} max={100} step={1} />
-                      </TableCell>
-                      <TableCell className="w-[8rem] text-left">
-                        {item.Title}
-                      </TableCell>
-                      <TableCell className="w-[5rem] text-right">
-                        {item.Amount}
-                      </TableCell>
-                      <TableCell>
-                        <div
-                          style={spendBar(item.Amount, categoryColors[index])}
-                          className="rounded-md"
-                        ></div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+
+        <div className="bg-greyBlack flex gap-1 rounded-2xl p-10">
+          <Table className="text-16 w-full">
+            <TableBody className="border-0">
+              {Object.values(chartData).map((item, index) => (
+                <TableRow
+                  className="hover:bg-greyBlack border-b-greyMedium h-10"
+                  key={index}
+                >
+                  <TableCell className="w-[2.5rem] !px-2.5 text-center">
+                    <Checkbox
+                      checked={selected === index}
+                      onCheckedChange={() => handleChange(index)}
+                      className={
+                        "data-[state=checked]:bg-expense border-dimText"
+                      }
+                    ></Checkbox>
+                  </TableCell>
+                  <TableCell className="w-[8rem] text-left">
+                    {item.Title}
+                  </TableCell>
+                  <TableCell className="w-[5rem] text-right">
+                    {item.Amount}
+                  </TableCell>
+                  <TableCell>
+                    <div
+                      style={spendBar(item.Amount, categoryColors[index])}
+                      className="rounded-md"
+                    ></div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        <div className="flex">
+          <OuterBar>
+            <SelectCard isExpense={isExpense} title={"In Month Of"}>
+              <SelectFilter
+                placeholder={"Select Month"}
+                onValueChange={handleMonthSelector}
+                isMonthSelect={true}
+                defaultValue={filter.byMonth}
+                list={Months}
+              ></SelectFilter>
+            </SelectCard>
+          </OuterBar>
+        </div>
+        <div className="flex gap-2.5 flex-wrap">
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
+          <InfoStrip></InfoStrip>
         </div>
       </div>
     </>

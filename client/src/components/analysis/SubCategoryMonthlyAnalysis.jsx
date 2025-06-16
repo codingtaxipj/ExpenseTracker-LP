@@ -40,36 +40,7 @@ const SubCategoryMonthlyAnalysis = ({ isExpense }) => {
       <>
         <div className="flex flex-1 flex-col gap-5 p-5">
           <div className="flex flex-row">
-            <OuterBar>
-              <SelectCard
-                isExpense={isExpense}
-                title={"Show Sub Categories of"}
-              >
-                <SelectFilter
-                  placeholder={"Select Prime Category"}
-                  onValueChange={handlePrimeSelector}
-                  defaultValue={filter.byPrime}
-                  list={categories.prime}
-                ></SelectFilter>
-              </SelectCard>
-              <SelectCard isExpense={isExpense} title={"By Year"}>
-                <SelectFilter
-                  placeholder={"Select Year"}
-                  onValueChange={handleYearSelector}
-                  defaultValue={filter.byYear}
-                  list={Years}
-                ></SelectFilter>
-              </SelectCard>
-              <SelectCard isExpense={isExpense} title={"In Month Of"}>
-                <SelectFilter
-                  placeholder={"Select Month"}
-                  onValueChange={handleMonthSelector}
-                  isMonthSelect={true}
-                  defaultValue={filter.byMonth}
-                  list={Months}
-                ></SelectFilter>
-              </SelectCard>
-            </OuterBar>
+            
           </div>
           <div className="flex flex-row">
             <SingleBarChart

@@ -8,6 +8,9 @@ import useAnalysisConfig from "./useAnalysisConfig";
 import InfoStrip from "./InfoStrip";
 import SingleBarChart from "../charts/SingleBarChart";
 import moment from "moment";
+import BudgetStrip from "./BudgetStrip";
+import MinMaxStrip from "./MinMaxStrip";
+import { BsLayoutTextWindowReverse } from "react-icons/bs";
 
 const YearlyAnalysis = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, totalBy } =
@@ -33,6 +36,12 @@ const YearlyAnalysis = ({ isExpense }) => {
   return (
     <>
       <div className="flex w-full flex-col gap-5 p-5">
+        <div className="flex flex-row border-b border-b-dimText pb-2 items-center">
+          <div className="flex px-2">javjvds</div>
+          <div className="flex px-2">
+            <BsLayoutTextWindowReverse />
+          </div>
+        </div>
         <div className="flex flex-row">
           <OuterBar>
             <SelectCard isExpense={isExpense} title={"By Year"}>
@@ -46,11 +55,9 @@ const YearlyAnalysis = ({ isExpense }) => {
           </OuterBar>
         </div>
         <div className="flex w-full flex-row gap-5">
-          <span>THE Budget</span>
-          <InfoStrip></InfoStrip>
-          <span>MIN/MAX</span>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
+          <BudgetStrip />
+          <MinMaxStrip isMax />
+          <MinMaxStrip isMin />
         </div>
         <div className="flex w-full">
           <SingleBarChart

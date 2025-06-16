@@ -1,5 +1,3 @@
-
-
 import OuterBar from "../selectFilter/OuterBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
@@ -12,6 +10,9 @@ import { useEffect, useState } from "react";
 import TotalCard from "./TotalCard";
 import YearCompareCard from "./YearCompareCard";
 import InfoStrip from "./InfoStrip";
+import MinMaxStrip from "./MinMaxStrip";
+import BudgetStrip from "./BudgetStrip";
+import BudgetMonth from "./BudgetMonth";
 
 const YearByYearComparision = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, compareToYearSelector, totalBy } =
@@ -36,10 +37,10 @@ const YearByYearComparision = ({ isExpense }) => {
     }
   }, [filter.byYear, totalBy.month, filter.toYear]);
 
-  const percent = getPercent(
+  /*  const percent = getPercent(
     totalBy.year[filter.toYear]?.total,
     totalBy.year[filter.byYear]?.total,
-  );
+  ); */
 
   return (
     <>
@@ -87,8 +88,8 @@ const YearByYearComparision = ({ isExpense }) => {
               footerText={"In 12 Months"}
               date={2025}
             ></TotalCard>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
+            <MinMaxStrip isMax />
+            <MinMaxStrip isMin />
             <TotalCard
               isExpense
               color={"var(--color-yearBy)"}
@@ -96,35 +97,35 @@ const YearByYearComparision = ({ isExpense }) => {
               footerText={"In 12 Months"}
               date={2025}
             ></TotalCard>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
+            <MinMaxStrip isMax />
+            <MinMaxStrip isMin />
             <YearCompareCard
               isExpense
               compareIn={filter.byYear}
               compareTo={filter.toYear}
-              percent={percent}
+              percent={20}
               date={filter.toYear}
             ></YearCompareCard>
           </div>
         </div>
         <div className="flex flex-col gap-5">
           <div className="flex gap-5">
-            <span>THE Budget 2024</span>
+            <BudgetStrip />
+            <BudgetMonth isOver />
+            <BudgetMonth isUnder />
+          </div>
+          <div className="flex flex-wrap gap-5">
             <InfoStrip></InfoStrip>
-            <span>Over Budget</span>5<span>Under Budget</span>7
+            <InfoStrip></InfoStrip>
+            <InfoStrip></InfoStrip>
+            <InfoStrip></InfoStrip>
           </div>
           <div className="flex gap-5">
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
+            <BudgetStrip />
+            <BudgetMonth isOver />
+            <BudgetMonth isUnder />
           </div>
-          <div className="flex gap-5">
-            <span>THE Budget 2024</span>
-            <InfoStrip></InfoStrip>
-            <span>Over Budget</span>5<span>Under Budget</span>7
-          </div>
-          <div className="flex gap-5">
+          <div className="flex flex-wrap gap-5">
             <InfoStrip></InfoStrip>
             <InfoStrip></InfoStrip>
             <InfoStrip></InfoStrip>

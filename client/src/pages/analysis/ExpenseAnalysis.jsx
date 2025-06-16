@@ -48,7 +48,6 @@ const ExpenseAnalysis = () => {
             <PrimeCategoryYearlyAnalysis
               isExpense
             ></PrimeCategoryYearlyAnalysis>
-            <SubCategoryMonthlyAnalysis isExpense></SubCategoryMonthlyAnalysis>
           </>
         </div>
       </NavMenu>
