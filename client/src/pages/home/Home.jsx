@@ -22,7 +22,6 @@ const Home = () => {
       {!loading && (
         <NavMenu activeBtn={PATH.home}>
           <Outlet />
-          <SideBarHome />
         </NavMenu>
       )}
     </>

@@ -1,28 +1,22 @@
 import TableSection from "@/components/TableSection";
 import BarChartSection from "@/components/BarChartSection";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import usePageConfig from "@/components/usePageConfig";
 import TotalCard from "@/components/analysis/TotalCard";
 import SectionHeader from "@/components/section-header";
 import BudgetStrip from "@/components/analysis/BudgetStrip";
-import MinMaxStrip from "@/components/analysis/MinMaxStrip";
 import { Button } from "@/components/ui/button";
 import Flexrow from "@/components/flexrow";
 import OuterBar from "@/components/selectFilter/OuterBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 import SectionOuterFlexcol from "@/components/analysis/section-outer-flexcol";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "@/router/routerConfig";
 
 const ExpenseIndex = () => {
   const { dataConfig } = usePageConfig();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -30,7 +24,7 @@ const ExpenseIndex = () => {
         {dataConfig.expense.loading && <p>Loading...</p>}
         {!dataConfig.expense.loading && (
           <>
-            <div className="flex w-full flex-row justify-center gap-5 pt-10 pb-25">
+            <div className="flex w-full flex-row flex-wrap justify-center gap-5 pt-10 pb-25">
               <TotalCard
                 isExpense
                 color="text-exptxt"
@@ -39,6 +33,7 @@ const ExpenseIndex = () => {
                 footerText={"Your Total Spending in Year"}
                 date={2025}
               ></TotalCard>
+
               <TotalCard
                 isExpense
                 color="text-exptxt"
@@ -49,8 +44,13 @@ const ExpenseIndex = () => {
               ></TotalCard>
               <div className="flex flex-col justify-center gap-5">
                 <BudgetStrip isExpense amount={20000} color="text-exptxt" />
-                <Button className={"bg-expbg"}></Button>
-                <Button className={"bg-expbg"}></Button>
+
+                <button
+                  onClick={() => navigate(PATH.addExpense)}
+                  className="bg-expbg w-full rounded-md px-4 py-1"
+                >
+                  Add Expence
+                </button>
               </div>
             </div>
             <SectionOuterFlexcol>

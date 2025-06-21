@@ -155,8 +155,8 @@ const Form = ({ formToDisplay }) => {
               type="button"
               className={
                 formToDisplay === PATH.addExpense
-                  ? "bg-expense w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "hover:bg-expense w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  ? "bg-expbg w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  : "hover:bg-expbg w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
             >
               Expense
@@ -166,8 +166,8 @@ const Form = ({ formToDisplay }) => {
               type="button"
               className={
                 formToDisplay === PATH.addIncome
-                  ? "bg-income w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "hover:bg-income w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  ? "bg-incbg w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  : "hover:bg-incbg w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
             >
               Income
@@ -202,20 +202,8 @@ const Form = ({ formToDisplay }) => {
             </p>
           )}
           {/* ----------------*NOTE ##END: AMOUNT Field ---------------- */}
-          {/* ---------------- *ANCHOR TITLE Field ---------------- */}
-          <div className="mt-4 flex w-full flex-col items-start gap-2 text-[14px]">
-            <label htmlFor="Title" className="inline-flex items-center gap-2">
-              <PiTagSimpleFill />
-              Title
-            </label>
-            <input
-              type="text"
-              {...register("title", {})}
-              className="focus-visible:border-ring w-full rounded-md border px-3 py-1 shadow-xs outline-none focus-visible:ring-[1px] focus-visible:ring-gray-200"
-            />
-          </div>
 
-          {/* ---------------- *NOTE ##END: TITLE Field ---------------- */}
+         
           {/* ---------------- *ANCHOR DESCRIPTION Field ---------------- */}
           <div className="mt-4 flex w-full flex-col items-start gap-2 text-[14px]">
             <label
@@ -223,7 +211,7 @@ const Form = ({ formToDisplay }) => {
               className="inline-flex items-center gap-2"
             >
               <PiTagSimpleFill />
-              Description
+              Note
             </label>
             <textarea
               className="focus-visible:border-ring w-full rounded-md border px-3 py-1 shadow-xs outline-none focus-visible:ring-[1px] focus-visible:ring-gray-200"
@@ -357,11 +345,11 @@ const Form = ({ formToDisplay }) => {
                       className={
                         formToDisplay === PATH.addExpense
                           ? selectedSubCats === buttons
-                            ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                            : "hover:bg-expense cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            ? "bg-expbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            : "hover:bg-expbg cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                           : selectedSubCats === buttons
-                            ? "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                            : "hover:bg-income cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            ? "bg-incbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                            : "hover:bg-incbg cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
                       }
                     >
                       {capitalize(buttons)}
@@ -387,30 +375,15 @@ const Form = ({ formToDisplay }) => {
 
           {/* ---------------- *NOTE ##END: SUB CATEGORY Selection Field ---------------- */}
 
-          {/* ---------------- *ANCHOR USER GIVEN CATEGORY Field ---------------- */}
-          <div className="mt-4 flex w-full items-center gap-4">
-            <label
-              htmlFor="userCategory"
-              className="inline-flex min-w-max items-center gap-2"
-            >
-              <PiTagSimpleFill />
-              Other Category <span className="text-[12px]">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              {...register("userCategory", {})}
-              className="focus-visible:border-ring w-full rounded-md border px-3 py-1 shadow-xs outline-none focus-visible:ring-[1px] focus-visible:ring-gray-200"
-            />
-          </div>
-          {/* ---------------- *NOTE ##END: USER GIVEN CATEGORY Field ---------------- */}
+          
           {/* ---------------- *ANCHOR SUBMIT AND CANCEL Field ---------------- */}
           <div className="mt-10 flex w-full flex-row justify-end gap-2">
             <button
               type="submit"
               className={
                 formToDisplay === PATH.addExpense
-                  ? "bg-expense cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "bg-income cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  ? "bg-expbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
+                  : "bg-incbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
               }
             >
               Add Now

@@ -80,7 +80,7 @@ function Dashboard({ activeBtn, children }) {
               onClick={() => navigate(PATH.income)}
               className={setStyle(PATH.income)}
             >
-               <Icons.income />
+              <Icons.income />
               <span>Income</span>
             </button>
             <button

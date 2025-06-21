@@ -7,7 +7,6 @@ const Expense = () => {
     <>
       <NavMenu activeBtn={PATH.income}>
         <Outlet />
-        <SideBarIncome />
       </NavMenu>
     </>
   );
