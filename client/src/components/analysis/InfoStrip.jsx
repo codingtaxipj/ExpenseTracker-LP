@@ -1,26 +1,21 @@
-import {
-  FaArrowTrendDown,
-  FaArrowTrendUp,
-  FaIndianRupeeSign,
-} from "react-icons/fa6";
+import { Icons } from "../icons";
+import { amountInteger, percentSigned } from "../utilityFilter";
 
-const InfoStrip = () => {
+const InfoStrip = ({ color, amount, date = "Jun" }) => {
   return (
     <>
-      <div className="bg-greyBlack text-14 flex h-7 flex-row items-center gap-1 rounded-md px-3 py-1.75">
-        <span className="bg-expense mr-1.5 size-3 rounded-full"></span>
-        <h4>Month</h4>
-        <span className="bg-dimText mx-2 h-full w-[0.5px]"></span>
+      <div className="from-gradBot to-gradTop shadow-shadowBlack border-br1 text-14 flex h-7 flex-row items-center gap-1 rounded-md border bg-gradient-to-t px-3 py-1.75 font-medium shadow-md">
+        <span className={`${color} size-3 rounded-full mr-1`}></span>
+        <h4>{date}</h4>
+        <span className="bg-91 mx-2 h-full w-[0.5px]"></span>
         <span className="text-[12px]">
-          <FaIndianRupeeSign />
+          <Icons.rupee />
         </span>
-        <h4>200</h4>
-        <span className="bg-dimText mx-2 h-full w-[0.5px]"></span>
+        <h4>{amountInteger(amount * 200)}</h4>
+        <span className="bg-91 mx-2 h-full w-[0.5px]"></span>
 
-        <span className="text-income"> 5 %</span>
-
-        <span className="text-income">
-          <FaArrowTrendUp />
+        <span className="text-gg flex items-center gap-1">
+          {percentSigned(25) + " %"} <Icons.graphup />
         </span>
       </div>
     </>

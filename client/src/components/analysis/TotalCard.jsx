@@ -1,31 +1,26 @@
-import numeral from "numeral";
 import React from "react";
-import { BsBarChartFill } from "react-icons/bs";
-import { FaIndianRupeeSign } from "react-icons/fa6";
+import { Icons } from "../icons";
+import { amountFloat } from "../utilityFilter";
 
-const TotalCard = ({ date, total, isExpense, footerText, color }) => {
+const TotalCard = ({ date, total, footerText, headText, color }) => {
   return (
     <>
-      <div className="border-greyMedium bg-greyBlack flex w-max flex-col gap-2 rounded-lg p-5">
-        <div className="text-14 text-dimText flex w-[16rem] flex-row">
+      <div className="from-gradBot to-gradTop shadow-shadowBlack border-br1 flex w-max flex-col gap-2 rounded-lg border bg-gradient-to-t p-5 shadow-md">
+        <div className="text-14 flex w-[16rem] flex-row">
           <div className="flex flex-row items-center gap-2">
-            <BsBarChartFill />
-            Total {isExpense ? "Spending" : "Earning"}
+            <Icons.upbar className={color} />
+            {headText}
           </div>
-          <div className="flex flex-1 justify-end">
-            <span
-              style={{ backgroundColor: color }}
-              className="rounded-sm px-2.5 text-white"
-            >
-              {date}
-            </span>
+          <div className="flex flex-1 items-center justify-end font-medium">
+            <Icons.yearCal className={`${color} l mr-1.5`} />
+            {date}
           </div>
         </div>
-        <div className="flex flex-row items-center gap-1 text-[32px] font-bold">
-          <FaIndianRupeeSign />
-          {numeral(total).format("0,00")}
+        <div className="text-32 flex flex-row items-center gap-0.5 font-bold">
+          <Icons.rupee />
+          {amountFloat(total)}
         </div>
-        <div className="text-14 text-dimText flex w-[14rem] flex-row pt-2">
+        <div className="text-14 text-ddd flex w-[14rem] flex-row items-center gap-1 pt-2 pb-2.5">
           {footerText}
         </div>
       </div>

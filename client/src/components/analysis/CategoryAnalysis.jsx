@@ -6,11 +6,13 @@ import useAnalysisConfig from "./useAnalysisConfig";
 import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
-import { FaCalendarCheck } from "react-icons/fa";
 import { Checkbox } from "../ui/checkbox";
 import InfoStrip from "./InfoStrip";
+import SectionHeader from "../section-header";
+import { CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Icons } from "../icons";
 
-const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
+const CategoryAnalysis = ({ isExpense }) => {
   const {
     filter,
     Months,
@@ -61,7 +63,8 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5 p-5">
+      <div className="flex w-full flex-col gap-5 px-10 pb-25">
+        <SectionHeader title="Expenses Analysis By By Categories" isAnalysis />
         <div className="flex">
           <OuterBar>
             <SelectCard isExpense={isExpense} title={"By Year"}>
@@ -75,8 +78,14 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
           </OuterBar>
         </div>
 
-        <div className="bg-greyBlack flex gap-1 rounded-2xl p-10">
-          <Table className="text-16 w-full">
+        <div className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-1 flex-col gap-0.5 rounded-xl border p-10 text-white shadow-md">
+          <CardHeader className={"!px-0 pb-5"}>
+            <CardTitle>Progres Bar Chart - 2025</CardTitle>
+            <CardDescription className="text-91">
+              Expenses in Year by Prime Categories
+            </CardDescription>
+          </CardHeader>
+          <Table className="text-14 w-full">
             <TableBody className="border-0">
               {Object.values(chartData).map((item, index) => (
                 <TableRow
@@ -88,7 +97,7 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
                       checked={selected === index}
                       onCheckedChange={() => handleChange(index)}
                       className={
-                        "data-[state=checked]:bg-expense border-dimText"
+                        "data-[state=checked]:bg-ggbg border-dimText hover:cursor-pointer"
                       }
                     ></Checkbox>
                   </TableCell>
@@ -108,6 +117,11 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
               ))}
             </TableBody>
           </Table>
+          <CardFooter className="flex-col gap-2">
+            <div className="text-91 flex gap-2 pt-5 text-sm leading-none">
+              <Icons.textline /> Showing Total Expenses in Year
+            </div>
+          </CardFooter>
         </div>
 
         <div className="flex">
@@ -123,20 +137,14 @@ const PrimeCategoryYearlyAnalysis = ({ isExpense }) => {
             </SelectCard>
           </OuterBar>
         </div>
-        <div className="flex gap-2.5 flex-wrap">
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
-          <InfoStrip></InfoStrip>
+        <div className="flex flex-wrap gap-2.5">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <InfoStrip key={item} color="bg-expbg" amount={item} />
+          ))}
         </div>
       </div>
     </>
   );
 };
 
-export default PrimeCategoryYearlyAnalysis;
+export default CategoryAnalysis;

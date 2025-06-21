@@ -1,5 +1,3 @@
-import TotalCard from "@/components/TotalCard";
-import { CheckAnalysisCard } from "@/components/ButtonCard";
 import TableSection from "@/components/TableSection";
 import BarChartSection from "@/components/BarChartSection";
 
@@ -11,8 +9,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { calander } from "@/global/globalVariables";
 import usePageConfig from "@/components/usePageConfig";
+import TotalCard from "@/components/analysis/TotalCard";
+import SectionHeader from "@/components/section-header";
+import BudgetStrip from "@/components/analysis/BudgetStrip";
+import MinMaxStrip from "@/components/analysis/MinMaxStrip";
+import { Button } from "@/components/ui/button";
+import Flexrow from "@/components/flexrow";
+import OuterBar from "@/components/selectFilter/OuterBar";
+import SelectCard from "@/components/selectFilter/SelectCard";
+import SelectFilter from "@/components/selectFilter/SelectFilter";
+import SectionOuterFlexcol from "@/components/analysis/section-outer-flexcol";
 
 const ExpenseIndex = () => {
   const { dataConfig } = usePageConfig();
@@ -23,53 +30,61 @@ const ExpenseIndex = () => {
         {dataConfig.expense.loading && <p>Loading...</p>}
         {!dataConfig.expense.loading && (
           <>
-            <div className="flex gap-5 pt-6">
-              <TotalCard isExpense={true} cardFor={calander.year} />
-              <TotalCard isExpense={true} cardFor={calander.month} />
-              <CheckAnalysisCard isExpense={true} />
-            </div>
-            <div className="mt-6 py-4">
-              <div className="bg-grey-hover flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
-                <div>
-                  <span className="h-7 rounded-md px-2 text-sm">
-                    Filter Table
-                  </span>
-                </div>
-                <div>
-                  <Select>
-                    <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                      <SelectValue placeholder="Sort By Type" />
-                    </SelectTrigger>
-                    <SelectContent className="w-40">
-                      <SelectItem value="subCat">Category</SelectItem>
-                      <SelectItem value="primeCat">Category From</SelectItem>
-                      <SelectItem value="date">Date</SelectItem>
-                      <SelectItem value="amount">Amount</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Select>
-                    <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                      <SelectValue placeholder="Sort By Value" />
-                    </SelectTrigger>
-                    <SelectContent className="w-40">
-                      <SelectItem value="subCat">Category</SelectItem>
-                      <SelectItem value="primeCat">Category From</SelectItem>
-                      <SelectItem value="date">Date</SelectItem>
-                      <SelectItem value="amount">Amount</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="flex w-full flex-row justify-center gap-5 pt-10 pb-25">
+              <TotalCard
+                isExpense
+                color="text-exptxt"
+                headText="Expense"
+                total={2025}
+                footerText={"Your Total Spending in Year"}
+                date={2025}
+              ></TotalCard>
+              <TotalCard
+                isExpense
+                color="text-exptxt"
+                headText="Expense"
+                total={2025}
+                footerText={"Your Total Spending in Month"}
+                date={"June/25"}
+              ></TotalCard>
+              <div className="flex flex-col justify-center gap-5">
+                <BudgetStrip isExpense amount={20000} color="text-exptxt" />
+                <Button className={"bg-expbg"}></Button>
+                <Button className={"bg-expbg"}></Button>
               </div>
             </div>
-            <TableSection entries={dataConfig.expense.entries} />
-            <div className="pt-6">
-              <BarChartSection
-                isExpense={true}
-                entries={dataConfig.expense.entries}
-              />
-            </div>
+            <SectionOuterFlexcol>
+              <SectionHeader title="Expenses List" isExpense />
+              <Flexrow>
+                <OuterBar>
+                  <SelectCard isExpense title={"Sort List By"}>
+                    <SelectFilter
+                      placeholder={"Select Type"}
+                      defaultValue={"1"}
+                      list={[0, 1, 2, 3, 4, 5]}
+                    ></SelectFilter>
+                  </SelectCard>
+                  <SelectCard isExpense>
+                    <SelectFilter
+                      placeholder={"Filter As"}
+                      defaultValue={"1"}
+                      list={[0, 1, 2, 3, 4, 5]}
+                    ></SelectFilter>
+                  </SelectCard>
+                </OuterBar>
+              </Flexrow>
+              <TableSection entries={dataConfig.expense.entries} />
+            </SectionOuterFlexcol>
+
+            <SectionOuterFlexcol>
+              <Flexrow></Flexrow>
+            </SectionOuterFlexcol>
+            <BarChartSection
+              isExpense={true}
+              entries={dataConfig.expense.entries}
+            />
+
+            <div className="pt-6"></div>
           </>
         )}
       </div>

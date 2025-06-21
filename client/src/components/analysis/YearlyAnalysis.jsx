@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-
 import OuterBar from "../selectFilter/OuterBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import useAnalysisConfig from "./useAnalysisConfig";
-
-import InfoStrip from "./InfoStrip";
 import SingleBarChart from "../charts/SingleBarChart";
 import moment from "moment";
 import BudgetStrip from "./BudgetStrip";
 import MinMaxStrip from "./MinMaxStrip";
-import { BsLayoutTextWindowReverse } from "react-icons/bs";
+import SectionHeader from "../section-header";
+import SectionOuterFlexcol from "./section-outer-flexcol";
+
+import Flexrow from "../flexrow";
 
 const YearlyAnalysis = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, totalBy } =
@@ -35,16 +35,11 @@ const YearlyAnalysis = ({ isExpense }) => {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5 p-5">
-        <div className="flex flex-row border-b border-b-dimText pb-2 items-center">
-          <div className="flex px-2">javjvds</div>
-          <div className="flex px-2">
-            <BsLayoutTextWindowReverse />
-          </div>
-        </div>
-        <div className="flex flex-row">
+      <SectionOuterFlexcol>
+        <SectionHeader title="Expense Analysis By Year" isAnalysis />
+        <Flexrow>
           <OuterBar>
-            <SelectCard isExpense={isExpense} title={"By Year"}>
+            <SelectCard isExpense={isExpense} title={"Data of Year"}>
               <SelectFilter
                 placeholder={"Select Year"}
                 onValueChange={handleYearSelector}
@@ -53,18 +48,18 @@ const YearlyAnalysis = ({ isExpense }) => {
               ></SelectFilter>
             </SelectCard>
           </OuterBar>
-        </div>
-        <div className="flex w-full flex-row gap-5">
-          <BudgetStrip />
+        </Flexrow>
+        <Flexrow>
+          <BudgetStrip isExpense amount={20000} color="text-exptxt" />
           <MinMaxStrip isMax />
           <MinMaxStrip isMin />
-        </div>
-        <div className="flex w-full">
+        </Flexrow>
+        <Flexrow>
           <SingleBarChart
             barInfo={{
               data: chartData,
               label: "Expense",
-              color: "var(--color-expense)",
+              color: "var(--color-expbg)",
             }}
             chartInfo={{
               title: `Bar Graph - ${filter.byYear}`,
@@ -72,8 +67,8 @@ const YearlyAnalysis = ({ isExpense }) => {
               footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Year`,
             }}
           ></SingleBarChart>
-        </div>
-      </div>
+        </Flexrow>
+      </SectionOuterFlexcol>
     </>
   );
 };

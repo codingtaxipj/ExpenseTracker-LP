@@ -1,12 +1,12 @@
-import { MdFilterAlt } from "react-icons/md";
+import { Icons } from "../icons";
 
 const SelectCard = ({ title, children, isExpense }) => {
   return (
     <>
-      <div className="flex flex-row items-center gap-1 pl-1.5">
-        <MdFilterAlt className={isExpense ? "text-expense" : "text-income"} />
-        <button className="pr-2 text-sm">{title}</button>
-        <div className="flex flex-row gap-2"> {children}</div>
+      <div className="text-14 flex flex-row items-center gap-0.5 pl-2.5 font-medium">
+        <Icons.filter className={isExpense ? "text-exptxt text-16" : "text-inctxt text-16"} />
+        <button className="px-1.5 tracking-wide">{title}</button>
+        <div className="flex pr-2"> {children}</div>
       </div>
     </>
   );

@@ -14,6 +14,8 @@ import MinMaxStrip from "./MinMaxStrip";
 import BudgetStrip from "./BudgetStrip";
 import BudgetMonth from "./BudgetMonth";
 
+import SectionHeader from "../section-header";
+
 const YearByYearComparision = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, compareToYearSelector, totalBy } =
     useAnalysisConfig(isExpense);
@@ -44,7 +46,8 @@ const YearByYearComparision = ({ isExpense }) => {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5 p-5">
+      <div className="flex w-full flex-col gap-5 px-10 pb-30">
+        <SectionHeader title="Compare Expenses By Year" isAnalysis />
         <div className="flex flex-row">
           <OuterBar>
             <SelectCard isExpense={isExpense} title={"Compare Year"}>
@@ -65,7 +68,7 @@ const YearByYearComparision = ({ isExpense }) => {
             </SelectCard>
           </OuterBar>
         </div>
-        <div className="flex flex-row gap-5 pb-5">
+        <div className="flex flex-row gap-5 pb-10">
           <div className="flex flex-1 flex-row">
             <DoubleLineChart
               barInfo={{
@@ -74,7 +77,7 @@ const YearByYearComparision = ({ isExpense }) => {
                 labelTwo: String(filter.toYear),
               }}
               chartInfo={{
-                title: `Double Line Graph of Years `,
+                title: `Double Line Graph - `,
                 subtext: `${isExpense ? "Expenses" : "Income"} Comparision in Years by Months`,
                 footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Years`,
               }}
@@ -83,18 +86,20 @@ const YearByYearComparision = ({ isExpense }) => {
           <div className="flex flex-col justify-center gap-3 py-2">
             <TotalCard
               isExpense
-              color={"var(--color-yearBy)"}
+              color="text-year1"
+              headText="Expense"
               total={2025}
-              footerText={"In 12 Months"}
+              footerText={"Your Total Spending in Year"}
               date={2025}
             ></TotalCard>
             <MinMaxStrip isMax />
             <MinMaxStrip isMin />
             <TotalCard
               isExpense
-              color={"var(--color-yearBy)"}
+              headText="Expense"
+              color="text-year2"
               total={2025}
-              footerText={"In 12 Months"}
+              footerText={"Your Total Spending in Year"}
               date={2025}
             ></TotalCard>
             <MinMaxStrip isMax />
@@ -110,26 +115,30 @@ const YearByYearComparision = ({ isExpense }) => {
         </div>
         <div className="flex flex-col gap-5">
           <div className="flex gap-5">
-            <BudgetStrip />
+            <span className="text-year1 shadow-shadowBlack bg-gradBot text-14 flex h-7 items-center rounded-md px-2 font-medium shadow-md">
+              2025
+            </span>
+            <BudgetStrip amount={20000} color="text-year1" />
             <BudgetMonth isOver />
             <BudgetMonth isUnder />
           </div>
-          <div className="flex flex-wrap gap-5">
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
+          <div className="flex flex-wrap gap-5 pb-10">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <InfoStrip key={item} color="bg-year1" amount={item} />
+            ))}
           </div>
           <div className="flex gap-5">
-            <BudgetStrip />
+            <span className="text-year2 shadow-shadowBlack bg-gradBot text-14 flex h-7 items-center rounded-md px-2 font-medium shadow-md">
+              2025
+            </span>
+            <BudgetStrip amount={20000} color="text-year2" />
             <BudgetMonth isOver />
             <BudgetMonth isUnder />
           </div>
           <div className="flex flex-wrap gap-5">
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
-            <InfoStrip></InfoStrip>
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <InfoStrip key={item} color="bg-year2" amount={item} />
+            ))}
           </div>
         </div>
       </div>

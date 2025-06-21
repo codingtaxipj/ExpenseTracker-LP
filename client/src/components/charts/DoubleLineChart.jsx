@@ -14,33 +14,35 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { ImParagraphLeft } from "react-icons/im";
+import { Icons } from "../icons";
 
 const DoubleLineChart = ({ barInfo, chartInfo }) => {
   const chartData = barInfo.data;
   const chartConfig = {
     [barInfo.lableOne]: {
       label: barInfo.lableOne,
-      color: "#5d3fd3",
+      color: "var(--color-year1)",
     },
     [barInfo.labelTwo]: {
       label: barInfo.labelTwo,
-      color: "#f33a6a",
+      color: "var(--color-year2)",
     },
   };
   return (
     <>
-      <Card className="bg-greyBlack flex flex-1 flex-col gap-0.5 border-0 px-3 py-9 text-white">
+      <Card className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-1 flex-col gap-0.5 border px-3 py-9 text-white shadow-md">
         <CardHeader className="items-center pb-5 pl-10">
           <CardTitle>
             <div className="flex flex-row items-center gap-2">
               {chartInfo.title}
-              <div className={`size-4 rounded-xs bg-[#5d3fd3]`}></div>
               {barInfo.lableOne}
-              <div className={`size-4 rounded-xs bg-[#f33a6a]`}></div>
+              <div className={`bg-year1 size-4 rounded-xs`}></div>
+
               {barInfo.labelTwo}
+              <div className={`bg-year2 size-4 rounded-xs`}></div>
             </div>
           </CardTitle>
-          <CardDescription className="text-dimText">
+          <CardDescription className="!text-91 text-14">
             {chartInfo.subtext}
           </CardDescription>
         </CardHeader>
@@ -76,14 +78,14 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
               <Line
                 dataKey={barInfo.lableOne}
                 type="monotone"
-                stroke="#5d3fd3"
+                stroke={"var(--color-year1)"}
                 strokeWidth={2}
                 dot={true}
               />
               <Line
                 dataKey={barInfo.labelTwo}
                 type="monotone"
-                stroke="#f33a6a"
+                stroke={"var(--color-year2)"}
                 strokeWidth={2}
                 dot={true}
               />
@@ -91,8 +93,8 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
           </ChartContainer>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <div className="text-dimText flex gap-2 pt-5 text-sm leading-none">
-            <ImParagraphLeft /> {chartInfo.footertext}
+          <div className="text-91 text-14 flex gap-2 pt-5 leading-none">
+            <Icons.textline /> {chartInfo.footertext}
           </div>
         </CardFooter>
       </Card>

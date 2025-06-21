@@ -1,6 +1,5 @@
-import TotalCard from "@/components/TotalCard";
 import TableSection from "@/components/TableSection";
-import { CheckAnalysisCard } from "@/components/ButtonCard";
+
 import BarChartSection from "@/components/BarChartSection";
 
 import {
@@ -10,8 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { calander } from "@/global/globalVariables";
+
 import usePageConfig from "@/components/usePageConfig";
+import SectionHeader from "@/components/section-header";
+import TotalCard from "@/components/analysis/TotalCard";
 
 const IncomeIndex = () => {
   const { dataConfig } = usePageConfig();
@@ -22,12 +23,30 @@ const IncomeIndex = () => {
         {dataConfig.income.loading && <p>Loading...</p>}
         {!dataConfig.income.loading && (
           <>
-            <div className="flex gap-5 pt-6">
-              <TotalCard isExpense={false} cardFor={calander.year} />
-              <TotalCard isExpense={false} cardFor={calander.month} />
-
-              <CheckAnalysisCard isExpense={false} />
+            <div className="flex w-full flex-row justify-center gap-5 pt-10 pb-25">
+              <TotalCard
+                color="text-inctxt"
+                headText="Expense"
+                total={2025}
+                footerText={"Your Total Spending in Year"}
+                date={2025}
+              ></TotalCard>
+              <TotalCard
+                color="text-inctxt"
+                headText="Expense"
+                total={2025}
+                footerText={"Your Total Spending in Month"}
+                date={"June/25"}
+              ></TotalCard>
+              <TotalCard
+                total={2025}
+                color="text-inctxt"
+                headText="Avg Yearly Expense"
+                footerText={"Your Avg Spending in a Year"}
+                date={2025}
+              ></TotalCard>
             </div>
+            <SectionHeader title="Expense Analysis By Year" />
             <div className="mt-6 py-4">
               <div className="bg-grey-hover flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
                 <div>

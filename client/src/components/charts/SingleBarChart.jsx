@@ -13,7 +13,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { ImParagraphLeft } from "react-icons/im";
+
+import { Icons } from "../icons";
 
 const SingleBarChart = ({
   barInfo = {
@@ -36,11 +37,18 @@ const SingleBarChart = ({
   };
   return (
     <>
-      <Card className="bg-greyBlack flex flex-1 flex-col gap-0.5 border-0 px-3 py-9 text-white">
+      <Card className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-1 flex-col gap-0.5 border px-3 py-9 text-white shadow-md">
         <CardHeader className="items-center pb-5 pl-10">
-          {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
+          {chartInfo.title && (
+            <CardTitle>
+              <div className="flex flex-row items-center gap-2">
+                {chartInfo.title}
+                <div className={`size-4 rounded-xs bg-[#5d3fd3]`}></div>
+              </div>
+            </CardTitle>
+          )}
           {chartInfo.subtext && (
-            <CardDescription className="text-dimText">
+            <CardDescription className="text-91">
               {chartInfo.subtext}
             </CardDescription>
           )}
@@ -59,10 +67,7 @@ const SingleBarChart = ({
                 right: 20,
               }}
             >
-              <CartesianGrid
-                stroke="var(--color-greyMedium)"
-                vertical={false}
-              />
+              <CartesianGrid stroke="var(--color-br1)" vertical={false} />
               <XAxis
                 dataKey="Title"
                 tickLine={false}
@@ -75,7 +80,7 @@ const SingleBarChart = ({
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="Amount" fill="var(--color-barChart)" radius={8}>
+              <Bar dataKey="Amount" fill={barInfo.color} radius={8}>
                 <LabelList
                   position="top"
                   offset={12}
@@ -88,8 +93,8 @@ const SingleBarChart = ({
         </CardContent>
         {chartInfo.footertext && (
           <CardFooter className="flex-col gap-2">
-            <div className="text-dimText flex gap-2 pt-5 text-sm leading-none">
-              <ImParagraphLeft /> {chartInfo.footertext}
+            <div className="text-91 flex gap-2 pt-5 text-sm leading-none">
+              <Icons.textline /> {chartInfo.footertext}
             </div>
           </CardFooter>
         )}

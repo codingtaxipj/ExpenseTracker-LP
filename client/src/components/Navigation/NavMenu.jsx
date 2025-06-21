@@ -1,16 +1,18 @@
 import { PATH } from "@/router/routerConfig";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { MdCalculate, MdEventRepeat, MdSpaceDashboard } from "react-icons/md";
-import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import { MdEventRepeat, MdSpaceDashboard } from "react-icons/md";
+
 import {
   FaCalculator,
   FaCalendarDay,
-  FaCalendarWeek,
   FaCarSide,
+  FaClock,
   FaMapPin,
   FaUser,
 } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Icons } from "../icons";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
@@ -23,7 +25,13 @@ function Dashboard({ activeBtn, children }) {
     else return baseStyle + " " + "hover:bg-[#2c2c2c] font-medium";
   }
   const currentDate = moment().format("Do MMMM YYYY");
-  const currentWeek = moment().week();
+  const [time, setTime] = useState(moment());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(moment());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
@@ -54,7 +62,7 @@ function Dashboard({ activeBtn, children }) {
               onClick={() => navigate(PATH.expense)}
               className={setStyle(PATH.expense)}
             >
-              <GiPayMoney />
+              <Icons.expense />
               <span>Expense</span>
             </button>
             <button className={setStyle()}>
@@ -65,21 +73,21 @@ function Dashboard({ activeBtn, children }) {
               onClick={() => navigate(PATH.expenseAnalysis)}
               className={setStyle(PATH.expenseAnalysis)}
             >
-              <MdCalculate />
+              <Icons.analysis />
               <span>Expense Analysis</span>
             </button>
             <button
               onClick={() => navigate(PATH.income)}
               className={setStyle(PATH.income)}
             >
-              <GiReceiveMoney />
+               <Icons.income />
               <span>Income</span>
             </button>
             <button
               onClick={() => navigate(PATH.incomeAnalysis)}
               className={setStyle(PATH.incomeAnalysis)}
             >
-              <MdCalculate />
+              <Icons.analysis />
               <span>Income Analysis</span>
             </button>
 
@@ -116,8 +124,8 @@ function Dashboard({ activeBtn, children }) {
               </div>
               <span className="border-r"></span>
               <div className="flex items-center gap-2 rounded-sm p-0.5">
-                <FaCalendarWeek />
-                <span>{currentWeek}th Week</span>
+                <FaClock />
+                <span> {time.format("hh:mm A")}</span>
               </div>
             </div>
           </div>
