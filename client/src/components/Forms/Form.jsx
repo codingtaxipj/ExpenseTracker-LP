@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/popover";
 
 import { Checkbox } from "../ui/checkbox";
-import OuterBar from "../selectFilter/OuterBar";
+import OuterBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import { Icons } from "../icons";

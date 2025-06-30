@@ -1,5 +1,5 @@
 import SingleBarChart from "@/components/charts/SingleBarChart";
-import OuterBar from "@/components/selectFilter/OuterBar";
+import OuterBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 import SelectMonthAsFilter from "@/components/selectFilter/SelectMonthAsFilter";

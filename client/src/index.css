@@ -13,18 +13,16 @@
   --color-br1: #282828;
   --color-ddd: #dddddd;
   --color-91: #919191;
-  --color-rr: #fa1010;
+  --color-rr: #ff0000;
   --color-rrbg: #cc1b1b;
-  --color-gg: #03e503;
+  --color-gg: #12cf12;
   --color-ggbg: #16a016;
 
-  --color-expbg: #0099f8;
-  --color-exptxt: #0099f8;
-  --color-exp: #0790e5;
-  --color-inctxt: #5cb308;
-  --color-incbg: #5cb308;
+  --color-exp: #993ff8;
+  --color-explight: #a456f6;
   --color-inc: #4fa200;
-  --color-pupl: #993ff8;
+  --color-trip: #0099f8;
+  --color-budget: #ee8801;
 
   --color-year1: #ffbf00;
   --color-year2: #ff5f1f;

@@ -17,10 +17,10 @@ import {
 import { Icons } from "../icons";
 
 const SingleBarChart = ({
+  isExpense,
   barInfo = {
     data: [],
     label: [],
-    color: false,
   },
   chartInfo = {
     title: false,
@@ -29,10 +29,11 @@ const SingleBarChart = ({
   },
 }) => {
   const chartData = barInfo.data;
+  const color = isExpense && "var(--color-exp)";
   const chartConfig = {
     barChart: {
       label: barInfo.label,
-      color: barInfo.color,
+      color: color,
     },
   };
   return (
@@ -43,7 +44,9 @@ const SingleBarChart = ({
             <CardTitle>
               <div className="flex flex-row items-center gap-2">
                 {chartInfo.title}
-                <div className={`size-4 rounded-xs bg-[#5d3fd3]`}></div>
+                <div
+                  className={`size-4 rounded-xs ${isExpense && "bg-exp"} `}
+                ></div>
               </div>
             </CardTitle>
           )}
@@ -80,7 +83,7 @@ const SingleBarChart = ({
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="Amount" fill={barInfo.color} radius={8}>
+              <Bar dataKey="Amount" fill={color} radius={8}>
                 <LabelList
                   position="top"
                   offset={12}

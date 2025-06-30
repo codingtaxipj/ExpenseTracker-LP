@@ -1,101 +1,164 @@
 import TableSection from "@/components/TableSection";
-
-import BarChartSection from "@/components/BarChartSection";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import usePageConfig from "@/components/usePageConfig";
-import SectionHeader from "@/components/section-header";
 import TotalCard from "@/components/analysis/TotalCard";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@/router/routerConfig";
-import BudgetStrip from "@/components/analysis/BudgetStrip";
+import BudgetStrip from "@/components/strips/budget-strip";
+import Flexcol from "@/components/section/flexcol";
+import Flexrow from "@/components/section/flexrow";
+import ExpButton from "@/components/custom-ui/expButton";
+import {
+  expenseCategories,
+  getPrimeCategories,
+  getSubCategories,
+} from "@/global/categories";
+import { useState } from "react";
+import { sortBy } from "@/global/globalVariables";
+import SectionTitle from "@/components/section/section-title";
+import SelectBar from "@/components/selectFilter/SelectBar";
+import SelectCard from "@/components/selectFilter/SelectCard";
+import SelectFilter from "@/components/selectFilter/SelectFilter";
+import { AmountField } from "../expense";
+import { Icons } from "@/components/icons";
 
 const IncomeIndex = () => {
   const { dataConfig } = usePageConfig();
   const navigate = useNavigate();
+
+  const [filters, setFilters] = useState("None");
+  const sortList = Object.values(sortBy);
+
+  const primeCats = getPrimeCategories(expenseCategories);
+  const subCats = getSubCategories(expenseCategories);
+
+  const handlePrimeCat = (value) => {
+    console.log("Prime : ", value);
+  };
+  const handleSubCat = (value) => {
+    console.log("Sub : ", value);
+  };
+
+  const handleSortBy = (value) => setFilters(value);
 
   return (
     <>
       {dataConfig.income.loading && <p>Loading...</p>}
       {!dataConfig.income.loading && (
         <>
-          <div className="flex w-full flex-row flex-wrap justify-center gap-5 pt-10 pb-25">
-            <TotalCard
-              color="text-inctxt"
-              headText="Income"
-              total={2025}
-              footerText={"Your Total Spending in Year"}
-              date={2025}
-            ></TotalCard>
-
-            <TotalCard
-              color="text-inctxt"
-              headText="Income"
-              total={2025}
-              footerText={"Your Total Spending in Month"}
-              date={"June/25"}
-            ></TotalCard>
-            <div className="flex flex-col justify-center gap-5">
-              <BudgetStrip amount={20000} color="text-inctxt" />
-
-              <button
+          <Flexcol>
+            <Flexrow className="items-center justify-center">
+              <TotalCard
+                isExpense
+                color="text-inc"
+                headText="Income"
+                total={2025}
+                footerText={"Your Total Earning in Year"}
+                date={2025}
+              ></TotalCard>
+              <TotalCard
+                isExpense
+                color="text-inc"
+                headText="Income"
+                total={2025}
+                footerText={"Your Total Earning in Month"}
+                date={"June/25"}
+              ></TotalCard>
+            </Flexrow>
+            <Flexrow className="items-center justify-center">
+              <BudgetStrip isExpense amount={20000} color="text-inc" />
+              <ExpButton
                 onClick={() => navigate(PATH.addIncome)}
-                className="bg-incbg w-full rounded-md px-4 py-1"
-              >
-                Add Income
-              </button>
-            </div>
-          </div>
-          <SectionHeader title="Expense Analysis By Year" />
-          <div className="mt-6 py-4">
-            <div className="bg-grey-hover flex w-max flex-row gap-1 rounded-md px-1.5 py-1">
-              <div>
-                <span className="h-7 rounded-md px-2 text-sm">
-                  Filter Table
-                </span>
+                btnfor="income"
+                label={"Add Income"}
+              />
+            </Flexrow>
+          </Flexcol>
+
+          <Flexcol className="pt-20">
+            <SectionTitle title="Income List" isIncome />
+            <SelectBar>
+              <SelectCard title={"Sort List"}>
+                <SelectFilter
+                  placeholder={"Select Type"}
+                  onValueChange={handleSortBy}
+                  defaultValue={sortBy.none}
+                  list={sortList}
+                ></SelectFilter>
+              </SelectCard>
+              {filters === sortBy.none && (
+                <SelectCard title={"NONE"}></SelectCard>
+              )}
+              {filters === sortBy.primeCategory && (
+                <SelectCard>
+                  <SelectFilter
+                    placeholder={"Select Prime Category"}
+                    onValueChange={handlePrimeCat}
+                    list={primeCats}
+                  ></SelectFilter>
+                </SelectCard>
+              )}
+              {filters === sortBy.subCategory && (
+                <SelectCard>
+                  <SelectFilter
+                    placeholder={"Select Sub Category"}
+                    onValueChange={handleSubCat}
+                    list={subCats}
+                  ></SelectFilter>
+                </SelectCard>
+              )}
+              {filters === sortBy.date && (
+                <SelectCard title={"Select Range"}>Date 1 to Date 2</SelectCard>
+              )}
+              {filters === sortBy.amount && (
+                <SelectCard title="From">
+                  <AmountField></AmountField>
+                  <button className="px-2">To</button>
+                  <AmountField></AmountField>
+                </SelectCard>
+              )}
+              {filters === sortBy.trip && (
+                <SelectCard title={"Select Trip"}>
+                  <SelectFilter
+                    placeholder={"Select Trip"}
+                    defaultValue={"2024"}
+                    list={[2024, 2025, 2026]}
+                  ></SelectFilter>
+                </SelectCard>
+              )}
+              {filters === sortBy.repeating && (
+                <SelectCard title={"Repeat By"}>
+                  <SelectFilter
+                    placeholder={"Repeat By"}
+                    defaultValue={"2024"}
+                    list={[2024, 2025, 2026]}
+                  ></SelectFilter>
+                </SelectCard>
+              )}
+              <div className="text-14 flex gap-2 font-medium" noIcon>
+                <ExpButton
+                  btnfor="expenseInactive"
+                  className="!px-2"
+                  label={<Icons.check />}
+                />
+                <ExpButton
+                  btnfor="expenseInactive"
+                  className="!px-2"
+                  label={<Icons.asc />}
+                />
+                <ExpButton
+                  btnfor="expenseInactive"
+                  className="!px-2"
+                  label={<Icons.desc />}
+                />
+                <ExpButton
+                  btnfor="expenseInactive"
+                  className="!px-2"
+                  label={<Icons.listSort />}
+                />
               </div>
-              <div>
-                <Select>
-                  <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                    <SelectValue placeholder="Sort By Type" />
-                  </SelectTrigger>
-                  <SelectContent className="w-40">
-                    <SelectItem value="subCat">Category</SelectItem>
-                    <SelectItem value="primeCat">Category From</SelectItem>
-                    <SelectItem value="date">Date</SelectItem>
-                    <SelectItem value="amount">Amount</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Select>
-                  <SelectTrigger className="bg-darkBlack w-40 border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
-                    <SelectValue placeholder="Sort By Value" />
-                  </SelectTrigger>
-                  <SelectContent className="w-40">
-                    <SelectItem value="subCat">Category</SelectItem>
-                    <SelectItem value="primeCat">Category From</SelectItem>
-                    <SelectItem value="date">Date</SelectItem>
-                    <SelectItem value="amount">Amount</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-          <TableSection entries={dataConfig.income.entries} />
-          <div className="pt-6">
-            <BarChartSection
-              isExpense={false}
-              entries={dataConfig.income.entries}
-            />
-          </div>
+            </SelectBar>
+            <TableSection entries={dataConfig.income.entries} />
+          </Flexcol>
         </>
       )}
     </>

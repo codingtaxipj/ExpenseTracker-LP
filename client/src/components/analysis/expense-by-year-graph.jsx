@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
-import OuterBar from "../selectFilter/OuterBar";
+import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import useAnalysisConfig from "./useAnalysisConfig";
 import SingleBarChart from "../charts/SingleBarChart";
 import moment from "moment";
-import BudgetStrip from "./BudgetStrip";
-import MinMaxStrip from "./MinMaxStrip";
-import SectionHeader from "../section-header";
+import MinMaxStrip from "../strips/min-max-strip";
 import SectionOuterFlexcol from "./section-outer-flexcol";
+import Flexrow from "../section/flexrow";
+import Flexcol from "../section/flexcol";
 
-import Flexrow from "../flexrow";
-
-const YearlyAnalysis = ({ isExpense }) => {
+const ExpenseByYearGraph = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, totalBy } =
     useAnalysisConfig(isExpense);
 
@@ -35,10 +33,9 @@ const YearlyAnalysis = ({ isExpense }) => {
 
   return (
     <>
-      <SectionOuterFlexcol>
-        <SectionHeader title="Expense Analysis By Year" isAnalysis />
+      <Flexcol>
         <Flexrow>
-          <OuterBar>
+          <SelectBar>
             <SelectCard isExpense={isExpense} title={"Data of Year"}>
               <SelectFilter
                 placeholder={"Select Year"}
@@ -47,23 +44,19 @@ const YearlyAnalysis = ({ isExpense }) => {
                 list={Years}
               ></SelectFilter>
             </SelectCard>
-          </OuterBar>
+          </SelectBar>
         </Flexrow>
+
         <Flexrow>
-          <BudgetStrip
-            isExpense
-            amount={20000}
-            color={isExpense ? "text-exp" : "text-inc"}
-          />
-          <MinMaxStrip isMax />
-          <MinMaxStrip isMin />
+          <MinMaxStrip isExpense isMax />
+          <MinMaxStrip isExpense isMin />
         </Flexrow>
         <Flexrow>
           <SingleBarChart
+            isExpense
             barInfo={{
               data: chartData,
               label: "Expense",
-              color: isExpense ? "var(--color-exp)" : "var(--color-inc)",
             }}
             chartInfo={{
               title: `Bar Graph - ${filter.byYear}`,
@@ -72,9 +65,9 @@ const YearlyAnalysis = ({ isExpense }) => {
             }}
           ></SingleBarChart>
         </Flexrow>
-      </SectionOuterFlexcol>
+      </Flexcol>
     </>
   );
 };
 
-export default YearlyAnalysis;
+export default ExpenseByYearGraph;

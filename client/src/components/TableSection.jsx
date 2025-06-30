@@ -46,7 +46,7 @@ const TableSection = ({ entries }) => {
 
   return (
     <>
-      <div className="border-grey-hover cursor-default overflow-hidden rounded-md border">
+      <div className="border-grey-hover cursor-default overflow-hidden rounded-md border w-full">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-grey-hover bg-grey-hover border-b-grey-hover">

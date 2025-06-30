@@ -1,4 +1,4 @@
-import OuterBar from "../selectFilter/OuterBar";
+import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import DoubleLineChart from "../charts/DoubleLineChart";
@@ -9,12 +9,12 @@ import { useEffect, useState } from "react";
 
 import TotalCard from "./TotalCard";
 import YearCompareCard from "./YearCompareCard";
-import InfoStrip from "./InfoStrip";
-import MinMaxStrip from "./MinMaxStrip";
-import BudgetStrip from "./BudgetStrip";
+import InfoStrip from "../strips/info-strip";
+import MinMaxStrip from "../strips/min-max-strip";
+import BudgetStrip from "../strips/budget-strip";
 import BudgetMonth from "./BudgetMonth";
 
-import SectionHeader from "../section-header";
+import SectionTitle from "../section/section-title";
 
 const YearByYearComparision = ({ isExpense }) => {
   const { filter, Years, handleYearSelector, compareToYearSelector, totalBy } =
@@ -47,9 +47,9 @@ const YearByYearComparision = ({ isExpense }) => {
   return (
     <>
       <div className="flex w-full flex-col gap-5 px-10 pb-30">
-        <SectionHeader title="Compare Expenses By Year" isAnalysis />
+        <SectionTitle title="Compare Expenses By Year" isAnalysis />
         <div className="flex flex-row">
-          <OuterBar>
+          <SelectBar>
             <SelectCard isExpense={isExpense} title={"Compare Year"}>
               <SelectFilter
                 placeholder={"Select Year"}
@@ -66,7 +66,7 @@ const YearByYearComparision = ({ isExpense }) => {
                 list={Years}
               ></SelectFilter>
             </SelectCard>
-          </OuterBar>
+          </SelectBar>
         </div>
         <div className="flex flex-row gap-5 pb-10">
           <div className="flex flex-1 flex-row">
@@ -124,7 +124,7 @@ const YearByYearComparision = ({ isExpense }) => {
           </div>
           <div className="flex flex-wrap gap-5 pb-10">
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <InfoStrip key={item} color="bg-year1" amount={item} />
+              <InfoStrip isExpense key={item} color="bg-year1" amount={-20} />
             ))}
           </div>
           <div className="flex gap-5">
@@ -137,7 +137,7 @@ const YearByYearComparision = ({ isExpense }) => {
           </div>
           <div className="flex flex-wrap gap-5">
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <InfoStrip key={item} color="bg-year2" amount={item} />
+              <InfoStrip isIncome key={item} color="bg-year2" amount={20} />
             ))}
           </div>
         </div>

@@ -1,5 +1,5 @@
 import SelectFilter from "@/components/selectFilter/SelectFilter";
-import OuterBar from "@/components/selectFilter/OuterBar";
+import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import { useEffect, useState } from "react";
 import useAnalysisConfig from "./useAnalysisConfig";
@@ -39,9 +39,7 @@ const SubCategoryMonthlyAnalysis = ({ isExpense }) => {
     <>
       <>
         <div className="flex flex-1 flex-col gap-5 p-5">
-          <div className="flex flex-row">
-            
-          </div>
+          <div className="flex flex-row"></div>
           <div className="flex flex-row">
             <SingleBarChart
               barInfo={{

@@ -32,7 +32,7 @@ const IconCircle = ({ setIcon, bgColor }) => {
       case expenseCategories.misc.thisCategoryTitle:
         return "bg-misc";
       case incomeCategories.income.thisCategoryTitle:
-        return "bg-income";
+        return "bg-inc";
     }
   };
   const style = `flex w-fit items-center justify-center rounded-full p-2 text-[20px] text-white ${color()}`;

@@ -1,8 +1,11 @@
 const ExpButton = ({ btnfor, label, className = "", ...props }) => {
   const color = {
-    expense: "bg-exp hover:bg-exp",
-    income: "bg-inc hover:bg-inc",
-    cancel: "bg-rrbg hover:bg-rrbg",
+    expense: "bg-exp ",
+    income: "bg-inc ",
+    cancel: "bg-rr ",
+    success: "bg-gg ",
+    trip: "bg-trip ",
+    budget: "bg-budget ",
     expenseInactive:
       "bg-gradBot hover:bg-exp border border-br1 shadow-md shadow-shadowBlack",
     incomeInactive:
@@ -15,7 +18,7 @@ const ExpButton = ({ btnfor, label, className = "", ...props }) => {
     <>
       <button
         {...props}
-        className={`${getColor(btnfor)} cursor-pointer rounded-md px-5 py-1 disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
+        className={`${getColor(btnfor)} text-14 cursor-pointer rounded-md px-5 py-1 disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
       >
         {label}
       </button>

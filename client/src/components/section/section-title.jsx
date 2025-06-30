@@ -1,5 +1,6 @@
-import { Icons } from "./icons";
-const SectionHeader = ({ title, isAnalysis, isExpense, isIncome }) => {
+import { Icons } from "../icons";
+
+const SectionTitle = ({ title, isAnalysis, isExpense, isIncome }) => {
   return (
     <>
       <div className="text-18 flex flex-row items-center pb-5">
@@ -17,4 +18,4 @@ const SectionHeader = ({ title, isAnalysis, isExpense, isIncome }) => {
   );
 };
 
-export default SectionHeader;
+export default SectionTitle;

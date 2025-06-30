@@ -1,4 +1,4 @@
-import OuterBar from "../selectFilter/OuterBar";
+import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 
@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
 import { Checkbox } from "../ui/checkbox";
-import InfoStrip from "./InfoStrip";
-import SectionHeader from "../section-header";
+import InfoStrip from "../strips/info-strip";
 import { CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Icons } from "../icons";
+import SectionTitle from "../section/section-title";
 
 const CategoryAnalysis = ({ isExpense }) => {
   const {
@@ -64,9 +64,9 @@ const CategoryAnalysis = ({ isExpense }) => {
   return (
     <>
       <div className="flex w-full flex-col gap-5 px-10 pb-25">
-        <SectionHeader title="Expenses Analysis By By Categories" isAnalysis />
+        <SectionTitle title="Expenses Analysis By By Categories" isAnalysis />
         <div className="flex">
-          <OuterBar>
+          <SelectBar>
             <SelectCard isExpense={isExpense} title={"By Year"}>
               <SelectFilter
                 placeholder={"Select Year"}
@@ -75,7 +75,7 @@ const CategoryAnalysis = ({ isExpense }) => {
                 list={Years}
               ></SelectFilter>
             </SelectCard>
-          </OuterBar>
+          </SelectBar>
         </div>
 
         <div className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-1 flex-col gap-0.5 rounded-xl border p-10 text-white shadow-md">
@@ -125,7 +125,7 @@ const CategoryAnalysis = ({ isExpense }) => {
         </div>
 
         <div className="flex">
-          <OuterBar>
+          <SelectBar>
             <SelectCard isExpense={isExpense} title={"In Month Of"}>
               <SelectFilter
                 placeholder={"Select Month"}
@@ -135,7 +135,7 @@ const CategoryAnalysis = ({ isExpense }) => {
                 list={Months}
               ></SelectFilter>
             </SelectCard>
-          </OuterBar>
+          </SelectBar>
         </div>
         <div className="flex flex-wrap gap-2.5">
           {[1, 2, 3, 4, 5, 6].map((item) => (

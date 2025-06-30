@@ -3,7 +3,7 @@ import { PATH } from "@/router/routerConfig";
 
 import CategoryAnalysis from "@/components/analysis/CategoryAnalysis";
 import YearByYearComparision from "@/components/analysis/YearByYearComparision";
-import YearlyAnalysis from "@/components/analysis/YearlyAnalysis";
+import YearlyAnalysis from "@/components/analysis/expense-by-year-graph";
 import AnalysisCardHeader from "@/components/analysis/AnalysisCardHeader";
 
 const ExpenseAnalysis = () => {

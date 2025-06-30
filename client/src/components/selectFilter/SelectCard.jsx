@@ -8,7 +8,7 @@ const SelectCard = ({ title, children, isExpense, noIcon, className = "" }) => {
       >
         {!noIcon && (
           <Icons.filter
-            className={`${isExpense ? "text-exptxt text-16" : "text-inctxt text-16"}`}
+            className={`${isExpense ? "text-exp text-16" : "text-inc text-16"}`}
           />
         )}
         {title && <button className="tracking-wide">{title}</button>}
