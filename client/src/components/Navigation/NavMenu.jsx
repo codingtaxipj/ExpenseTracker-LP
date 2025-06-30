@@ -19,7 +19,7 @@ function Dashboard({ activeBtn, children }) {
 
   function setStyle(toSet) {
     let baseStyle =
-      "flex w-full items-center gap-2.5 rounded-md px-2 py-1  text-base ";
+      "flex w-full items-center gap-2.5 rounded-md px-2 py-1  text-14 font-medium";
     if (activeBtn === toSet)
       return baseStyle + " " + "text-black bg-white font-normal";
     else return baseStyle + " " + "hover:bg-[#2c2c2c] font-medium";
@@ -48,7 +48,7 @@ function Dashboard({ activeBtn, children }) {
             </button>
           </div>
           <div className="flex grow flex-col gap-2">
-            <button className="flex w-full items-center gap-2.5 rounded-md px-2 py-1 text-sm font-medium text-[#a6a6a6]">
+            <button className="text-14 flex w-full items-center gap-2.5 rounded-md px-2 py-1 font-medium text-[#a6a6a6]">
               <span>Menu</span>
             </button>
             <button
@@ -65,7 +65,10 @@ function Dashboard({ activeBtn, children }) {
               <Icons.expense />
               <span>Expense</span>
             </button>
-            <button className={setStyle()}>
+            <button
+              onClick={() => navigate(PATH.trip)}
+              className={setStyle(PATH.trip)}
+            >
               <FaCarSide />
               <span>Trip Expense</span>
             </button>
@@ -95,7 +98,10 @@ function Dashboard({ activeBtn, children }) {
               <FaCalculator />
               <span>Budgeting</span>
             </button>
-            <button onClick={"#"} className={setStyle()}>
+            <button
+              onClick={() => navigate(PATH.repeat)}
+              className={setStyle(PATH.repeat)}
+            >
               <MdEventRepeat />
               <span>Recurring Expenses</span>
             </button>
@@ -129,8 +135,7 @@ function Dashboard({ activeBtn, children }) {
               </div>
             </div>
           </div>
-
-          <div className="flex h-full flex-row overflow-y-auto rounded-md">
+          <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-grey-border [&::-webkit-scrollbar-thumb]:bg-grey-hover h-full w-full overflow-y-auto rounded-lg p-10 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
             {children}
           </div>
         </div>

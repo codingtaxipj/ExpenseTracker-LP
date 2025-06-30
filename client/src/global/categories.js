@@ -148,7 +148,7 @@ export const expenseCategories = [
 export const incomeCategories = [
   {
     id: "income",
-    title: "Income Sources",
+    title: "Income",
     subcategories: [
       { id: "salary", name: "Salary" },
       { id: "salary_bonus", name: "Salary Bonus" },
@@ -173,7 +173,9 @@ export const getSubCategories = (cats = []) =>
   );
 
 export const getSubOfPrime = (prime, isExpense) => {
-  const list = isExpense ? expenseCategories : incomeCategories;
-  const category = list.find((item) => item.title === prime);
-  return category ? category.subcategories.map((item) => item.name) : [];
+  if (prime !== null) {
+    const list = isExpense ? expenseCategories : incomeCategories;
+    const category = list.find((item) => item.title === prime);
+    return category ? category.subcategories.map((item) => item.name) : [];
+  } else return [];
 };

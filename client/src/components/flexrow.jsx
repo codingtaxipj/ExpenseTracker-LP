@@ -1,9 +1,11 @@
 import React from "react";
 
-const Flexrow = ({ children }) => {
+const Flexrow = ({ children, className = "" }) => {
   return (
     <>
-      <div className="flex w-full flex-row gap-5"> {children}</div>
+      <div className={`flex w-full flex-row gap-5 ${className}`}>
+        {children}
+      </div>
     </>
   );
 };

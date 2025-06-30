@@ -12,13 +12,7 @@ import {
 
 const expenseRouter = express.Router();
 
-expenseRouter.post(
-  "/add-data",
-  expenseFormValidation,
-  formController,
-  updateSubMax,
-  updatePrimeMax
-);
+expenseRouter.post("/add-data", expenseFormValidation, formController);
 
 expenseRouter.get("/get-data", fetchAllData);
 expenseRouter.get("/get-max-data", fetchMaxData);

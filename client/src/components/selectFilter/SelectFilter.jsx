@@ -12,15 +12,22 @@ const SelectFilter = ({
   placeholder,
   onValueChange,
   defaultValue,
+  value,
   isMonthSelect = false,
+  ...props
 }) => {
   return (
     <>
-      <Select value={defaultValue} onValueChange={onValueChange}>
-        <SelectTrigger className="bg-darkBlack w-45 rounded-md border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
+      <Select
+        {...props}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange}
+      >
+        <SelectTrigger className="bg-darkBlack min-w-50 rounded-md border-0 text-xs focus-visible:ring-[0px] data-[placeholder]:text-white data-[size=default]:h-7 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-white">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent className="w-45">
+        <SelectContent className="min-w-45">
           {list.map((items) => {
             return (
               <SelectItem key={items} value={String(items)}>

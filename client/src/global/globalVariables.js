@@ -24,3 +24,13 @@ export const calander = {
   month: "Month",
   week: "Week",
 };
+
+export const sortBy = {
+  none: "None",
+  primeCategory: "Prime Category",
+  subCategory: "Sub Category",
+  date: "Date",
+  amount: "Amount",
+  trip: "Trip",
+  repeating: "Repeating",
+};

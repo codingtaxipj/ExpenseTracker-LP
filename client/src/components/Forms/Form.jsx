@@ -1,19 +1,13 @@
 import moment from "moment";
-import capitalize from "capitalize";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 // global variables
 import { PATH } from "@/router/routerConfig";
-import { expenseCategories } from "@/global/icon-data";
-//React-icons
-import { PiTagSimpleFill } from "react-icons/pi";
-import { FaIndianRupeeSign } from "react-icons/fa6";
+
 //Shacdn-UI
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -21,19 +15,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
-const Form = ({ formToDisplay }) => {
-  //page navigation
+import { Checkbox } from "../ui/checkbox";
+import OuterBar from "../selectFilter/OuterBar";
+import SelectCard from "../selectFilter/SelectCard";
+import SelectFilter from "../selectFilter/SelectFilter";
+import { Icons } from "../icons";
+import ExpButton from "../custom-ui/expButton";
+import {
+  expenseCategories,
+  getPrimeCategories,
+  getSubOfPrime,
+  incomeCategories,
+} from "@/global/categories";
+
+const Form = ({ isExpense, isIncome }) => {
+  //NOTE page navigation
   const navigate = useNavigate();
   const location = useLocation();
-  // desengemnting path so that parent path remain constant no matter where my form displays
+
+  // NOTE desengemnting path so that parent path remain constant no matter where my form displays
   const desegmentPath = () => {
     const currentPath = location.pathname;
     const segments = currentPath.split("/").filter(Boolean);
@@ -56,350 +57,424 @@ const Form = ({ formToDisplay }) => {
     navigate(incomePath);
   };
 
-  //state
-  const [selectedPrimeValue, setSelectedPrimeValue] = useState();
-  const [selectedSubCats, setSeletedSubCats] = useState(false);
-  const [date, setDate] = useState();
+  //NOTE Category states
+  const [selectedPrimeCat, setSelectedPrimeCat] = useState(null);
+  const [selectedSubCat, setSelectedSubCat] = useState(null);
 
-  //prime category
-  const primeCategoriesVals = Object.values(expenseCategories).map(
-    (category) => category.thisCategoryTitle,
-  );
-
-  //sub cat on prime category selection
-  const getSubCategoriesVals = (titleToMatch) => {
-    if (titleToMatch === "Income")
-      return [
-        "Salary",
-        "Salary Bonus",
-        "Part-Time Job",
-        "Freelance Work",
-        "Reselling",
-        "Rental Income",
-        "Service Provided",
-        "Loan Repaid",
-        "Prize Money",
-        "Loan Taken",
-      ];
-
-    const matchedObj = Object.values(expenseCategories).find(
-      (obj) => obj.thisCategoryTitle === titleToMatch,
-    );
-
-    if (!matchedObj) return null;
-
-    const cleanedObj = Object.entries(matchedObj).reduce(
-      (acc, [key, value]) => {
-        if (key !== "thisCategoryTitle") {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
-
-    return cleanedObj;
+  // NOTE will handle the selected prime for expense to dsiplay its sub categories
+  const handleSelectExpensePrime = (value) => {
+    setValue("primeCategory", value, { shouldValidate: true });
+    setSelectedPrimeCat(value);
   };
-  const SubCategoriesVals = getSubCategoriesVals(selectedPrimeValue);
+  const handleSelectIncomePrime = () => {
+    setValue("primeCategory", "Income", { shouldValidate: true });
+    setSelectedPrimeCat("Income");
+  };
+
+  //NOTE get prime categories
+  const listOfPrimeCats = isExpense
+    ? getPrimeCategories(expenseCategories)
+    : getPrimeCategories(incomeCategories);
+
+  //NOTE get sub cat of selected prime cat
+  const listOfSubCat = isExpense
+    ? getSubOfPrime(selectedPrimeCat, isExpense) || null
+    : getSubOfPrime(selectedPrimeCat);
+
+  const updateRepeating = (newValues) => {
+    const prev = getValues("isTransactionRepeating") || {};
+
+    setValue("isTransactionRepeating", {
+      ...prev,
+      ...newValues,
+    });
+  };
+
+  const updateTrip = (newValues) => {
+    const prev = getValues("isTransactionTrip") || {};
+
+    setValue("isTransactionTrip", {
+      ...prev,
+      ...newValues,
+    });
+  };
+
+  //NOTE for setting Trip or Repeating Transaction type
+  const [selectedFormFor, setSelectedFormFor] = useState(null);
+  const handleCheckedFormFor = (check) => {
+    if (selectedFormFor === check) {
+      setSelectedFormFor(null);
+      setSelectedRepeatBy(null);
+      setValue("isTransactionRepeating", { value: false });
+      setValue("isTransactionTrip", { value: false });
+      return; // ⬅️ prevent the rest from running
+    }
+
+    setSelectedFormFor(check);
+    setSelectedRepeatBy(null);
+
+    if (check === "trip") {
+      updateTrip({ value: true });
+      setValue("isTransactionRepeating", { value: false });
+    }
+    if (check === "repeat") {
+      setValue("isTransactionTrip", { value: false });
+      updateRepeating({ value: true });
+    }
+  };
+
+  //NOTE for setting repeating payment is by month or year
+  const [selectedRepeatBy, setSelectedRepeatBy] = useState(null);
+  const handleSelectedRepeatBy = (check) => {
+    if (selectedRepeatBy === check) {
+      setSelectedRepeatBy(null); // uncheck if already selected
+    } else {
+      setSelectedRepeatBy(check);
+    }
+    check === "month" && updateRepeating({ by: "month" });
+    check === "year" && updateRepeating({ by: "year" });
+  };
+
+  //NOTE if payemt is trip then select trip
+  const handleIfTrip = (trip) => {
+    if (trip) updateTrip({ TripID: trip });
+  };
+
+  //NOTE if payemt is repeat by month or year then select date
+  const handleRepeatDate = (date) => {
+    if (date) updateRepeating({ date: date });
+  };
+
+  //NOTE if payemt is repeat by year then select month
+  const handleRepeatMonth = (month) => {
+    if (month) updateRepeating({ month: month });
+  };
 
   //NOTE : react from hook initalize
   const {
     register,
     setValue,
+    getValues,
     reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      formTimeStamp: moment().format(),
-      entryDate: moment().format(),
-      isFormExpense: formToDisplay === PATH.addIncome ? false : true,
+      transactionTimestamp: moment().format(),
+      onDate: moment().format(),
+      isTransationExpense: isExpense ? true : false,
+      isTransactionRepeating: { value: false },
+      isTransactionTrip: { value: false },
     },
   });
+
   //NOTE : form handle submit function
   const onSubmit = async (data) => {
-    const { title, description, userCategory } = data;
-    if (!title || title.trim().length === 0) data.title = null;
-    if (!description || description.trim().length === 0)
-      data.description = null;
-    if (!userCategory || userCategory.trim().length === 0)
-      data.userCategory = null;
+    const { isDescription } = data;
+    if (!isDescription || isDescription.trim().length === 0)
+      data.isDescription = false;
 
-    try {
+    console.log(data);
+
+    /* try {
       const response = await axios.post(
         "http://127.0.0.1:8080/expense/add-data",
         data,
       );
       alert(response.data.message);
       reset();
-      setDate(null);
-      setSeletedSubCats(false);
-      setSelectedPrimeValue(null);
     } catch (error) {
       console.error(error);
       const errorMeaage = error.response.data.message || "Submittion Error";
       alert(errorMeaage);
-    }
+    } */
   };
+
   return (
     <>
-      <div className="w-2xl text-sm font-medium">
+      <div className="text-14 font-medium">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* check Field (hidden)(form field to identify type of form) */}
-          <input type="hidden" {...register("isFormExpense")} />
+          {
+            /** NOTE [HIDDEN] field to identify type if form is expense or income */
+            <input type="hidden" {...register("isTransationExpense")} />
+          }
 
-          {/* ---------------- *ANCHOR Top Bar To select Form to Display ---------------- */}
-          <div className="mb-5 flex w-full gap-2">
-            <button
-              onClick={() => navigateToExpense()}
-              type="button"
-              className={
-                formToDisplay === PATH.addExpense
-                  ? "bg-expbg w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "hover:bg-expbg w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-              }
-            >
-              Expense
-            </button>
-            <button
-              onClick={() => navigateToIncome()}
-              type="button"
-              className={
-                formToDisplay === PATH.addIncome
-                  ? "bg-incbg w-1/2 cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "hover:bg-incbg w-1/2 cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-              }
-            >
-              Income
-            </button>
-          </div>
-          {/* ---------------- *NOTE ##END: Top Bar To select Form to Display ---------------- */}
-          {/* ---------------- *ANCHOR AMOUNT Field ---------------- */}
-          <div className="mt-4 flex w-full flex-col items-start gap-2 font-bold">
-            <label htmlFor="Amount" className="inline-flex items-center gap-2">
-              <PiTagSimpleFill />
-              Amount
-            </label>
-            <div className="inline-flex w-full items-center border-b-2">
-              <span className="text-[18px]">
-                <FaIndianRupeeSign />
-              </span>
+          {/** ANCHOR select form for inc or exp ---------------- */}
+          <FormField>
+            <div className="flex gap-2">
+              <ExpButton
+                onClick={() => navigateToExpense()}
+                type="button"
+                btnfor={isExpense ? "expense" : "expenseInactive"}
+                label="Expense"
+                className="w-1/2"
+              />
+              <ExpButton
+                onClick={() => navigateToIncome()}
+                type="button"
+                btnfor={isIncome ? "income" : "incomeInactive"}
+                label="Income"
+                className="w-1/2"
+              />
+            </div>
+          </FormField>
+          {/**ANCHOR ##END: select form for inc or exp ---------------- */}
+
+          {/**ANCHOR AMOUNT Field ---------------- */}
+          <FormField>
+            <FieldLabel htmlFor="Amount" label="Amount" />
+            <div className="border-br1 inline-flex w-full items-center border-b-1 font-bold">
+              <Icons.rupee className="text-[18px]" />
               <input
-                className="inputType-number w-full rounded-md border-none px-3 py-1 text-[24px] outline-none"
+                className="inputType-number text-24 w-full rounded-md border-none px-3 py-1 outline-none"
                 type="number"
                 onBlur={"This cannot be empty"}
-                {...register("amount", {
+                {...register("ofAmount", {
                   required: "* Amount cannot be empty",
                   valueAsNumber: true,
                 })}
               />
               <span className="text-[18px]">INR</span>
             </div>
-          </div>
-          {errors.amount && (
-            <p className="pt-2 text-[12px] text-[red]">
-              {errors.amount.message}
-            </p>
-          )}
-          {/* ----------------*NOTE ##END: AMOUNT Field ---------------- */}
+            <ErrorField error={errors.ofAmount} />
+          </FormField>
+          {/**ANCHOR ##END: AMOUNT Field ---------------- */}
 
-         
-          {/* ---------------- *ANCHOR DESCRIPTION Field ---------------- */}
-          <div className="mt-4 flex w-full flex-col items-start gap-2 text-[14px]">
-            <label
-              htmlFor="Description"
-              className="inline-flex items-center gap-2"
-            >
-              <PiTagSimpleFill />
-              Note
-            </label>
+          {/**ANCHOR NOTE Field ---------------- */}
+          <FormField>
+            <FieldLabel htmlFor="Note" label="Note" />
             <textarea
-              className="focus-visible:border-ring w-full rounded-md border px-3 py-1 shadow-xs outline-none focus-visible:ring-[1px] focus-visible:ring-gray-200"
-              {...register("description", {})}
+              className="focus-visible:border-ring focus-visible:ring-gradBot border-br1 w-full rounded-md border p-2 outline-none focus-visible:ring-[1px]"
+              placeholder="Transaction Note..."
+              {...register("isDescription")}
             />
-          </div>
-          {/* ---------------- *NOTE ##END: DESCRIPTION Field ---------------- */}
-          {/* ---------------- *ANCHOR DATE Field ---------------- */}
-          <div className="mt-4 flex grow flex-col items-start gap-2 text-[14px]">
-            <label htmlFor="Date" className="inline-flex items-center gap-2">
-              <PiTagSimpleFill />
-              Date
-            </label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start bg-transparent text-left hover:bg-transparent hover:text-white",
-                    !date && "text-muted-foreground",
-                  )}
-                >
-                  <CalendarIcon />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(selectedDate) => {
-                    setDate(selectedDate);
-                    setValue("entryDate", selectedDate, {
-                      shouldValidate: true,
-                    });
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-            <input
-              type="hidden"
-              {...register("entryDate", {
-                required: "* This cannot be empty",
-                valueAsDate: true,
-              })}
-            />
-            {/* Date Field (hidden)(form filled timestamp) */}
-            <input
-              type="hidden"
-              {...register("formTimeStamp", {
-                valueAsDate: true,
-              })}
-            />
-          </div>
+          </FormField>
+          {/**ANCHOR ##END: DESCRIPTION Field ---------------- */}
 
-          {/* ---------------- *NOTE ##END: DATE Field ---------------- */}
-          {/* ---------------- *ANCHOR MAIN CATEGORY Selection Field ---------------- */}
-          <div className="mt-4 flex grow flex-col items-start gap-2 text-[14px]">
-            <label
-              htmlFor="primeCategory"
-              className="inline-flex items-center gap-2"
-            >
-              <PiTagSimpleFill /> Main Category
-            </label>
+          {/**ANCHOR DATE Field ---------------- */}
+          <FormField>
+            <FieldLabel htmlFor="Date" label="Date" />
+            <SelectDate valVar="onDate" setValue={setValue}></SelectDate>
+          </FormField>
+          {/**ANCHOR ##END: DATE Field ---------------- */}
 
-            <Select
-              value={selectedPrimeValue}
-              onValueChange={(value) => {
-                setValue("primeCategory", value);
-                setSelectedPrimeValue(value);
-              }}
-            >
-              <SelectTrigger className="focus-visible:border-ring w-full focus-visible:ring-[1px] focus-visible:ring-gray-200">
-                <SelectValue placeholder="Select a value..." />
-              </SelectTrigger>
-              <SelectContent>
-                {formToDisplay === PATH.addIncome && (
-                  <SelectItem value="Income">Income</SelectItem>
+          {/**ANCHOR MAIN CATEGORY Field ---------------- */}
+          <FormField>
+            <FieldLabel htmlFor="primeCategory" label="Main Category" />
+            <OuterBar>
+              <SelectCard isExpense={isExpense} title={"Select Main Category"}>
+                {isExpense && (
+                  <SelectFilter
+                    placeholder={"Select"}
+                    onValueChange={handleSelectExpensePrime}
+                    list={listOfPrimeCats}
+                  ></SelectFilter>
                 )}
+                {isIncome && (
+                  <SelectFilter
+                    placeholder={"Select"}
+                    onValueChange={handleSelectIncomePrime}
+                    list={listOfPrimeCats}
+                  ></SelectFilter>
+                )}
+              </SelectCard>
+            </OuterBar>
+          </FormField>
 
-                {formToDisplay === PATH.addExpense &&
-                  primeCategoriesVals.map((value) => (
-                    <SelectItem key={value} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-            <input
-              type="hidden"
-              {...register("primeCategory", {
-                required: "*This cannot be empty",
-              })}
-            />
-            {errors.primeCategory && (
-              <p className="pt-2 text-[12px] text-[red]">
-                {errors.primeCategory.message}
-              </p>
-            )}
-          </div>
-          {/* ---------------- *NOTE ##END: MAIN CATEGORY Selection Field ---------------- */}
+          <input
+            type="hidden"
+            {...register("primeCategory", {
+              required: "* Select a Prime Category",
+            })}
+          />
 
-          {/* ---------------- *ANCHOR SUB CATEGORY Selection Field ---------------- */}
-          <div className="mt-4 flex w-full flex-col items-start gap-3">
-            {SubCategoriesVals === null && (
-              <label className="inline-flex items-center gap-2">
-                <PiTagSimpleFill /> Select a main category first ...
-              </label>
+          <ErrorField error={errors.primeCategory} />
+          {/* ANCHOR ##END: MAIN CATEGORY Field ---------------- */}
+
+          {/**ANCHOR SUB CATEGORY Field ---------------- */}
+          <FormField>
+            <FieldLabel htmlFor="subCategory" label=" Sub Category" />
+            {listOfSubCat === null && (
+              <span>Select a main category first ...</span>
             )}
-            {SubCategoriesVals !== null && (
+            {listOfSubCat !== null && (
               <>
-                <label
-                  htmlFor="subCategory"
-                  className="inline-flex items-center gap-2"
-                >
-                  <PiTagSimpleFill />
-                  Sub Category
-                </label>
-                <div className="inline-flex grow flex-wrap gap-2 pb-1">
-                  {Object.values(SubCategoriesVals).map((buttons) => (
-                    <button
+                <div className="inline-flex flex-wrap gap-2">
+                  {listOfSubCat.map((buttons) => (
+                    <ExpButton
                       type="button"
-                      key={buttons}
+                      btnfor={
+                        isExpense
+                          ? selectedSubCat === buttons
+                            ? "expense"
+                            : "expenseInactive"
+                          : selectedSubCat === buttons
+                            ? "income"
+                            : "incomeInactive"
+                      }
                       onClick={() => {
-                        setSeletedSubCats(buttons);
                         setValue("subCategory", buttons, {
                           shouldValidate: true,
                         });
+                        setSelectedSubCat(buttons);
                       }}
-                      className={
-                        formToDisplay === PATH.addExpense
-                          ? selectedSubCats === buttons
-                            ? "bg-expbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                            : "hover:bg-expbg cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                          : selectedSubCats === buttons
-                            ? "bg-incbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                            : "hover:bg-incbg cursor-pointer rounded-md bg-black px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                      }
-                    >
-                      {capitalize(buttons)}
-                    </button>
+                      label={buttons}
+                      key={buttons}
+                    ></ExpButton>
                   ))}
                 </div>
               </>
             )}
+
             <input
               type="hidden"
               {...register("subCategory", {
-                required: "* Select a Sub Category",
+                required: "* Sub Category is Required",
               })}
             />
-            {!errors.primeCategory
-              ? errors.subCategory && (
-                  <p className="pt-2 text-[12px] text-[red]">
-                    {errors.subCategory.message}
-                  </p>
-                )
-              : ""}
-          </div>
 
-          {/* ---------------- *NOTE ##END: SUB CATEGORY Selection Field ---------------- */}
+            <ErrorField error={errors.subCategory} />
+          </FormField>
+          {/**ANCHOR ##END: SUB CATEGORY Field ---------------- */}
 
-          
-          {/* ---------------- *ANCHOR SUBMIT AND CANCEL Field ---------------- */}
-          <div className="mt-10 flex w-full flex-row justify-end gap-2">
-            <button
-              type="submit"
-              className={
-                formToDisplay === PATH.addExpense
-                  ? "bg-expbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-                  : "bg-incbg cursor-pointer rounded-md px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-              }
-            >
-              Add Now
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                reset();
-                handleCancel();
-              }}
-              className="cursor-pointer rounded-md bg-[#da0707] px-5 py-1 text-sm font-medium shadow-xs disabled:cursor-not-allowed disabled:opacity-80"
-            >
-              Cancel
-            </button>
-          </div>
-          {/* ----------------*NOTE ##END: SUBMIT AND CANCEL Field ---------------- */}
+          {/**ANCHOR TRIP or Repeating Payment Select Field */}
+          <FormField>
+            <div className="flex gap-5">
+              <FieldLabel htmlFor="subCategory" label=" Mark Expense as" />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  className={
+                    "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
+                  }
+                  checked={selectedFormFor === "trip"}
+                  onCheckedChange={() => handleCheckedFormFor("trip")}
+                ></Checkbox>
+                <span>Trip Expense</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  className={
+                    "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
+                  }
+                  checked={selectedFormFor === "repeat"}
+                  onCheckedChange={() => handleCheckedFormFor("repeat")}
+                ></Checkbox>
+                <span>Repeating Expense</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  className={
+                    "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
+                  }
+                  checked={selectedFormFor === null}
+                  onCheckedChange={() => handleCheckedFormFor(null)}
+                ></Checkbox>
+                <span>None</span>
+              </div>
+            </div>
+          </FormField>
+          {/**ANCHOR ##END: TRIP or Repeating Payment Select Field */}
+
+          {/**ANCHOR if TRIP Selected  */}
+          {selectedFormFor === "trip" && (
+            <FormField>
+              <div className="flex gap-5">
+                <OuterBar>
+                  <SelectCard isExpense title={"Select Trip"}>
+                    <SelectFilter
+                      placeholder={"Select Trip"}
+                      onValueChange={handleIfTrip}
+                      list={[2024, 2025, 2026]}
+                    ></SelectFilter>
+                  </SelectCard>
+                </OuterBar>
+              </div>
+            </FormField>
+          )}
+          {/**ANCHOR ##END:if TRIP Selected */}
+
+          {/**ANCHOR if Repeating Payment Selected  */}
+          {selectedFormFor === "repeat" && (
+            <FormField>
+              <div className="flex gap-5">
+                <div className="flex"> Repeat Every </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    className={
+                      "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
+                    }
+                    checked={selectedRepeatBy === "month"}
+                    onCheckedChange={() => handleSelectedRepeatBy("month")}
+                  ></Checkbox>
+                  <span>Month</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    className={
+                      "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
+                    }
+                    checked={selectedRepeatBy === "year"}
+                    onCheckedChange={() => handleSelectedRepeatBy("year")}
+                  ></Checkbox>
+                  <span>Year</span>
+                </div>
+              </div>
+            </FormField>
+          )}
+          {/**ANCHOR ##END:if Repeating Payment Selected */}
+
+          {/**ANCHOR Repeating Payment BY MONTH or YEAR */}
+          <FormField>
+            {selectedRepeatBy !== null && (
+              <OuterBar>
+                {(selectedRepeatBy === "month" ||
+                  selectedRepeatBy === "year") && (
+                  <SelectCard isExpense title={"Select Date"}>
+                    <SelectFilter
+                      placeholder={"Date"}
+                      onValueChange={handleRepeatDate}
+                      list={[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+                      ]}
+                    />
+                  </SelectCard>
+                )}
+                {selectedRepeatBy === "year" && (
+                  <SelectCard isExpense title={"Select Month"}>
+                    <SelectFilter
+                      placeholder={"Month"}
+                      onValueChange={handleRepeatMonth}
+                      isMonthSelect
+                      list={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}
+                    />
+                  </SelectCard>
+                )}
+              </OuterBar>
+            )}
+          </FormField>
+          {/**ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
+
+          {/**ANCHOR SUBMIT & CANCEL Buttons ---------------- */}
+          <FormField className="items-end">
+            <div className="flex gap-2">
+              {isExpense ? (
+                <ExpButton type="submit" btnfor="expense" label={"Add Now"} />
+              ) : (
+                <ExpButton type="submit" btnfor="income" label={"Add Now"} />
+              )}
+              <ExpButton
+                onClick={() => {
+                  reset();
+                  handleCancel();
+                }}
+                type="button"
+                btnfor="cancel"
+                label={"Cancel"}
+              />
+            </div>
+          </FormField>
+          {/**ANCHOR ##END: SUBMIT & CANCEL Buttons ---------------- */}
         </form>
       </div>
     </>
@@ -407,3 +482,59 @@ const Form = ({ formToDisplay }) => {
 };
 
 export default Form;
+
+export const SelectDate = ({ setValue, valVar }) => {
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState();
+
+  return (
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            className={cn(
+              "border-br1 w-full justify-between border bg-transparent text-left hover:bg-transparent hover:text-white",
+              !date && "text-muted-foreground",
+            )}
+          >
+            {date ? date.toLocaleDateString() : "Select a date"}
+            <Icons.dayCal />
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+          <Calendar
+            mode="single"
+            fromYear={2020}
+            toYear={new Date().getFullYear() + 1}
+            selected={date}
+            captionLayout="dropdown"
+            onSelect={(selectedDate) => {
+              setDate(selectedDate);
+              setValue(valVar, selectedDate);
+            }}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+    </>
+  );
+};
+
+export const FormField = ({ children, className = "" }) => {
+  return (
+    <div className={`flex flex-col gap-2 py-4 ${className}`}>{children}</div>
+  );
+};
+export const FieldLabel = ({ htmlFor, label }) => {
+  return (
+    <label htmlFor={htmlFor} className="inline-flex items-center gap-2">
+      <Icons.formlabel />
+      {label}
+    </label>
+  );
+};
+
+export const ErrorField = ({ error }) => {
+  return <>{error && <p className="text-12 text-rr">{error.message}</p>}</>;
+};

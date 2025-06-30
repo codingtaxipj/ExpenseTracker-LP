@@ -18,15 +18,17 @@
   --color-gg: #03e503;
   --color-ggbg: #16a016;
 
-  --color-expbg: #123fe1;
-  --color-exptxt: #1f51ff;
-  --color-inctxt: #228b22;
-  --color-incbg: #228b22;
+  --color-expbg: #0099f8;
+  --color-exptxt: #0099f8;
+  --color-exp: #0790e5;
+  --color-inctxt: #5cb308;
+  --color-incbg: #5cb308;
+  --color-inc: #4fa200;
+  --color-pupl: #993ff8;
 
-  --color-year1:#FFBF00;
-  --color-year2:#FF5F1F;
+  --color-year1: #ffbf00;
+  --color-year2: #ff5f1f;
 
-  --color-pupl: #7d14b9;
   --color-black: #000;
   --color-white: #fff;
   --color-util: #0047ab;
@@ -48,9 +50,11 @@
   --color-grey-hover: #2c2c2c;
 }
 @theme {
+  --text-12: 12px;
   --text-14: 14px;
   --text-16: 16px;
   --text-18: 18px;
+  --text-24: 24px;
   --text-32: 32px;
 }
 
@@ -220,6 +224,16 @@
 }
 .slectInput-arrow {
   appearance: none;
+}
+.number-filed-arrow-none {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.number-filed-arrow-none::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.number-filed-arrow-none::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 
 @layer base {

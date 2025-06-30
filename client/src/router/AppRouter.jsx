@@ -10,6 +10,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { PATH } from "./routerConfig.js";
 import ExpenseAnalysis from "@/pages/analysis/ExpenseAnalysis.jsx";
 import IncomeAnalysis from "@/pages/analysis/IncomeAnalysis.jsx";
+import Repeating from "@/pages/repeating-expense/repeating.jsx";
+import Trip from "@/pages/trip-expense/trip.jsx";
+import RepeatingExpenseIndex from "@/pages/repeating-expense/index.jsx";
+import RepeatingExpenseForm from "@/components/Forms/repeating-expense-form.jsx";
 
 const AppRouter = () => {
   return (
@@ -37,6 +41,14 @@ const AppRouter = () => {
         path={PATH.incomeAnalysis}
         element={<IncomeAnalysis />}
       ></Route>
+      <Route index path={PATH.trip} element={<Trip />}></Route>
+      <Route path={PATH.repeat} element={<Repeating />}>
+        <Route index element={<RepeatingExpenseIndex />} />
+        <Route
+          path={PATH.addRepeatingExpense}
+          element={<RepeatingExpenseForm />}
+        />
+      </Route>
     </Routes>
   );
 };

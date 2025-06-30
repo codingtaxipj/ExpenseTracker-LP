@@ -1,5 +1,5 @@
 import { Icons } from "./icons";
-const SectionHeader = ({ title, isAnalysis, isExpense }) => {
+const SectionHeader = ({ title, isAnalysis, isExpense, isIncome }) => {
   return (
     <>
       <div className="text-18 flex flex-row items-center pb-5">
@@ -10,7 +10,7 @@ const SectionHeader = ({ title, isAnalysis, isExpense }) => {
         <span className="pl-5">
           {isAnalysis && <Icons.analysis />}
           {isExpense && <Icons.expense />}
-          {!isExpense && <Icons.income />}
+          {isIncome && <Icons.income />}
         </span>
       </div>
     </>

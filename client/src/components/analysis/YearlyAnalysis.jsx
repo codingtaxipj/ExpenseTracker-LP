@@ -50,7 +50,11 @@ const YearlyAnalysis = ({ isExpense }) => {
           </OuterBar>
         </Flexrow>
         <Flexrow>
-          <BudgetStrip isExpense amount={20000} color="text-exptxt" />
+          <BudgetStrip
+            isExpense
+            amount={20000}
+            color={isExpense ? "text-exp" : "text-inc"}
+          />
           <MinMaxStrip isMax />
           <MinMaxStrip isMin />
         </Flexrow>
@@ -59,7 +63,7 @@ const YearlyAnalysis = ({ isExpense }) => {
             barInfo={{
               data: chartData,
               label: "Expense",
-              color: "var(--color-expbg)",
+              color: isExpense ? "var(--color-exp)" : "var(--color-inc)",
             }}
             chartInfo={{
               title: `Bar Graph - ${filter.byYear}`,
