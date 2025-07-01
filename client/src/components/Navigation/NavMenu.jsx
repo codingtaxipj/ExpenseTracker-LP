@@ -38,7 +38,7 @@ function Dashboard({ activeBtn, children }) {
       <div className="flex h-screen w-screen text-white">
         <div className="bg-greyBlack flex w-1/6 flex-col p-5">
           <div className="flex flex-col gap-1.5 py-10">
-            <div className="bg-pupl mx-2 my-1 size-[4rem] rounded-[12px]"></div>
+            <div className="bg-exp mx-2 my-1 size-[4rem] rounded-[12px]"></div>
             <button className="flex w-full items-center gap-2.5 rounded-md px-2 text-base">
               <FaUser />
               <span>codingtaxipj</span>
@@ -69,7 +69,7 @@ function Dashboard({ activeBtn, children }) {
               onClick={() => navigate(PATH.trip)}
               className={setStyle(PATH.trip)}
             >
-              <FaCarSide />
+              <Icons.trip />
               <span>Trip Expense</span>
             </button>
             <button
@@ -102,7 +102,7 @@ function Dashboard({ activeBtn, children }) {
               onClick={() => navigate(PATH.repeat)}
               className={setStyle(PATH.repeat)}
             >
-              <MdEventRepeat />
+              <Icons.repeat />
               <span>Recurring Expenses</span>
             </button>
           </div>

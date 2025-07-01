@@ -25,6 +25,8 @@ const ExpenseIndex = () => {
   const { dataConfig } = usePageConfig();
   const navigate = useNavigate();
 
+
+
   const [filters, setFilters] = useState("None");
   const sortList = Object.values(sortBy);
 
@@ -159,6 +161,7 @@ const ExpenseIndex = () => {
                 />
               </div>
             </SelectBar>
+
             <TableSection entries={dataConfig.expense.entries} />
           </Flexcol>
 

@@ -14,8 +14,7 @@ import { combineReducers } from "redux";
 
 import authReducer from "../redux/slices/authUser.js";
 import getExpenseReducer from "@/redux/slices/getExpense.js";
-import getMaxExpenseReducer from "@/redux/slices/getMaxExpense.js";
-import configMaxExpenseeReducer from "@/redux/slices/configMaxExpense.js";
+
 import configExpenseReducer from "@/redux/slices/configExpense.js";
 import initalMountReducer from "@/redux/slices/initalMount.js";
 import configTotalReducer from "@/redux/slices/configTotal.js";
@@ -23,8 +22,7 @@ import configTotalReducer from "@/redux/slices/configTotal.js";
 export const rootReducer = combineReducers({
   user: authReducer,
   expense: getExpenseReducer,
-  maxExpense: getMaxExpenseReducer,
-  configMaxExpense: configMaxExpenseeReducer,
+
   configExpense: configExpenseReducer,
   configTotal: configTotalReducer,
   initalMount: initalMountReducer,

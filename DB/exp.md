@@ -1,13 +1,54 @@
 userID: (type unique Number)
 isTransationExpense: (type boolen)
-isTransactionTrip:(type boolen)
-isTransactionRepeating:(type boolen)
+isTransactionTrip:(type object)
+isTransactionRepeating:(type object)
 onDate:(type string)
 ofAmount:(type number)
-isDescription:(type string)
+isExpenseNote:(type string)
 primeCategory:(type string)
 subCategory:(type string)
 transactionTimestamp:(type string)
+
+
+
+
+const { body } = require('express-validator');
+
+const transactionValidationRules = [
+  body('userID')
+    .isNumeric().withMessage('userID must be a number'),
+
+  body('isTransationExpense')
+    .isBoolean().withMessage('isTransationExpense must be a boolean'),
+
+  body('isTransactionTrip')
+    .isObject().withMessage('isTransactionTrip must be an object'),
+
+  body('isTransactionRepeating')
+    .isObject().withMessage('isTransactionRepeating must be an object'),
+
+  body('onDate')
+    .isISO8601().withMessage('onDate must be a valid ISO 8601 date string'),
+
+  body('ofAmount')
+    .isNumeric().withMessage('ofAmount must be a number'),
+
+  body('isExpenseNote')
+    .isString().withMessage('isExpenseNote must be a string'),
+
+  body('primeCategory')
+    .isString().withMessage('primeCategory must be a string'),
+
+  body('subCategory')
+    .isString().withMessage('subCategory must be a string'),
+
+  body('transactionTimestamp')
+    .isISO8601().withMessage('transactionTimestamp must be a valid ISO 8601 datetime string'),
+];
+
+module.exports = transactionValidationRules;
+
+
 
 const transactionSchema = new mongoose.Schema({
 userId: {

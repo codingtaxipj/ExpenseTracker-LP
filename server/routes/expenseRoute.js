@@ -1,20 +1,19 @@
 import express from "express";
-import { expenseFormValidation } from "../middlewares/expense-formValidation.js";
+import { transactionFormValidation } from "../middlewares/transaction-validation.js";
+
 import {
-  updatePrimeMax,
-  updateSubMax,
-} from "../middlewares/update-Max-Expense.js";
-import {
-  formController,
+  transactionFormController,
   fetchAllData,
-  fetchMaxData,
-} from "../controllers/expense-DataController.js";
+} from "../controllers/transaction-controller.js";
 
 const expenseRouter = express.Router();
 
-expenseRouter.post("/add-data", expenseFormValidation, formController);
+expenseRouter.post(
+  "/add-data",
+  transactionFormValidation,
+  transactionFormController
+);
 
 expenseRouter.get("/get-data", fetchAllData);
-expenseRouter.get("/get-max-data", fetchMaxData);
 
 export { expenseRouter };

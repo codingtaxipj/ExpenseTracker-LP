@@ -1,6 +1,5 @@
 import { setDataExpense, setDataIncome } from "@/redux/slices/configExpense";
 import { fetchAllData } from "@/redux/slices/getExpense";
-import { fetchMaxData } from "@/redux/slices/getMaxExpense";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,7 +14,6 @@ const useInitalReduxLoad = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllData());
-    dispatch(fetchMaxData());
   }, [dispatch]);
 
   const incomingData = useSelector((state) => state.expense.data) || false;

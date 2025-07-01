@@ -18,14 +18,14 @@ export const getWeekOfDate = (date) => moment(date).week();
 export const getDateOfDate = (date) => moment(date).date();
 
 export const getTotalOfEntries = (entries) =>
-  entries.reduce((sum, items) => sum + items.amount, 0);
+  entries.reduce((sum, items) => sum + items.ofAmount, 0);
 
 export const getEntriesOfYear = (entries, year) =>
-  entries.filter((items) => moment(items.entryDate).year() === year);
+  entries.filter((items) => moment(items.onDate).year() === year);
 export const getEntriesOfMonth = (entries, date) =>
-  entries.filter((items) => moment(items.entryDate).month() === date);
+  entries.filter((items) => moment(items.onDate).month() === date);
 export const getEntriesOfWeek = (entries, date) =>
-  entries.filter((items) => moment(items.entryDate).week() === date);
+  entries.filter((items) => moment(items.onDate).week() === date);
 export const getEntriesOfPrimeCat = (entries, prime) =>
   entries.filter((items) => items.primeCategory === prime);
 export const getEntriesOfSubCat = (entries, sub) =>
@@ -33,33 +33,33 @@ export const getEntriesOfSubCat = (entries, sub) =>
 
 export const getOldestDate = (entries) =>
   entries.reduce((oldest, current) => {
-    return moment(current.entryDate).isBefore(moment(oldest.entryDate))
+    return moment(current.onDate).isBefore(moment(oldest.onDate))
       ? current
       : oldest;
   });
 
 export const getNewestDate = (entries) =>
   entries.reduce((newest, current) => {
-    return moment(current.entryDate).isAfter(moment(newest.entryDate))
+    return moment(current.onDate).isAfter(moment(newest.onDate))
       ? current
       : newest;
   });
 
-export const getEntryDatesData = (entries) => {
+export const getonDatesData = (entries) => {
   const oldestEntry = getOldestDate(entries);
   const newestEntry = getNewestDate(entries);
 
   // First Entry
-  const FY = getYearOfDate(oldestEntry.entryDate);
-  const FM = getMonthOfDate(oldestEntry.entryDate);
-  const FW = getWeekOfDate(oldestEntry.entryDate);
-  const FD = getDateOfDate(oldestEntry.entryDate);
+  const FY = getYearOfDate(oldestEntry.onDate);
+  const FM = getMonthOfDate(oldestEntry.onDate);
+  const FW = getWeekOfDate(oldestEntry.onDate);
+  const FD = getDateOfDate(oldestEntry.onDate);
 
   // Last Entry
-  const LY = getYearOfDate(newestEntry.entryDate);
-  const LM = getMonthOfDate(newestEntry.entryDate);
-  const LW = getWeekOfDate(newestEntry.entryDate);
-  const LD = getDateOfDate(newestEntry.entryDate);
+  const LY = getYearOfDate(newestEntry.onDate);
+  const LM = getMonthOfDate(newestEntry.onDate);
+  const LW = getWeekOfDate(newestEntry.onDate);
+  const LD = getDateOfDate(newestEntry.onDate);
 
   return {
     year: { start: FY, end: LY },
@@ -104,7 +104,7 @@ export const sortByYearAsMonths = (entries) => {
   const stack = [];
   for (let i = 0; i <= 11; i++) {
     const filteredEntries = entries.filter(
-      (items) => moment(items.entryDate).month() === i,
+      (items) => moment(items.onDate).month() === i,
     );
     const total = getTotalOfEntries(filteredEntries);
     stack.push({
@@ -124,7 +124,7 @@ export const sortByMonthAsWeeks = (entries, month) => {
 
   for (let i = startBy; i <= endBy; i++) {
     const filteredEntries = MonthList.filter(
-      (items) => moment(items.entryDate).week() === i,
+      (items) => moment(items.onDate).week() === i,
     );
     const total = getTotalOfEntries(filteredEntries);
     stack.push({
@@ -145,7 +145,7 @@ export const sortByMonthAsDates = (entries, month) => {
 
   for (let i = startBy; i <= endBy; i++) {
     const filteredEntries = MonthList.filter(
-      (items) => moment(items.entryDate).date() === i,
+      (items) => moment(items.onDate).date() === i,
     );
     const total = getTotalOfEntries(filteredEntries);
     stack.push({
@@ -165,7 +165,7 @@ export const sortByWeekAsDates = (entries, week) => {
   const endBy = moment().week(week).endOf("week").date();
   for (let i = startBy; i <= endBy; i++) {
     const filteredEntries = WeekList.filter(
-      (items) => moment(items.entryDate).date() === i,
+      (items) => moment(items.onDate).date() === i,
     );
     const total = getTotalOfEntries(filteredEntries);
     stack.push({

@@ -2,14 +2,7 @@ import moment from "moment";
 import { useState } from "react";
 
 //Shacdn-UI
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import {
   Pagination,
   PaginationContent,
@@ -26,13 +19,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 //Icons
-import { FaCalendarDay } from "react-icons/fa";
-import { FaFileLines, FaIndianRupeeSign } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import IconCircle from "./IconCircle";
 import { IoMdEye } from "react-icons/io";
 import { RiPencilFill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
+import Flexrow from "./section/flexrow";
+import { Icons } from "./icons";
+import ExpButton from "./custom-ui/expButton";
+import TooltipStrip from "./strips/tooltip-strip";
 
 const TableSection = ({ entries }) => {
   //Pagination
@@ -46,61 +41,78 @@ const TableSection = ({ entries }) => {
 
   return (
     <>
-      <div className="border-grey-hover cursor-default overflow-hidden rounded-md border w-full">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-grey-hover bg-grey-hover border-b-grey-hover">
-              <TableHead className="p-2.5"></TableHead>
-             <TableHead className="text-dim-text p-2.5">Category</TableHead>
-              <TableHead className="text-dim-text p-2.5">From</TableHead>
-              <TableHead className="text-dim-text p-2.5">Date</TableHead>
-              <TableHead className="text-dim-text p-2.5">For</TableHead>
-              <TableHead className="text-dim-text p-2.5">Amount</TableHead>
-              <TableHead className="p-2.5"> </TableHead>
-            </TableRow>
-          </TableHeader>
+      <div className="border-grey-hover w-full cursor-default overflow-hidden rounded-md border">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gradBot">
+              <TH className="w-0"></TH>
+              <TH className="w-50">Category</TH>
+              <TH className="w-50">From</TH>
+              <TH className="w-fit">Date</TH>
 
-          <TableBody className="border-0">
+              <TH className="w-fit"></TH>
+              <TH className="w-fit !text-right">Amount</TH>
+              <TH className="w-fit"></TH>
+            </tr>
+          </thead>
+
+          <tbody className="border-0">
             {currentPageItems.map((data) => (
-              <TableRow
-                key={data._id}
-                className="hover:bg-grey-hover border-b-grey-hover h-15"
-              >
-                <TableCell className="w-0 px-2.5">
-                  <IconCircle
-                    bgColor={data.primeCategory}
-                    setIcon={data.subCategory}
-                  />
-                </TableCell>
-                <TableCell className="min-w-36 px-2.5">
-                  <div className="text-base font-medium">
-                    {data.subCategory}
-                  </div>
-                </TableCell>
-                <TableCell className="min-w-32 px-2.5">
-                  <div className="text-dim-text text-xs">
-                    <span className="border-grey-border rounded-sm border px-2 py-0.5">
+              <TooltipStrip content={data.isExpenseNote}>
+                <tr key={data._id} className="hover:bg-gradBot">
+                  <TD>
+                    <IconCircle
+                      bgColor={data.primeCategory}
+                      setIcon={data.subCategory}
+                    />
+                  </TD>
+                  <TD className="font-medium">{data.subCategory}</TD>
+                  <TD>
+                    <button className="text-12 text-dim border-br2 rounded-sm border px-2 py-1.25 leading-none">
                       {data.primeCategory}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className="min-w-32 px-2.5">
-                  <div className="text-dim-text flex items-center gap-1 text-xs">
-                    <FaCalendarDay />
-                    <span>{moment(data.entryDate).format("DD/MM/yyy")}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="w-full px-2.5">
-                  <div className="flex items-center gap-2 text-sm">
-                    <FaFileLines /> <span>{data.title}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="w-0 px-2.5">
-                  <div className="flex items-center gap-0.5 text-base font-medium">
-                    <FaIndianRupeeSign /> <span>{data.amount}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="w-0 px-2.5">
+                    </button>
+                  </TD>
+                  <TD>
+                    <Flexrow className="text-12 text-dim items-center !gap-1.5">
+                      <Icons.dayCal />
+                      <span>{moment(data.onDate).format("DD/MM/yyyy")}</span>
+                    </Flexrow>
+                  </TD>
+
+                  <TD className="text-center">
+                    <TooltipStrip content="Trip Expense">
+                      <ExpButton
+                        btnfor="trip"
+                        className="!p-1.5"
+                        label={<Icons.trip />}
+                      />
+                    </TooltipStrip>
+                  </TD>
+                  <TD>
+                    <Flexrow className="items-center justify-end !gap-1.5 font-medium">
+                      <Icons.rupee /> <span>{data.ofAmount}</span>
+                    </Flexrow>
+                  </TD>
+                  <TD>
+                    <Flexrow className="justify-center !gap-2">
+                      <ExpButton
+                        btnfor="trip"
+                        className="!p-1.5"
+                        label={<Icons.trip />}
+                      />
+                      <ExpButton
+                        btnfor="trip"
+                        className="!p-1.5"
+                        label={<Icons.trip />}
+                      />
+                      <ExpButton
+                        btnfor="trip"
+                        className="!p-1.5"
+                        label={<Icons.trip />}
+                      />
+                    </Flexrow>
+                  </TD>
+                  {/*  <TD className="text-center">
                   <DropdownMenu>
                     <DropdownMenuTrigger className="hover:bg-grey-border inline-flex size-8 cursor-pointer items-center justify-center rounded-md">
                       <BsThreeDotsVertical />
@@ -132,18 +144,19 @@ const TableSection = ({ entries }) => {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </TableCell>
-              </TableRow>
+                </TD> */}
+                </tr>
+              </TooltipStrip>
             ))}
-            {/* Empty rows to maintain height */}
+
             {Array.from({ length: emptyRows }).map((_, idx) => (
-              <TableRow
+              <tr
                 key={`empty-${idx}`}
                 className="hover:bg-grey-hover border-b-grey-hover h-15"
-              ></TableRow>
+              ></tr>
             ))}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
 
       <Pagination className="mt-4">
@@ -176,6 +189,24 @@ const TableSection = ({ entries }) => {
         </PaginationContent>
       </Pagination>
     </>
+  );
+};
+
+export const TH = ({ children, className = "" }) => {
+  return (
+    <th className={`text-14 px-1.5 py-2.5 text-left font-medium ${className}`}>
+      {children}
+    </th>
+  );
+};
+
+export const TD = ({ children, className = "" }) => {
+  return (
+    <td
+      className={`text-14 border-b-br1 h-16 border-b px-1.5 py-2.5 ${className}`}
+    >
+      {children}
+    </td>
   );
 };
 

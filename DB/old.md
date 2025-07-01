@@ -1,6 +1,4 @@
-import { body, validationResult } from "express-validator";
-const expenseFormValidation = [
-  body("entryDate")
+ body("entryDate")
     .notEmpty()
     .withMessage("entryDate is required")
     .isString()
@@ -37,15 +35,3 @@ const expenseFormValidation = [
     .withMessage("subCategory is required")
     .isString()
     .withMessage("subCategory must be a string"),
-
-  // Middleware function to check validation errors
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
-];
-
-export { expenseFormValidation };

@@ -12,7 +12,7 @@ const ExpButton = ({ btnfor, label, className = "", ...props }) => {
       "bg-gradBot hover:bg-inc border border-br1 shadow-md shadow-shadowBlack",
   };
 
-  const getColor = (val) => color[val] || "bg-exp hover:bg-exp";
+  const getColor = (val) => color[val];
 
   return (
     <>

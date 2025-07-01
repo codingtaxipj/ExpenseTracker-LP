@@ -8,6 +8,8 @@ const usePageConfig = () => {
   const dispatch = useDispatch();
   const { incomeData, expenseData, isExpense } = useInitalReduxLoad();
 
+
+
   const [dataConfig, setDataConfig] = useState({
     income: {
       entries: [],

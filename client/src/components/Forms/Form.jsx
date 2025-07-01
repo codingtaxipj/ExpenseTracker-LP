@@ -79,104 +79,37 @@ const Form = ({ isExpense, isIncome }) => {
   //NOTE get sub cat of selected prime cat
   const listOfSubCat = isExpense
     ? getSubOfPrime(selectedPrimeCat, isExpense) || null
-    : getSubOfPrime(selectedPrimeCat);
-
-  const updateRepeating = (newValues) => {
-    const prev = getValues("isTransactionRepeating") || {};
-
-    setValue("isTransactionRepeating", {
-      ...prev,
-      ...newValues,
-    });
-  };
-
-  const updateTrip = (newValues) => {
-    const prev = getValues("isTransactionTrip") || {};
-
-    setValue("isTransactionTrip", {
-      ...prev,
-      ...newValues,
-    });
-  };
-
-  //NOTE for setting Trip or Repeating Transaction type
-  const [selectedFormFor, setSelectedFormFor] = useState(null);
-  const handleCheckedFormFor = (check) => {
-    if (selectedFormFor === check) {
-      setSelectedFormFor(null);
-      setSelectedRepeatBy(null);
-      setValue("isTransactionRepeating", { value: false });
-      setValue("isTransactionTrip", { value: false });
-      return; // ⬅️ prevent the rest from running
-    }
-
-    setSelectedFormFor(check);
-    setSelectedRepeatBy(null);
-
-    if (check === "trip") {
-      updateTrip({ value: true });
-      setValue("isTransactionRepeating", { value: false });
-    }
-    if (check === "repeat") {
-      setValue("isTransactionTrip", { value: false });
-      updateRepeating({ value: true });
-    }
-  };
-
-  //NOTE for setting repeating payment is by month or year
-  const [selectedRepeatBy, setSelectedRepeatBy] = useState(null);
-  const handleSelectedRepeatBy = (check) => {
-    if (selectedRepeatBy === check) {
-      setSelectedRepeatBy(null); // uncheck if already selected
-    } else {
-      setSelectedRepeatBy(check);
-    }
-    check === "month" && updateRepeating({ by: "month" });
-    check === "year" && updateRepeating({ by: "year" });
-  };
-
-  //NOTE if payemt is trip then select trip
-  const handleIfTrip = (trip) => {
-    if (trip) updateTrip({ TripID: trip });
-  };
-
-  //NOTE if payemt is repeat by month or year then select date
-  const handleRepeatDate = (date) => {
-    if (date) updateRepeating({ date: date });
-  };
-
-  //NOTE if payemt is repeat by year then select month
-  const handleRepeatMonth = (month) => {
-    if (month) updateRepeating({ month: month });
-  };
+    : getSubOfPrime(selectedPrimeCat) || null;
 
   //NOTE : react from hook initalize
   const {
     register,
     setValue,
-    getValues,
     reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
+      userID: 123456,
       transactionTimestamp: moment().format(),
       onDate: moment().format(),
-      isTransationExpense: isExpense ? true : false,
-      isTransactionRepeating: { value: false },
-      isTransactionTrip: { value: false },
+      isTransactionExpense: isExpense ? true : false,
+      isTransactionRepeating: { valid: false },
+      isTransactionTrip: { valid: false },
     },
   });
 
   //NOTE : form handle submit function
   const onSubmit = async (data) => {
-    const { isDescription } = data;
-    if (!isDescription || isDescription.trim().length === 0)
-      data.isDescription = false;
+    const { isExpenseNote, onDate, transactionTimestamp } = data;
+    if (!isExpenseNote || isExpenseNote.trim().length === 0)
+      data.isExpenseNote = "";
+    data.onDate = moment(onDate).toISOString();
+    data.transactionTimestamp = moment(transactionTimestamp).toISOString();
 
-    console.log(data);
+    console.log("Sending data:", data);
 
-    /* try {
+    try {
       const response = await axios.post(
         "http://127.0.0.1:8080/expense/add-data",
         data,
@@ -184,11 +117,23 @@ const Form = ({ isExpense, isIncome }) => {
       alert(response.data.message);
       reset();
     } catch (error) {
-      console.error(error);
-      const errorMeaage = error.response.data.message || "Submittion Error";
-      alert(errorMeaage);
-    } */
+      if (error.response) {
+        console.error("Validation Error:", error.response.data.errors);
+        alert(
+          error.response.data?.errors?.[0]?.msg ||
+            error.response.data?.message ||
+            "Form submission failed.",
+        );
+      } else {
+        console.error("Unknown Axios Error:", error.message);
+        alert("Network or unknown error.");
+      }
+    }
   };
+
+  //NOTE - form label icon color
+  const formLabelIconColor =
+    (isExpense && "text-exp") || (isIncome && "text-inc");
 
   return (
     <>
@@ -196,7 +141,7 @@ const Form = ({ isExpense, isIncome }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           {
             /** NOTE [HIDDEN] field to identify type if form is expense or income */
-            <input type="hidden" {...register("isTransationExpense")} />
+            <input type="hidden" {...register("isTransactionExpense")} />
           }
 
           {/** ANCHOR select form for inc or exp ---------------- */}
@@ -222,7 +167,11 @@ const Form = ({ isExpense, isIncome }) => {
 
           {/**ANCHOR AMOUNT Field ---------------- */}
           <FormField>
-            <FieldLabel htmlFor="Amount" label="Amount" />
+            <FieldLabel
+              iconColor={formLabelIconColor}
+              htmlFor="Amount"
+              label="Amount"
+            />
             <div className="border-br1 inline-flex w-full items-center border-b-1 font-bold">
               <Icons.rupee className="text-[18px]" />
               <input
@@ -242,25 +191,37 @@ const Form = ({ isExpense, isIncome }) => {
 
           {/**ANCHOR NOTE Field ---------------- */}
           <FormField>
-            <FieldLabel htmlFor="Note" label="Note" />
+            <FieldLabel
+              iconColor={formLabelIconColor}
+              htmlFor="Note"
+              label="Note"
+            />
             <textarea
               className="focus-visible:border-ring focus-visible:ring-gradBot border-br1 w-full rounded-md border p-2 outline-none focus-visible:ring-[1px]"
               placeholder="Transaction Note..."
-              {...register("isDescription")}
+              {...register("isExpenseNote")}
             />
           </FormField>
           {/**ANCHOR ##END: DESCRIPTION Field ---------------- */}
 
           {/**ANCHOR DATE Field ---------------- */}
           <FormField>
-            <FieldLabel htmlFor="Date" label="Date" />
+            <FieldLabel
+              iconColor={formLabelIconColor}
+              htmlFor="Date"
+              label="Date"
+            />
             <SelectDate valVar="onDate" setValue={setValue}></SelectDate>
           </FormField>
           {/**ANCHOR ##END: DATE Field ---------------- */}
 
           {/**ANCHOR MAIN CATEGORY Field ---------------- */}
           <FormField>
-            <FieldLabel htmlFor="primeCategory" label="Main Category" />
+            <FieldLabel
+              iconColor={formLabelIconColor}
+              htmlFor="primeCategory"
+              label="Main Category"
+            />
             <OuterBar>
               <SelectCard isExpense={isExpense} title={"Select Main Category"}>
                 {isExpense && (
@@ -293,8 +254,12 @@ const Form = ({ isExpense, isIncome }) => {
 
           {/**ANCHOR SUB CATEGORY Field ---------------- */}
           <FormField>
-            <FieldLabel htmlFor="subCategory" label=" Sub Category" />
-            {listOfSubCat === null && (
+            <FieldLabel
+              iconColor={formLabelIconColor}
+              htmlFor="subCategory"
+              label=" Sub Category"
+            />
+            {selectedPrimeCat === null && (
               <span>Select a main category first ...</span>
             )}
             {listOfSubCat !== null && (
@@ -336,124 +301,6 @@ const Form = ({ isExpense, isIncome }) => {
             <ErrorField error={errors.subCategory} />
           </FormField>
           {/**ANCHOR ##END: SUB CATEGORY Field ---------------- */}
-
-          {/**ANCHOR TRIP or Repeating Payment Select Field */}
-          <FormField>
-            <div className="flex gap-5">
-              <FieldLabel htmlFor="subCategory" label=" Mark Expense as" />
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  className={
-                    "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
-                  }
-                  checked={selectedFormFor === "trip"}
-                  onCheckedChange={() => handleCheckedFormFor("trip")}
-                ></Checkbox>
-                <span>Trip Expense</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  className={
-                    "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
-                  }
-                  checked={selectedFormFor === "repeat"}
-                  onCheckedChange={() => handleCheckedFormFor("repeat")}
-                ></Checkbox>
-                <span>Repeating Expense</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  className={
-                    "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
-                  }
-                  checked={selectedFormFor === null}
-                  onCheckedChange={() => handleCheckedFormFor(null)}
-                ></Checkbox>
-                <span>None</span>
-              </div>
-            </div>
-          </FormField>
-          {/**ANCHOR ##END: TRIP or Repeating Payment Select Field */}
-
-          {/**ANCHOR if TRIP Selected  */}
-          {selectedFormFor === "trip" && (
-            <FormField>
-              <div className="flex gap-5">
-                <OuterBar>
-                  <SelectCard isExpense title={"Select Trip"}>
-                    <SelectFilter
-                      placeholder={"Select Trip"}
-                      onValueChange={handleIfTrip}
-                      list={[2024, 2025, 2026]}
-                    ></SelectFilter>
-                  </SelectCard>
-                </OuterBar>
-              </div>
-            </FormField>
-          )}
-          {/**ANCHOR ##END:if TRIP Selected */}
-
-          {/**ANCHOR if Repeating Payment Selected  */}
-          {selectedFormFor === "repeat" && (
-            <FormField>
-              <div className="flex gap-5">
-                <div className="flex"> Repeat Every </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    className={
-                      "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
-                    }
-                    checked={selectedRepeatBy === "month"}
-                    onCheckedChange={() => handleSelectedRepeatBy("month")}
-                  ></Checkbox>
-                  <span>Month</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    className={
-                      "data-[state=checked]:bg-pupl border-dimText hover:cursor-pointer"
-                    }
-                    checked={selectedRepeatBy === "year"}
-                    onCheckedChange={() => handleSelectedRepeatBy("year")}
-                  ></Checkbox>
-                  <span>Year</span>
-                </div>
-              </div>
-            </FormField>
-          )}
-          {/**ANCHOR ##END:if Repeating Payment Selected */}
-
-          {/**ANCHOR Repeating Payment BY MONTH or YEAR */}
-          <FormField>
-            {selectedRepeatBy !== null && (
-              <OuterBar>
-                {(selectedRepeatBy === "month" ||
-                  selectedRepeatBy === "year") && (
-                  <SelectCard isExpense title={"Select Date"}>
-                    <SelectFilter
-                      placeholder={"Date"}
-                      onValueChange={handleRepeatDate}
-                      list={[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-                      ]}
-                    />
-                  </SelectCard>
-                )}
-                {selectedRepeatBy === "year" && (
-                  <SelectCard isExpense title={"Select Month"}>
-                    <SelectFilter
-                      placeholder={"Month"}
-                      onValueChange={handleRepeatMonth}
-                      isMonthSelect
-                      list={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}
-                    />
-                  </SelectCard>
-                )}
-              </OuterBar>
-            )}
-          </FormField>
-          {/**ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
 
           {/**ANCHOR SUBMIT & CANCEL Buttons ---------------- */}
           <FormField className="items-end">
@@ -505,8 +352,8 @@ export const SelectDate = ({ setValue, valVar }) => {
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            fromYear={2020}
-            toYear={new Date().getFullYear() + 1}
+            fromYear={new Date().getFullYear() - 5}
+            toYear={new Date().getFullYear() + 5}
             selected={date}
             captionLayout="dropdown"
             onSelect={(selectedDate) => {
@@ -526,10 +373,10 @@ export const FormField = ({ children, className = "" }) => {
     <div className={`flex flex-col gap-2 py-4 ${className}`}>{children}</div>
   );
 };
-export const FieldLabel = ({ htmlFor, label }) => {
+export const FieldLabel = ({ htmlFor, label, iconColor = "text-white" }) => {
   return (
     <label htmlFor={htmlFor} className="inline-flex items-center gap-2">
-      <Icons.formlabel />
+      <Icons.formlabel className={`${iconColor}`} />
       {label}
     </label>
   );

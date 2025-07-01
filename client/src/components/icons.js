@@ -1,12 +1,12 @@
-import { MdCalculate } from "react-icons/md";
+import { MdEventRepeat, MdCalculate } from "react-icons/md";
 import {
   FaCalendar,
   FaCalendarCheck,
   FaCalculator,
   FaCalendarDay,
+  FaCarSide,
 } from "react-icons/fa";
 import { BsBarChartFill } from "react-icons/bs";
-import { RiArrowUpDownLine } from "react-icons/ri";
 
 import { IoFilter } from "react-icons/io5";
 
@@ -47,4 +47,6 @@ export const Icons = {
   desc: BiSortDown,
   listSort: BiSort,
   check: BiCheck,
+  repeat: MdEventRepeat,
+  trip: FaCarSide,
 };
