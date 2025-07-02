@@ -24,9 +24,11 @@ const transactionFormValidation = [
     .withMessage("Trip Transaction must be an object"),
   body("isTransactionTrip.valid")
     .exists()
+    .notEmpty()
     .withMessage("valid inside isTransactionTrip is required")
     .isBoolean()
     .withMessage("value must be a boolean"),
+
   body("isTransactionRepeating")
     .exists()
     .notEmpty()
@@ -35,15 +37,20 @@ const transactionFormValidation = [
     .withMessage("Recurring Transaction must be an object"),
   body("isTransactionRepeating.valid")
     .exists()
+    .notEmpty()
     .withMessage("valid inside isTransactionRepeating is required")
     .isBoolean()
-    .withMessage("value must be a boolean"),
+    .withMessage("isTransactionRepeating.valid must be a boolean"),
+  body("isTransactionRepeating.by")
+    .exists()
+    .optional()
+    .isString()
+    .withMessage("isTransactionRepeating.by must be a string"),
   body("onDate")
     .exists()
     .notEmpty()
     .withMessage("Transaction Date Cannot be Empty")
     .isISO8601()
-    
     .withMessage("onDate must be ISO format string"),
   body("ofAmount")
     .exists()

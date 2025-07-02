@@ -28,8 +28,17 @@ import {
   getSubOfPrime,
   incomeCategories,
 } from "@/global/categories";
+import Flexrow from "../section/flexrow";
 
-const Form = ({ isExpense, isIncome }) => {
+const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
+  //NOTE - for expense
+  const expenseExist = isExpense || isRepeatingExpense;
+  //NOTE - date label for repeating expense and simple expense
+  const dateLabel =
+    (isExpense && "Transaction Date") ||
+    (isRepeatingExpense && "Recurring Transaction Date") ||
+    "Transaction Date";
+
   //NOTE page navigation
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,19 +81,40 @@ const Form = ({ isExpense, isIncome }) => {
   };
 
   //NOTE get prime categories
-  const listOfPrimeCats = isExpense
+  const listOfPrimeCats = expenseExist
     ? getPrimeCategories(expenseCategories)
     : getPrimeCategories(incomeCategories);
 
   //NOTE get sub cat of selected prime cat
-  const listOfSubCat = isExpense
-    ? getSubOfPrime(selectedPrimeCat, isExpense) || null
+  const listOfSubCat = expenseExist
+    ? getSubOfPrime(selectedPrimeCat, expenseExist) || null
     : getSubOfPrime(selectedPrimeCat) || null;
+
+  //NOTE for setting repeating payment is by month or year
+  const [repeatBy, setRepeatBy] = useState(null);
+  const updateRepeating = (newValues) => {
+    const prev = getValues("isTransactionRepeating") || {};
+    setValue("isTransactionRepeating", {
+      ...prev,
+      ...newValues,
+    });
+  };
+  const handleRepeatBy = (check) => {
+    if (repeatBy === check) {
+      setRepeatBy(null);
+    } else {
+      setRepeatBy(check);
+    }
+    updateRepeating({ by: check });
+    setValue("repeatBy", check, { shouldValidate: true });
+  };
 
   //NOTE : react from hook initalize
   const {
     register,
+    unregister,
     setValue,
+    getValues,
     reset,
     handleSubmit,
     formState: { errors },
@@ -93,14 +123,15 @@ const Form = ({ isExpense, isIncome }) => {
       userID: 123456,
       transactionTimestamp: moment().format(),
       onDate: moment().format(),
-      isTransactionExpense: isExpense ? true : false,
-      isTransactionRepeating: { valid: false },
+      isTransactionExpense: expenseExist ? true : false,
+      isTransactionRepeating: { valid: isRepeatingExpense ? true : false },
       isTransactionTrip: { valid: false },
     },
   });
 
   //NOTE : form handle submit function
   const onSubmit = async (data) => {
+    unregister("repeatBy");
     const { isExpenseNote, onDate, transactionTimestamp } = data;
     if (!isExpenseNote || isExpenseNote.trim().length === 0)
       data.isExpenseNote = "";
@@ -133,7 +164,7 @@ const Form = ({ isExpense, isIncome }) => {
 
   //NOTE - form label icon color
   const formLabelIconColor =
-    (isExpense && "text-exp") || (isIncome && "text-inc");
+    (expenseExist && "text-exp") || (isIncome && "text-inc");
 
   return (
     <>
@@ -145,24 +176,26 @@ const Form = ({ isExpense, isIncome }) => {
           }
 
           {/** ANCHOR select form for inc or exp ---------------- */}
-          <FormField>
-            <div className="flex gap-2">
-              <ExpButton
-                onClick={() => navigateToExpense()}
-                type="button"
-                btnfor={isExpense ? "expense" : "expenseInactive"}
-                label="Expense"
-                className="w-1/2"
-              />
-              <ExpButton
-                onClick={() => navigateToIncome()}
-                type="button"
-                btnfor={isIncome ? "income" : "incomeInactive"}
-                label="Income"
-                className="w-1/2"
-              />
-            </div>
-          </FormField>
+          {(isExpense || isIncome) && (
+            <FormField>
+              <div className="flex gap-2">
+                <ExpButton
+                  onClick={() => navigateToExpense()}
+                  type="button"
+                  btnfor={expenseExist ? "expense" : "expenseInactive"}
+                  label="Expense"
+                  className="w-1/2"
+                />
+                <ExpButton
+                  onClick={() => navigateToIncome()}
+                  type="button"
+                  btnfor={isIncome ? "income" : "incomeInactive"}
+                  label="Income"
+                  className="w-1/2"
+                />
+              </div>
+            </FormField>
+          )}
           {/**ANCHOR ##END: select form for inc or exp ---------------- */}
 
           {/**ANCHOR AMOUNT Field ---------------- */}
@@ -179,7 +212,7 @@ const Form = ({ isExpense, isIncome }) => {
                 type="number"
                 onBlur={"This cannot be empty"}
                 {...register("ofAmount", {
-                  required: "* Amount cannot be empty",
+                  required: "* Please provide a transaction amount",
                   valueAsNumber: true,
                 })}
               />
@@ -194,7 +227,7 @@ const Form = ({ isExpense, isIncome }) => {
             <FieldLabel
               iconColor={formLabelIconColor}
               htmlFor="Note"
-              label="Note"
+              label="Transaction Note"
             />
             <textarea
               className="focus-visible:border-ring focus-visible:ring-gradBot border-br1 w-full rounded-md border p-2 outline-none focus-visible:ring-[1px]"
@@ -209,11 +242,49 @@ const Form = ({ isExpense, isIncome }) => {
             <FieldLabel
               iconColor={formLabelIconColor}
               htmlFor="Date"
-              label="Date"
+              label={dateLabel}
             />
             <SelectDate valVar="onDate" setValue={setValue}></SelectDate>
           </FormField>
           {/**ANCHOR ##END: DATE Field ---------------- */}
+
+          {/**ANCHOR Repeating Payment BY MONTH or YEAR */}
+          <FormField>
+            <Flexrow className="items-center">
+              <FieldLabel
+                iconColor={formLabelIconColor}
+                htmlFor="Recurring Transaction"
+                label="Tansaction Reoccur Every"
+              />
+
+              <Checkbox
+                className={
+                  "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
+                }
+                checked={repeatBy === "month"}
+                onCheckedChange={() => handleRepeatBy("month")}
+              ></Checkbox>
+              <span>Month</span>
+
+              <Checkbox
+                className={
+                  "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
+                }
+                checked={repeatBy === "year"}
+                onCheckedChange={() => handleRepeatBy("year")}
+              ></Checkbox>
+              <span>Year</span>
+            </Flexrow>
+            <input
+              type="hidden"
+              {...register("repeatBy", {
+                required: "* Please select when to repeat transaction.",
+              })}
+            />
+            <ErrorField error={errors.repeatBy} />
+          </FormField>
+
+          {/**ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
 
           {/**ANCHOR MAIN CATEGORY Field ---------------- */}
           <FormField>
@@ -223,8 +294,11 @@ const Form = ({ isExpense, isIncome }) => {
               label="Main Category"
             />
             <OuterBar>
-              <SelectCard isExpense={isExpense} title={"Select Main Category"}>
-                {isExpense && (
+              <SelectCard
+                isExpense={expenseExist}
+                title={"Select Main Category"}
+              >
+                {expenseExist && (
                   <SelectFilter
                     placeholder={"Select"}
                     onValueChange={handleSelectExpensePrime}
@@ -240,16 +314,17 @@ const Form = ({ isExpense, isIncome }) => {
                 )}
               </SelectCard>
             </OuterBar>
+
+            <input
+              type="hidden"
+              {...register("primeCategory", {
+                required: "* PLease Select a Prime Category",
+              })}
+            />
+
+            <ErrorField error={errors.primeCategory} />
           </FormField>
 
-          <input
-            type="hidden"
-            {...register("primeCategory", {
-              required: "* Select a Prime Category",
-            })}
-          />
-
-          <ErrorField error={errors.primeCategory} />
           {/* ANCHOR ##END: MAIN CATEGORY Field ---------------- */}
 
           {/**ANCHOR SUB CATEGORY Field ---------------- */}
@@ -269,7 +344,7 @@ const Form = ({ isExpense, isIncome }) => {
                     <ExpButton
                       type="button"
                       btnfor={
-                        isExpense
+                        expenseExist
                           ? selectedSubCat === buttons
                             ? "expense"
                             : "expenseInactive"
@@ -305,7 +380,7 @@ const Form = ({ isExpense, isIncome }) => {
           {/**ANCHOR SUBMIT & CANCEL Buttons ---------------- */}
           <FormField className="items-end">
             <div className="flex gap-2">
-              {isExpense ? (
+              {expenseExist ? (
                 <ExpButton type="submit" btnfor="expense" label={"Add Now"} />
               ) : (
                 <ExpButton type="submit" btnfor="income" label={"Add Now"} />

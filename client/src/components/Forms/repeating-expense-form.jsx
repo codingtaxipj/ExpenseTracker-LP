@@ -1,5 +1,8 @@
+import { PATH } from "@/router/routerConfig";
+import Form from "./Form";
+
 const RepeatingExpenseForm = () => {
-  return <div>repeat exp form</div>;
+  return <Form isRepeatingExpense />;
 };
 
 export default RepeatingExpenseForm;

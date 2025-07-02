@@ -24,16 +24,20 @@ const transactionSchema = new Schema(
           type: Boolean,
           required: true,
         },
-      },
-      required: true,
-    },
-    isTransactionRepeating: {
-      type: {
-        valid: {
-          type: Boolean,
-          required: true,
+        by: {
+          type: String,
         },
       },
+    },
+
+    isTransactionRepeating: {
+      type: new mongoose.Schema(
+        {
+          valid: { type: Boolean, required: true },
+          by: { type: String },
+        },
+        { _id: false } // disable auto _id on nested object
+      ),
       required: true,
     },
 

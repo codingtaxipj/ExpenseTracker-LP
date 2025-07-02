@@ -1,7 +1,7 @@
 import Form from "./Form";
 import { PATH } from "@/router/routerConfig";
 const ExpenseForm = () => {
-  return <Form isExpense formToDisplay={PATH.addExpense} />;
+  return <Form isExpense  />;
 };
 
 export default ExpenseForm;

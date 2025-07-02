@@ -33,6 +33,7 @@ const RepeatingExpenseIndex = () => {
         <BudgetStrip isExpense amount={20000} color="text-exptxt" />
         <ExpButton
           onClick={() => navigate(PATH.addRepeatingExpense)}
+          btnfor="expense"
           label={"Add Recurring Payment"}
         />
       </Flexrow>
