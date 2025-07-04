@@ -16,6 +16,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+import { toast } from "sonner";
+
 import { Checkbox } from "../ui/checkbox";
 import OuterBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
@@ -138,15 +140,21 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
     data.onDate = moment(onDate).toISOString();
     data.transactionTimestamp = moment(transactionTimestamp).toISOString();
 
-    console.log("Sending data:", data);
+   
 
     try {
       const response = await axios.post(
         "http://127.0.0.1:8080/expense/add-data",
         data,
       );
-      alert(response.data.message);
-      reset();
+
+      toast.success("Success", {
+        description: response.data.message,
+        action: {
+          label: "Ok!",
+          onClick: () => reset(),
+        },
+      });
     } catch (error) {
       if (error.response) {
         console.error("Validation Error:", error.response.data.errors);
@@ -249,41 +257,42 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
           {/**ANCHOR ##END: DATE Field ---------------- */}
 
           {/**ANCHOR Repeating Payment BY MONTH or YEAR */}
-          <FormField>
-            <Flexrow className="items-center">
-              <FieldLabel
-                iconColor={formLabelIconColor}
-                htmlFor="Recurring Transaction"
-                label="Tansaction Reoccur Every"
+          {isRepeatingExpense && (
+            <FormField>
+              <Flexrow className="items-center">
+                <FieldLabel
+                  iconColor={formLabelIconColor}
+                  htmlFor="Recurring Transaction"
+                  label="Tansaction Reoccur Every"
+                />
+
+                <Checkbox
+                  className={
+                    "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
+                  }
+                  checked={repeatBy === "month"}
+                  onCheckedChange={() => handleRepeatBy("month")}
+                ></Checkbox>
+                <span>Month</span>
+
+                <Checkbox
+                  className={
+                    "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
+                  }
+                  checked={repeatBy === "year"}
+                  onCheckedChange={() => handleRepeatBy("year")}
+                ></Checkbox>
+                <span>Year</span>
+              </Flexrow>
+              <input
+                type="hidden"
+                {...register("repeatBy", {
+                  required: "* Please select when to repeat transaction.",
+                })}
               />
-
-              <Checkbox
-                className={
-                  "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
-                }
-                checked={repeatBy === "month"}
-                onCheckedChange={() => handleRepeatBy("month")}
-              ></Checkbox>
-              <span>Month</span>
-
-              <Checkbox
-                className={
-                  "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
-                }
-                checked={repeatBy === "year"}
-                onCheckedChange={() => handleRepeatBy("year")}
-              ></Checkbox>
-              <span>Year</span>
-            </Flexrow>
-            <input
-              type="hidden"
-              {...register("repeatBy", {
-                required: "* Please select when to repeat transaction.",
-              })}
-            />
-            <ErrorField error={errors.repeatBy} />
-          </FormField>
-
+              <ErrorField error={errors.repeatBy} />
+            </FormField>
+          )}
           {/**ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
 
           {/**ANCHOR MAIN CATEGORY Field ---------------- */}
