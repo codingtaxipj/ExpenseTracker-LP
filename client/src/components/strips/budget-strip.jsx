@@ -3,17 +3,13 @@ import ExpButton from "../custom-ui/expButton";
 import { FieldLabel, FormField } from "../Forms/Form";
 import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
-import { Button } from "../ui/button";
 import { amountInteger } from "../utilityFilter";
 
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import moment from "moment";
@@ -22,14 +18,31 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const BudgetStrip = ({ className = "" }) => {
+  //NOTE default userID
   const userID = 12345;
+  //NOTE budget state
   const [userBudget, setUserBudget] = useState(null);
+
+  //NOTE fetch budget os user from DB on load
   useEffect(() => {
     const fetchBudget = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8080/budget/get-data/${userID}`,
+          `http://127.0.0.1:8080/budget/get-data/${userID}`
         );
+        const budget = response.data;
+        const currYear = moment().year();
+        const currMonth = moment().month();
+        if (moment(budget[0].activeFrom).year() === currYear) {
+          if (moment(budget[0].activeFrom).month() >= currMonth) {
+            setUserBudget(budget[0].budgetAmount);
+          } else {
+            setUserBudget(budget[1].budgetAmount);
+          }
+        } else {
+          setUserBudget(null);
+        }
+
         setUserBudget(response.data);
       } catch (error) {
         if (error.response) {
@@ -37,7 +50,7 @@ const BudgetStrip = ({ className = "" }) => {
           alert(
             error.response.data?.errors?.[0]?.msg ||
               error.response.data?.message ||
-              "Fetching Budget failed.",
+              "Fetching Budget failed."
           );
         } else {
           console.error("Unknown Axios Error:", error.message);
@@ -48,16 +61,20 @@ const BudgetStrip = ({ className = "" }) => {
     if (userID) fetchBudget();
   }, [userID]);
 
+  //NOTE date o decide when the budget will be active
   const activeDate = moment().toISOString();
   const nextMonthDate = moment().add(1, "month").startOf("month").format();
 
+  //NOTE react-form-hook
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       userID: 123456,
       activeFrom: activeDate,
     },
   });
-  const onSubmit = async (data) => {
+
+  //NOTE form on submit
+  const onSubmit = async data => {
     if (userBudget !== null) {
       data.activeFrom = moment(nextMonthDate).toDate();
     }
@@ -66,7 +83,7 @@ const BudgetStrip = ({ className = "" }) => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8080/budget/add-data",
-        data,
+        data
       );
 
       toast.success("Success", {
@@ -82,7 +99,7 @@ const BudgetStrip = ({ className = "" }) => {
         alert(
           error.response.data?.errors?.[0]?.msg ||
             error.response.data?.message ||
-            "Budget Submission failed.",
+            "Budget Submission failed."
         );
       } else {
         console.error("Unknown Axios Error:", error.message);
@@ -99,23 +116,40 @@ const BudgetStrip = ({ className = "" }) => {
           <Icons.calc className={`text-budget`} />
         </span>
 
+        {/** if budget exists */}
         {userBudget !== null && (
           <>
-            <h4>Monthly Budget To Spend</h4>
-            <span className="bg-91 mx-2 h-full w-[0.5px]"></span>
-            <span className="italic">INR</span>
-            <h4>{amountInteger(userBudget.budgetAmount)}</h4>
+            <Flexrow className="items-center !gap-2">
+              <h4>Monthly Budget To Spend</h4>
+              <span className="bg-91 mx-2 h-full w-[0.5px]"></span>
+              <span className="italic">INR</span>
+              <h4>{amountInteger(userBudget.budgetAmount)}</h4>
+              <TooltipStrip content="Edit Current Budget">
+                <ExpButton
+                  btnfor="budget"
+                  className="!px-2"
+                  label={<Icons.caledit />}
+                />
+              </TooltipStrip>
+              <TooltipStrip content="Set New Budget">
+                <ExpButton
+                  btnfor="budget"
+                  className="!px-2"
+                  label={<Icons.calnew />}
+                />
+              </TooltipStrip>
+            </Flexrow>
           </>
         )}
 
-        {userBudget !== null && (
+        {/** if no budget found */}
+
+        {userBudget === null && (
           <>
             <h4>No Monthly Budget is Set</h4>
             <span className="bg-91 mx-2 h-full w-[0.5px]"></span>
-
             <Drawer>
               <DrawerTrigger>
-                {" "}
                 <ExpButton
                   btnfor="budget"
                   className="font-normal"

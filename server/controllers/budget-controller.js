@@ -24,7 +24,7 @@ const insertBudget = async (req, res) => {
 const fetchBudget = async (req, res) => {
   try {
     const { userId } = req.params;
-    const data = await budgetModal.findOne({ userId });
+    const data = await budgetModal.find({ userId }).sort({ createdAt: -1 });
     if (!data) return res.status(200).json(null);
     res.status(200).json(data);
   } catch (error) {

@@ -25,7 +25,10 @@ import {
   BiSortDown,
   BiSortUp,
   BiCheck,
+  BiSolidCalendarEdit,
+  BiSolidCalendarPlus,
 } from "react-icons/bi";
+import { HiPencil } from "react-icons/hi2";
 
 export const Icons = {
   analysis: MdCalculate,
@@ -49,4 +52,7 @@ export const Icons = {
   check: BiCheck,
   repeat: MdEventRepeat,
   trip: FaCarSide,
+  pencil: HiPencil,
+  caledit: BiSolidCalendarEdit,
+  calnew: BiSolidCalendarPlus,
 };
