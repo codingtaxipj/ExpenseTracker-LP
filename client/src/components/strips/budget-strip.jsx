@@ -16,6 +16,8 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import TooltipStrip from "./tooltip-strip";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 const BudgetStrip = ({ className = "" }) => {
   //NOTE default userID
@@ -28,29 +30,28 @@ const BudgetStrip = ({ className = "" }) => {
     const fetchBudget = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8080/budget/get-data/${userID}`
+          `http://127.0.0.1:8080/budget/get-data/${userID}`,
         );
-        const budget = response.data;
-        const currYear = moment().year();
-        const currMonth = moment().month();
-        if (moment(budget[0].activeFrom).year() === currYear) {
-          if (moment(budget[0].activeFrom).month() >= currMonth) {
-            setUserBudget(budget[0].budgetAmount);
-          } else {
-            setUserBudget(budget[1].budgetAmount);
-          }
-        } else {
-          setUserBudget(null);
-        }
+        const budgetArray = response.data;
+        const prevBudget = budgetArray[1];
+        const latestBudget = budgetArray[0];
 
-        setUserBudget(response.data);
+        if (budgetArray.length === 0) {
+          setUserBudget(null);
+        } else if (budgetArray.length === 1) {
+          setUserBudget(budgetArray[0].budgetAmount);
+        } else {
+          if (moment(latestBudget.activeFrom).isAfter(moment(), "month"))
+            setUserBudget(prevBudget.budgetAmount);
+          else setUserBudget(latestBudget.budgetAmount);
+        }
       } catch (error) {
         if (error.response) {
           console.error("Validation Error:", error.response.data.errors);
           alert(
             error.response.data?.errors?.[0]?.msg ||
               error.response.data?.message ||
-              "Fetching Budget failed."
+              "Fetching Budget failed.",
           );
         } else {
           console.error("Unknown Axios Error:", error.message);
@@ -74,7 +75,7 @@ const BudgetStrip = ({ className = "" }) => {
   });
 
   //NOTE form on submit
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     if (userBudget !== null) {
       data.activeFrom = moment(nextMonthDate).toDate();
     }
@@ -83,7 +84,7 @@ const BudgetStrip = ({ className = "" }) => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8080/budget/add-data",
-        data
+        data,
       );
 
       toast.success("Success", {
@@ -99,7 +100,7 @@ const BudgetStrip = ({ className = "" }) => {
         alert(
           error.response.data?.errors?.[0]?.msg ||
             error.response.data?.message ||
-            "Budget Submission failed."
+            "Budget Submission failed.",
         );
       } else {
         console.error("Unknown Axios Error:", error.message);
@@ -121,22 +122,21 @@ const BudgetStrip = ({ className = "" }) => {
           <>
             <Flexrow className="items-center !gap-2">
               <h4>Monthly Budget To Spend</h4>
-              <span className="bg-91 mx-2 h-full w-[0.5px]"></span>
+              <Separator
+                orientation="vertical"
+                className="bg-91 mx-2 h-4 w-px"
+              />
               <span className="italic">INR</span>
-              <h4>{amountInteger(userBudget.budgetAmount)}</h4>
+              <h4>{amountInteger(userBudget)}</h4>
+              <Separator
+                orientation="vertical"
+                className="bg-91 mx-2 h-4 w-px"
+              />
               <TooltipStrip content="Edit Current Budget">
-                <ExpButton
-                  btnfor="budget"
-                  className="!px-2"
-                  label={<Icons.caledit />}
-                />
+                <ExpButton isIcon btnfor="budget" label={<Icons.caledit />} />
               </TooltipStrip>
               <TooltipStrip content="Set New Budget">
-                <ExpButton
-                  btnfor="budget"
-                  className="!px-2"
-                  label={<Icons.calnew />}
-                />
+                <ExpButton isIcon btnfor="budget" label={<Icons.calnew />} />
               </TooltipStrip>
             </Flexrow>
           </>
