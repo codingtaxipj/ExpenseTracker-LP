@@ -7,22 +7,22 @@ import { mongoConnectDB } from "../database/connection.js";
 const Schema = mongoose.Schema;
 const monthList = new Schema(
   {
-    month: { type: Number, required: true },
+    month: { type: Number, required: true, index: true },
     total: { type: Number, required: true },
   },
   { _id: false }
 );
 const primeList = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },
     total: { type: Number, required: true },
   },
   { _id: false }
 );
 const subList = new Schema(
   {
-    primeName: { type: String, required: true },
-    subName: { type: String, required: true },
+    primeName: { type: String, required: true, index: true },
+    subName: { type: String, required: true, index: true },
     total: { type: Number, required: true },
     monthList: [monthList],
   },
