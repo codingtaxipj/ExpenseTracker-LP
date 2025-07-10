@@ -462,3 +462,42 @@ body('userId').isInt().withMessage('userId must be an integer'),
 userID:
 userEmail: string
 createdOn: string
+
+
+
+userID
+year : 2025
+total : xx
+monthlist:[
+  {month:0,total:xx},
+  {month:1,total:xx},
+]
+primeList:[ {name:prime1,total:xx},
+  {name:prime2,total:xx},] 
+
+subList : [{primename:prime1,name:sub1,total:xx},
+   {name:sub2,total:xx},]
+   
+
+
+
+userID
+year : 2025
+total : xx
+monthlist:[
+  {month:0,total:xx},
+  {month:1,total:xx},
+]
+primeList:{
+  {name:prime1,total:xx,subList : [
+   {name:sub1,total:xx},
+   {name:sub2,total:xx},
+]},
+  {name:prime2,total:xx,subList : [
+   {name:sub1,total:xx},
+   {name:sub2,total:xx},
+]},
+}
+
+
+

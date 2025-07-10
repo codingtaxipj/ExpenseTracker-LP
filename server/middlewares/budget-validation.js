@@ -8,8 +8,8 @@ const budgetValidation = [
     .exists()
     .notEmpty()
     .withMessage("userID Cannot be Empty")
-    .isNumeric()
-    .withMessage("userID must be 16 digit number"),
+    .isInt()
+    .withMessage("userID must be 16 digit Integer"),
   body("budgetAmount")
     .exists()
     .notEmpty()

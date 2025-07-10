@@ -6,7 +6,7 @@ import { transactionModal } from "../models/transaction-modal.js";
  ** it will take the validated form data and then inject into the DB
  */
 
-const transactionFormController = async (req, res) => {
+const insertTransaction = async (req, res) => {
   try {
     const data = req.body;
     const entry = transactionModal(data);
@@ -18,9 +18,9 @@ const transactionFormController = async (req, res) => {
       .status(500)
       .json({ message: error.message || "Failed to Submit Form" });
   }
-  /* const  amount, primeCategory, subCategory, isFormExpense  = req.body;
-  req.expenseInfo = { amount, primeCategory, subCategory, isFormExpense };
-  next(); */
+  const expenseData = req.body;
+  req.expenseInfo = expenseData;
+  next();
 };
 
 const fetchAllData = async (req, res) => {
@@ -35,4 +35,4 @@ const fetchAllData = async (req, res) => {
   }
 };
 
-export { transactionFormController, fetchAllData };
+export { insertTransaction, fetchAllData };

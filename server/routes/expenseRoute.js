@@ -2,17 +2,13 @@ import express from "express";
 import { transactionFormValidation } from "../middlewares/transaction-validation.js";
 
 import {
-  transactionFormController,
+  insertTransaction,
   fetchAllData,
 } from "../controllers/transaction-controller.js";
 
 const expenseRouter = express.Router();
 
-expenseRouter.post(
-  "/add-data",
-  transactionFormValidation,
-  transactionFormController
-);
+expenseRouter.post("/add-data", transactionFormValidation, insertTransaction);
 
 expenseRouter.get("/get-data", fetchAllData);
 
