@@ -6,7 +6,7 @@ import { transactionModal } from "../models/transaction-modal.js";
  ** it will take the validated form data and then inject into the DB
  */
 
-const insertTransaction = async (req, res) => {
+const insertTransaction = async (req, res, next) => {
   try {
     const data = req.body;
     const entry = transactionModal(data);

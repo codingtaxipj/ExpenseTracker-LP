@@ -1,3 +1,6 @@
+import { totalModal } from "../models/total-modal.js";
+import moment from "moment";
+
 const insertTotal = async (req, res) => {
   try {
     const { userID, ofAmount, onDate, primeCategory, subCategory } =
@@ -6,7 +9,7 @@ const insertTotal = async (req, res) => {
     const year = moment(onDate).year();
     const month = moment(onDate).month();
 
-    const doc = await totalModal.findOne({ userID, year });
+    let doc = await totalModal.findOne({ userID, year });
     if (!doc) {
       await totalModal.create({
         userID,
@@ -23,7 +26,8 @@ const insertTotal = async (req, res) => {
           },
         ],
       });
-      return res.status(201).json({ message: "Created new yearly total" });
+      console.log("Created new yearly total");
+      return;
     }
     await totalModal.updateOne(
       { userID, year },
@@ -33,6 +37,9 @@ const insertTotal = async (req, res) => {
         },
       }
     );
+
+    // Fetch the updated document to ensure latest data
+    doc = await totalModal.findOne({ userID, year });
 
     const monthExists = doc?.monthList?.some(m => m.month === month);
     const primeExists = doc?.primeList?.some(p => p.name === primeCategory);
@@ -148,12 +155,12 @@ const insertTotal = async (req, res) => {
       );
     }
 
-    res.status(200).json({ message: "Transaction added to total breakdown" });
+    console.log("Transaction added to total breakdown");
+    return;
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ message: error.message || "Failed update Total DB" });
+    console.log("error Occured !! inserting total");
+    return;
   }
 };
 

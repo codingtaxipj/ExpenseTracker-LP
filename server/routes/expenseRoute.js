@@ -5,10 +5,16 @@ import {
   insertTransaction,
   fetchAllData,
 } from "../controllers/transaction-controller.js";
+import { insertTotal } from "../controllers/total-controller.js";
 
 const expenseRouter = express.Router();
 
-expenseRouter.post("/add-data", transactionFormValidation, insertTransaction);
+expenseRouter.post(
+  "/add-data",
+  transactionFormValidation,
+  insertTransaction,
+  insertTotal
+);
 
 expenseRouter.get("/get-data", fetchAllData);
 
