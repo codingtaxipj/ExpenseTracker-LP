@@ -6,6 +6,7 @@ import {
   fetchAllData,
 } from "../controllers/transaction-controller.js";
 import { insertTotal } from "../controllers/total-controller.js";
+import { insertMinMax } from "../controllers/minmax-controller.js";
 
 const expenseRouter = express.Router();
 
@@ -13,7 +14,8 @@ expenseRouter.post(
   "/add-data",
   transactionFormValidation,
   insertTransaction,
-  insertTotal
+  insertTotal,
+  insertMinMax
 );
 
 expenseRouter.get("/get-data", fetchAllData);

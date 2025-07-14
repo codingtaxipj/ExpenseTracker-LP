@@ -1,13 +1,14 @@
 import { totalModal } from "../models/total-modal.js";
 import moment from "moment";
 
-const insertTotal = async (req, res) => {
+const insertTotal = async (req, res, next) => {
   try {
     const { userID, ofAmount, onDate, primeCategory, subCategory } =
       req.trnxData;
 
     const year = moment(onDate).year();
     const month = moment(onDate).month();
+    req.minmaxData = req.trnxData;
 
     let doc = await totalModal.findOne({ userID, year });
     if (!doc) {
@@ -27,6 +28,7 @@ const insertTotal = async (req, res) => {
         ],
       });
       console.log("Created new yearly total");
+      next();
       return;
     }
     await totalModal.updateOne(
@@ -156,6 +158,7 @@ const insertTotal = async (req, res) => {
     }
 
     console.log("Transaction added to total breakdown");
+    next();
     return;
   } catch (error) {
     console.error(error);
