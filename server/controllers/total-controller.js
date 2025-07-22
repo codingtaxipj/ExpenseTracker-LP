@@ -167,4 +167,22 @@ const insertTotal = async (req, res, next) => {
   }
 };
 
-export { insertTotal };
+/* NOTE - fetchTotal
+ ** it will fetch the budget data of given user
+ ** if no data is found then return null
+ */
+const fetchTotal = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const data = await totalModal.find({ userId });
+    if (!data) return res.status(200).json(null);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to Fetch Total" });
+  }
+};
+
+export { insertTotal, fetchTotal };

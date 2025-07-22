@@ -14,4 +14,4 @@ export const sortByDateNewest = (list) =>
 
 export const amountFloat = (amount) => numeral(amount).format("00,00.0");
 export const amountInteger = (amount) => numeral(amount).format("00,00");
-export const percentSigned = (amount) => numeral(amount).format("+00");
+export const percentSigned = (amount) => numeral(amount).format("+00.00");

@@ -1,6 +1,6 @@
 import TableSection from "@/components/TableSection";
 import usePageConfig from "@/components/usePageConfig";
-import TotalCard from "@/components/analysis/TotalCard";
+import TotalCard from "@/components/cards/TotalCard";
 import BudgetStrip from "@/components/strips/budget-strip";
 import Flexrow from "@/components/section/flexrow";
 import SelectBar from "@/components/selectFilter/SelectBar";
@@ -15,17 +15,21 @@ import {
   getPrimeCategories,
   getSubCategories,
 } from "@/global/categories";
-import ExpButton from "@/components/custom-ui/expButton";
+import ExpButton from "@/components/buttons/expButton";
 import { Icons } from "@/components/icons";
 import SectionTitle from "@/components/section/section-title";
 import Flexcol from "@/components/section/flexcol";
 import ExpenseByYearGraph from "@/components/analysis/expense-by-year-graph";
+import AddExpenseBtn from "@/components/buttons/text-btns/add-expense-btn";
+import SelectFilterIcon from "@/components/buttons/icon-only-btns/select-filter-icon";
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import UseTotalConfig from "@/hooks/useTotalConfig";
+import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
+import TotalExpenseCardInmonth from "@/components/cards/total-expense-card-inmonth";
 
 const ExpenseIndex = () => {
   const { dataConfig } = usePageConfig();
   const navigate = useNavigate();
-
-
 
   const [filters, setFilters] = useState("None");
   const sortList = Object.values(sortBy);
@@ -49,30 +53,15 @@ const ExpenseIndex = () => {
         <>
           <Flexcol>
             <Flexrow className="items-center justify-center">
-              <TotalCard
-                isExpense
-                color="text-exp"
-                headText="Expense"
-                total={2025}
-                footerText={"Your Total Spending in Year"}
-                date={2025}
-              ></TotalCard>
-              <TotalCard
-                isExpense
-                color="text-exp"
-                headText="Expense"
-                total={2025}
-                footerText={"Your Total Spending in Month"}
-                date={"June/25"}
-              ></TotalCard>
+              <TotalExpenseCardInyear year={CurrentYear()} />
+              <TotalExpenseCardInmonth
+                year={CurrentYear()}
+                month={CurrentMonth()}
+              />
             </Flexrow>
             <Flexrow className="items-center justify-center">
               <BudgetStrip />
-              <ExpButton
-                onClick={() => navigate(PATH.addExpense)}
-                btnfor="expense"
-                label={"Add Expense"}
-              />
+              <AddExpenseBtn onClick={() => navigate(PATH.addExpense)} />
             </Flexrow>
           </Flexcol>
 
@@ -138,28 +127,21 @@ const ExpenseIndex = () => {
                   ></SelectFilter>
                 </SelectCard>
               )}
-              <div className="text-14 flex gap-2 font-medium" noIcon>
-                <ExpButton
-                  btnfor="expenseInactive"
-                  className="!px-2"
-                  label={<Icons.check />}
-                />
-                <ExpButton
-                  btnfor="expenseInactive"
-                  className="!px-2"
-                  label={<Icons.asc />}
-                />
-                <ExpButton
-                  btnfor="expenseInactive"
-                  className="!px-2"
-                  label={<Icons.desc />}
-                />
-                <ExpButton
-                  btnfor="expenseInactive"
-                  className="!px-2"
-                  label={<Icons.listSort />}
-                />
-              </div>
+
+              <Flexrow className={"w-max gap-2"}>
+                <SelectFilterIcon inactive className={"hover:bg-exp"}>
+                  <Icons.check />
+                </SelectFilterIcon>
+                <SelectFilterIcon inactive className={"hover:bg-exp"}>
+                  <Icons.asc />
+                </SelectFilterIcon>
+                <SelectFilterIcon inactive className={"hover:bg-exp"}>
+                  <Icons.desc />
+                </SelectFilterIcon>
+                <SelectFilterIcon inactive className={"hover:bg-exp"}>
+                  <Icons.listSort />
+                </SelectFilterIcon>
+              </Flexrow>
             </SelectBar>
 
             <TableSection entries={dataConfig.expense.entries} />

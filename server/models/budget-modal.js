@@ -5,6 +5,13 @@
 import mongoose from "mongoose";
 import { mongoConnectDB } from "../database/connection.js";
 const Schema = mongoose.Schema;
+const budgetlist = new Schema(
+  {
+    month: { type: Number, required: true, index: true },
+    budget: { type: Number, required: true },
+  },
+  { _id: false, timestamps: true }
+);
 const budgetSchema = new Schema(
   {
     userID: {
@@ -13,18 +20,16 @@ const budgetSchema = new Schema(
       index: true,
       unique: false,
     },
-    budgetAmount: {
+    year: {
       type: Number,
       required: true,
+      index: true,
     },
-    activeFrom: {
-      type: Date,
-      required: true,
-    },
+    budgetList: [budgetlist],
   },
   {
-    collection: "default-budget", // <-- this line overrides pluralization of adding "s" at last of collection name
-    timestamps: true,
+    collection: "default-budget",
+    // NOTE - this line overrides pluralization of adding "s" at last of collection name
   }
 );
 

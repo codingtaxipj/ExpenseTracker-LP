@@ -6,7 +6,6 @@ import useAnalysisConfig from "./useAnalysisConfig";
 import SingleBarChart from "../charts/SingleBarChart";
 import moment from "moment";
 import MinMaxStrip from "../strips/min-max-strip";
-import SectionOuterFlexcol from "./section-outer-flexcol";
 import Flexrow from "../section/flexrow";
 import Flexcol from "../section/flexcol";
 

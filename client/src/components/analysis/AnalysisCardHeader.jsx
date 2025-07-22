@@ -1,4 +1,4 @@
-import TotalCard from "./TotalCard";
+import TotalCard from "../cards/TotalCard";
 
 const AnalysisCardHeader = () => {
   return (

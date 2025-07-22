@@ -6,7 +6,9 @@ import {
   filterByExpense,
   filterByIncome,
   sortByDateNewest,
-} from "./utilityFilter";
+} from "../components/utilityFilter";
+
+import { fetchTotal } from "@/redux/slices/fetch-total";
 
 const useInitalReduxLoad = () => {
   const isExpense = true;
@@ -14,9 +16,12 @@ const useInitalReduxLoad = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAllData());
+    dispatch(fetchTotal());
   }, [dispatch]);
 
   const incomingData = useSelector((state) => state.expense.data) || false;
+
+  const totalData = useSelector((state) => state.total.data) || [];
 
   //NOTE: filtering data by type income or expense
   useEffect(() => {
@@ -40,6 +45,8 @@ const useInitalReduxLoad = () => {
     expenseData,
     incomeData,
     isExpense,
+
+    totalData,
   };
 };
 

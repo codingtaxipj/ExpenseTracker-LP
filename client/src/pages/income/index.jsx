@@ -1,12 +1,12 @@
 import TableSection from "@/components/TableSection";
 import usePageConfig from "@/components/usePageConfig";
-import TotalCard from "@/components/analysis/TotalCard";
+import TotalCard from "@/components/cards/TotalCard";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@/router/routerConfig";
 import BudgetStrip from "@/components/strips/budget-strip";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
-import ExpButton from "@/components/custom-ui/expButton";
+import ExpButton from "@/components/buttons/expButton";
 import {
   expenseCategories,
   getPrimeCategories,
@@ -20,6 +20,7 @@ import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 import { AmountField } from "../expense";
 import { Icons } from "@/components/icons";
+import AddIncomeBtn from "@/components/buttons/text-btns/add-income-btn";
 
 const IncomeIndex = () => {
   const { dataConfig } = usePageConfig();
@@ -66,11 +67,7 @@ const IncomeIndex = () => {
             </Flexrow>
             <Flexrow className="items-center justify-center">
               <BudgetStrip isExpense amount={20000} color="text-inc" />
-              <ExpButton
-                onClick={() => navigate(PATH.addIncome)}
-                btnfor="income"
-                label={"Add Income"}
-              />
+              <AddIncomeBtn onClick={() => navigate(PATH.addIncome)} />
             </Flexrow>
           </Flexcol>
 

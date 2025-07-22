@@ -23,7 +23,7 @@ import OuterBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import { Icons } from "../icons";
-import ExpButton from "../custom-ui/expButton";
+import ExpButton from "../buttons/expButton";
 import {
   expenseCategories,
   getPrimeCategories,
@@ -139,8 +139,6 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
       data.isExpenseNote = "";
     data.onDate = moment(onDate).toISOString();
     data.transactionTimestamp = moment(transactionTimestamp).toISOString();
-
-   
 
     try {
       const response = await axios.post(

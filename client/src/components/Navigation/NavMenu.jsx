@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Icons } from "../icons";
+import { Icon } from "lucide-react";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
@@ -94,8 +95,11 @@ function Dashboard({ activeBtn, children }) {
               <span>Income Analysis</span>
             </button>
 
-            <button onClick={"#"} className={setStyle()}>
-              <FaCalculator />
+            <button
+              onClick={() => navigate(PATH.budget)}
+              className={setStyle(PATH.budget)}
+            >
+              <Icons.calc />
               <span>Budgeting</span>
             </button>
             <button
@@ -115,6 +119,7 @@ function Dashboard({ activeBtn, children }) {
                 {activeBtn === PATH.home && <span>Dashboard</span>}
                 {activeBtn === PATH.expense && <span>Expense Data</span>}
                 {activeBtn === PATH.income && <span>Income Data</span>}
+                {activeBtn === PATH.budget && <span>Budgeting</span>}
                 {activeBtn === PATH.expenseAnalysis && (
                   <span>Expense Data Analysis</span>
                 )}

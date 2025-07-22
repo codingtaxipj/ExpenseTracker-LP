@@ -7,13 +7,14 @@ import { mongoConnectHost } from "./database/connection.js";
 import { authRouter } from "./routes/authRoute.js";
 import { expenseRouter } from "./routes/expenseRoute.js";
 import { budgetRouter } from "./routes/budgetRoute.js";
+import { totalRouter } from "./routes/totalRoute.js";
 
 dotenv.config();
 const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   })
 );
 
@@ -24,6 +25,7 @@ mongoConnectHost(process.env.MONGO_HOST);
 app.use("/auth", authRouter);
 app.use("/expense", expenseRouter);
 app.use("/budget", budgetRouter);
+app.use("/total", totalRouter);
 
 //ANCHOR server running on port
 const PORT = 8080;

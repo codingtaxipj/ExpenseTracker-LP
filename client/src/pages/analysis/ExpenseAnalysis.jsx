@@ -12,8 +12,6 @@ const ExpenseAnalysis = () => {
       <NavMenu activeBtn={PATH.expenseAnalysis}>
         {/*  <AnalysisCardHeader isExpense /> */}
         <YearlyAnalysis isExpense></YearlyAnalysis>
-        <YearByYearComparision isExpense></YearByYearComparision>
-        <CategoryAnalysis isExpense></CategoryAnalysis>
       </NavMenu>
     </>
   );

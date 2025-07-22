@@ -8,10 +8,10 @@ import {
 } from "react-icons/fa";
 import { BsBarChartFill } from "react-icons/bs";
 
-import { IoFilter } from "react-icons/io5";
+import { IoFilter, IoAddCircle } from "react-icons/io5";
 
 import { ImParagraphLeft } from "react-icons/im";
-import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import { GiPayMoney, GiTakeMyMoney, GiReceiveMoney } from "react-icons/gi";
 import {
   FaArrowTrendDown,
   FaArrowTrendUp,
@@ -28,7 +28,9 @@ import {
   BiSolidCalendarEdit,
   BiSolidCalendarPlus,
 } from "react-icons/bi";
-import { HiPencil } from "react-icons/hi2";
+import { RiShareForwardFill } from "react-icons/ri";
+import { HiPencil } from "react-icons/hi";
+import { TbCancel } from "react-icons/tb";
 
 export const Icons = {
   analysis: MdCalculate,
@@ -55,4 +57,8 @@ export const Icons = {
   pencil: HiPencil,
   caledit: BiSolidCalendarEdit,
   calnew: BiSolidCalendarPlus,
+  money: GiTakeMyMoney,
+  share: RiShareForwardFill,
+  addCircle: IoAddCircle,
+  cancel: TbCancel,
 };

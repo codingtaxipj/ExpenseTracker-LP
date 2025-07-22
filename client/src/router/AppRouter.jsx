@@ -14,6 +14,8 @@ import Repeating from "@/pages/repeating-expense/repeating.jsx";
 import Trip from "@/pages/trip-expense/trip.jsx";
 import RepeatingExpenseIndex from "@/pages/repeating-expense/index.jsx";
 import RepeatingExpenseForm from "@/components/Forms/repeating-expense-form.jsx";
+import Budget from "@/pages/budget/budget.jsx";
+import BudgetIndex from "@/pages/budget/index.jsx";
 
 const AppRouter = () => {
   return (
@@ -48,6 +50,9 @@ const AppRouter = () => {
           path={PATH.addRepeatingExpense}
           element={<RepeatingExpenseForm />}
         />
+      </Route>
+      <Route path={PATH.budget} element={<Budget />}>
+        <Route index element={<BudgetIndex />} />
       </Route>
     </Routes>
   );

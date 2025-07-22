@@ -26,7 +26,7 @@ import { RiPencilFill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import Flexrow from "./section/flexrow";
 import { Icons } from "./icons";
-import ExpButton from "./custom-ui/expButton";
+import ExpButton from "./buttons/expButton";
 import TooltipStrip from "./strips/tooltip-strip";
 
 const TableSection = ({ entries }) => {
@@ -58,8 +58,8 @@ const TableSection = ({ entries }) => {
 
           <tbody className="border-0">
             {currentPageItems.map((data) => (
-              <TooltipStrip content={data.isExpenseNote}>
-                <tr key={data._id} className="hover:bg-gradBot">
+              <TooltipStrip key={data._id} content={data.isExpenseNote}>
+                <tr className="hover:bg-gradBot">
                   <TD>
                     <IconCircle
                       bgColor={data.primeCategory}

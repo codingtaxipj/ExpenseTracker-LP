@@ -10,20 +10,29 @@ const budgetValidation = [
     .withMessage("userID Cannot be Empty")
     .isInt()
     .withMessage("userID must be 16 digit Integer"),
-  body("budgetAmount")
+  body("year")
     .exists()
     .notEmpty()
-    .withMessage("budgetAmount cannot be empty")
-    .isNumeric()
-    .withMessage("budgetAmount must be a Nmmber")
+    .withMessage("year cannot be empty")
+    .isInt()
+    .withMessage("year must be a Year Number")
     .custom(value => value >= 0)
-    .withMessage("budgetAmount must be a Positive Nmmber"),
-  body("activeFrom")
+    .withMessage("year must be a Positive Nmmber"),
+  body("month")
     .exists()
     .notEmpty()
-    .withMessage("activeFrom cannot be empty")
-    .isISO8601()
-    .withMessage("activeFrom must be a ISO Date"),
+    .withMessage("month cannot be empty")
+    .isInt()
+    .withMessage("month must be a Year Number")
+    .custom(value => value >= 0)
+    .withMessage("month must be a Positive Nmmber"),
+  body("amount")
+    .exists()
+    .notEmpty()
+    .withMessage("amount cannot be empty")
+    .isInt()
+    .custom(value => value >= 0)
+    .withMessage("amount must be a Positive Nmmber"),
 
   // Middleware function to check validation errors
   (req, res, next) => {

@@ -7,7 +7,7 @@ import moment from "moment";
 
 import { useEffect, useState } from "react";
 
-import TotalCard from "./TotalCard";
+import TotalCard from "../cards/TotalCard";
 import YearCompareCard from "./YearCompareCard";
 import InfoStrip from "../strips/info-strip";
 import MinMaxStrip from "../strips/min-max-strip";
