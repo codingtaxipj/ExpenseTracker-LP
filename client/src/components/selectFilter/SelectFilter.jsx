@@ -28,9 +28,9 @@ const SelectFilter = ({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="min-w-45">
-          {list.map((items) => {
+          {list.map((items, index) => {
             return (
-              <SelectItem key={items} value={String(items)}>
+              <SelectItem key={index} value={String(items)}>
                 {isMonthSelect ? moment().month(items).format("MMMM") : items}
               </SelectItem>
             );

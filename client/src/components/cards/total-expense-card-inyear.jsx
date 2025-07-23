@@ -1,11 +1,11 @@
 import React from "react";
 import TotalCard from "./TotalCard";
 
-import UseTotalConfig from "@/hooks/useTotalConfig";
+import useTotalConfig from "@/hooks/useTotalConfig";
 
 const TotalExpenseCardInyear = ({ year }) => {
   //NOTE - TOTAL CONFIG
-  const { getTotalExpOfYear } = UseTotalConfig();
+  const { getTotalExpOfYear } = useTotalConfig();
   const TotalYearExp = getTotalExpOfYear(year);
 
   return (

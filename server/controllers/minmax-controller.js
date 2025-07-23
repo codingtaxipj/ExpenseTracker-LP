@@ -1,17 +1,19 @@
-import moment from "moment";
 import { minmaxModal } from "../models/minmax-modal.js";
-import { totalModal } from "../models/total-modal.js";
 import isEqual from "lodash.isequal";
+import { totalModal } from "../models/total-modal.js";
 
 const insertMinMax = async (req, res) => {
   try {
-    const { userID, onDate } = req.minmaxData;
-    const year = moment(onDate).year();
-
-    const totalDB = await totalModal.findOne({ userID, year });
+    const { userID, year, isTransactionExpense } = req.minmaxData;
+    const totalDB = await totalModal.findOne({
+      userID,
+      year,
+      isTotalExpense: isTransactionExpense,
+    });
     if (!totalDB) return console.log("no Total DB found");
     const { monthList, primeList, subList } = totalDB;
     const { min: minMonth, max: maxMonth } = getMinMax(monthList);
+    console.log("min/max month", minMonth, maxMonth);
     const { min: minPrime, max: maxPrime } = getMinMax(primeList);
     const primeCats = [...new Set(subList.map(sub => sub.primeName))];
     const minSub = [];
@@ -26,6 +28,7 @@ const insertMinMax = async (req, res) => {
     const newMinMaxDoc = {
       userID,
       year,
+      isMinMaxExpense: isTransactionExpense,
       minMonth,
       maxMonth,
       minPrime,
@@ -34,13 +37,18 @@ const insertMinMax = async (req, res) => {
       maxSub,
     };
 
-    const existingDoc = await minmaxModal.findOne({ userID, year });
+    const existingDoc = await minmaxModal.findOne({
+      userID,
+      year,
+      isMinMaxExpense: isTransactionExpense,
+    });
     const isDifferent =
       !existingDoc ||
       !isEqual(
         {
           userID: existingDoc.userID,
           year: existingDoc.year,
+          isMinMaxExpense: existingDoc.isMinMaxExpense,
           minMonth: existingDoc.minMonth,
           maxMonth: existingDoc.maxMonth,
           minPrime: existingDoc.minPrime,
@@ -53,7 +61,7 @@ const insertMinMax = async (req, res) => {
 
     if (isDifferent) {
       await minmaxModal.findOneAndUpdate(
-        { userID, year },
+        { userID, year, isMinMaxExpense: isTransactionExpense },
         { $set: newMinMaxDoc },
         { upsert: true, new: true }
       );
@@ -66,7 +74,21 @@ const insertMinMax = async (req, res) => {
   }
 };
 
-export { insertMinMax };
+const fetchMM = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const data = await minmaxModal.find({ userID });
+    if (!data || data.length === 0) return res.status(404).json(null);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to Fetch MInMAx" });
+  }
+};
+
+export { insertMinMax, fetchMM };
 
 const getMinMax = (list, key = "total") => {
   if (!list || !list.length) return { min: null, max: null };

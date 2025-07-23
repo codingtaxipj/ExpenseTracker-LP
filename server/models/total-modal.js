@@ -41,6 +41,11 @@ const totalSchema = new Schema(
       required: true,
       index: true,
     },
+    isTotalExpense: {
+      type: Boolean,
+      index: true,
+      required: true,
+    },
     total: {
       type: Number,
       required: true,

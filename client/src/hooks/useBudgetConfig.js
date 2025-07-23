@@ -1,10 +1,9 @@
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import UseInitalLoad from "./useInitalLoad";
 
-const UseBudgetConfig = () => {
-  const BudgetData = useSelector((state) => state.budget.data);
+const useBudgetConfig = () => {
+  const BudgetData = useSelector((state) => state.budget.expenseTotalData);
 
   //NOTE - gets the budget list of user by each year
   const BudgetListByYear = useMemo(() => {
@@ -61,7 +60,7 @@ const UseBudgetConfig = () => {
   return { ActiveBudget, BudgetListByYear, BudgetByMonth };
 };
 
-export default UseBudgetConfig;
+export default useBudgetConfig;
 
 //NOTE - creates the array list of budget according to each month of year
 export const createBudgetArray = (list = []) => {

@@ -42,6 +42,11 @@ const minmaxSchema = new Schema(
       required: true,
       index: true,
     },
+    isMinMaxExpense: {
+      type: Boolean,
+      index: true,
+      required: true,
+    },
     maxMonth: {
       type: minmaxMonth,
       required: true,

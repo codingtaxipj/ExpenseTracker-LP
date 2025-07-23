@@ -7,7 +7,7 @@ const initialState = {
   error: false,
 };
 
-const userID = 12345;
+const userID = 123456;
 
 export const fetchBudget = createAsyncThunk("budget/fetchBudget", async () => {
   const res = await axios.get(

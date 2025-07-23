@@ -3,18 +3,28 @@ import moment from "moment";
 
 const insertTotal = async (req, res, next) => {
   try {
-    const { userID, ofAmount, onDate, primeCategory, subCategory } =
-      req.trnxData;
+    const {
+      userID,
+      isTransactionExpense,
+      ofAmount,
+      onDate,
+      primeCategory,
+      subCategory,
+    } = req.trnxData;
 
     const year = moment(onDate).year();
     const month = moment(onDate).month();
-    req.minmaxData = req.trnxData;
 
-    let doc = await totalModal.findOne({ userID, year });
+    let doc = await totalModal.findOne({
+      userID,
+      year,
+      isTotalExpense: isTransactionExpense,
+    });
     if (!doc) {
       await totalModal.create({
         userID,
         year,
+        isTotalExpense: isTransactionExpense,
         total: ofAmount,
         monthList: [{ month, total: ofAmount }],
         primeList: [{ name: primeCategory, total: ofAmount }],
@@ -32,7 +42,7 @@ const insertTotal = async (req, res, next) => {
       return;
     }
     await totalModal.updateOne(
-      { userID, year },
+      { userID, year, isTotalExpense: isTransactionExpense },
       {
         $inc: {
           total: ofAmount,
@@ -41,7 +51,11 @@ const insertTotal = async (req, res, next) => {
     );
 
     // Fetch the updated document to ensure latest data
-    doc = await totalModal.findOne({ userID, year });
+    doc = await totalModal.findOne({
+      userID,
+      year,
+      isTotalExpense: isTransactionExpense,
+    });
 
     const monthExists = doc?.monthList?.some(m => m.month === month);
     const primeExists = doc?.primeList?.some(p => p.name === primeCategory);
@@ -53,7 +67,7 @@ const insertTotal = async (req, res, next) => {
 
     if (monthExists) {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $inc: {
             "monthList.$[m].total": ofAmount,
@@ -65,7 +79,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $push: {
             monthList: { month, total: ofAmount },
@@ -76,7 +90,7 @@ const insertTotal = async (req, res, next) => {
 
     if (primeExists) {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $inc: {
             "primeList.$[p].total": ofAmount,
@@ -88,7 +102,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $push: {
             primeList: { name: primeCategory, total: ofAmount },
@@ -99,7 +113,7 @@ const insertTotal = async (req, res, next) => {
 
     if (subExists) {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $inc: {
             "subList.$[s].total": ofAmount,
@@ -113,7 +127,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $push: {
             subList: {
@@ -128,7 +142,7 @@ const insertTotal = async (req, res, next) => {
 
     if (subMonthExist) {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $inc: {
             "subList.$[sub].monthList.$[sm].total": ofAmount,
@@ -143,7 +157,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year },
+        { userID, year, isTotalExpense: isTransactionExpense },
         {
           $push: {
             "subList.$[sub].monthList": { month: month, total: ofAmount },
@@ -156,8 +170,9 @@ const insertTotal = async (req, res, next) => {
         }
       );
     }
-
     console.log("Transaction added to total breakdown");
+
+    req.minmaxData = { year, userID, isTransactionExpense };
     next();
     return;
   } catch (error) {

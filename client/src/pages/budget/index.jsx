@@ -8,15 +8,15 @@ import InfoStrip from "@/components/strips/info-strip";
 import MonthlyBudgetStrip from "@/components/strips/monthly-budget-strip";
 import TooltipStrip from "@/components/strips/tooltip-strip";
 
-import UseBudgetConfig from "@/hooks/useBudgetConfig";
-import UseTotalConfig from "@/hooks/useTotalConfig";
+import useBudgetConfig from "@/hooks/useBudgetConfig";
+import useTotalConfig from "@/hooks/useTotalConfig";
 
 import { CurrentYear } from "@/utilities/calander-utility";
 import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
 
 const BudgetIndex = () => {
   //NOTE - BUDGET CONFIG
-  const { ActiveBudget, BudgetListByYear, BudgetByMonth } = UseBudgetConfig();
+  const { ActiveBudget, BudgetListByYear, BudgetByMonth } = useBudgetConfig();
 
   const Budget = ActiveBudget?.amount ?? null;
   const BudgetList =
@@ -26,7 +26,7 @@ const BudgetIndex = () => {
     BudgetByMonth?.find((l) => l.year === CurrentYear())?.list ?? [];
 
   //NOTE - TOTAL CONFIG
-  const { getTotalExpMonthListOfYear } = UseTotalConfig();
+  const { getTotalExpMonthListOfYear } = useTotalConfig();
   const MonthList = getTotalExpMonthListOfYear(CurrentYear());
 
   return (

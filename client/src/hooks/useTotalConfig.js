@@ -2,7 +2,7 @@ import { CurrentYear } from "@/utilities/calander-utility";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-const UseTotalConfig = () => {
+const useTotalConfig = () => {
   const TotalData = useSelector((state) => state.total.data);
 
   const TotalOfMonthList = useMemo(() => {
@@ -11,6 +11,11 @@ const UseTotalConfig = () => {
       year: m.year,
       monthList: m.monthList,
     }));
+  }, [TotalData]);
+
+  const YearsList = useMemo(() => {
+    if (!Array.isArray(TotalData)) return [];
+    return [...TotalData.map((m) => m.year)];
   }, [TotalData]);
 
   const TotalOfYearList = useMemo(() => {
@@ -35,10 +40,11 @@ const UseTotalConfig = () => {
   return {
     TotalOfMonthList,
     TotalOfYearList,
+    YearsList,
     getTotalExpMonthListOfYear,
     getTotalExpOfYear,
     getTotalExpOfMonth,
   };
 };
 
-export default UseTotalConfig;
+export default useTotalConfig;

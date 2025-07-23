@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  data: null,
+  incomeTotalData: null,
+  expenseTotalData: null,
   loading: false,
   error: false,
 };
@@ -28,7 +29,12 @@ const totalSlice = createSlice({
       })
       .addCase(fetchTotal.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        const incomingData = action.payload;
+        if (!Array.isArray(incomingData)) return;
+        state.expenseTotalData =
+          incomingData.find((i) => i.isTotalExpense === true) || null;
+        state.incomeTotalData =
+          incomingData.find((i) => i.isTotalExpense === false) || null;
       })
       .addCase(fetchTotal.rejected, (state, action) => {
         state.loading = false;

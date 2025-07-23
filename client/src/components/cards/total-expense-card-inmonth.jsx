@@ -1,12 +1,12 @@
 import React from "react";
 import TotalCard from "./TotalCard";
 
-import UseTotalConfig from "@/hooks/useTotalConfig";
+import useTotalConfig from "@/hooks/useTotalConfig";
 import { getMonthName } from "@/utilities/calander-utility";
 
 const TotalExpenseCardInmonth = ({ year, month }) => {
   //NOTE - TOTAL CONFIG
-  const { getTotalExpOfMonth } = UseTotalConfig();
+  const { getTotalExpOfMonth } = useTotalConfig();
   const CurrentMonthTotalExp = getTotalExpOfMonth(year, month);
 
   return (

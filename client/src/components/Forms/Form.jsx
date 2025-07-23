@@ -2,7 +2,6 @@ import moment from "moment";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 // global variables
 import { PATH } from "@/router/routerConfig";
 
@@ -31,15 +30,14 @@ import {
   incomeCategories,
 } from "@/global/categories";
 import Flexrow from "../section/flexrow";
+import { useDispatch } from "react-redux";
+import { insertExpense, insertIncome } from "@/redux/slices/transaction-slice";
 
-const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
-  //NOTE - for expense
-  const expenseExist = isExpense || isRepeatingExpense;
-  //NOTE - date label for repeating expense and simple expense
+const Form = ({ isExpense, isIncome }) => {
+  const dispatch = useDispatch();
+  //NOTE - date label for expense / Income
   const dateLabel =
-    (isExpense && "Transaction Date") ||
-    (isRepeatingExpense && "Recurring Transaction Date") ||
-    "Transaction Date";
+    (isExpense && "Expense Date") || (isIncome && "Income Date");
 
   //NOTE page navigation
   const navigate = useNavigate();
@@ -83,25 +81,28 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
   };
 
   //NOTE get prime categories
-  const listOfPrimeCats = expenseExist
+  const listOfPrimeCats = isExpense
     ? getPrimeCategories(expenseCategories)
     : getPrimeCategories(incomeCategories);
 
   //NOTE get sub cat of selected prime cat
-  const listOfSubCat = expenseExist
-    ? getSubOfPrime(selectedPrimeCat, expenseExist) || null
+  const listOfSubCat = isExpense
+    ? getSubOfPrime(selectedPrimeCat, isExpense) || null
     : getSubOfPrime(selectedPrimeCat) || null;
 
+  /*   
+  
   //NOTE for setting repeating payment is by month or year
   const [repeatBy, setRepeatBy] = useState(null);
+  
   const updateRepeating = (newValues) => {
     const prev = getValues("isTransactionRepeating") || {};
     setValue("isTransactionRepeating", {
       ...prev,
       ...newValues,
     });
-  };
-  const handleRepeatBy = (check) => {
+  }; 
+   const handleRepeatBy = (check) => {
     if (repeatBy === check) {
       setRepeatBy(null);
     } else {
@@ -109,68 +110,55 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
     }
     updateRepeating({ by: check });
     setValue("repeatBy", check, { shouldValidate: true });
-  };
+  }; */
 
   //NOTE : react from hook initalize
   const {
     register,
-    unregister,
     setValue,
-    getValues,
     reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
       userID: 123456,
-      transactionTimestamp: moment().format(),
-      onDate: moment().format(),
-      isTransactionExpense: expenseExist ? true : false,
-      isTransactionRepeating: { valid: isRepeatingExpense ? true : false },
-      isTransactionTrip: { valid: false },
+      isTransactionExpense: isExpense ? true : false,
     },
   });
 
   //NOTE : form handle submit function
   const onSubmit = async (data) => {
-    unregister("repeatBy");
-    const { isExpenseNote, onDate, transactionTimestamp } = data;
-    if (!isExpenseNote || isExpenseNote.trim().length === 0)
-      data.isExpenseNote = "";
+    const { isTransactionNote, onDate } = data;
+    if (!isTransactionNote || isTransactionNote.trim().length === 0)
+      data.isTransactionNote = null;
     data.onDate = moment(onDate).toISOString();
-    data.transactionTimestamp = moment(transactionTimestamp).toISOString();
 
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8080/expense/add-data",
-        data,
-      );
+    const result =
+      (isExpense && (await dispatch(insertExpense({ data })).unwrap())) ||
+      (isIncome && (await dispatch(insertIncome({ data })).unwrap()));
 
+    if (result.success) {
       toast.success("Success", {
-        description: response.data.message,
+        description: result.message,
         action: {
           label: "Ok!",
           onClick: () => reset(),
         },
       });
-    } catch (error) {
-      if (error.response) {
-        console.error("Validation Error:", error.response.data.errors);
-        alert(
-          error.response.data?.errors?.[0]?.msg ||
-            error.response.data?.message ||
-            "Form submission failed.",
-        );
-      } else {
-        console.error("Unknown Axios Error:", error.message);
-        alert("Network or unknown error.");
-      }
+    } else if (!result.success) {
+      toast.error("Success", {
+        description: result.message,
+        action: {
+          label: "Ok!",
+          onClick: () => reset(),
+        },
+      });
     }
   };
 
   //NOTE - form label icon color
   const formLabelIconColor =
-    (expenseExist && "text-exp") || (isIncome && "text-inc");
+    (isExpense && "text-exp") || (isIncome && "text-inc");
 
   return (
     <>
@@ -188,7 +176,7 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
                 <ExpButton
                   onClick={() => navigateToExpense()}
                   type="button"
-                  btnfor={expenseExist ? "expense" : "expenseInactive"}
+                  btnfor={isExpense ? "expense" : "expenseInactive"}
                   label="Expense"
                   className="w-1/2"
                 />
@@ -238,7 +226,7 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
             <textarea
               className="focus-visible:border-ring focus-visible:ring-gradBot border-br1 w-full rounded-md border p-2 outline-none focus-visible:ring-[1px]"
               placeholder="Transaction Note..."
-              {...register("isExpenseNote")}
+              {...register("isTransactionNote")}
             />
           </FormField>
           {/**ANCHOR ##END: DESCRIPTION Field ---------------- */}
@@ -254,7 +242,7 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
           </FormField>
           {/**ANCHOR ##END: DATE Field ---------------- */}
 
-          {/**ANCHOR Repeating Payment BY MONTH or YEAR */}
+          {/**ANCHOR Repeating Payment BY MONTH or YEAR 
           {isRepeatingExpense && (
             <FormField>
               <Flexrow className="items-center">
@@ -291,7 +279,7 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
               <ErrorField error={errors.repeatBy} />
             </FormField>
           )}
-          {/**ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
+          ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
 
           {/**ANCHOR MAIN CATEGORY Field ---------------- */}
           <FormField>
@@ -301,11 +289,8 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
               label="Main Category"
             />
             <OuterBar>
-              <SelectCard
-                isExpense={expenseExist}
-                title={"Select Main Category"}
-              >
-                {expenseExist && (
+              <SelectCard isExpense={isExpense} title={"Select Main Category"}>
+                {isExpense && (
                   <SelectFilter
                     placeholder={"Select"}
                     onValueChange={handleSelectExpensePrime}
@@ -351,7 +336,7 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
                     <ExpButton
                       type="button"
                       btnfor={
-                        expenseExist
+                        isExpense
                           ? selectedSubCat === buttons
                             ? "expense"
                             : "expenseInactive"
@@ -387,7 +372,7 @@ const Form = ({ isExpense, isIncome, isRepeatingExpense }) => {
           {/**ANCHOR SUBMIT & CANCEL Buttons ---------------- */}
           <FormField className="items-end">
             <div className="flex gap-2">
-              {expenseExist ? (
+              {isExpense ? (
                 <ExpButton type="submit" btnfor="expense" label={"Add Now"} />
               ) : (
                 <ExpButton type="submit" btnfor="income" label={"Add Now"} />

@@ -1,37 +1,73 @@
 /* eslint-disable no-undef */
 
-import { transactionModal } from "../models/transaction-modal.js";
+import { expenseModal, incomeModal } from "../models/transaction-modal.js";
 
 /* NOTE - transactionFormController
  ** it will take the validated form data and then inject into the DB
  */
 
-const insertTransaction = async (req, res, next) => {
+const insertExpense = async (req, res, next) => {
   try {
     const data = req.body;
-    const entry = transactionModal(data);
+    const entry = expenseModal(data);
     await entry.save();
-    res.status(201).json({ message: "Form submitted successfully!" });
+    res.status(201).json({ message: "Expense inserted successfully!" });
     req.trnxData = entry;
     next();
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ message: error.message || "Failed to Submit Form" });
+      .json({ message: error.message || "Failed to Add Expense" });
   }
 };
 
-const fetchAllData = async (req, res) => {
+const insertIncome = async (req, res, next) => {
   try {
-    const data = await transactionModal.find();
+    const data = req.body;
+    const entry = incomeModal(data);
+    await entry.save();
+    res.status(201).json({ message: "Income inserted successfully!" });
+    req.trnxData = entry;
+    next();
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to Add Income" });
+  }
+};
+
+const fetchExpense = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const data = await expenseModal
+      .find({ userID, isTransactionExpense: true })
+      .sort({ onDate: -1 });
+    // -1 latest transactionon top
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ message: error.message || "Failed to Fetch Data" });
+      .json({ message: error.message || "Failed to Fetch Expense Data" });
   }
 };
 
-export { insertTransaction, fetchAllData };
+const fetchIncome = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const data = await incomeModal
+      .find({ userID, isTransactionExpense: false })
+      .sort({ onDate: -1 });
+    // -1 latest transactionon top
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to Fetch Income Data" });
+  }
+};
+
+export { insertExpense, insertIncome, fetchExpense, fetchIncome };

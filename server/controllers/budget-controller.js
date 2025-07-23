@@ -87,9 +87,7 @@ const updateBudget = async (req, res) => {
 const fetchBudget = async (req, res) => {
   try {
     const { userID } = req.params;
-    const data = await budgetModal
-      .find({ userID, year: moment().year() })
-      .sort({ year: 1 });
+    const data = await budgetModal.find({ userID }).sort({ year: 1 });
     if (!data) return res.status(200).json(null);
     res.status(200).json(data);
   } catch (error) {
