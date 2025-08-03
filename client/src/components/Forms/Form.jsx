@@ -122,15 +122,14 @@ const Form = ({ isExpense, isIncome }) => {
   } = useForm({
     defaultValues: {
       userID: 123456,
-      isTransactionExpense: isExpense ? true : false,
+      isTypeExpense: isExpense ? true : false,
     },
   });
 
   //NOTE : form handle submit function
   const onSubmit = async (data) => {
-    const { isTransactionNote, onDate } = data;
-    if (!isTransactionNote || isTransactionNote.trim().length === 0)
-      data.isTransactionNote = null;
+    const { isNote, onDate } = data;
+    if (!isNote || isNote.trim().length === 0) data.isNote = null;
     data.onDate = moment(onDate).toISOString();
 
     const result =

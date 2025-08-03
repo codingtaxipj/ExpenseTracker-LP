@@ -42,7 +42,7 @@ const minmaxSchema = new Schema(
       required: true,
       index: true,
     },
-    isMinMaxExpense: {
+    isTypeExpense: {
       type: Boolean,
       index: true,
       required: true,
@@ -71,7 +71,7 @@ const minmaxSchema = new Schema(
     timestamps: true,
   }
 );
-minmaxSchema.index({ userID: 1, year: 1 }, { unique: true });
+minmaxSchema.index({ userID: 1, year: 1, isTypeExpense: 1 }, { unique: true });
 const mainDB = await mongoConnectDB("expense-db");
 const minmaxModal = mainDB.model("default-minmax", minmaxSchema);
 export { minmaxModal };

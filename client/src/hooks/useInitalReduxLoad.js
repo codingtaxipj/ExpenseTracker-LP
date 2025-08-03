@@ -1,5 +1,5 @@
 import { setDataExpense, setDataIncome } from "@/redux/slices/configExpense";
-import { fetchAllData } from "@/redux/slices/getExpense";
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,15 +8,12 @@ import {
   sortByDateNewest,
 } from "../components/utilityFilter";
 
-import { fetchTotal } from "@/redux/slices/fetch-total";
-
 const useInitalReduxLoad = () => {
   const isExpense = true;
   //NOTE: inital fetch by redux
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchAllData());
-    dispatch(fetchTotal());
+    //dispatch(fetchAllData());
   }, [dispatch]);
 
   const incomingData = useSelector((state) => state.expense.data) || false;

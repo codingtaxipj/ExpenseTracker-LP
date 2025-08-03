@@ -5,7 +5,7 @@ const insertTotal = async (req, res, next) => {
   try {
     const {
       userID,
-      isTransactionExpense,
+      isTypeExpense,
       ofAmount,
       onDate,
       primeCategory,
@@ -18,13 +18,13 @@ const insertTotal = async (req, res, next) => {
     let doc = await totalModal.findOne({
       userID,
       year,
-      isTotalExpense: isTransactionExpense,
+      isTypeExpense,
     });
     if (!doc) {
       await totalModal.create({
         userID,
         year,
-        isTotalExpense: isTransactionExpense,
+        isTypeExpense,
         total: ofAmount,
         monthList: [{ month, total: ofAmount }],
         primeList: [{ name: primeCategory, total: ofAmount }],
@@ -42,7 +42,7 @@ const insertTotal = async (req, res, next) => {
       return;
     }
     await totalModal.updateOne(
-      { userID, year, isTotalExpense: isTransactionExpense },
+      { userID, year, isTypeExpense },
       {
         $inc: {
           total: ofAmount,
@@ -54,7 +54,7 @@ const insertTotal = async (req, res, next) => {
     doc = await totalModal.findOne({
       userID,
       year,
-      isTotalExpense: isTransactionExpense,
+      isTypeExpense,
     });
 
     const monthExists = doc?.monthList?.some(m => m.month === month);
@@ -67,7 +67,7 @@ const insertTotal = async (req, res, next) => {
 
     if (monthExists) {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $inc: {
             "monthList.$[m].total": ofAmount,
@@ -79,7 +79,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $push: {
             monthList: { month, total: ofAmount },
@@ -90,7 +90,7 @@ const insertTotal = async (req, res, next) => {
 
     if (primeExists) {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $inc: {
             "primeList.$[p].total": ofAmount,
@@ -102,7 +102,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $push: {
             primeList: { name: primeCategory, total: ofAmount },
@@ -113,7 +113,7 @@ const insertTotal = async (req, res, next) => {
 
     if (subExists) {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $inc: {
             "subList.$[s].total": ofAmount,
@@ -127,7 +127,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $push: {
             subList: {
@@ -142,7 +142,7 @@ const insertTotal = async (req, res, next) => {
 
     if (subMonthExist) {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $inc: {
             "subList.$[sub].monthList.$[sm].total": ofAmount,
@@ -157,7 +157,7 @@ const insertTotal = async (req, res, next) => {
       );
     } else {
       await totalModal.updateOne(
-        { userID, year, isTotalExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         {
           $push: {
             "subList.$[sub].monthList": { month: month, total: ofAmount },
@@ -172,7 +172,7 @@ const insertTotal = async (req, res, next) => {
     }
     console.log("Transaction added to total breakdown");
 
-    req.minmaxData = { year, userID, isTransactionExpense };
+    req.minmaxData = { year, userID, isTypeExpense };
     next();
     return;
   } catch (error) {
@@ -188,8 +188,8 @@ const insertTotal = async (req, res, next) => {
  */
 const fetchTotal = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const data = await totalModal.find({ userId });
+    const { userID } = req.params;
+    const data = await totalModal.find({ userID });
     if (!data) return res.status(200).json(null);
     res.status(200).json(data);
   } catch (error) {

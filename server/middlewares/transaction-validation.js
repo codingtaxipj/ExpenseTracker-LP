@@ -10,13 +10,13 @@ const expenseValidation = [
     .withMessage("User ID Cannot be Empty")
     .isNumeric()
     .withMessage("User ID must be 16 digit number"),
-  body("isTransactionExpense")
+  body("isTypeExpense")
     .exists()
     .notEmpty()
     .withMessage("Transaction Type Cannot be Empty")
     .isBoolean()
     .withMessage("Transaction Type must be boolen"),
-  body("expenseDate")
+  body("onDate")
     .exists()
     .notEmpty()
     .withMessage(" Expense Transaction Date Cannot be Empty")
@@ -67,13 +67,13 @@ const incomeValidation = [
     .withMessage("User ID Cannot be Empty")
     .isNumeric()
     .withMessage("User ID must be 16 digit number"),
-  body("isTransactionExpense")
+  body("isTypeExpense")
     .exists()
     .notEmpty()
     .withMessage("Transaction Type Cannot be Empty")
     .isBoolean()
     .withMessage("Transaction Type must be boolen"),
-  body("incomeDate")
+  body("onDate")
     .exists()
     .notEmpty()
     .withMessage("Income Transaction Date Cannot be Empty")

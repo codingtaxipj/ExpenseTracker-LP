@@ -6,11 +6,11 @@ import { body, validationResult } from "express-validator";
 const totalValidation = [
   body("userID").isInt().withMessage("userID must be an integer"),
   body("year").isInt().withMessage("Enter a valid year"),
-  body("isTotalExpense")
+  body("isTypeExpense")
     .notEmpty()
-    .withMessage("isTotalExpense Type Cannot be Empty")
+    .withMessage("isTypeExpense Type Cannot be Empty")
     .isBoolean()
-    .withMessage("isTotalExpense Type must be boolen"),
+    .withMessage("isTypeExpense Type must be boolen"),
   body("total").isNumeric().withMessage("Total must be a number"),
 
   // Validate monthList array

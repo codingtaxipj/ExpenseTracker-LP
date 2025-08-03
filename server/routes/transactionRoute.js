@@ -31,7 +31,7 @@ transactionRouter.post(
   insertMinMax
 );
 
-transactionRouter.get("/get-expense::userID", fetchExpense);
-transactionRouter.get("/get-income::userID", fetchIncome);
+transactionRouter.get("/get-expense/:userID", fetchExpense);
+transactionRouter.get("/get-income/:userID", fetchIncome);
 
 export { transactionRouter };

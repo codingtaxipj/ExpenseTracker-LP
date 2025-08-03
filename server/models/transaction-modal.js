@@ -13,7 +13,7 @@ const expenseSchema = new Schema(
       index: true,
       unique: false,
     },
-    isTransactionExpense: {
+    isTypeExpense: {
       type: Boolean,
       index: true,
       required: true,
@@ -23,7 +23,7 @@ const expenseSchema = new Schema(
       required: true,
       min: [0, "Amount must be positive Number"],
     },
-    isTransactionNote: {
+    isNote: {
       type: String,
       default: "",
     },
@@ -54,7 +54,7 @@ const incomeSchema = new Schema(
       index: true,
       unique: false,
     },
-    isTransactionExpense: {
+    isTypeExpense: {
       type: Boolean,
       index: true,
       required: true,
@@ -64,7 +64,7 @@ const incomeSchema = new Schema(
       required: true,
       min: [0, "Amount must be positive Number"],
     },
-    isTransactionNote: {
+    isNote: {
       type: String,
       default: "",
     },

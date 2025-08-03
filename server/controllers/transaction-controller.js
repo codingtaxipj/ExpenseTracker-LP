@@ -41,10 +41,10 @@ const insertIncome = async (req, res, next) => {
 const fetchExpense = async (req, res) => {
   try {
     const { userID } = req.params;
-    const data = await expenseModal
-      .find({ userID, isTransactionExpense: true })
-      .sort({ onDate: -1 });
+    const data = await expenseModal.find({ userID }).sort({ onDate: -1 });
     // -1 latest transactionon top
+    console.log(data);
+
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
@@ -57,9 +57,7 @@ const fetchExpense = async (req, res) => {
 const fetchIncome = async (req, res) => {
   try {
     const { userID } = req.params;
-    const data = await incomeModal
-      .find({ userID, isTransactionExpense: false })
-      .sort({ onDate: -1 });
+    const data = await incomeModal.find({ userID }).sort({ onDate: -1 });
     // -1 latest transactionon top
     res.status(200).json(data);
   } catch (error) {

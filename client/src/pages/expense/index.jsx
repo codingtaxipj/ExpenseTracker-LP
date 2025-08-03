@@ -1,6 +1,4 @@
 import TableSection from "@/components/TableSection";
-import usePageConfig from "@/components/usePageConfig";
-import TotalCard from "@/components/cards/TotalCard";
 import BudgetStrip from "@/components/strips/budget-strip";
 import Flexrow from "@/components/section/flexrow";
 import SelectBar from "@/components/selectFilter/SelectBar";
@@ -23,12 +21,12 @@ import ExpenseByYearGraph from "@/components/analysis/expense-by-year-graph";
 import AddExpenseBtn from "@/components/buttons/text-btns/add-expense-btn";
 import SelectFilterIcon from "@/components/buttons/icon-only-btns/select-filter-icon";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
-import UseTotalConfig from "@/hooks/useTotalConfig";
+
 import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
 import TotalExpenseCardInmonth from "@/components/cards/total-expense-card-inmonth";
+import useTransactionConfig from "@/hooks/useTransactionConfig";
 
 const ExpenseIndex = () => {
-  const { dataConfig } = usePageConfig();
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState("None");
@@ -45,122 +43,118 @@ const ExpenseIndex = () => {
   };
 
   const handleSortBy = (value) => setFilters(value);
+  const { ExpenseList } = useTransactionConfig();
 
   return (
     <>
-      {dataConfig.expense.loading && <p>Loading...</p>}
-      {!dataConfig.expense.loading && (
-        <>
-          <Flexcol>
-            <Flexrow className="items-center justify-center">
-              <TotalExpenseCardInyear year={CurrentYear()} />
-              <TotalExpenseCardInmonth
-                year={CurrentYear()}
-                month={CurrentMonth()}
-              />
-            </Flexrow>
-            <Flexrow className="items-center justify-center">
-              <BudgetStrip />
-              <AddExpenseBtn onClick={() => navigate(PATH.addExpense)} />
-            </Flexrow>
-          </Flexcol>
+      <Flexcol>
+        <Flexrow className="items-center justify-center">
+          <TotalExpenseCardInyear year={CurrentYear()} />
+          <TotalExpenseCardInmonth
+            year={CurrentYear()}
+            month={CurrentMonth()}
+          />
+        </Flexrow>
+        <Flexrow className="items-center justify-center">
+          <BudgetStrip />
+          <AddExpenseBtn onClick={() => navigate(PATH.addExpense)} />
+        </Flexrow>
+      </Flexcol>
 
-          <Flexcol className="pt-20">
-            <SectionTitle title="Expenses List" isExpense />
-            <SelectBar>
-              <SelectCard isExpense title={"Sort List"}>
-                <SelectFilter
-                  placeholder={"Select Type"}
-                  onValueChange={handleSortBy}
-                  defaultValue={sortBy.none}
-                  list={sortList}
-                ></SelectFilter>
-              </SelectCard>
-              {filters === sortBy.none && (
-                <SelectCard isExpense title={"NONE"}></SelectCard>
-              )}
-              {filters === sortBy.primeCategory && (
-                <SelectCard isExpense>
-                  <SelectFilter
-                    placeholder={"Select Prime Category"}
-                    onValueChange={handlePrimeCat}
-                    list={primeCats}
-                  ></SelectFilter>
-                </SelectCard>
-              )}
-              {filters === sortBy.subCategory && (
-                <SelectCard isExpense>
-                  <SelectFilter
-                    placeholder={"Select Sub Category"}
-                    onValueChange={handleSubCat}
-                    list={subCats}
-                  ></SelectFilter>
-                </SelectCard>
-              )}
-              {filters === sortBy.date && (
-                <SelectCard isExpense title={"Select Range"}>
-                  Date 1 to Date 2
-                </SelectCard>
-              )}
-              {filters === sortBy.amount && (
-                <SelectCard isExpense title="From">
-                  <AmountField></AmountField>
-                  <button className="px-2">To</button>
-                  <AmountField></AmountField>
-                </SelectCard>
-              )}
-              {filters === sortBy.trip && (
-                <SelectCard isExpense title={"Select Trip"}>
-                  <SelectFilter
-                    placeholder={"Select Trip"}
-                    defaultValue={"2024"}
-                    list={[2024, 2025, 2026]}
-                  ></SelectFilter>
-                </SelectCard>
-              )}
-              {filters === sortBy.repeating && (
-                <SelectCard isExpense title={"Repeat By"}>
-                  <SelectFilter
-                    placeholder={"Repeat By"}
-                    defaultValue={"2024"}
-                    list={[2024, 2025, 2026]}
-                  ></SelectFilter>
-                </SelectCard>
-              )}
+      <Flexcol className="pt-20">
+        <SectionTitle title="Expenses List" isExpense />
+        <SelectBar>
+          <SelectCard isExpense title={"Sort List"}>
+            <SelectFilter
+              placeholder={"Select Type"}
+              onValueChange={handleSortBy}
+              defaultValue={sortBy.none}
+              list={sortList}
+            ></SelectFilter>
+          </SelectCard>
+          {filters === sortBy.none && (
+            <SelectCard isExpense title={"NONE"}></SelectCard>
+          )}
+          {filters === sortBy.primeCategory && (
+            <SelectCard isExpense>
+              <SelectFilter
+                placeholder={"Select Prime Category"}
+                onValueChange={handlePrimeCat}
+                list={primeCats}
+              ></SelectFilter>
+            </SelectCard>
+          )}
+          {filters === sortBy.subCategory && (
+            <SelectCard isExpense>
+              <SelectFilter
+                placeholder={"Select Sub Category"}
+                onValueChange={handleSubCat}
+                list={subCats}
+              ></SelectFilter>
+            </SelectCard>
+          )}
+          {filters === sortBy.date && (
+            <SelectCard isExpense title={"Select Range"}>
+              Date 1 to Date 2
+            </SelectCard>
+          )}
+          {filters === sortBy.amount && (
+            <SelectCard isExpense title="From">
+              <AmountField></AmountField>
+              <button className="px-2">To</button>
+              <AmountField></AmountField>
+            </SelectCard>
+          )}
+          {filters === sortBy.trip && (
+            <SelectCard isExpense title={"Select Trip"}>
+              <SelectFilter
+                placeholder={"Select Trip"}
+                defaultValue={"2024"}
+                list={[2024, 2025, 2026]}
+              ></SelectFilter>
+            </SelectCard>
+          )}
+          {filters === sortBy.repeating && (
+            <SelectCard isExpense title={"Repeat By"}>
+              <SelectFilter
+                placeholder={"Repeat By"}
+                defaultValue={"2024"}
+                list={[2024, 2025, 2026]}
+              ></SelectFilter>
+            </SelectCard>
+          )}
 
-              <Flexrow className={"w-max gap-2"}>
-                <SelectFilterIcon inactive className={"hover:bg-exp"}>
-                  <Icons.check />
-                </SelectFilterIcon>
-                <SelectFilterIcon inactive className={"hover:bg-exp"}>
-                  <Icons.asc />
-                </SelectFilterIcon>
-                <SelectFilterIcon inactive className={"hover:bg-exp"}>
-                  <Icons.desc />
-                </SelectFilterIcon>
-                <SelectFilterIcon inactive className={"hover:bg-exp"}>
-                  <Icons.listSort />
-                </SelectFilterIcon>
-              </Flexrow>
-            </SelectBar>
+          <Flexrow className={"w-max gap-2"}>
+            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+              <Icons.check />
+            </SelectFilterIcon>
+            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+              <Icons.asc />
+            </SelectFilterIcon>
+            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+              <Icons.desc />
+            </SelectFilterIcon>
+            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+              <Icons.listSort />
+            </SelectFilterIcon>
+          </Flexrow>
+        </SelectBar>
 
-            <TableSection entries={dataConfig.expense.entries} />
-          </Flexcol>
+        <TableSection entries={ExpenseList ?? []} />
+      </Flexcol>
 
-          <Flexcol className="pt-20">
-            <SectionTitle title="Bar Graph" isExpense />
-            <ExpenseByYearGraph isExpense />
-          </Flexcol>
+      <Flexcol className="pt-20">
+        <SectionTitle title="Bar Graph" isExpense />
+        <ExpenseByYearGraph isExpense />
+      </Flexcol>
 
-          <Flexcol className="pt-20">
-            <SectionTitle title="Top 5 Max Expense Categories" isExpense />
-            <Flexrow className="text-14 items-center justify-end font-medium">
-              <h4>For Detailed Expense Analysis</h4>
-              <ExpButton label={"Check Analysis"} btnfor={"expense"} />
-            </Flexrow>
-          </Flexcol>
-        </>
-      )}
+      <Flexcol className="pt-20">
+        <SectionTitle title="Top 5 Max Expense Categories" isExpense />
+        <Flexrow className="text-14 items-center justify-end font-medium">
+          <h4>For Detailed Expense Analysis</h4>
+          <ExpButton label={"Check Analysis"} btnfor={"expense"} />
+        </Flexrow>
+      </Flexcol>
     </>
   );
 };

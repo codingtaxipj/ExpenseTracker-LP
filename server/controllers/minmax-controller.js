@@ -4,16 +4,16 @@ import { totalModal } from "../models/total-modal.js";
 
 const insertMinMax = async (req, res) => {
   try {
-    const { userID, year, isTransactionExpense } = req.minmaxData;
+    const { userID, year, isTypeExpense } = req.minmaxData;
     const totalDB = await totalModal.findOne({
       userID,
       year,
-      isTotalExpense: isTransactionExpense,
+      isTypeExpense,
     });
     if (!totalDB) return console.log("no Total DB found");
     const { monthList, primeList, subList } = totalDB;
     const { min: minMonth, max: maxMonth } = getMinMax(monthList);
-    console.log("min/max month", minMonth, maxMonth);
+
     const { min: minPrime, max: maxPrime } = getMinMax(primeList);
     const primeCats = [...new Set(subList.map(sub => sub.primeName))];
     const minSub = [];
@@ -28,7 +28,7 @@ const insertMinMax = async (req, res) => {
     const newMinMaxDoc = {
       userID,
       year,
-      isMinMaxExpense: isTransactionExpense,
+      isTypeExpense,
       minMonth,
       maxMonth,
       minPrime,
@@ -40,7 +40,7 @@ const insertMinMax = async (req, res) => {
     const existingDoc = await minmaxModal.findOne({
       userID,
       year,
-      isMinMaxExpense: isTransactionExpense,
+      isTypeExpense,
     });
     const isDifferent =
       !existingDoc ||
@@ -48,7 +48,7 @@ const insertMinMax = async (req, res) => {
         {
           userID: existingDoc.userID,
           year: existingDoc.year,
-          isMinMaxExpense: existingDoc.isMinMaxExpense,
+          isTypeExpense: existingDoc.isTypeExpense,
           minMonth: existingDoc.minMonth,
           maxMonth: existingDoc.maxMonth,
           minPrime: existingDoc.minPrime,
@@ -61,7 +61,7 @@ const insertMinMax = async (req, res) => {
 
     if (isDifferent) {
       await minmaxModal.findOneAndUpdate(
-        { userID, year, isMinMaxExpense: isTransactionExpense },
+        { userID, year, isTypeExpense },
         { $set: newMinMaxDoc },
         { upsert: true, new: true }
       );
