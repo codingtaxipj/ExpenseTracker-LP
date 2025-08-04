@@ -5,9 +5,9 @@ import Flexrow from "@/components/section/flexrow";
 import { PATH } from "@/router/routerConfig";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
+import TotalExpenseCardInyear from "@/components/cards/total-card-for-month";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
-import TotalExpenseCardInmonth from "@/components/cards/total-expense-card-inmonth";
+import TotalExpenseCardInmonth from "@/components/cards/total-card-for-year";
 
 const RepeatingExpenseIndex = () => {
   const navigate = useNavigate();

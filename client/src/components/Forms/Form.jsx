@@ -225,7 +225,7 @@ const Form = ({ isExpense, isIncome }) => {
             <textarea
               className="focus-visible:border-ring focus-visible:ring-gradBot border-br1 w-full rounded-md border p-2 outline-none focus-visible:ring-[1px]"
               placeholder="Transaction Note..."
-              {...register("isTransactionNote")}
+              {...register("isNote")}
             />
           </FormField>
           {/**ANCHOR ##END: DESCRIPTION Field ---------------- */}

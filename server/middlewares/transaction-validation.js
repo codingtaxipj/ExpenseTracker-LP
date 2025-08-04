@@ -30,10 +30,7 @@ const expenseValidation = [
     .withMessage("Transaction Amount must be number")
     .custom(value => value >= 0)
     .withMessage("Transaction Amount must be positive number"),
-  body("isNote")
-    .optional()
-    .isString()
-    .withMessage("Transaction Note Must Be a String"),
+  body("isNote").optional(),
   body("primeCategory")
     .exists()
     .notEmpty()
@@ -87,10 +84,8 @@ const incomeValidation = [
     .withMessage("Transaction Amount must be number")
     .custom(value => value >= 0)
     .withMessage("Transaction Amount must be positive number"),
-  body("isNote")
-    .optional()
-    .isString()
-    .withMessage("Transaction Note Must Be a String"),
+  body("isNote").optional(),
+
   body("primeCategory")
     .exists()
     .notEmpty()

@@ -20,11 +20,10 @@ import Flexcol from "@/components/section/flexcol";
 import AddExpenseBtn from "@/components/buttons/text-btns/add-expense-btn";
 import SelectFilterIcon from "@/components/buttons/icon-only-btns/select-filter-icon";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
-
-import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
-import TotalExpenseCardInmonth from "@/components/cards/total-expense-card-inmonth";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
 import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
+import TotalCardForYear from "@/components/cards/total-card-for-year";
+import TotalCardForMonth from "@/components/cards/total-card-for-month";
 
 const ExpenseIndex = () => {
   const navigate = useNavigate();
@@ -47,9 +46,23 @@ const ExpenseIndex = () => {
 
   return (
     <>
+      <Flexcol>
+        <Flexrow className="items-center justify-center">
+          <TotalCardForYear isExpense year={CurrentYear()} />
+          <TotalCardForMonth
+            isExpense
+            year={CurrentYear()}
+            month={CurrentMonth()}
+          />
+        </Flexrow>
+        <Flexrow className="items-center justify-center">
+          <BudgetStrip />
+          <AddExpenseBtn onClick={() => navigate(PATH.addExpense)} />
+        </Flexrow>
+      </Flexcol>
       {/*  <Flexcol>
         <Flexrow className="items-center justify-center">
-          <TotalExpenseCardInyear year={CurrentYear()} />
+          <TotalCardForYear year={CurrentYear()} />
           <TotalExpenseCardInmonth
             year={CurrentYear()}
             month={CurrentMonth()}

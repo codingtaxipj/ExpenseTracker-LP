@@ -58,7 +58,12 @@ const TableSection = ({ entries }) => {
 
           <tbody className="border-0">
             {currentPageItems.map((data) => (
-              <TooltipStrip key={data._id} content={data.isNote}>
+              <TooltipStrip
+                key={data._id}
+                content={
+                  data.isNote ? data.isNote : "No Transaction Note Given"
+                }
+              >
                 <tr className="hover:bg-gradBot">
                   <TD>
                     <IconCircle

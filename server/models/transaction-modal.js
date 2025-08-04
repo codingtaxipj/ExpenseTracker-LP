@@ -25,7 +25,7 @@ const expenseSchema = new Schema(
     },
     isNote: {
       type: String,
-      default: "",
+      default: null,
     },
     primeCategory: {
       type: String,
@@ -66,7 +66,7 @@ const incomeSchema = new Schema(
     },
     isNote: {
       type: String,
-      default: "",
+      default: null,
     },
     primeCategory: {
       type: String,

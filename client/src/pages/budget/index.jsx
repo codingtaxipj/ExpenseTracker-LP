@@ -12,7 +12,7 @@ import useBudgetConfig from "@/hooks/useBudgetConfig";
 import useTotalConfig from "@/hooks/useTotalConfig";
 
 import { CurrentYear } from "@/utilities/calander-utility";
-import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
+import TotalExpenseCardInyear from "@/components/cards/total-card-for-month";
 
 const BudgetIndex = () => {
   //NOTE - BUDGET CONFIG

@@ -1,15 +1,11 @@
-import {
-  filterByExpense,
-  filterByIncome,
-  filterByYear,
-} from "@/components/utilityFilter";
+import { filterByExpense, filterByIncome } from "@/components/utilityFilter";
 import { CurrentYear } from "@/utilities/calander-utility";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const useTotalConfig = () => {
   const TotalData = useSelector((state) => state.total.data);
-  console.log("YYDB", TotalData);
+
   const TotalByYear = useMemo(() => {
     if (!Array.isArray(TotalData)) return null;
     return TotalData.map((m) => ({
@@ -19,10 +15,11 @@ const useTotalConfig = () => {
     }));
   }, [TotalData]);
 
-  console.log("TY", TotalByYear);
-
-  const TotalByCurrYear = filterByYear(TotalByYear, CurrentYear());
-  const TotalByCurrYear_EXP = filterByExpense(TotalByCurrYear);
+  const TotalByYear_EXP = filterByExpense(TotalByYear);
+  const TotalByYear_INC = filterByIncome(TotalByYear);
+  //NOTE - gets the total of given year (mostly used card)
+  const getTotalOfYear = (list, year) =>
+    list?.find((l) => l.year === year)?.total ?? [];
 
   const TotalByMonth = useMemo(() => {
     if (!Array.isArray(TotalData)) return null;
@@ -39,6 +36,10 @@ const useTotalConfig = () => {
   const getMonthListOfYear = (list, year) =>
     list?.find((l) => l.year === year)?.monthList ?? [];
 
+  //NOTE - gets the total in month of given year (mostly used card)
+  const getTotalInMonthOfYear = (list, year, month) =>
+    getMonthListOfYear(list, year)?.find((l) => l.month === month)?.total ?? [];
+
   const YearsList = useMemo(() => {
     if (!Array.isArray(TotalData)) return [];
     return [...new Set(TotalData.map((m) => m.year))];
@@ -50,6 +51,10 @@ const useTotalConfig = () => {
     TotalByMonth_EXP,
     TotalByMonth_INC,
     getMonthListOfYear,
+    getTotalInMonthOfYear,
+    TotalByYear_EXP,
+    TotalByYear_INC,
+    getTotalOfYear,
   };
 };
 
