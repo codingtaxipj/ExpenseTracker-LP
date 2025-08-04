@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { fetchTotal } from "./total-slice";
+import { fetchMM } from "./minmax-slice";
 
 const initialState = {
   expenseData: null,
@@ -41,6 +43,8 @@ export const insertExpense = createAsyncThunk(
         data,
       );
       await dispatch(fetchExpense());
+      await dispatch(fetchTotal());
+      await dispatch(fetchMM());
       return { success: true, message: res.data.message };
     } catch (error) {
       const message =
@@ -61,6 +65,8 @@ export const insertIncome = createAsyncThunk(
         data,
       );
       await dispatch(fetchIncome());
+      await dispatch(fetchTotal());
+      await dispatch(fetchMM());
       return { success: true, message: res.data.message };
     } catch (error) {
       const message =
