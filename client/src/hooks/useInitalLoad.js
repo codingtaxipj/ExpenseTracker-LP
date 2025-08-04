@@ -1,5 +1,4 @@
 import { fetchBudget } from "@/redux/slices/budget-slice";
-
 import { fetchMM } from "@/redux/slices/minmax-slice";
 import { fetchTotal } from "@/redux/slices/total-slice";
 import { fetchExpense, fetchIncome } from "@/redux/slices/transaction-slice";
