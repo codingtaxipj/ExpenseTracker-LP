@@ -13,7 +13,7 @@ export const fetchTotal = createAsyncThunk("total/fetchTotal", async () => {
   const res = await axios.get(
     `http://127.0.0.1:8080/total/get-total/${userID}`,
   );
-  console.log("slice", res.data);
+
   return res.data;
 });
 
