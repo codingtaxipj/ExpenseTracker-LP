@@ -2,8 +2,6 @@ import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 
-import useAnalysisConfig from "./useAnalysisConfig";
-import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
 import { Checkbox } from "../ui/checkbox";
@@ -13,7 +11,7 @@ import { Icons } from "../icons";
 import SectionTitle from "../section/section-title";
 
 const CategoryAnalysis = ({ isExpense }) => {
-  const {
+  /* const {
     filter,
     Months,
     Years,
@@ -59,9 +57,10 @@ const CategoryAnalysis = ({ isExpense }) => {
       height: "1rem",
       backgroundColor: color,
     };
-  };
+  }; */
+  console.log("cat analysis", isExpense);
 
-  return (
+  /*  return (
     <>
       <div className="flex w-full flex-col gap-5 px-10 pb-25">
         <SectionTitle title="Expenses Analysis By By Categories" isAnalysis />
@@ -144,7 +143,7 @@ const CategoryAnalysis = ({ isExpense }) => {
         </div>
       </div>
     </>
-  );
+  ); */
 };
 
 export default CategoryAnalysis;

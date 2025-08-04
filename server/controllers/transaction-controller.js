@@ -43,7 +43,6 @@ const fetchExpense = async (req, res) => {
     const { userID } = req.params;
     const data = await expenseModal.find({ userID }).sort({ onDate: -1 });
     // -1 latest transactionon top
-    console.log(data);
 
     res.status(200).json(data);
   } catch (error) {

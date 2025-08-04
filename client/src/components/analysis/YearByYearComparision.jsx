@@ -2,10 +2,6 @@ import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import DoubleLineChart from "../charts/DoubleLineChart";
-import useAnalysisConfig from "./useAnalysisConfig";
-import moment from "moment";
-
-import { useEffect, useState } from "react";
 
 import TotalCard from "../cards/TotalCard";
 import YearCompareCard from "./YearCompareCard";
@@ -17,7 +13,8 @@ import BudgetMonth from "./BudgetMonth";
 import SectionTitle from "../section/section-title";
 
 const YearByYearComparision = ({ isExpense }) => {
-  const { filter, Years, handleYearSelector, compareToYearSelector, totalBy } =
+  console.log("year by year analysis", isExpense);
+  /*  const { filter, Years, handleYearSelector, compareToYearSelector, totalBy } =
     useAnalysisConfig(isExpense);
 
   const [chartData, setChartData] = useState({
@@ -39,10 +36,10 @@ const YearByYearComparision = ({ isExpense }) => {
     }
   }, [filter.byYear, totalBy.month, filter.toYear]);
 
-  /*  const percent = getPercent(
+    const percent = getPercent(
     totalBy.year[filter.toYear]?.total,
     totalBy.year[filter.byYear]?.total,
-  ); */
+  ); 
 
   return (
     <>
@@ -143,7 +140,7 @@ const YearByYearComparision = ({ isExpense }) => {
         </div>
       </div>
     </>
-  );
+  ); */
 };
 
 export default YearByYearComparision;

@@ -1,17 +1,13 @@
 import NavMenu from "@/components/Navigation/NavMenu";
 import { PATH } from "@/router/routerConfig";
 
-import CategoryAnalysis from "@/components/analysis/CategoryAnalysis";
-import YearByYearComparision from "@/components/analysis/YearByYearComparision";
-import YearlyAnalysis from "@/components/analysis/expense-by-year-graph";
-import AnalysisCardHeader from "@/components/analysis/AnalysisCardHeader";
+import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
 
 const ExpenseAnalysis = () => {
   return (
     <>
       <NavMenu activeBtn={PATH.expenseAnalysis}>
-        {/*  <AnalysisCardHeader isExpense /> */}
-        <YearlyAnalysis isExpense></YearlyAnalysis>
+        <SingleYearGraph isExpense></SingleYearGraph>
       </NavMenu>
     </>
   );

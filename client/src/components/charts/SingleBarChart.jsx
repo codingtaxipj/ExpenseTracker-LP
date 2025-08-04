@@ -17,10 +17,11 @@ import {
 import { Icons } from "../icons";
 
 const SingleBarChart = ({
-  isExpense,
+
   barInfo = {
     data: [],
-    label: [],
+    label: "",
+    color: "var(--color-exp)",
   },
   chartInfo = {
     title: false,
@@ -29,7 +30,7 @@ const SingleBarChart = ({
   },
 }) => {
   const chartData = barInfo.data;
-  const color = isExpense && "var(--color-exp)";
+  const color = barInfo.color;
   const chartConfig = {
     barChart: {
       label: barInfo.label,
@@ -44,9 +45,6 @@ const SingleBarChart = ({
             <CardTitle>
               <div className="flex flex-row items-center gap-2">
                 {chartInfo.title}
-                <div
-                  className={`size-4 rounded-xs ${isExpense && "bg-exp"} `}
-                ></div>
               </div>
             </CardTitle>
           )}

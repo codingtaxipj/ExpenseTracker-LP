@@ -2,22 +2,22 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  incomeTotalData: null,
-  expenseTotalData: null,
+  data: null,
   loading: false,
   error: false,
 };
 
-const userID = 12345;
+const userID = "123456";
 
 export const fetchTotal = createAsyncThunk("total/fetchTotal", async () => {
   const res = await axios.get(
     `http://127.0.0.1:8080/total/get-total/${userID}`,
   );
+  console.log("slice", res.data);
   return res.data;
 });
 
-const totalSlice = createSlice({
+const total = createSlice({
   name: "total",
   initialState,
   reducers: {},
@@ -29,12 +29,7 @@ const totalSlice = createSlice({
       })
       .addCase(fetchTotal.fulfilled, (state, action) => {
         state.loading = false;
-        const incomingData = action.payload;
-        if (!Array.isArray(incomingData)) return;
-        state.expenseTotalData =
-          incomingData.find((i) => i.isTotalExpense === true) || null;
-        state.incomeTotalData =
-          incomingData.find((i) => i.isTotalExpense === false) || null;
+        state.data = action.payload;
       })
       .addCase(fetchTotal.rejected, (state, action) => {
         state.loading = false;
@@ -43,4 +38,4 @@ const totalSlice = createSlice({
   },
 });
 
-export default totalSlice.reducer;
+export default total.reducer;

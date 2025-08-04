@@ -15,7 +15,7 @@ import { combineReducers } from "redux";
 import authReducer from "../redux/slices/authUser.js";
 import getExpenseReducer from "@/redux/slices/getExpense.js";
 import budgetReducer from "@/redux/slices/budget-slice.js";
-import totalSliceReducer from "@/redux/slices/fetch-total.js";
+import totalReducer from "@/redux/slices/total-slice.js";
 import MinMaxReducer from "@/redux/slices/minmax-slice.js";
 import transactionReducer from "@/redux/slices/transaction-slice.js";
 
@@ -31,7 +31,7 @@ export const rootReducer = combineReducers({
   initalMount: initalMountReducer,
   budget: budgetReducer,
   MM: MinMaxReducer,
-  total: totalSliceReducer,
+  total: totalReducer,
   transaction: transactionReducer,
 });
 

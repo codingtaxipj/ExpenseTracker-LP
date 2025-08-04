@@ -1,49 +1,55 @@
+import {
+  filterByExpense,
+  filterByIncome,
+  filterByYear,
+} from "@/components/utilityFilter";
 import { CurrentYear } from "@/utilities/calander-utility";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const useTotalConfig = () => {
   const TotalData = useSelector((state) => state.total.data);
-
-  const TotalOfMonthList = useMemo(() => {
-    if (!Array.isArray(TotalData)) return null;
-    return TotalData.map((m) => ({
-      year: m.year,
-      monthList: m.monthList,
-    }));
-  }, [TotalData]);
-
-  const YearsList = useMemo(() => {
-    if (!Array.isArray(TotalData)) return [];
-    return [...TotalData.map((m) => m.year)];
-  }, [TotalData]);
-
-  const TotalOfYearList = useMemo(() => {
+  console.log("YYDB", TotalData);
+  const TotalByYear = useMemo(() => {
     if (!Array.isArray(TotalData)) return null;
     return TotalData.map((m) => ({
       year: m.year,
       total: m.total,
+      isTypeExpense: m.isTypeExpense,
     }));
   }, [TotalData]);
 
-  const getTotalExpMonthListOfYear = (year) =>
-    TotalOfMonthList?.find((l) => l.year === year)?.monthList ?? [];
+  console.log("TY", TotalByYear);
 
-  const getTotalExpOfMonth = (year, month) =>
-    getTotalExpMonthListOfYear(year).find((m) => m.month === month)?.total ??
-    null;
+  const TotalByCurrYear = filterByYear(TotalByYear, CurrentYear());
+  const TotalByCurrYear_EXP = filterByExpense(TotalByCurrYear);
 
-  const getTotalExpOfYear = (year) =>
-    TotalOfYearList?.find((l) => l.year === year)?.total ?? [];
+  const TotalByMonth = useMemo(() => {
+    if (!Array.isArray(TotalData)) return null;
+    return TotalData.map((m) => ({
+      year: m.year,
+      monthList: m.monthList,
+      isTypeExpense: m.isTypeExpense,
+    }));
+  }, [TotalData]);
+
+  const TotalByMonth_EXP = filterByExpense(TotalByMonth);
+  const TotalByMonth_INC = filterByIncome(TotalByMonth);
+  //NOTE - gets the monthList of given year (mostly used in graph)
+  const getMonthListOfYear = (list, year) =>
+    list?.find((l) => l.year === year)?.monthList ?? [];
+
+  const YearsList = useMemo(() => {
+    if (!Array.isArray(TotalData)) return [];
+    return [...new Set(TotalData.map((m) => m.year))];
+  }, [TotalData]);
 
   //console.log("MM", TotalOfMonthList);
   return {
-    TotalOfMonthList,
-    TotalOfYearList,
     YearsList,
-    getTotalExpMonthListOfYear,
-    getTotalExpOfYear,
-    getTotalExpOfMonth,
+    TotalByMonth_EXP,
+    TotalByMonth_INC,
+    getMonthListOfYear,
   };
 };
 

@@ -1,12 +1,12 @@
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
-import { useEffect, useState } from "react";
-import useAnalysisConfig from "./useAnalysisConfig";
+
 import SingleBarChart from "../charts/SingleBarChart";
 
 const SubCategoryMonthlyAnalysis = ({ isExpense }) => {
-  const {
+  console.log("sub cat analysis", isExpense);
+  /* const {
     filter,
     categories,
     Years,
@@ -57,7 +57,7 @@ const SubCategoryMonthlyAnalysis = ({ isExpense }) => {
         </div>
       </>
     </>
-  );
+  ); */
 };
 
 export default SubCategoryMonthlyAnalysis;

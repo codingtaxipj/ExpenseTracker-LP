@@ -5,7 +5,7 @@ import useTotalConfig from "@/hooks/useTotalConfig";
 import { getMonthName } from "@/utilities/calander-utility";
 
 const TotalExpenseCardInmonth = ({ year, month }) => {
-  //NOTE - TOTAL CONFIG
+  /* //NOTE - TOTAL CONFIG
   const { getTotalExpOfMonth } = useTotalConfig();
   const CurrentMonthTotalExp = getTotalExpOfMonth(year, month);
 
@@ -18,7 +18,7 @@ const TotalExpenseCardInmonth = ({ year, month }) => {
       footerText={`Your Total Spending in ${getMonthName(month, "MMMM")}`}
       date={year}
     ></TotalCard>
-  );
+  ); */
 };
 
 export default TotalExpenseCardInmonth;

@@ -189,8 +189,9 @@ const insertTotal = async (req, res, next) => {
 const fetchTotal = async (req, res) => {
   try {
     const { userID } = req.params;
+    console.log("ID", userID);
     const data = await totalModal.find({ userID });
-    if (!data) return res.status(200).json(null);
+    console.log(data);
     res.status(200).json(data);
   } catch (error) {
     console.error(error);

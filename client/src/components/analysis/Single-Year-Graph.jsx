@@ -8,17 +8,24 @@ import Flexrow from "../section/flexrow";
 import Flexcol from "../section/flexcol";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
-import useMinMax from "@/hooks/useMinMax";
+import { cn } from "@/lib/utils";
 
-const ExpenseByYearGraph = ({ isExpense }) => {
-  const { getTotalExpMonthListOfYear, YearsList } = useTotalConfig();
+const SingleYearGraph = ({ isExpense }) => {
+  const { TotalByMonth_EXP, TotalByMonth_INC, YearsList, getMonthListOfYear } =
+    useTotalConfig();
+  const MonthData = isExpense ? TotalByMonth_EXP : TotalByMonth_INC;
+  //NOTE - year state
   const [year, setYear] = useState(CurrentYear());
+  //NOTE - sets the year to get the months data
   const handleYearSelector = (year) => setYear(Number(year));
+  //NOTE - chart data for graph
   const chartData = [
     ...(() => {
       const arr = [];
       for (let i = 0; i < 12; i++) {
-        const m = getTotalExpMonthListOfYear(year).find((m) => m.month === i);
+        const m = getMonthListOfYear(MonthData, year).find(
+          (m) => m.month === i,
+        );
         arr.push({
           Title: getMonthName(i, "MMMM"),
           Amount: m?.total ?? 0,
@@ -27,16 +34,30 @@ const ExpenseByYearGraph = ({ isExpense }) => {
       return arr;
     })(),
   ];
-  const { getMM_monthofyear } = useMinMax();
-  const monthMAX = getMM_monthofyear(year)?.max ?? { month: 0, Total: 0 };
-  const monthMIN = getMM_monthofyear(year)?.min ?? { month: 0, Total: 0 };
+
+  const barInfo = {
+    data: chartData,
+    label: isExpense ? "Expense" : "Income",
+    color: isExpense ? "var(--color-exp)" : "var(--color-inc)",
+  };
+
+  const chartInfo = {
+    title: (
+      <>
+        Bar Graph - {year}
+        <GraphTitleSquare className={isExpense ? "bg-exp" : "bg-inc"} />
+      </>
+    ),
+    subtext: `${isExpense ? "Expenses" : "Income"} in Year by Months`,
+    footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Year`,
+  };
 
   return (
     <>
       <Flexcol>
         <Flexrow>
           <SelectBar>
-            <SelectCard isExpense={isExpense} title={"Data of Year"}>
+            <SelectCard isExpense={isExpense} title={"Select Year"}>
               <SelectFilter
                 placeholder={"Select Year"}
                 onValueChange={handleYearSelector}
@@ -47,27 +68,22 @@ const ExpenseByYearGraph = ({ isExpense }) => {
           </SelectBar>
         </Flexrow>
 
-        <Flexrow>
+        {/* <Flexrow>
           <MinMaxStrip data={monthMAX} isExpense isMax />
           <MinMaxStrip data={monthMIN} isExpense isMin />
-        </Flexrow>
+        </Flexrow> */}
         <Flexrow>
           <SingleBarChart
-            isExpense
-            barInfo={{
-              data: chartData,
-              label: "Expense",
-            }}
-            chartInfo={{
-              title: `Bar Graph - ${year}`,
-              subtext: `${isExpense ? "Expenses" : "Income"} in Year by Months`,
-              footertext: `Showing Total ${isExpense ? "Expenses" : "Income"} in Year`,
-            }}
+            barInfo={barInfo}
+            chartInfo={chartInfo}
           ></SingleBarChart>
         </Flexrow>
       </Flexcol>
     </>
   );
 };
+export const GraphTitleSquare = ({ className }) => {
+  return <div className={cn("size-4 rounded-xs", className)}></div>;
+};
 
-export default ExpenseByYearGraph;
+export default SingleYearGraph;
