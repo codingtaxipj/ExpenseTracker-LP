@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const useBudgetConfig = () => {
-  const BudgetData = useSelector((state) => state.budget.expenseTotalData);
+  const BudgetData = useSelector((state) => state.budget.data);
 
   //NOTE - gets the budget list of user by each year
   const BudgetListByYear = useMemo(() => {

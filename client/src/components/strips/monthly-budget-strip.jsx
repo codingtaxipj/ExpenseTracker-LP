@@ -16,7 +16,7 @@ const MonthlyBudgetStrip = ({ budget, month, amount, isExpense, isIncome }) => {
       content={
         budget
           ? `${getMonthName(month, "MMMM")}'s Budget is ${budget}`
-          : "NO Budget Exists"
+          : `No Budget Exists For ${getMonthName(month, "MMMM")}`
       }
     >
       <div>

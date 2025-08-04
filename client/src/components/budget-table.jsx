@@ -1,4 +1,3 @@
-
 import { TD, TH } from "./TableSection";
 import { Icons } from "./icons";
 import { amountInteger } from "./utilityFilter";
@@ -66,36 +65,37 @@ const BudgetTable = ({ list }) => {
           </tbody>
         </table>
       </div>
+      {list.length > ITEMS_PER_PAGE && (
+        <Pagination className="py-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                className={
+                  page === 1
+                    ? "pointer-events-none cursor-not-allowed opacity-50"
+                    : "cursor-pointer"
+                }
+              />
+            </PaginationItem>
 
-      <Pagination className="py-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setPage((p) => Math.max(p - 1, 1))}
-              className={
-                page === 1
-                  ? "pointer-events-none cursor-not-allowed opacity-50"
-                  : "cursor-pointer"
-              }
-            />
-          </PaginationItem>
+            <PaginationItem className="px-2 text-sm">
+              Page {page} of {totalPages}
+            </PaginationItem>
 
-          <PaginationItem className="px-2 text-sm">
-            Page {page} of {totalPages}
-          </PaginationItem>
-
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-              className={
-                page === totalPages
-                  ? "pointer-events-none cursor-not-allowed opacity-50"
-                  : "cursor-pointer"
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                className={
+                  page === totalPages
+                    ? "pointer-events-none cursor-not-allowed opacity-50"
+                    : "cursor-pointer"
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   );
 };
