@@ -17,7 +17,6 @@ import ExpButton from "@/components/buttons/expButton";
 import { Icons } from "@/components/icons";
 import SectionTitle from "@/components/section/section-title";
 import Flexcol from "@/components/section/flexcol";
-import ExpenseByYearGraph from "@/components/analysis/Single-Year-Graph";
 import AddExpenseBtn from "@/components/buttons/text-btns/add-expense-btn";
 import SelectFilterIcon from "@/components/buttons/icon-only-btns/select-filter-icon";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
@@ -25,6 +24,7 @@ import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 import TotalExpenseCardInyear from "@/components/cards/total-expense-card-inyear";
 import TotalExpenseCardInmonth from "@/components/cards/total-expense-card-inmonth";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
+import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
 
 const ExpenseIndex = () => {
   const navigate = useNavigate();
@@ -143,9 +143,9 @@ const ExpenseIndex = () => {
         <TableSection entries={ExpenseList ?? []} />
       </Flexcol>
 
-      {/*  <Flexcol className="pt-20">
+      <Flexcol className="pt-20">
         <SectionTitle title="Bar Graph" isExpense />
-        <ExpenseByYearGraph isExpense />
+        <SingleYearGraph isExpense></SingleYearGraph>
       </Flexcol>
 
       <Flexcol className="pt-20">
@@ -154,7 +154,7 @@ const ExpenseIndex = () => {
           <h4>For Detailed Expense Analysis</h4>
           <ExpButton label={"Check Analysis"} btnfor={"expense"} />
         </Flexrow>
-      </Flexcol> */}
+      </Flexcol>
     </>
   );
 };

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 const SingleYearGraph = ({ isExpense }) => {
   const { TotalByMonth_EXP, TotalByMonth_INC, YearsList, getMonthListOfYear } =
     useTotalConfig();
+  //NOTE - monthdata will be assign based on graph using for expense or income
   const MonthData = isExpense ? TotalByMonth_EXP : TotalByMonth_INC;
   //NOTE - year state
   const [year, setYear] = useState(CurrentYear());

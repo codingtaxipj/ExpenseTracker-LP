@@ -1,4 +1,3 @@
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import {
   Card,
@@ -35,11 +34,6 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
           <CardTitle>
             <div className="flex flex-row items-center gap-2">
               {chartInfo.title}
-              {barInfo.lableOne}
-              <div className={`bg-year1 size-4 rounded-xs`}></div>
-
-              {barInfo.labelTwo}
-              <div className={`bg-year2 size-4 rounded-xs`}></div>
             </div>
           </CardTitle>
           <CardDescription className="!text-91 text-14">

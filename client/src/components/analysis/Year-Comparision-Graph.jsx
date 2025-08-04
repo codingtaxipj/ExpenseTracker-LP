@@ -11,9 +11,97 @@ import BudgetStrip from "../strips/budget-strip";
 import BudgetMonth from "./BudgetMonth";
 
 import SectionTitle from "../section/section-title";
+import useTotalConfig from "@/hooks/useTotalConfig";
+import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
+import { useState } from "react";
+import { GraphTitleSquare } from "./Single-Year-Graph";
+import Flexcol from "../section/flexcol";
+import Flexrow from "../section/flexrow";
 
-const YearByYearComparision = ({ isExpense }) => {
-  console.log("year by year analysis", isExpense);
+const YearComparisionGraph = ({ isExpense }) => {
+  const { TotalByMonth_EXP, TotalByMonth_INC, YearsList, getMonthListOfYear } =
+    useTotalConfig();
+  //NOTE - monthdata will be assign based on graph using for expense or income
+  const MonthData = isExpense ? TotalByMonth_EXP : TotalByMonth_INC;
+  const [year1, setYear1] = useState(CurrentYear());
+  const [year2, setYear2] = useState(CurrentYear());
+
+  //NOTE - sets the year to get the months data
+  const handleYearSelector1 = (year1) => setYear1(Number(year1));
+  const handleYearSelector2 = (year2) => setYear2(Number(year2));
+
+  //NOTE - chart data for graph
+  const chartData = [
+    ...(() => {
+      const arr = [];
+      for (let i = 0; i < 12; i++) {
+        const m1 = getMonthListOfYear(MonthData, year1).find(
+          (m) => m.month === i,
+        );
+        const m2 = getMonthListOfYear(MonthData, year2).find(
+          (m) => m.month === i,
+        );
+        arr.push({
+          month: getMonthName(i, "MMMM"),
+          [year1]: m1?.total ?? 0,
+          [year2]: m2?.total ?? 0,
+        });
+      }
+      return arr;
+    })(),
+  ];
+
+  const barInfo = {
+    data: chartData,
+    lableOne: String(year1),
+    labelTwo: String(year2),
+  };
+
+  const chartInfo = {
+    title: (
+      <>
+        Double Line Graph - {year1}
+        <GraphTitleSquare className={"bg-year1"} />
+        {year2}
+        <GraphTitleSquare className={"bg-year2"} />
+      </>
+    ),
+    subtext: `${isExpense ? "Expense" : "Income"} Comparision in Year by Months`,
+    footertext: `Showing Total ${isExpense ? "Expense" : "Income"} in Year`,
+  };
+
+  return (
+    <>
+      <Flexcol>
+        <Flexrow>
+          <SelectBar>
+            <SelectCard isExpense={isExpense} title={"Year"}>
+              <SelectFilter
+                placeholder={"Select Year"}
+                onValueChange={handleYearSelector1}
+                defaultValue={String(year1)}
+                list={YearsList}
+              ></SelectFilter>
+            </SelectCard>
+            <SelectCard noIcon isExpense={isExpense} title={"Compare To Year"}>
+              <SelectFilter
+                placeholder={"Select Year"}
+                onValueChange={handleYearSelector2}
+                defaultValue={String(year1)}
+                list={YearsList}
+              ></SelectFilter>
+            </SelectCard>
+          </SelectBar>
+        </Flexrow>
+        <Flexrow>
+          <DoubleLineChart
+            barInfo={barInfo}
+            chartInfo={chartInfo}
+          ></DoubleLineChart>
+        </Flexrow>
+      </Flexcol>
+    </>
+  );
   /*  const { filter, Years, handleYearSelector, compareToYearSelector, totalBy } =
     useAnalysisConfig(isExpense);
 
@@ -143,4 +231,4 @@ const YearByYearComparision = ({ isExpense }) => {
   ); */
 };
 
-export default YearByYearComparision;
+export default YearComparisionGraph;
