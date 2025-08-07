@@ -12,7 +12,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { ImParagraphLeft } from "react-icons/im";
 import { Icons } from "../icons";
 
 const DoubleLineChart = ({ barInfo, chartInfo }) => {
@@ -36,7 +35,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
               {chartInfo.title}
             </div>
           </CardTitle>
-          <CardDescription className="!text-91 text-14">
+          <CardDescription className="text-91 pt-1.25">
             {chartInfo.subtext}
           </CardDescription>
         </CardHeader>

@@ -28,6 +28,7 @@ import Flexrow from "./section/flexrow";
 import { Icons } from "./icons";
 import ExpButton from "./buttons/expButton";
 import TooltipStrip from "./strips/tooltip-strip";
+import { cn } from "@/lib/utils";
 
 const TableSection = ({ entries }) => {
   //Pagination
@@ -199,7 +200,9 @@ const TableSection = ({ entries }) => {
 
 export const TH = ({ children, className = "" }) => {
   return (
-    <th className={`text-14 px-1.5 py-2.5 text-left font-medium ${className}`}>
+    <th
+      className={cn("text-14 px-1.5 py-2.5 text-left font-medium", className)}
+    >
       {children}
     </th>
   );
@@ -208,7 +211,10 @@ export const TH = ({ children, className = "" }) => {
 export const TD = ({ children, className = "" }) => {
   return (
     <td
-      className={`text-14 border-b-br1 h-16 border-b px-1.5 py-2.5 ${className}`}
+      className={cn(
+        `text-14 border-b-br1 h-16 border-b px-1.5 py-2.5`,
+        className,
+      )}
     >
       {children}
     </td>

@@ -1,79 +1,85 @@
 import TotalCard from "@/components/cards/TotalCard";
-import BudgetTable from "@/components/budget-table";
+import BudgetTable from "@/components/table/budget-table";
 import ExpButton from "@/components/buttons/expButton";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
 
 import useBudgetConfig from "@/hooks/useBudgetConfig";
 
-import {
-  CurrentMonth,
-  CurrentYear,
-  getMonthName,
-} from "@/utilities/calander-utility";
+import { CurrentYear } from "@/utilities/calander-utility";
 
 import TotalCardForYear from "@/components/cards/total-card-for-year";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import SectionTitle from "@/components/section/section-title";
-import MonthlyBudgetStrip from "@/components/strips/monthly-budget-strip";
+import MonthlyBudgetStrip from "@/components/strips/budget-percent-strip";
+import ActiveBudgetCard from "@/components/cards/active-budget-card";
+import { useState } from "react";
+import SelectBar from "@/components/selectFilter/SelectBar";
+import SelectCard from "@/components/selectFilter/SelectCard";
+import SelectFilter from "@/components/selectFilter/SelectFilter";
+
+import { TD, TH } from "@/components/TableSection";
+import { Icons } from "@/components/icons";
+import BudgetExpenseTable from "@/components/table/budget-expense-table";
 
 const BudgetIndex = () => {
-  //NOTE - BUDGET CONFIG
-  const { ActiveBudget, BudgetListByYear, BudgetByMonth } = useBudgetConfig();
-
-  const Budget = ActiveBudget?.amount ?? null;
-  const BudgetList =
-    BudgetListByYear?.find((l) => l.year === CurrentYear())?.budgetList ?? [];
-
-  const BudgetListByMonth =
-    BudgetByMonth?.find((l) => l.year === CurrentYear())?.list ?? [];
-
   //NOTE - TOTAL CONFIG
-  const { getMonthListOfYear, TotalByMonth_EXP } = useTotalConfig();
-
-  const MonthList = [
-    ...(() => {
-      const arr = [];
-      for (let i = 0; i < 12; i++) {
-        const m = getMonthListOfYear(TotalByMonth_EXP, CurrentYear()).find(
-          (m) => m.month === i,
-        );
-        arr.push({
-          month: i,
-          total: m?.total ?? 0,
-        });
-      }
-      return arr;
-    })(),
-  ];
+  const { TotalByMonth_EXP, YearsList, getMonthListOfYear } = useTotalConfig();
+  //NOTE - BUDGET CONFIG
+  const { getBudgetListOfYear, BudgetByMonth, createBudgetWithExpense } =
+    useBudgetConfig();
+  //NOTE - year state
+  const [year, setYear] = useState(CurrentYear());
+  //NOTE - sets the year to get the months data
+  const handleYearSelector = (year) => setYear(Number(year));
+  //NOTE - monthdata will be assign based on graph using for expense or income
+  const MonthData = TotalByMonth_EXP;
+  //NOTE - arry OBJ of each month and budget by year
+  const BudgetEachMonth = getBudgetListOfYear(BudgetByMonth, year);
+  //NOTE - arry OBJ of each month and expense
+  const ExpenseEachMonth = getMonthListOfYear(MonthData, year);
+  //NOTE - arry OBJ {id, month name, expense amount, budget ,its percent }
+  const BudgetExpenseCombo = createBudgetWithExpense(
+    BudgetEachMonth,
+    ExpenseEachMonth,
+  );
 
   return (
     <>
       <Flexrow>
         <Flexcol className="items-center justify-center">
           <TotalCardForYear isExpense year={CurrentYear()} />
-          <TotalCard
-            color="text-budget"
-            headText="Active Budget"
-            total={Budget}
-            footerText={`Budget of ${getMonthName(CurrentMonth(), "MMMM")}, ${CurrentYear()}`}
-            date={CurrentYear()}
-          ></TotalCard>
+          <ActiveBudgetCard />
+
           <Flexrow className="justify-center">
             <ExpButton btnfor={"budget"} label={"Edit Budget"} />
             <ExpButton btnfor={"budget"} label={"New Budget"} />
           </Flexrow>
         </Flexcol>
         <Flexcol className="from-gradBot to-gradTop shadow-shadowBlack border-br1 rounded-lg border bg-gradient-to-t shadow-md">
-          <BudgetTable list={BudgetList} />
+          {/*  <BudgetTable list={BudgetList} /> */}
         </Flexcol>
       </Flexrow>
 
       <Flexcol className="pt-20">
         <SectionTitle title="Monthly Expense On Budget Analysis" isBudget />
+        <Flexrow>
+          <SelectBar>
+            <SelectCard isExpense title={"Select Year"}>
+              <SelectFilter
+                placeholder={"Select Year"}
+                onValueChange={handleYearSelector}
+                defaultValue={String(CurrentYear())}
+                list={YearsList}
+              ></SelectFilter>
+            </SelectCard>
+          </SelectBar>
+        </Flexrow>
+        <BudgetExpenseTable data={BudgetExpenseCombo} />
+
         <Flexrow className="flex-wrap items-center">
           <div className="flex flex-wrap gap-5">
-            {MonthList.map((item) => (
+            {/* {MonthList.map((item) => (
               <MonthlyBudgetStrip
                 isExpense
                 key={item.month}
@@ -81,7 +87,7 @@ const BudgetIndex = () => {
                 budget={bb(BudgetListByMonth, item.month)}
                 amount={item.total}
               />
-            ))}
+            ))} */}
           </div>
         </Flexrow>
         <Flexrow className="text-14 items-center justify-start font-medium">
@@ -94,5 +100,3 @@ const BudgetIndex = () => {
 };
 
 export default BudgetIndex;
-
-const bb = (a, b) => a.find((l) => l.month === b)?.budget ?? null;

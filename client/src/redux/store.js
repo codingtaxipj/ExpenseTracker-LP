@@ -13,22 +13,13 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import { combineReducers } from "redux";
 
 import authReducer from "../redux/slices/authUser.js";
-import getExpenseReducer from "@/redux/slices/getExpense.js";
 import budgetReducer from "@/redux/slices/budget-slice.js";
 import totalReducer from "@/redux/slices/total-slice.js";
 import MinMaxReducer from "@/redux/slices/minmax-slice.js";
 import transactionReducer from "@/redux/slices/transaction-slice.js";
 
-import configExpenseReducer from "@/redux/slices/configExpense.js";
-import initalMountReducer from "@/redux/slices/initalMount.js";
-import configTotalReducer from "@/redux/slices/configTotal.js";
-
 export const rootReducer = combineReducers({
   user: authReducer,
-  expense: getExpenseReducer,
-  configExpense: configExpenseReducer,
-  configTotal: configTotalReducer,
-  initalMount: initalMountReducer,
   budget: budgetReducer,
   MM: MinMaxReducer,
   total: totalReducer,

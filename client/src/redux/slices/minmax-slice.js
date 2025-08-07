@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  expenseMMData: null,
-  incomeMMData: null,
+  data: null,
   loading: false,
   error: false,
 };
@@ -29,12 +28,7 @@ const MinMax = createSlice({
       })
       .addCase(fetchMM.fulfilled, (state, action) => {
         state.loading = false;
-        const incomingData = action.payload;
-        if (!Array.isArray(incomingData)) return;
-        state.expenseMMData =
-          incomingData.find((i) => i.isMinMaxExpense === true) || null;
-        state.incomeMMData =
-          incomingData.find((i) => i.isMinMaxExpense === false) || null;
+        state.data = action.payload;
       })
       .addCase(fetchMM.rejected, (state, action) => {
         state.loading = false;

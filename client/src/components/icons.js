@@ -32,6 +32,8 @@ import { RiShareForwardFill } from "react-icons/ri";
 import { HiPencil } from "react-icons/hi";
 import { TbCancel } from "react-icons/tb";
 
+import { IoIosCheckmarkCircle } from "react-icons/io";
+
 export const Icons = {
   analysis: MdCalculate,
   window: FaRegWindowMaximize,
@@ -61,4 +63,5 @@ export const Icons = {
   share: RiShareForwardFill,
   addCircle: IoAddCircle,
   cancel: TbCancel,
+  checkCircle: IoIosCheckmarkCircle,
 };

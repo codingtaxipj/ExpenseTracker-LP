@@ -10,10 +10,10 @@ const IncomeAnalysis = () => {
   return (
     <>
       <NavMenu activeBtn={PATH.incomeAnalysis}>
-        <AnalysisHeader />
+       
         <Flexcol className="pt-20">
           <SectionTitle title="Bar Graph" isExpense />
-          <SingleYearGraph />
+          <SingleYearGraph isAnalysis />
         </Flexcol>
         <Flexcol className="pt-20">
           <SectionTitle title="Double Line Graph" isExpense />

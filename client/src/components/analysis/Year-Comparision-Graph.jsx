@@ -17,14 +17,35 @@ import { useState } from "react";
 import { GraphTitleSquare } from "./Single-Year-Graph";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
+import { amountFloat } from "../utilityFilter";
+import { Icons } from "../icons";
+import HorizontalDivider from "../strips/horizontal-divider";
+import { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
+import FlexrowStrip from "../strips/flexrow-strip";
 
 const YearComparisionGraph = ({ isExpense }) => {
-  const { TotalByMonth_EXP, TotalByMonth_INC, YearsList, getMonthListOfYear } =
-    useTotalConfig();
+  const {
+    TotalByMonth_EXP,
+    TotalByMonth_INC,
+    TotalByYear_EXP,
+    TotalByYear_INC,
+    YearsList,
+    getMonthListOfYear,
+    getTotalOfYear,
+  } = useTotalConfig();
   //NOTE - monthdata will be assign based on graph using for expense or income
   const MonthData = isExpense ? TotalByMonth_EXP : TotalByMonth_INC;
+
+  //NOTE - Total Expense or Income in year
+  const YearExpenseData = isExpense ? TotalByYear_EXP : TotalByYear_INC;
   const [year1, setYear1] = useState(CurrentYear());
   const [year2, setYear2] = useState(CurrentYear());
+
+  const TotalExpenseYear1 = getTotalOfYear(YearExpenseData, year1);
+  const TotalExpenseYear2 = getTotalOfYear(YearExpenseData, year2);
+
+  const diff = TotalExpenseYear1 - TotalExpenseYear2;
+  const per = getBudgetExpPercent(TotalExpenseYear2, TotalExpenseYear1);
 
   //NOTE - sets the year to get the months data
   const handleYearSelector1 = (year1) => setYear1(Number(year1));
@@ -60,14 +81,38 @@ const YearComparisionGraph = ({ isExpense }) => {
   const chartInfo = {
     title: (
       <>
-        Double Line Graph - {year1}
-        <GraphTitleSquare className={"bg-year1"} />
-        {year2}
-        <GraphTitleSquare className={"bg-year2"} />
+        <Flexcol className="gap-2.5">
+          <Flexrow className="gap-2">
+            <span>Double Line Graph - </span>
+            <GraphTitleSquare className={"bg-year1"} />
+            {year1}
+            <GraphTitleSquare className={"bg-year2"} />
+            {year2}
+          </Flexrow>
+          <Flexrow className="text-16 w-max items-center gap-1.25">
+            <span className="text-14">
+              <Icons.checkCircle className="text-year1" />
+            </span>
+            <span>Total {isExpense ? "Expense" : "Income"}</span>
+            <HorizontalDivider className="bg-white" />
+            Rs.
+            <span className="text-year1">{amountFloat(TotalExpenseYear1)}</span>
+          </Flexrow>
+
+          <Flexrow className="text-16 w-max items-center gap-1.25">
+            <span className="text-14">
+              <Icons.checkCircle className="text-year2" />
+            </span>
+            <span>Total {isExpense ? "Expense" : "Income"}</span>
+            <HorizontalDivider className="bg-white" />
+            Rs.
+            <span className="text-year2">{amountFloat(TotalExpenseYear2)}</span>
+          </Flexrow>
+        </Flexcol>
       </>
     ),
-    subtext: `${isExpense ? "Expense" : "Income"} Comparision in Year by Months`,
-    footertext: `Showing Total ${isExpense ? "Expense" : "Income"} in Year`,
+    subtext: `Graph Comparing ${isExpense ? "Expenses" : "Income"} in Year by Month`,
+    footertext: `Comparing Total ${isExpense ? "Expense" : "Income"} of Each Month in a Year `,
   };
 
   return (
@@ -99,6 +144,54 @@ const YearComparisionGraph = ({ isExpense }) => {
             chartInfo={chartInfo}
           ></DoubleLineChart>
         </Flexrow>
+        {year1 !== year2 && (
+          <>
+            <FlexrowStrip className="text-14 gap-1.25">
+              <span>In {year1} </span>
+              <span>Compared to {year2} </span>
+              <HorizontalDivider className="bg-white" />
+              <span className="text-14">
+                <Icons.checkCircle
+                  className={`${isExpense ? "text-exp" : "text-inc"}`}
+                />
+              </span>
+              <span> You are </span>
+              <span>
+                {diff < 0 && (isExpense ? "Spent less" : "Earned Less")}
+                {diff > 0 && (isExpense ? "Spent More" : "Earned More")}
+                {diff == 0 && "Break Even"}
+              </span>
+              <HorizontalDivider className="bg-white" />
+              <span className="text-12">
+                <Icons.rupee />
+              </span>
+              <span
+                className={`${diff < 0 && (isExpense ? "text-gg" : "text-rr")} ${diff > 0 && (isExpense ? "text-rr" : "text-gg")} ${diff == 0 && "text-budget"}`}
+              >
+                {amountFloat(diff)}
+              </span>
+              <HorizontalDivider className="bg-white" />
+              i.e
+              <span
+                className={` ${per > 0 && (isExpense ? "text-rr" : "text-gg")} ${per < 0 && (isExpense ? "text-gg" : "text-rr")} ${per == 0 && "text-budget"}`}
+              >
+                {per} %
+              </span>
+              <span className="text-12">
+                {per > 0 && (
+                  <Icons.graphup
+                    className={`${isExpense ? "text-rr" : "text-gg"}`}
+                  />
+                )}
+                {per < 0 && (
+                  <Icons.graphdown
+                    className={`${isExpense ? "text-gg" : "text-rr"}`}
+                  />
+                )}
+              </span>
+            </FlexrowStrip>
+          </>
+        )}
       </Flexcol>
     </>
   );

@@ -1,7 +1,8 @@
 import { filterByExpense, filterByIncome } from "@/components/utilityFilter";
-import { CurrentYear } from "@/utilities/calander-utility";
+import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { getBudgetExpPercent } from "./useBudgetConfig";
 
 const useTotalConfig = () => {
   const TotalData = useSelector((state) => state.total.data);
@@ -45,6 +46,24 @@ const useTotalConfig = () => {
     return [...new Set(TotalData.map((m) => m.year))];
   }, [TotalData]);
 
+  const createIncomeWithExpense = (income, expense) => {
+    const arr = [];
+    for (let j = 0; j < 12; j++) {
+      let i = income?.find((b) => b.month === j)?.total ?? 0;
+      let e = expense?.find((e) => e.month === j)?.total ?? 0;
+      arr.push({
+        id: j,
+        month: getMonthName(j, "MMMM"),
+        income: i,
+        expense: e,
+        percent: e == 0 || i == 0 ? "00.00" : getBudgetExpPercent(i, e),
+      });
+    }
+    console.log("arr", arr);
+
+    return arr;
+  };
+
   //console.log("MM", TotalOfMonthList);
   return {
     YearsList,
@@ -55,6 +74,7 @@ const useTotalConfig = () => {
     TotalByYear_EXP,
     TotalByYear_INC,
     getTotalOfYear,
+    createIncomeWithExpense,
   };
 };
 

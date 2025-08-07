@@ -21,7 +21,7 @@ const InfoStrip = ({ color, budget, month, isExpense, isIncome, amount }) => {
 
         {isExpense && (
           <>
-           {percent === 0 && (
+            {percent === 0 && (
               <>
                 <span className="text-rr flex items-center gap-1.25">
                   No Budget Exist
@@ -47,7 +47,7 @@ const InfoStrip = ({ color, budget, month, isExpense, isIncome, amount }) => {
 
         {isIncome && (
           <>
-           {percent === 0 && (
+            {percent === 0 && (
               <>
                 <span className="text- flex items-center gap-1.25">
                   No Budget Exist

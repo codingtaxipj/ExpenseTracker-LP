@@ -11,18 +11,14 @@ const ExpenseAnalysis = () => {
   return (
     <>
       <NavMenu activeBtn={PATH.expenseAnalysis}>
-        <AnalysisHeader isExpense/>
-        <Flexcol
-         className="pt-20">
+        <Flexcol className="pt-20">
           <SectionTitle title="Bar Graph" isExpense />
-          <SingleYearGraph isExpense />
+          <SingleYearGraph isExpense isAnalysis />
         </Flexcol>
-         <Flexcol className="pt-20">
-        <SectionTitle title="Double Line Graph" isExpense />
-        <YearComparisionGraph isExpense />
-      </Flexcol>
-       
-       
+        <Flexcol className="pt-20">
+          <SectionTitle title="Double Line Graph" isExpense />
+          <YearComparisionGraph isExpense />
+        </Flexcol>
       </NavMenu>
     </>
   );

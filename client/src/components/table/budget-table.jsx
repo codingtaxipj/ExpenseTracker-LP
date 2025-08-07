@@ -1,7 +1,7 @@
-import { TD, TH } from "./TableSection";
-import { Icons } from "./icons";
-import { amountInteger } from "./utilityFilter";
-import Flexrow from "./section/flexrow";
+import { TD, TH } from "../TableSection";
+import { Icons } from "../icons";
+import { amountInteger } from "../utilityFilter";
+import Flexrow from "../section/flexrow";
 import { useState } from "react";
 
 import {

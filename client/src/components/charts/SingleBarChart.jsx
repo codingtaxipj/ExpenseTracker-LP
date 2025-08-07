@@ -17,7 +17,6 @@ import {
 import { Icons } from "../icons";
 
 const SingleBarChart = ({
-
   barInfo = {
     data: [],
     label: "",
@@ -49,7 +48,7 @@ const SingleBarChart = ({
             </CardTitle>
           )}
           {chartInfo.subtext && (
-            <CardDescription className="text-91">
+            <CardDescription className="text-91 pt-1.25">
               {chartInfo.subtext}
             </CardDescription>
           )}
@@ -70,7 +69,7 @@ const SingleBarChart = ({
             >
               <CartesianGrid stroke="var(--color-br1)" vertical={false} />
               <XAxis
-                dataKey="Title"
+                dataKey="month"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
@@ -81,7 +80,7 @@ const SingleBarChart = ({
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="Amount" fill={color} radius={8}>
+              <Bar dataKey="expense" fill={color} radius={8}>
                 <LabelList
                   position="top"
                   offset={12}
