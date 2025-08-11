@@ -2,6 +2,7 @@ export const expenseCategories = [
   {
     id: "utlities",
     title: "Utilities & Bills",
+    color: "var(--color-utlities)",
     subcategories: [
       { id: "electricity", name: "Electricity" },
       { id: "water", name: "Water" },
@@ -17,6 +18,7 @@ export const expenseCategories = [
   {
     id: "travel",
     title: "Transportation",
+    color: "var(--color-travel)",
     subcategories: [
       { id: "fuel", name: "Fuel" },
       { id: "parking", name: "Parking Fees" },
@@ -30,6 +32,7 @@ export const expenseCategories = [
   {
     id: "food",
     title: "Food & Drinks",
+    color: "var(--color-food)",
     subcategories: [
       { id: "groceries", name: "Groceries" },
       { id: "rest", name: "Restaurant" },
@@ -43,6 +46,7 @@ export const expenseCategories = [
   {
     id: "shop",
     title: "Shopping",
+    color: "var(--color-shop)",
     subcategories: [
       { id: "cloth", name: "Clothing" },
       { id: "gadget", name: "Gadgets" },
@@ -58,6 +62,7 @@ export const expenseCategories = [
   {
     id: "health",
     title: "Medical & Healthcare",
+    color: "var(--color-health)",
     subcategories: [
       { id: "visit", name: "Doctor Visits" },
       { id: "meds", name: "Medicines" },
@@ -69,6 +74,7 @@ export const expenseCategories = [
   {
     id: "loan",
     title: "Loans & Debts",
+    color: "var(--color-loan)",
     subcategories: [
       { id: "bank", name: "Bank" },
       { id: "mortage", name: "Mortgage" },
@@ -81,6 +87,7 @@ export const expenseCategories = [
   {
     id: "edu",
     title: "Education",
+    color: "var(--color-edu)",
     subcategories: [
       { id: "school", name: "School Fees" },
       { id: "college", name: "College Fees" },
@@ -93,6 +100,7 @@ export const expenseCategories = [
   {
     id: "gift",
     title: "Gifting & Charity",
+    color: "var(--color-gift)",
     subcategories: [
       { id: "bday", name: "Birthday" },
       { id: "wed", name: "Wedding" },
@@ -106,6 +114,7 @@ export const expenseCategories = [
   {
     id: "ent",
     title: "Entertainment",
+    color: "var(--color-ent)",
     subcategories: [
       { id: "movie", name: "Movies" },
       { id: "games", name: "Games" },
@@ -119,6 +128,7 @@ export const expenseCategories = [
   {
     id: "personal",
     title: "Personal Care",
+    color: "var(--color-personal)",
     subcategories: [
       { id: "salon", name: "Salon" },
       { id: "gym", name: "GYM/Fitness" },
@@ -131,16 +141,19 @@ export const expenseCategories = [
   {
     id: "tax",
     title: "Taxation",
+    color: "var(--color-tax)",
     subcategories: [{ id: "tax", name: "Tax" }],
   },
   {
     id: "insurance",
     title: "Insurance",
+    color: "var(--color-insurance)",
     subcategories: [{ id: "insurance", name: "Insurance" }],
   },
   {
     id: "misc",
     title: "Miscellaneous Expenses",
+    color: "var(--color-misc)",
     subcategories: [{ id: "misc", name: "Miscellaneous" }],
   },
 ];
@@ -179,3 +192,7 @@ export const getSubOfPrime = (prime, isExpense) => {
     return category ? category.subcategories.map((item) => item.name) : [];
   } else return [];
 };
+
+export const getPrimeColor = (prime) =>
+  expenseCategories?.find((e) => e.title === prime)?.color ??
+  "var(--color-exp)";

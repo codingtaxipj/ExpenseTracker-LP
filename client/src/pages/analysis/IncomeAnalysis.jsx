@@ -1,4 +1,5 @@
 import AnalysisHeader from "@/components/analysis/Analysis-Header";
+import IncomeCategoryAnalysis from "@/components/analysis/Income-Category-Analysis";
 import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
 import YearComparisionGraph from "@/components/analysis/Year-Comparision-Graph";
 import NavMenu from "@/components/Navigation/NavMenu";
@@ -10,7 +11,6 @@ const IncomeAnalysis = () => {
   return (
     <>
       <NavMenu activeBtn={PATH.incomeAnalysis}>
-       
         <Flexcol className="pt-20">
           <SectionTitle title="Bar Graph" isExpense />
           <SingleYearGraph isAnalysis />
@@ -18,6 +18,10 @@ const IncomeAnalysis = () => {
         <Flexcol className="pt-20">
           <SectionTitle title="Double Line Graph" isExpense />
           <YearComparisionGraph />
+        </Flexcol>
+        <Flexcol className="pt-20">
+          <SectionTitle title="Income Analysis By Category" isExpense />
+          <IncomeCategoryAnalysis />
         </Flexcol>
       </NavMenu>
     </>

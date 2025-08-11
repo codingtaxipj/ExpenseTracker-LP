@@ -1,10 +1,10 @@
 import React from "react";
 import { TD, TH } from "../TableSection";
-import { amountFloat, amountInteger } from "../utilityFilter";
+import { amountFloat, amountInteger, amountSignedFloat } from "../utilityFilter";
 import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
 
-const BudgetExpenseTable = ({ data }) => {
+const BudgetExpenseTable = ({ data, inBudgeting }) => {
   return (
     <>
       <Flexrow>
@@ -18,6 +18,7 @@ const BudgetExpenseTable = ({ data }) => {
                 <TH className="pr-12">Month</TH>
                 <TH className="pr-8">Budget</TH>
                 <TH className="pr-8">Expense</TH>
+                {inBudgeting && <TH>Difference</TH>}
                 <TH className="pr-8">%</TH>
                 <TH className="px-5"></TH>
               </tr>
@@ -37,23 +38,34 @@ const BudgetExpenseTable = ({ data }) => {
                     </TD>
                     <TD className="h-max">
                       {b.budget == 0 ? (
-                        <span className="text-91" > --/-- </span>
+                        <span className="text-91"> --/-- </span>
                       ) : (
                         <span> {amountInteger(b.budget)} </span>
                       )}
                     </TD>
                     <TD className="h-max">
                       {b.expense == 0 ? (
-                        <span className="text-91" > --/-- </span>
+                        <span className="text-91"> --/-- </span>
                       ) : (
                         <span> {amountFloat(b.expense)} </span>
                       )}
                     </TD>
+                    {inBudgeting && (
+                      <>
+                        <TD>
+                          {b.budget == 0 ? (
+                            <span className="text-91"> --/-- </span>
+                          ) : (
+                            <span className={`${b.budget - b.expense < 0 ? "text-rr":"text-gg"}`} > {amountSignedFloat(b.budget - b.expense)} </span>
+                          )}
+                        </TD>
+                      </>
+                    )}
                     <TD
                       className={`${b.percent < 0 && "text-gg"} ${b.percent > 0 && "text-rr"} h-max`}
                     >
                       {b.percent == 0 ? (
-                        <span className="text-91" > --/-- </span>
+                        <span className="text-91"> --/-- </span>
                       ) : (
                         <span> {b.percent}% </span>
                       )}

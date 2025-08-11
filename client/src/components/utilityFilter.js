@@ -16,6 +16,8 @@ export const filterByYear = (list, year) =>
 
 export const amountFloat = (amount) =>
   numeral(Math.abs(amount)).format("00,00.0");
+export const amountSignedFloat = (amount) =>
+  numeral(amount).format("00,00.0");
 export const amountInteger = (amount) => numeral(amount).format("00,00");
 export const percentSigned = (amount) => numeral(amount).format("+00.00");
 export const percentUnSigned = (amount) => numeral(amount).format("00.00");

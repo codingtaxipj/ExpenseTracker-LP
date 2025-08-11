@@ -4,7 +4,7 @@ import ExpButton from "@/components/buttons/expButton";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
 
-import useBudgetConfig from "@/hooks/useBudgetConfig";
+import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
 
 import { CurrentYear } from "@/utilities/calander-utility";
 
@@ -21,13 +21,26 @@ import SelectFilter from "@/components/selectFilter/SelectFilter";
 import { TD, TH } from "@/components/TableSection";
 import { Icons } from "@/components/icons";
 import BudgetExpenseTable from "@/components/table/budget-expense-table";
+import FlexrowStrip from "@/components/strips/flexrow-strip";
+import { amountFloat } from "@/components/utilityFilter";
+import HorizontalDivider from "@/components/strips/horizontal-divider";
 
 const BudgetIndex = () => {
   //NOTE - TOTAL CONFIG
-  const { TotalByMonth_EXP, YearsList, getMonthListOfYear } = useTotalConfig();
+  const {
+    TotalByMonth_EXP,
+    TotalByYear_EXP,
+    YearsList,
+    getMonthListOfYear,
+    getTotalOfYear,
+  } = useTotalConfig();
   //NOTE - BUDGET CONFIG
-  const { getBudgetListOfYear, BudgetByMonth, createBudgetWithExpense } =
-    useBudgetConfig();
+  const {
+    getBudgetListOfYear,
+    BudgetByMonth,
+    createBudgetWithExpense,
+    getTotalBudgetOfYear,
+  } = useBudgetConfig();
   //NOTE - year state
   const [year, setYear] = useState(CurrentYear());
   //NOTE - sets the year to get the months data
@@ -43,6 +56,17 @@ const BudgetIndex = () => {
     BudgetEachMonth,
     ExpenseEachMonth,
   );
+
+  const TotalBudgetYear = getTotalBudgetOfYear(BudgetByMonth, year);
+  const TotalExpenseYear = getTotalOfYear(TotalByYear_EXP, year);
+  const BE_Difference = TotalBudgetYear - TotalExpenseYear;
+
+  const BE_Percent = TotalBudgetYear
+    ? getBudgetExpPercent(TotalBudgetYear, TotalExpenseYear)
+    : null;
+
+  const diff = BE_Difference;
+  const per = BE_Percent;
 
   return (
     <>
@@ -75,7 +99,52 @@ const BudgetIndex = () => {
             </SelectCard>
           </SelectBar>
         </Flexrow>
-        <BudgetExpenseTable data={BudgetExpenseCombo} />
+
+        <Flexcol>
+          {per === null && <><FlexrowStrip>NO Budget Exist To Show Data of Year <span className="text-budget">{year}</span></FlexrowStrip></>}
+          {per !== null && (
+            <>
+              <BudgetExpenseTable inBudgeting data={BudgetExpenseCombo} />
+              <FlexrowStrip className="text-14 gap-1.25">
+                <span>Comparatively in {year} </span>
+                <HorizontalDivider className="bg-white" />
+                <span className="text-14">
+                  <Icons.checkCircle className={`${"text-budget"}`} />
+                </span>
+                <span> You are </span>
+                <span>
+                  {diff > 0 && "Under Budget"}
+                  {diff < 0 && "Over Budget"}
+                  {diff == 0 && "Break Even"}
+                </span>
+                <HorizontalDivider className="bg-white" />
+                <span>
+                  {diff > 0 && "You Saved"}
+                  {diff < 0 && "Your Over Spent"}
+                </span>
+                <span className="text-12">
+                  <Icons.rupee />
+                </span>
+                <span
+                  className={`${diff > 0 && "text-gg"} ${diff < 0 && "text-rr"} ${diff == 0 && "text-budget"}`}
+                >
+                  {amountFloat(diff)}
+                </span>
+                <HorizontalDivider className="bg-white" />
+                i.e
+                <span
+                  className={`${per < 0 && "text-gg"} ${per > 0 && "text-rr"} ${per == 0 && "text-budget"}`}
+                >
+                  {per} %
+                </span>
+                <span className="text-12">
+                  {per < 0 && <Icons.graphdown className="text-gg" />}
+                  {per > 0 && <Icons.graphup className="text-rr" />}
+                </span>
+              </FlexrowStrip>
+            </>
+          )}
+        </Flexcol>
 
         <Flexrow className="flex-wrap items-center">
           <div className="flex flex-wrap gap-5">

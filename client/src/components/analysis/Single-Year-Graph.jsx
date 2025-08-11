@@ -320,8 +320,10 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
     </>
   );
 };
-export const GraphTitleSquare = ({ className }) => {
-  return <div className={cn("size-4 rounded-xs", className)}></div>;
+export const GraphTitleSquare = ({ style, className }) => {
+  return (
+    <div style={style} className={cn("size-4 rounded-xs", className)}></div>
+  );
 };
 
 export const TimelineDots = ({ range }) => {

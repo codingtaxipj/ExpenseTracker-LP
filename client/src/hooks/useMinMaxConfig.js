@@ -1,7 +1,8 @@
+import { filterByExpense } from "@/components/utilityFilter";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-const useMinMax = () => {
+const useMinMaxConfig = () => {
   const MinMaxData = useSelector((state) => state.MM.data);
 
   const MMofMonth = useMemo(() => {
@@ -19,8 +20,13 @@ const useMinMax = () => {
       year: mm.year,
       min: mm.minPrime,
       max: mm.maxPrime,
+      isTypeExpense: mm.isTypeExpense,
     }));
   }, [MinMaxData]);
+
+  const MMofPrime_EXP = filterByExpense(MMofPrime);
+  const MMgetPrimeofYear = (list, year) =>
+    list?.find((l) => l.year === year) ?? [];
 
   const MMofSub = useMemo(() => {
     if (!Array.isArray(MinMaxData)) return null;
@@ -31,7 +37,7 @@ const useMinMax = () => {
     }));
   }, [MinMaxData]);
 
-  return {};
+  return { MMofPrime_EXP, MMgetPrimeofYear };
 };
 
-export default useMinMax;
+export default useMinMaxConfig;

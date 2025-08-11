@@ -6,6 +6,7 @@ import YearComparisionGraph from "@/components/analysis/Year-Comparision-Graph";
 import SectionTitle from "@/components/section/section-title";
 import Flexcol from "@/components/section/flexcol";
 import AnalysisHeader from "@/components/analysis/Analysis-Header";
+import ExpenseCategoryAnalysis from "@/components/analysis/Expense-Category-Analysis";
 
 const ExpenseAnalysis = () => {
   return (
@@ -18,6 +19,10 @@ const ExpenseAnalysis = () => {
         <Flexcol className="pt-20">
           <SectionTitle title="Double Line Graph" isExpense />
           <YearComparisionGraph isExpense />
+        </Flexcol>
+        <Flexcol className="pt-20">
+          <SectionTitle title="Expense By Category Analysis" isExpense />
+          <ExpenseCategoryAnalysis />
         </Flexcol>
       </NavMenu>
     </>

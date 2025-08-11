@@ -15,9 +15,9 @@ const useTotalConfig = () => {
       isTypeExpense: m.isTypeExpense,
     }));
   }, [TotalData]);
-
   const TotalByYear_EXP = filterByExpense(TotalByYear);
   const TotalByYear_INC = filterByIncome(TotalByYear);
+
   //NOTE - gets the total of given year (mostly used card)
   const getTotalOfYear = (list, year) =>
     list?.find((l) => l.year === year)?.total ?? [];
@@ -30,9 +30,9 @@ const useTotalConfig = () => {
       isTypeExpense: m.isTypeExpense,
     }));
   }, [TotalData]);
-
   const TotalByMonth_EXP = filterByExpense(TotalByMonth);
   const TotalByMonth_INC = filterByIncome(TotalByMonth);
+
   //NOTE - gets the monthList of given year (mostly used in graph)
   const getMonthListOfYear = (list, year) =>
     list?.find((l) => l.year === year)?.monthList ?? [];
@@ -59,10 +59,38 @@ const useTotalConfig = () => {
         percent: e == 0 || i == 0 ? "00.00" : getBudgetExpPercent(i, e),
       });
     }
-    console.log("arr", arr);
 
     return arr;
   };
+
+  const TotalByPrime = useMemo(() => {
+    if (!Array.isArray(TotalData)) return null;
+    return TotalData.map((m) => ({
+      year: m.year,
+      primeList: m.primeList,
+      isTypeExpense: m.isTypeExpense,
+    }));
+  }, [TotalData]);
+  const TotalByPrime_EXP = filterByExpense(TotalByPrime);
+  const TotalByPrime_INC = filterByIncome(TotalByPrime);
+
+  const getPrimeListOfYear = (list, year = CurrentYear()) =>
+    list?.find((l) => l.year === year)?.primeList ?? [];
+
+  const TotalBySub = useMemo(() => {
+    if (!Array.isArray(TotalData)) return null;
+    return TotalData.map((m) => ({
+      year: m.year,
+      subList: m.subList,
+      isTypeExpense: m.isTypeExpense,
+    }));
+  }, [TotalData]);
+  const TotalBySub_EXP = filterByExpense(TotalBySub);
+  const TotalBySub_INC = filterByIncome(TotalBySub);
+  const getSubListOfYear = (list, year) =>
+    list?.find((l) => l.year === year)?.subList ?? [];
+
+  console.log("primeT", TotalByYear_EXP);
 
   //console.log("MM", TotalOfMonthList);
   return {
@@ -75,6 +103,12 @@ const useTotalConfig = () => {
     TotalByYear_INC,
     getTotalOfYear,
     createIncomeWithExpense,
+    TotalByPrime_EXP,
+    TotalByPrime_INC,
+    getPrimeListOfYear,
+    TotalBySub_EXP,
+    TotalBySub_INC,
+    getSubListOfYear,
   };
 };
 

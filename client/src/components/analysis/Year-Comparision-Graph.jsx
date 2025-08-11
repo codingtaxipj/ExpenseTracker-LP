@@ -2,15 +2,6 @@ import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import DoubleLineChart from "../charts/DoubleLineChart";
-
-import TotalCard from "../cards/TotalCard";
-import YearCompareCard from "./YearCompareCard";
-import InfoStrip from "../strips/info-strip";
-import MinMaxStrip from "../strips/min-max-strip";
-import BudgetStrip from "../strips/budget-strip";
-import BudgetMonth from "./BudgetMonth";
-
-import SectionTitle from "../section/section-title";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useState } from "react";
