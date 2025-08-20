@@ -98,7 +98,7 @@ const useBudgetConfig = () => {
           : (budget?.find((b) => b.month === i)?.budget ?? 0);
       let e = expense?.find((e) => e.month === i)?.total ?? 0;
 
-      console.log("BE", b, e);
+    
 
       arr.push({
         id: i,
@@ -108,7 +108,7 @@ const useBudgetConfig = () => {
         percent: e == 0 || b == 0 ? "00.00" : getBudgetExpPercent(b, e),
       });
     }
-    console.log("arr", arr);
+  
 
     return arr;
   };

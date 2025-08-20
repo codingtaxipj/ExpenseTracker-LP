@@ -86,7 +86,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
           </ChartContainer>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <div className="text-91 text-14 flex gap-2 pt-5 leading-none">
+          <div className="text-91 text-14px flex gap-2 pt-8 leading-none">
             <Icons.textline /> {chartInfo.footertext}
           </div>
         </CardFooter>

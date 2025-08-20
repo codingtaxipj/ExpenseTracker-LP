@@ -95,7 +95,7 @@ const BarChartSection = ({ entries, isExpense }) => {
   const chartData = GraphConfig.graphData || [];
 
   const handleSelectMonthChange = (value) => {
-    console.log(value);
+  
     if (value === Graph.inMonth.asWeek) {
       setShowGraphBy(Graph.byMonth.asWeek);
     } else {

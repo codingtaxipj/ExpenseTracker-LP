@@ -10,14 +10,14 @@ const monthList = new Schema(
     month: { type: Number, required: true, index: true },
     total: { type: Number, required: true },
   },
-  { _id: false }
+  { _id: false, }
 );
 const primeList = new Schema(
   {
     name: { type: String, required: true, index: true },
     total: { type: Number, required: true },
   },
-  { _id: false }
+  { _id: false, }
 );
 const subList = new Schema(
   {
@@ -26,7 +26,7 @@ const subList = new Schema(
     total: { type: Number, required: true },
     monthList: [monthList],
   },
-  { _id: false }
+  { _id: false, }
 );
 const totalSchema = new Schema(
   {
@@ -57,6 +57,7 @@ const totalSchema = new Schema(
   {
     collection: "default-total", // <-- this line overrides pluralization of adding "s" at last of collection name
     timestamps: true,
+  
   }
 );
 totalSchema.index({ userID: 1, year: 1, isTypeExpense: 1 }, { unique: true });

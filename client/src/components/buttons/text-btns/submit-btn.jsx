@@ -4,7 +4,7 @@ import BaseBtn from "../base-btn";
 const SubmitBtn = ({ ...props }) => {
   return (
     <BaseBtn {...props}>
-      <span className="text-14"> Submit </span>
+      <span className="text-14px"> Submit </span>
     </BaseBtn>
   );
 };

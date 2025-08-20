@@ -18,7 +18,6 @@ import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 
-import { TD, TH } from "@/components/TableSection";
 import { Icons } from "@/components/icons";
 import BudgetExpenseTable from "@/components/table/budget-expense-table";
 import FlexrowStrip from "@/components/strips/flexrow-strip";
@@ -101,14 +100,21 @@ const BudgetIndex = () => {
         </Flexrow>
 
         <Flexcol>
-          {per === null && <><FlexrowStrip>NO Budget Exist To Show Data of Year <span className="text-budget">{year}</span></FlexrowStrip></>}
+          {per === null && (
+            <>
+              <FlexrowStrip>
+                NO Budget Exist To Show Data of Year{" "}
+                <span className="text-budget">{year}</span>
+              </FlexrowStrip>
+            </>
+          )}
           {per !== null && (
             <>
               <BudgetExpenseTable inBudgeting data={BudgetExpenseCombo} />
-              <FlexrowStrip className="text-14 gap-1.25">
+              <FlexrowStrip className="text-14px gap-1.25">
                 <span>Comparatively in {year} </span>
                 <HorizontalDivider className="bg-white" />
-                <span className="text-14">
+                <span className="text-14px">
                   <Icons.checkCircle className={`${"text-budget"}`} />
                 </span>
                 <span> You are </span>
@@ -122,7 +128,7 @@ const BudgetIndex = () => {
                   {diff > 0 && "You Saved"}
                   {diff < 0 && "Your Over Spent"}
                 </span>
-                <span className="text-12">
+                <span className="text-12px">
                   <Icons.rupee />
                 </span>
                 <span
@@ -137,7 +143,7 @@ const BudgetIndex = () => {
                 >
                   {per} %
                 </span>
-                <span className="text-12">
+                <span className="text-12px">
                   {per < 0 && <Icons.graphdown className="text-gg" />}
                   {per > 0 && <Icons.graphup className="text-rr" />}
                 </span>
@@ -159,7 +165,7 @@ const BudgetIndex = () => {
             ))} */}
           </div>
         </Flexrow>
-        <Flexrow className="text-14 items-center justify-start font-medium">
+        <Flexrow className="text-14px items-center justify-start font-medium">
           <ExpButton label={"Check Analysis"} btnfor={"expense"} />
           <h4>For Detailed Budget Analysis</h4>
         </Flexrow>

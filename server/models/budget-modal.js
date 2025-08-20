@@ -10,7 +10,7 @@ const budgetlist = new Schema(
     month: { type: Number, required: true, index: true },
     budget: { type: Number, required: true },
   },
-  { _id: false, timestamps: true }
+  { _id: false, timestamps: true, }
 );
 const budgetSchema = new Schema(
   {
@@ -30,6 +30,8 @@ const budgetSchema = new Schema(
   {
     collection: "default-budget",
     // NOTE - this line overrides pluralization of adding "s" at last of collection name
+ 
+    timestamps: true,
   }
 );
 

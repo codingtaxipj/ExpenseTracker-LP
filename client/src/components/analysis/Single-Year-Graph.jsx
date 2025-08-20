@@ -3,7 +3,7 @@ import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import SingleBarChart from "../charts/SingleBarChart";
-import MinMaxStrip from "../strips/min-max-strip";
+
 import Flexrow from "../section/flexrow";
 import Flexcol from "../section/flexcol";
 import useTotalConfig from "@/hooks/useTotalConfig";
@@ -14,21 +14,14 @@ import {
 } from "@/utilities/calander-utility";
 import { cn } from "@/lib/utils";
 import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { Icons } from "../icons";
 import FlexrowStrip from "../strips/flexrow-strip";
 import HorizontalDivider from "../strips/horizontal-divider";
 import TooltipStrip from "../strips/tooltip-strip";
 import BudgetPercentStrip from "../strips/budget-percent-strip";
 import { amountFloat } from "../utilityFilter";
-import { TD, TH } from "../TableSection";
+
 import TotalCardForYear from "../cards/total-card-for-year";
 import TotalBudgetCard from "../cards/total-budget-card";
 import BudgetExpenseTable from "../table/budget-expense-table";
@@ -107,12 +100,19 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   /** ============================================================ */
 
   //NOTE - chart data for graph
-  const chartData = [
-    ...BudgetExpenseCombo.map((be) => ({
-      month: be.month,
-      expense: be.expense,
-    })),
-  ];
+  const chartData = isExpense
+    ? [
+        ...BudgetExpenseCombo.map((be) => ({
+          month: be.month,
+          amount: be.expense,
+        })),
+      ]
+    : [
+        ...IncomeExpenseCombo.map((ie) => ({
+          month: ie.month,
+          amount: ie.income,
+        })),
+      ];
 
   const barInfo = {
     data: chartData,
@@ -125,8 +125,8 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
       <>
         <GraphTitleSquare className={isExpense ? "bg-exp" : "bg-inc"} />
         <span className="mr-2.5"> Bar Graph - {year}</span>
-        <Flexrow className="text-16 w-max items-center gap-1.25">
-          <span className="text-14">
+        <Flexrow className="text-16px w-max items-center gap-1.25">
+          <span className="text-14px">
             <Icons.checkCircle
               className={isExpense ? "text-exp" : "text-inc"}
             />
@@ -185,8 +185,8 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
               <Flexrow className="items-center gap-2 pb-5">
                 <GraphTitleSquare className={"bg-budget"} />
                 <span className="mr-2.5 font-medium"> Ratio - {year}</span>
-                <FlexrowStrip className="text-14 gap-1.25">
-                  <span className="text-14">
+                <FlexrowStrip className="text-14px gap-1.25">
+                  <span className="text-14px">
                     <Icons.checkCircle className="text-budget" />
                   </span>
                   <span>Total Budget</span>
@@ -196,8 +196,8 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
                     {amountFloat(TotalBudgetYear)}
                   </span>
                 </FlexrowStrip>
-                <FlexrowStrip className="text-14 gap-1.25">
-                  <span className="text-14">
+                <FlexrowStrip className="text-14px gap-1.25">
+                  <span className="text-14px">
                     <Icons.checkCircle className="text-exp" />
                   </span>
                   <span>Total Expense</span>
@@ -207,12 +207,12 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
                     {amountFloat(TotalExpenseYear)}
                   </span>
                 </FlexrowStrip>
-                <FlexrowStrip className="text-14 gap-1.25">
-                  <span className="text-14">
+                <FlexrowStrip className="text-14px gap-1.25">
+                  <span className="text-14px">
                     <Icons.checkCircle className="text-white" />
                   </span>
                   <span>{BE_Percent}%</span>
-                  <span className="text-14">
+                  <span className="text-14px">
                     {BE_Percent < 0 && <Icons.graphdown className="text-gg" />}
                     {BE_Percent > 0 && <Icons.graphup className="text-rr" />}
                   </span>
@@ -224,13 +224,13 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
                   <Flexcol>
                     <Flexrow className="items-center justify-between gap-2 py-2.5">
                       <span
-                        className={`text-14 min-w-[70px] cursor-pointer text-right font-medium ${br.start === CurrentMonth() && `bg-exp rounded-[5px] !text-center text-white`}`}
+                        className={`text-14px min-w-[70px] cursor-pointer text-right font-medium ${br.start === CurrentMonth() && `bg-exp rounded-[5px] !text-center text-white`}`}
                       >
                         {getMonthName(br.start, "MMMM")}
                       </span>
                       <TimelineDots range={br} />
                       <span
-                        className={`text-14 min-w-[70px] cursor-pointer text-left font-medium ${br.end === CurrentMonth() && `bg-exp rounded-[5px] !text-center text-white`}`}
+                        className={`text-14px min-w-[70px] cursor-pointer text-left font-medium ${br.end === CurrentMonth() && `bg-exp rounded-[5px] !text-center text-white`}`}
                       >
                         {getMonthName(br.end, "MMMM")}
                       </span>
@@ -274,10 +274,10 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
 
           {per !== null && (
             <>
-              <FlexrowStrip className="text-14 gap-1.25">
+              <FlexrowStrip className="text-14px gap-1.25">
                 <span>Comparatively in {year} </span>
                 <HorizontalDivider className="bg-white" />
-                <span className="text-14">
+                <span className="text-14px">
                   <Icons.checkCircle
                     className={`${isExpense ? "text-budget" : "text-inc"}`}
                   />
@@ -293,7 +293,7 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
                   {diff > 0 && "You Saved"}
                   {diff < 0 && "Your Over Spent"}
                 </span>
-                <span className="text-12">
+                <span className="text-12px">
                   <Icons.rupee />
                 </span>
                 <span
@@ -308,7 +308,7 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
                 >
                   {per} %
                 </span>
-                <span className="text-12">
+                <span className="text-12px">
                   {per < 0 && <Icons.graphdown className="text-gg" />}
                   {per > 0 && <Icons.graphup className="text-rr" />}
                 </span>

@@ -77,6 +77,9 @@ const useTotalConfig = () => {
   const getPrimeListOfYear = (list, year = CurrentYear()) =>
     list?.find((l) => l.year === year)?.primeList ?? [];
 
+  const sortByMax = (list = []) =>
+    [...list].sort((a, b) => b.total - a.total).slice(0, 5);
+
   const TotalBySub = useMemo(() => {
     if (!Array.isArray(TotalData)) return null;
     return TotalData.map((m) => ({
@@ -90,9 +93,6 @@ const useTotalConfig = () => {
   const getSubListOfYear = (list, year) =>
     list?.find((l) => l.year === year)?.subList ?? [];
 
-  console.log("primeT", TotalByYear_EXP);
-
-  //console.log("MM", TotalOfMonthList);
   return {
     YearsList,
     TotalByMonth_EXP,
@@ -109,6 +109,7 @@ const useTotalConfig = () => {
     TotalBySub_EXP,
     TotalBySub_INC,
     getSubListOfYear,
+    sortByMax,
   };
 };
 

@@ -1,4 +1,4 @@
-import { TD, TH } from "../TableSection";
+
 import { Icons } from "../icons";
 import { amountInteger } from "../utilityFilter";
 import Flexrow from "../section/flexrow";
@@ -12,6 +12,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { getDate, getMonthName } from "@/utilities/calander-utility";
+import TH from "./TH";
+import TD from "./TD";
 
 const BudgetTable = ({ list }) => {
   //Pagination
@@ -49,7 +51,7 @@ const BudgetTable = ({ list }) => {
                   </Flexrow>
                 </TD>
                 <TD className="pr-5">
-                  <Flexrow className="text-12 items-center !gap-1.5">
+                  <Flexrow className="text-12px items-center !gap-1.5">
                     <Icons.dayCal />
                     <span>{getDate(item.createdAt)}</span>
                   </Flexrow>

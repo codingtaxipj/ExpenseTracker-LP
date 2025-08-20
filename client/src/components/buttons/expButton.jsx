@@ -19,7 +19,7 @@ const ExpButton = ({ isIcon, btnfor, label, className = "", ...props }) => {
       {isIcon && (
         <button
           {...props}
-          className={`${getColor(btnfor)} text-16 cursor-pointer rounded-sm size-6.25 flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
+          className={`${getColor(btnfor)} text-16px flex size-6.25 cursor-pointer items-center justify-center rounded-sm disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
         >
           {label}
         </button>
@@ -27,7 +27,7 @@ const ExpButton = ({ isIcon, btnfor, label, className = "", ...props }) => {
       {!isIcon && (
         <button
           {...props}
-          className={`${getColor(btnfor)} text-14 cursor-pointer rounded-md px-5 py-1 disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
+          className={`${getColor(btnfor)} text-14px cursor-pointer rounded-md px-5 py-1 disabled:cursor-not-allowed disabled:opacity-80 ${className}`}
         >
           {label}
         </button>

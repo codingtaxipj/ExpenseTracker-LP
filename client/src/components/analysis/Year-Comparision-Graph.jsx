@@ -80,8 +80,8 @@ const YearComparisionGraph = ({ isExpense }) => {
             <GraphTitleSquare className={"bg-year2"} />
             {year2}
           </Flexrow>
-          <Flexrow className="text-16 w-max items-center gap-1.25">
-            <span className="text-14">
+          <Flexrow className="text-16px w-max items-center gap-1.25">
+            <span className="text-14px">
               <Icons.checkCircle className="text-year1" />
             </span>
             <span>Total {isExpense ? "Expense" : "Income"}</span>
@@ -90,8 +90,8 @@ const YearComparisionGraph = ({ isExpense }) => {
             <span className="text-year1">{amountFloat(TotalExpenseYear1)}</span>
           </Flexrow>
 
-          <Flexrow className="text-16 w-max items-center gap-1.25">
-            <span className="text-14">
+          <Flexrow className="text-16px w-max items-center gap-1.25">
+            <span className="text-14px">
               <Icons.checkCircle className="text-year2" />
             </span>
             <span>Total {isExpense ? "Expense" : "Income"}</span>
@@ -137,11 +137,11 @@ const YearComparisionGraph = ({ isExpense }) => {
         </Flexrow>
         {year1 !== year2 && (
           <>
-            <FlexrowStrip className="text-14 gap-1.25">
+            <FlexrowStrip className="text-14px gap-1.25">
               <span>In {year1} </span>
               <span>Compared to {year2} </span>
               <HorizontalDivider className="bg-white" />
-              <span className="text-14">
+              <span className="text-14px">
                 <Icons.checkCircle
                   className={`${isExpense ? "text-exp" : "text-inc"}`}
                 />
@@ -153,7 +153,7 @@ const YearComparisionGraph = ({ isExpense }) => {
                 {diff == 0 && "Break Even"}
               </span>
               <HorizontalDivider className="bg-white" />
-              <span className="text-12">
+              <span className="text-12px">
                 <Icons.rupee />
               </span>
               <span
@@ -168,7 +168,7 @@ const YearComparisionGraph = ({ isExpense }) => {
               >
                 {per} %
               </span>
-              <span className="text-12">
+              <span className="text-12px">
                 {per > 0 && (
                   <Icons.graphup
                     className={`${isExpense ? "text-rr" : "text-gg"}`}
@@ -284,7 +284,7 @@ const YearComparisionGraph = ({ isExpense }) => {
         </div>
         <div className="flex flex-col gap-5">
           <div className="flex gap-5">
-            <span className="text-year1 shadow-shadowBlack bg-gradBot text-14 flex h-7 items-center rounded-md px-2 font-medium shadow-md">
+            <span className="text-year1 shadow-shadowBlack bg-gradBot text-14px flex h-7 items-center rounded-md px-2 font-medium shadow-md">
               2025
             </span>
             <BudgetStrip amount={20000} color="text-year1" />
@@ -297,7 +297,7 @@ const YearComparisionGraph = ({ isExpense }) => {
             ))}
           </div>
           <div className="flex gap-5">
-            <span className="text-year2 shadow-shadowBlack bg-gradBot text-14 flex h-7 items-center rounded-md px-2 font-medium shadow-md">
+            <span className="text-year2 shadow-shadowBlack bg-gradBot text-14px flex h-7 items-center rounded-md px-2 font-medium shadow-md">
               2025
             </span>
             <BudgetStrip amount={20000} color="text-year2" />

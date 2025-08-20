@@ -1,44 +1,17 @@
+import { getPrimeColor } from "@/global/categories";
 import IconAvatar from "./IconAvatar";
-import { expenseCategories } from "@/global/icon-data";
-import { incomeCategories } from "@/global/icon-data";
+import { cn } from "@/lib/utils";
 
-const IconCircle = ({ setIcon, bgColor }) => {
-  const color = () => {
-    switch (bgColor) {
-      case expenseCategories.utlities.thisCategoryTitle:
-        return "bg-util";
-      case expenseCategories.travel.thisCategoryTitle:
-        return "bg-travel";
-      case expenseCategories.food.thisCategoryTitle:
-        return "bg-food";
-      case expenseCategories.shop.thisCategoryTitle:
-        return "bg-shop";
-      case expenseCategories.health.thisCategoryTitle:
-        return "bg-health";
-      case expenseCategories.loan.thisCategoryTitle:
-        return "bg-loan";
-      case expenseCategories.edu.thisCategoryTitle:
-        return "bg-edu";
-      case expenseCategories.gift.thisCategoryTitle:
-        return "bg-gift";
-      case expenseCategories.ent.thisCategoryTitle:
-        return "bg-ent";
-      case expenseCategories.personal.thisCategoryTitle:
-        return "bg-personal";
-      case expenseCategories.tax.thisCategoryTitle:
-        return "bg-tax";
-      case expenseCategories.insurance.thisCategoryTitle:
-        return "bg-insurance";
-      case expenseCategories.misc.thisCategoryTitle:
-        return "bg-misc";
-      case incomeCategories.income.thisCategoryTitle:
-        return "bg-inc";
-    }
-  };
-  const style = `flex w-fit items-center justify-center rounded-full p-2 text-[20px] text-white ${color()}`;
+const IconCircle = ({ setIcon, bgColor, className }) => {
   return (
     <>
-      <div className={style}>
+      <div
+        className={cn(
+          "!text-16px flex w-fit items-center justify-center rounded-full p-2.5 text-white",
+          className,
+        )}
+        style={{ backgroundColor: getPrimeColor(bgColor) }}
+      >
         <IconAvatar icon={setIcon} />
       </div>
     </>

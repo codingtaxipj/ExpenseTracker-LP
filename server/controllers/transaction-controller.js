@@ -1,6 +1,10 @@
 /* eslint-disable no-undef */
 
-import { expenseModal, incomeModal } from "../models/transaction-modal.js";
+import {
+  expenseModal,
+  incomeModal,
+  recurringExpModal,
+} from "../models/transaction-modal.js";
 
 /* NOTE - transactionFormController
  ** it will take the validated form data and then inject into the DB
@@ -19,6 +23,23 @@ const insertExpense = async (req, res, next) => {
     return res
       .status(500)
       .json({ message: error.message || "Failed to Add Expense" });
+  }
+};
+
+const insertRecurringExpense = async (req, res) => {
+  try {
+    const data = req.body;
+    const entry = recurringExpModal(data);
+    await entry.save();
+    res
+      .status(201)
+      .json({ message: "Recurring Expense inserted successfully!" });
+  
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to Add Recurring Expense" });
   }
 };
 
@@ -53,6 +74,21 @@ const fetchExpense = async (req, res) => {
   }
 };
 
+const fetchRecurringExpense = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const data = await recurringExpModal.find({ userID }).sort({ onDate: -1 });
+    // -1 latest transactionon top
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.message || "Failed to Fetch Recurring Expense Data",
+    });
+  }
+};
+
 const fetchIncome = async (req, res) => {
   try {
     const { userID } = req.params;
@@ -67,4 +103,11 @@ const fetchIncome = async (req, res) => {
   }
 };
 
-export { insertExpense, insertIncome, fetchExpense, fetchIncome };
+export {
+  insertExpense,
+  insertRecurringExpense,
+  insertIncome,
+  fetchExpense,
+  fetchRecurringExpense,
+  fetchIncome,
+};

@@ -5,7 +5,7 @@ const BaseIconBtn = ({ className, children, ...props }) => {
     <button
       {...props}
       className={cn(
-        "text-16 cursor-pointer rounded-sm p-1.25 disabled:cursor-not-allowed disabled:opacity-80",
+        "text-16px cursor-pointer rounded-sm p-1.25 disabled:cursor-not-allowed disabled:opacity-80",
         className,
       )}
     >

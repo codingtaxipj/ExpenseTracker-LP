@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/chart";
 
 import { Icons } from "../icons";
+import { amountFloat } from "../utilityFilter";
 
 const SingleBarChart = ({
   barInfo = {
@@ -80,12 +81,13 @@ const SingleBarChart = ({
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="expense" fill={color} radius={8}>
+              <Bar dataKey="amount" fill={color} radius={8}>
                 <LabelList
                   position="top"
                   offset={12}
                   className="fill-[white]"
                   fontSize={12}
+                  formatter={(value) => amountFloat(value)}
                 />
               </Bar>
             </BarChart>
@@ -93,7 +95,7 @@ const SingleBarChart = ({
         </CardContent>
         {chartInfo.footertext && (
           <CardFooter className="flex-col gap-2">
-            <div className="text-91 flex gap-2 pt-5 text-sm leading-none">
+            <div className="text-91 flex gap-2 pt-8 text-sm leading-none">
               <Icons.textline /> {chartInfo.footertext}
             </div>
           </CardFooter>

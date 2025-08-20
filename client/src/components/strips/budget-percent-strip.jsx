@@ -13,10 +13,10 @@ const BudgetPercentStrip = ({ data }) => {
     <>
       <FlexrowStrip
         key={d.id}
-        className={`${d.id === CurrentMonth() ? "bg-exp" : ""} text-12`}
+        className={`${d.id === CurrentMonth() ? "bg-exp" : ""} text-12px`}
       >
         <Flexrow className="w-max items-center gap-1">
-          <span className="text-14">
+          <span className="text-14px">
             <Icons.checkCircle
               className={`${d.id === CurrentMonth() ? "text-white" : "text-exp"}`}
             />
@@ -26,7 +26,7 @@ const BudgetPercentStrip = ({ data }) => {
 
         <HorizontalDivider className="bg-white" />
         <Flexrow className="w-max items-center gap-1">
-          <span className="text-12">
+          <span className="text-12px">
             <Icons.rupee />
           </span>
           <span>{amountFloat(d.expense)}</span>
@@ -36,7 +36,7 @@ const BudgetPercentStrip = ({ data }) => {
           className={`w-max items-center gap-1 ${d.id === CurrentMonth() ? "text-white" : d.percent <= 0 ? "text-gg" : "text-rr"}`}
         >
           <span>{d.percent}%</span>
-          <span className="text-12">
+          <span className="text-12px">
             {d.percent < 0 && <Icons.graphdown />}
             {d.percent > 0 && <Icons.graphup />}
           </span>

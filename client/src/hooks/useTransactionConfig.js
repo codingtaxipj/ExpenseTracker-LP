@@ -15,9 +15,6 @@ const useTransactionConfig = () => {
     return IncomeData;
   }, [IncomeData]);
 
-
-  
-
   return { ExpenseList, IncomeList };
 };
 

@@ -98,7 +98,7 @@ const ExpenseCategoryAnalysis = () => {
             <Flexrow className="items-center gap-2 font-medium">
               <GraphTitleSquare className={"bg-exp"} />
               <span className="pr-2">Prime Category - {year} </span>
-              <span className="text-14">
+              <span className="text-14px">
                 <Icons.checkCircle className="text-exp" />
               </span>
               <span>Total Expense </span>
@@ -107,7 +107,7 @@ const ExpenseCategoryAnalysis = () => {
               <span className="text-exp">{amountFloat(TotalExpenseYear)}</span>
             </Flexrow>
             <Flexrow className={"gap-2 pb-5"}>
-              <span className="!text-14 text-91">
+              <span className="!text-14px text-91">
                 Bars Showing Expense in a Year by Category
               </span>
             </Flexrow>
@@ -121,13 +121,13 @@ const ExpenseCategoryAnalysis = () => {
                   checked={selected === idx}
                 ></Checkbox>
                 <Flexcol className="gap-1.5">
-                  <Flexrow className={"text-14 items-center gap-2"}>
+                  <Flexrow className={"text-14px items-center gap-2"}>
                     <GraphTitleSquare
                       className={"size-3"}
                       style={{ backgroundColor: getPrimeColor(m.name) }}
                     />
                     <span>{m.name}</span>
-                    <span className="text-14 pl-2">
+                    <span className="text-14px pl-2">
                       <Icons.checkCircle
                         style={{ color: getPrimeColor(m.name) }}
                       />
@@ -135,7 +135,7 @@ const ExpenseCategoryAnalysis = () => {
 
                     <Flexrow className={"w-max items-center gap-0.25"}>
                       {" "}
-                      <Icons.rupee className="text-12 pr-1" />{" "}
+                      <Icons.rupee className="text-12px pr-1" />{" "}
                       {amountFloat(m.total)}
                     </Flexrow>
                   </Flexrow>
@@ -148,7 +148,7 @@ const ExpenseCategoryAnalysis = () => {
             ))}
             <Flexrow
               className={
-                "!text-14 text-91 items-center justify-center gap-2 pt-5"
+                "!text-14px text-91 items-center justify-center gap-2 pt-5"
               }
             >
               <Icons.textline /> Showing Total Expense of Each Prime Categories
@@ -163,21 +163,24 @@ const ExpenseCategoryAnalysis = () => {
             </Flexrow>
             <Flexrow
               className={
-                "!text-14 text-91 items-center justify-center gap-2 pb-8"
+                "!text-14px text-91 items-center justify-center gap-2 pb-8"
               }
             >
               Expenses in Each Sub Categories of Selected Prime Category
             </Flexrow>
             {SubCat.map((sc, idx) => (
               <>
-                <FlexrowStrip key={idx} className="text-14 items-center gap-2">
-                  <span className="text-14">
+                <FlexrowStrip
+                  key={idx}
+                  className="text-14px items-center gap-2"
+                >
+                  <span className="text-14px">
                     <Icons.checkCircle className={`${"text-exp"}`} />
                   </span>
                   <span>{sc.subName}</span>
                   <HorizontalDivider className="mx-0.25 bg-white" />
                   <Flexrow className={"w-max items-center gap-0.75"}>
-                    <span className="text-12">
+                    <span className="text-12px">
                       <Icons.rupee />
                     </span>
                     <span>{sc.total}</span>
@@ -186,18 +189,18 @@ const ExpenseCategoryAnalysis = () => {
               </>
             ))}
             <Flexrow className={"items-center gap-2 pt-8 font-medium"}>
-              <span className="text-14">
+              <span className="text-14px">
                 <Icons.checkCircle className="text-exp" />
               </span>
               <span>Total</span>
               <Flexrow className={"w-max items-center gap-0.75"}>
-                <span className="text-12">
+                <span className="text-12px">
                   <Icons.rupee />
                 </span>
                 <span>{PrimeCat.total}</span>
               </Flexrow>
             </Flexrow>
-            <Flexrow className={"!text-14 text-91 items-center gap-2"}>
+            <Flexrow className={"!text-14px text-91 items-center gap-2"}>
               <GraphTitleSquare className={"bg-91 size-3"} />
               <span>In {PrimeCat.name}</span>
             </Flexrow>

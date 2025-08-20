@@ -1,7 +1,6 @@
 import Form from "./Form";
-import { PATH } from "@/router/routerConfig";
 const IncomeForm = () => {
-  return <Form isIncome formToDisplay={PATH.addIncome} />;
+  return <Form isIncome />;
 };
 
 export default IncomeForm;

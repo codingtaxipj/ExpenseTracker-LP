@@ -52,7 +52,7 @@ const MinMaxStrip = ({ data, isExpense, isIncome, isMax, isMin }) => {
           <HorizontalDivider />
           <h4>{`${getMonthName(data?.month, "MMMM")}`}</h4>
           <HorizontalDivider />
-          <span className="text-12">
+          <span className="text-12px">
             <Icons.rupee />
           </span>
           <h4>{amountFloat(data?.total)}</h4>

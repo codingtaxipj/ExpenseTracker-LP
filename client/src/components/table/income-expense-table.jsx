@@ -1,8 +1,10 @@
 import React from "react";
-import { TD, TH } from "../TableSection";
+
 import { amountFloat } from "../utilityFilter";
 import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
+import TH from "./TH";
+import TD from "./TD";
 
 const IncomeExpenseTable = ({ data }) => {
   return (
@@ -25,9 +27,9 @@ const IncomeExpenseTable = ({ data }) => {
             <tbody className="border-0">
               {data.map((b) => (
                 <>
-                  <tr className="bg-darkBlack text-14 font-medium" key={b.id}>
+                  <tr className="bg-darkBlack text-14px font-medium" key={b.id}>
                     <TD className="h-max px-5">
-                      <span className="text-14">
+                      <span className="text-14px">
                         <Icons.checkCircle className={`text-inc`} />
                       </span>
                     </TD>
@@ -61,7 +63,7 @@ const IncomeExpenseTable = ({ data }) => {
                     <TD
                       className={`${b.percent <= 0 ? "text-gg" : "text-rr"} h-max`}
                     >
-                      <span className="text-12">
+                      <span className="text-12px">
                         {b.percent < 0 && <Icons.graphdown />}
                         {b.percent > 0 && <Icons.graphup />}
                       </span>

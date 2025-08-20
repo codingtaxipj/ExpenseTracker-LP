@@ -101,7 +101,7 @@ const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
                   <Flexrow className="items-center gap-0 border-b-1 border-white font-bold">
                     <Icons.rupee className="text-[18px]" />
                     <input
-                      className="inputType-number text-24 w-full rounded-md border-none px-3 py-1 outline-none"
+                      className="inputType-number text-24px w-full rounded-md border-none px-3 py-1 outline-none"
                       type="number"
                       {...register("amount", {
                         required: "* Please provide a Budget Amount",
@@ -118,7 +118,7 @@ const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
                   <SubmitBtn className={"bg-budget"} type="submit" />
                   <DrawerClose>
                     <div className="bg-rr flex cursor-pointer items-center gap-1.5 rounded-md px-5 py-1">
-                      <span onClick={() => reset()} className="text-14">
+                      <span onClick={() => reset()} className="text-14px">
                         Cancel
                       </span>
                     </div>

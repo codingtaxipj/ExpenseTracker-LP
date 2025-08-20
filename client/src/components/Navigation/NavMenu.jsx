@@ -20,7 +20,7 @@ function Dashboard({ activeBtn, children }) {
 
   function setStyle(toSet) {
     let baseStyle =
-      "flex w-full items-center gap-2.5 rounded-md px-2 py-1  text-14 font-medium";
+      "flex w-full items-center gap-2.5 rounded-md px-2 py-1  text-14px font-medium";
     if (activeBtn === toSet)
       return baseStyle + " " + "text-black bg-white font-normal";
     else return baseStyle + " " + "hover:bg-[#2c2c2c] font-medium";
@@ -49,7 +49,7 @@ function Dashboard({ activeBtn, children }) {
             </button>
           </div>
           <div className="flex grow flex-col gap-2">
-            <button className="text-14 flex w-full items-center gap-2.5 rounded-md px-2 py-1 font-medium text-[#a6a6a6]">
+            <button className="text-14px flex w-full items-center gap-2.5 rounded-md px-2 py-1 font-medium text-[#a6a6a6]">
               <span>Menu</span>
             </button>
             <button
@@ -140,7 +140,7 @@ function Dashboard({ activeBtn, children }) {
               </div>
             </div>
           </div>
-          <div className="bg-darkBlack [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-91 h-full w-full overflow-y-auto rounded-lg px-14 py-14 [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
+          <div className="bg-darkBlack [&::-webkit-scrollbar-thumb]:bg-91 h-full w-full overflow-y-auto rounded-lg px-14 py-14 [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
             {children}
           </div>
         </div>

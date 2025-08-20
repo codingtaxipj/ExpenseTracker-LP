@@ -1,8 +1,14 @@
 import React from "react";
-import { TD, TH } from "../TableSection";
-import { amountFloat, amountInteger, amountSignedFloat } from "../utilityFilter";
+
+import {
+  amountFloat,
+  amountInteger,
+  amountSignedFloat,
+} from "../utilityFilter";
 import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
+import TH from "./TH";
+import TD from "./TD";
 
 const BudgetExpenseTable = ({ data, inBudgeting }) => {
   return (
@@ -12,7 +18,7 @@ const BudgetExpenseTable = ({ data, inBudgeting }) => {
           <table className="w-full">
             <thead>
               <tr className="bg-gradBot">
-                <TH className="px-5">
+                <TH className="w-0 px-5">
                   <Icons.checkCircle className={`text-exp`} />
                 </TH>
                 <TH className="pr-12">Month</TH>
@@ -26,9 +32,9 @@ const BudgetExpenseTable = ({ data, inBudgeting }) => {
             <tbody className="border-0">
               {data.map((b) => (
                 <>
-                  <tr className="bg-darkBlack text-14 font-medium" key={b.id}>
+                  <tr className="bg-darkBlack text-14px font-medium" key={b.id}>
                     <TD className="h-max px-5">
-                      <span className="text-14">
+                      <span className="text-14px">
                         <Icons.checkCircle className={`text-exp`} />
                       </span>
                     </TD>
@@ -56,7 +62,12 @@ const BudgetExpenseTable = ({ data, inBudgeting }) => {
                           {b.budget == 0 ? (
                             <span className="text-91"> --/-- </span>
                           ) : (
-                            <span className={`${b.budget - b.expense < 0 ? "text-rr":"text-gg"}`} > {amountSignedFloat(b.budget - b.expense)} </span>
+                            <span
+                              className={`${b.budget - b.expense < 0 ? "text-rr" : "text-gg"}`}
+                            >
+                              {" "}
+                              {amountSignedFloat(b.budget - b.expense)}{" "}
+                            </span>
                           )}
                         </TD>
                       </>
@@ -73,7 +84,7 @@ const BudgetExpenseTable = ({ data, inBudgeting }) => {
                     <TD
                       className={`${b.percent <= 0 ? "text-gg" : "text-rr"} h-max`}
                     >
-                      <span className="text-12">
+                      <span className="text-12px">
                         {b.percent < 0 && <Icons.graphdown />}
                         {b.percent > 0 && <Icons.graphup />}
                       </span>

@@ -31,13 +31,21 @@ import {
 } from "@/global/categories";
 import Flexrow from "../section/flexrow";
 import { useDispatch } from "react-redux";
-import { insertExpense, insertIncome } from "@/redux/slices/transaction-slice";
+import {
+  insertExpense,
+  insertIncome,
+  insertRecurringExpense,
+} from "@/redux/slices/transaction-slice";
+import { PaymentStatus } from "@/global/globalVariables";
 
-const Form = ({ isExpense, isIncome }) => {
+const Form = ({ isExpense, isIncome, isRepeat }) => {
   const dispatch = useDispatch();
+
   //NOTE - date label for expense / Income
   const dateLabel =
-    (isExpense && "Expense Date") || (isIncome && "Income Date");
+    (isRepeat && isExpense && "Bill Generation Date ?") ||
+    (isExpense && "Expense Date") ||
+    (isIncome && "Income Date");
 
   //NOTE page navigation
   const navigate = useNavigate();
@@ -116,13 +124,14 @@ const Form = ({ isExpense, isIncome }) => {
   const {
     register,
     setValue,
+
     reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
       userID: 123456,
-      isTypeExpense: isExpense ? true : false,
+      isTypeExpense: isRepeat ? true : isExpense ? true : false,
     },
   });
 
@@ -132,9 +141,46 @@ const Form = ({ isExpense, isIncome }) => {
     if (!isNote || isNote.trim().length === 0) data.isNote = null;
     data.onDate = moment(onDate).toISOString();
 
-    const result =
-      (isExpense && (await dispatch(insertExpense({ data })).unwrap())) ||
-      (isIncome && (await dispatch(insertIncome({ data })).unwrap()));
+    if (isRepeat) {
+      const { lastPaymentDate } = data;
+      const today = moment();
+      const onDateDiff = today.diff(onDate, "days");
+      const onLastDateDiff = today.diff(lastPaymentDate, "days");
+      // if daysDiff is + then date is past and - then date is in future
+      let status = null;
+      if (
+        (onDateDiff >= 0 && onLastDateDiff == 0) ||
+        (onDateDiff == 0 && lastPaymentDate === undefined)
+      ) {
+        status = await confirmToast("Success", PaymentStatus.DUE);
+      } else if (onDateDiff > 0 && onLastDateDiff < 0) {
+        status = await confirmToast("Success", PaymentStatus.UNPAID);
+      } else if (
+        (onLastDateDiff > 0 && onDateDiff > 0) ||
+        (onDateDiff > 0 && lastPaymentDate == undefined)
+      ) {
+        status = await Promise.resolve(PaymentStatus.OVERDUE);
+      } else if (onDateDiff < 0) {
+        status = await Promise.resolve(PaymentStatus.UPCOMING);
+      }
+
+      data.isRepeatStatus = status;
+      data.lastPaymentDate =
+        lastPaymentDate === undefined
+          ? moment(onDate).toISOString()
+          : moment(lastPaymentDate).toISOString();
+
+      await delay(200);
+    }
+
+    let result;
+    if (isRepeat && isExpense) {
+      result = await dispatch(insertRecurringExpense({ data })).unwrap();
+    } else if (isExpense) {
+      result = await dispatch(insertExpense({ data })).unwrap();
+    } else if (isIncome) {
+      result = await dispatch(insertIncome({ data })).unwrap();
+    }
 
     if (result.success) {
       toast.success("Success", {
@@ -159,17 +205,41 @@ const Form = ({ isExpense, isIncome }) => {
   const formLabelIconColor =
     (isExpense && "text-exp") || (isIncome && "text-inc");
 
+  /**==================================================================== */
+
+  const [repeatBy, setRepeatBy] = useState(0);
+  const [lastDate, setLastDate] = useState(0);
+
+  const handleRepeat = (index) => {
+    if (repeatBy === index) {
+      setRepeatBy(0);
+      // uncheck if already selected
+    } else {
+      setRepeatBy(index);
+      setValue("isRepeatBy", index, { shouldValidate: true });
+    }
+  };
+
+  const handleDeadline = (index) => {
+    if (lastDate === index) {
+      setLastDate(0);
+      // uncheck if already selected
+    } else {
+      setLastDate(index);
+    }
+  };
+
   return (
     <>
-      <div className="text-14 font-medium">
+      <div className="text-14px font-medium">
         <form onSubmit={handleSubmit(onSubmit)}>
           {
             /** NOTE [HIDDEN] field to identify type if form is expense or income */
-            <input type="hidden" {...register("isTransactionExpense")} />
+            <input type="hidden" {...register("isTypeExpense")} />
           }
 
           {/** ANCHOR select form for inc or exp ---------------- */}
-          {(isExpense || isIncome) && (
+          {!isRepeat && (isExpense || isIncome) && (
             <FormField>
               <div className="flex gap-2">
                 <ExpButton
@@ -201,7 +271,7 @@ const Form = ({ isExpense, isIncome }) => {
             <div className="border-br1 inline-flex w-full items-center border-b-1 font-bold">
               <Icons.rupee className="text-[18px]" />
               <input
-                className="inputType-number text-24 w-full rounded-md border-none px-3 py-1 outline-none"
+                className="inputType-number text-24px w-full rounded-md border-none px-3 py-1 outline-none"
                 type="number"
                 onBlur={"This cannot be empty"}
                 {...register("ofAmount", {
@@ -240,6 +310,92 @@ const Form = ({ isExpense, isIncome }) => {
             <SelectDate valVar="onDate" setValue={setValue}></SelectDate>
           </FormField>
           {/**ANCHOR ##END: DATE Field ---------------- */}
+
+          {/**ANCHOR Repeat by month or year Field ---------------- */}
+          {isRepeat && (
+            <>
+              <input
+                type="hidden"
+                {...register("isRepeatBy", {
+                  required: "* Please select a repeat type",
+                })}
+              />
+              <input type="hidden" {...register("isRepeatStatus")} />
+              <FormField>
+                <FieldLabel
+                  iconColor={formLabelIconColor}
+                  htmlFor="Repeat Type"
+                  label={"Expense Recurring Type"}
+                />
+                <Flexrow className={"text-16px"}>
+                  <Flexrow className={"w-max items-center gap-2"}>
+                    <Checkbox
+                      className={
+                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                      }
+                      checked={repeatBy === 1}
+                      onCheckedChange={() => handleRepeat(1)}
+                    />
+                    <span>By Month</span>
+                  </Flexrow>
+                  <Flexrow className={"w-max items-center gap-2"}>
+                    <Checkbox
+                      className={
+                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                      }
+                      checked={repeatBy === 2}
+                      onCheckedChange={() => handleRepeat(2)}
+                    />
+                    <span>By Year</span>
+                  </Flexrow>
+                </Flexrow>
+                <ErrorField error={errors.isRepeatType} />
+              </FormField>
+              <FormField>
+                <FieldLabel
+                  iconColor={formLabelIconColor}
+                  htmlFor="Repeat Type"
+                  label={"Bill has Paymnet Deadline ?"}
+                />
+                <Flexrow className={"text-16px"}>
+                  <Flexrow className={"w-max items-center gap-2"}>
+                    <Checkbox
+                      className={
+                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                      }
+                      checked={lastDate === 0}
+                      onCheckedChange={() => handleDeadline(0)}
+                    />
+                    <span>No</span>
+                  </Flexrow>
+                  <Flexrow className={"w-max items-center gap-2"}>
+                    <Checkbox
+                      className={
+                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                      }
+                      checked={lastDate === 1}
+                      onCheckedChange={() => handleDeadline(1)}
+                    />
+                    <span>Yes</span>
+                  </Flexrow>
+                </Flexrow>
+              </FormField>
+              {lastDate === 1 && (
+                <FormField>
+                  <FieldLabel
+                    iconColor={formLabelIconColor}
+                    htmlFor="Date"
+                    label={"Bill Deadline Date ?"}
+                  />
+                  <SelectDate
+                    valVar="lastPaymentDate"
+                    setValue={setValue}
+                  ></SelectDate>
+                </FormField>
+              )}
+            </>
+          )}
+          {/**ANCHOR ##END: Repeat by month or year Field ---------------- */}
 
           {/**ANCHOR Repeating Payment BY MONTH or YEAR 
           {isRepeatingExpense && (
@@ -449,5 +605,39 @@ export const FieldLabel = ({ htmlFor, label, iconColor = "text-white" }) => {
 };
 
 export const ErrorField = ({ error }) => {
-  return <>{error && <p className="text-12 text-rr">{error.message}</p>}</>;
+  return <>{error && <p className="text-12px text-rr">{error.message}</p>}</>;
 };
+
+// Helper: Promise-based toast confirmation (with JSX)
+const confirmToast = (title, statusB) => {
+  return new Promise((resolve) => {
+    toast.custom((t) => (
+      <div className="rounded-lg border bg-white p-4 shadow-lg">
+        <h4 className="font-bold">{title}</h4>
+        <p className="text-sm text-gray-600">Have you paid the bill?</p>
+        <div className="mt-3 flex gap-2">
+          <button
+            className="rounded bg-green-500 px-3 py-1 text-white"
+            onClick={() => {
+              toast.dismiss(t.id);
+              resolve(PaymentStatus.PAID);
+            }}
+          >
+            Yes
+          </button>
+          <button
+            className="rounded bg-red-500 px-3 py-1 text-white"
+            onClick={() => {
+              toast.dismiss(t.id);
+              resolve(statusB);
+            }}
+          >
+            No
+          </button>
+        </div>
+      </div>
+    ));
+  });
+};
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

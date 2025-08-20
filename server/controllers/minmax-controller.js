@@ -10,7 +10,7 @@ const insertMinMax = async (req, res) => {
       year,
       isTypeExpense,
     });
-    if (!totalDB) return console.log("no Total DB found");
+
     const { monthList, primeList, subList } = totalDB;
     const { min: minMonth, max: maxMonth } = getMinMax(monthList);
 

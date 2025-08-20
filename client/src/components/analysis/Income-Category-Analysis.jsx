@@ -51,7 +51,7 @@ const IncomeCategoryAnalysis = () => {
           <Flexrow className="items-center gap-2 font-medium">
             <GraphTitleSquare className={"bg-inc"} />
             <span className="pr-2">Income Category - {year} </span>
-            <span className="text-14">
+            <span className="text-14px">
               <Icons.checkCircle className="text-inc" />
             </span>
             <span>Total Income </span>
@@ -59,19 +59,19 @@ const IncomeCategoryAnalysis = () => {
             Rs.
             <span className="text-inc">{amountFloat(TotalIncomeYear)}</span>
           </Flexrow>
-          <Flexrow className={"!text-14 text-91 items-center gap-2 pb-8"}>
+          <Flexrow className={"!text-14px text-91 items-center gap-2 pb-8"}>
             Expenses in Each Sub Categories of Selected Prime Category
           </Flexrow>
           {SubOfYear.map((sc, idx) => (
             <>
-              <FlexrowStrip key={idx} className="text-14 items-center gap-2">
-                <span className="text-14">
+              <FlexrowStrip key={idx} className="text-14px items-center gap-2">
+                <span className="text-14px">
                   <Icons.checkCircle className={`${"text-inc"}`} />
                 </span>
                 <span>{sc.subName}</span>
                 <HorizontalDivider className="mx-0.25 bg-white" />
                 <Flexrow className={"w-max items-center gap-0.75"}>
-                  <span className="text-12">
+                  <span className="text-12px">
                     <Icons.rupee />
                   </span>
                   <span className="text-inc">{sc.total}</span>
@@ -79,7 +79,7 @@ const IncomeCategoryAnalysis = () => {
               </FlexrowStrip>
             </>
           ))}
-          <Flexrow className={"!text-14 text-91 items-center gap-2 pt-8"}>
+          <Flexrow className={"!text-14px text-91 items-center gap-2 pt-8"}>
             <Icons.textline /> Showing Total Income of Each Category in Year
           </Flexrow>
         </Boxcard>

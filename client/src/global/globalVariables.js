@@ -34,3 +34,11 @@ export const sortBy = {
   trip: "Trip",
   repeating: "Repeating",
 };
+
+export const PaymentStatus = {
+  PAID: 0,
+  UNPAID: 1,
+  OVERDUE: 2,
+  UPCOMING: 3,
+  DUE: 4,
+};

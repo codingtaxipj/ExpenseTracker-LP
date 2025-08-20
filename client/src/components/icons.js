@@ -1,4 +1,4 @@
-import { MdEventRepeat, MdCalculate } from "react-icons/md";
+import { MdEventRepeat, MdCalculate, MdDelete } from "react-icons/md";
 import {
   FaCalendar,
   FaCalendarCheck,
@@ -32,7 +32,12 @@ import { RiShareForwardFill } from "react-icons/ri";
 import { HiPencil } from "react-icons/hi";
 import { TbCancel } from "react-icons/tb";
 
-import { IoIosCheckmarkCircle } from "react-icons/io";
+import {
+  IoIosCheckmarkCircle,
+  IoMdEye,
+  IoIosArrowForward,
+  IoIosArrowBack,
+} from "react-icons/io";
 
 export const Icons = {
   analysis: MdCalculate,
@@ -64,4 +69,10 @@ export const Icons = {
   addCircle: IoAddCircle,
   cancel: TbCancel,
   checkCircle: IoIosCheckmarkCircle,
+  view: IoMdEye,
+  del: MdDelete,
+  toDelete: MdDelete,
+  gotoPage: RiShareForwardFill,
+  pageNext: IoIosArrowForward,
+  pageBack: IoIosArrowBack,
 };

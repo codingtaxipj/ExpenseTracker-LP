@@ -50,12 +50,14 @@
   --color-grey-hover: #2c2c2c;
 }
 @theme {
-  --text-12: 12px;
-  --text-14: 14px;
-  --text-16: 16px;
-  --text-18: 18px;
-  --text-24: 24px;
-  --text-32: 32px;
+  --text-12px: 12px;
+  --text-14px: 14px;
+  --text-16px: 16px;
+  --text-18px: 18px;
+  --text-22px: 22px;
+  --text-24px: 24px;
+  --text-28px: 28px;
+  --text-32px: 32px;
 }
 
 @font-face {

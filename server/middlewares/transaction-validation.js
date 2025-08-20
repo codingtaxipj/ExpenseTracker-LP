@@ -3,48 +3,152 @@
  */
 
 import { body, validationResult } from "express-validator";
+
 const expenseValidation = [
+  // Validate userID: must exist, not be empty, and be a number
   body("userID")
     .exists()
+    .withMessage("User ID is required")
     .notEmpty()
-    .withMessage("User ID Cannot be Empty")
+    .withMessage("User ID cannot be empty")
     .isNumeric()
-    .withMessage("User ID must be 16 digit number"),
+    .withMessage("User ID must be a numeric value"),
+
+  // Validate transaction type: must exist, not be empty, and be boolean
   body("isTypeExpense")
     .exists()
+    .withMessage("Transaction type is required")
     .notEmpty()
-    .withMessage("Transaction Type Cannot be Empty")
+    .withMessage("Transaction type cannot be empty")
     .isBoolean()
-    .withMessage("Transaction Type must be boolen"),
+    .withMessage("Transaction type must be a boolean value"),
+
+  // Validate transaction date: must exist, not be empty, and follow ISO 8601 format
   body("onDate")
     .exists()
+    .withMessage("Transaction date is required")
     .notEmpty()
-    .withMessage(" Expense Transaction Date Cannot be Empty")
+    .withMessage("Transaction date cannot be empty")
     .isISO8601()
-    .withMessage("Expense Transaction Date must be ISO format string"),
+    .withMessage("Transaction date must be in ISO 8601 format"),
+
+  // Validate transaction amount: must exist, not be empty, be numeric, and >= 0
   body("ofAmount")
     .exists()
+    .withMessage("Transaction amount is required")
     .notEmpty()
-    .withMessage("Transaction Amount Cannot be Empty")
+    .withMessage("Transaction amount cannot be empty")
     .isNumeric()
-    .withMessage("Transaction Amount must be number")
+    .withMessage("Transaction amount must be a number")
     .custom(value => value >= 0)
-    .withMessage("Transaction Amount must be positive number"),
-  body("isNote").optional(),
+    .withMessage("Transaction amount must be a positive number"),
+
+  // Validate note: optional, but if present must be a string
+  body("isNote").optional().isString().withMessage("Note must be a string"),
+
+  // Validate primary category: must exist, not be empty, and be a string
   body("primeCategory")
     .exists()
+    .withMessage("Primary category is required")
     .notEmpty()
-    .withMessage("Primary Category Cannot be Empty")
+    .withMessage("Primary category cannot be empty")
     .isString()
-    .withMessage("Primary Category must be string"),
+    .withMessage("Primary category must be a string"),
+
+  // Validate sub-category: must exist, not be empty, and be a string
   body("subCategory")
     .exists()
+    .withMessage("Sub-category is required")
     .notEmpty()
-    .withMessage("Sub Category Cannot be Empty")
+    .withMessage("Sub-category cannot be empty")
     .isString()
-    .withMessage("Sub Category must be string"),
+    .withMessage("Sub-category must be a string"),
 
-  // Middleware function to check validation errors
+  // Middleware to handle validation errors
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log("Validation Errors:", errors.array());
+      return res
+        .status(400)
+        .json({ message: "Validation failed", errors: errors.array() });
+    }
+    next();
+  },
+];
+
+const recurringValidation = [
+  // userID
+  body("userID")
+    .exists()
+    .withMessage("User ID is required")
+    .notEmpty()
+    .withMessage("User ID cannot be empty")
+    .isNumeric()
+    .withMessage("User ID must be a number"),
+
+  // isTypeExpense
+  body("isTypeExpense")
+    .exists()
+    .withMessage("Transaction type is required")
+    .isBoolean()
+    .withMessage("Transaction type must be boolean"),
+
+  // isRepeatBy (must be 1 or 2)
+  body("isRepeatBy")
+    .exists()
+    .withMessage("Repeat By is required")
+    .isIn([1, 2])
+    .withMessage("Repeat By must be either 1 or 2"),
+
+  // isRepeatStatus (must be 0, 1, 2, 3, 4)
+  body("isRepeatStatus")
+    .exists()
+    .withMessage("Repeat Status is required")
+    .isIn([0, 1, 2, 3, 4])
+    .withMessage("Repeat Status must be between 0 and 4"),
+
+  // ofAmount (must be >= 0)
+  body("ofAmount")
+    .exists()
+    .withMessage("Transaction amount is required")
+    .isNumeric()
+    .withMessage("Transaction amount must be a number")
+    .custom(value => value >= 0)
+    .withMessage("Transaction amount must be positive"),
+
+  // isNote (optional string)
+  body("isNote").optional().isString().withMessage("Note must be a string"),
+
+  // primeCategory
+  body("primeCategory")
+    .exists()
+    .withMessage("Primary category is required")
+    .isString()
+    .withMessage("Primary category must be a string"),
+
+  // subCategory
+  body("subCategory")
+    .exists()
+    .withMessage("Sub category is required")
+    .isString()
+    .withMessage("Sub category must be a string"),
+
+  // onDate
+  body("onDate")
+    .exists()
+    .withMessage("Transaction date is required")
+    .isISO8601()
+    .withMessage("Transaction date must be in ISO format"),
+
+  // lastPaymentDate
+  body("lastPaymentDate")
+    .exists()
+    .withMessage("Last payment date is required")
+    .isISO8601()
+    .withMessage("Last payment date must be in ISO format"),
+
+  // Middleware to handle errors
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -58,48 +162,66 @@ const expenseValidation = [
 ];
 
 const incomeValidation = [
+  // Validate userID: must exist, not be empty, and be numeric
   body("userID")
     .exists()
+    .withMessage("User ID is required")
     .notEmpty()
-    .withMessage("User ID Cannot be Empty")
+    .withMessage("User ID cannot be empty")
     .isNumeric()
-    .withMessage("User ID must be 16 digit number"),
+    .withMessage("User ID must be a numeric value"),
+
+  // Validate transaction type: must exist, not be empty, and be boolean
   body("isTypeExpense")
     .exists()
+    .withMessage("Transaction type is required")
     .notEmpty()
-    .withMessage("Transaction Type Cannot be Empty")
+    .withMessage("Transaction type cannot be empty")
     .isBoolean()
-    .withMessage("Transaction Type must be boolen"),
+    .withMessage("Transaction type must be a boolean value"),
+
+  // Validate transaction date: must exist, not be empty, and follow ISO 8601 format
   body("onDate")
     .exists()
+    .withMessage("Income transaction date is required")
     .notEmpty()
-    .withMessage("Income Transaction Date Cannot be Empty")
+    .withMessage("Income transaction date cannot be empty")
     .isISO8601()
-    .withMessage("Income Transaction Date must be ISO format string"),
+    .withMessage("Income transaction date must be in ISO 8601 format"),
+
+  // Validate amount: must exist, not be empty, be numeric, and >= 0
   body("ofAmount")
     .exists()
+    .withMessage("Transaction amount is required")
     .notEmpty()
-    .withMessage("Transaction Amount Cannot be Empty")
+    .withMessage("Transaction amount cannot be empty")
     .isNumeric()
-    .withMessage("Transaction Amount must be number")
+    .withMessage("Transaction amount must be a number")
     .custom(value => value >= 0)
-    .withMessage("Transaction Amount must be positive number"),
-  body("isNote").optional(),
+    .withMessage("Transaction amount must be a positive number"),
 
+  // Validate note: optional, but must be a string if provided
+  body("isNote").optional().isString().withMessage("Note must be a string"),
+
+  // Validate primary category: must exist, not be empty, and be a string
   body("primeCategory")
     .exists()
+    .withMessage("Primary category is required")
     .notEmpty()
-    .withMessage("Primary Category Cannot be Empty")
+    .withMessage("Primary category cannot be empty")
     .isString()
-    .withMessage("Primary Category must be string"),
+    .withMessage("Primary category must be a string"),
+
+  // Validate sub-category: must exist, not be empty, and be a string
   body("subCategory")
     .exists()
+    .withMessage("Sub-category is required")
     .notEmpty()
-    .withMessage("Sub Category Cannot be Empty")
+    .withMessage("Sub-category cannot be empty")
     .isString()
-    .withMessage("Sub Category must be string"),
+    .withMessage("Sub-category must be a string"),
 
-  // Middleware function to check validation errors
+  // Middleware to handle validation errors
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -112,4 +234,4 @@ const incomeValidation = [
   },
 ];
 
-export { expenseValidation, incomeValidation };
+export { expenseValidation, recurringValidation, incomeValidation };

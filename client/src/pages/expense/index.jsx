@@ -1,4 +1,4 @@
-import TableSection from "@/components/TableSection";
+import TableSection from "@/components/table/transaction-list-table";
 import BudgetStrip from "@/components/strips/budget-strip";
 import Flexrow from "@/components/section/flexrow";
 import SelectBar from "@/components/selectFilter/SelectBar";
@@ -24,9 +24,16 @@ import useTransactionConfig from "@/hooks/useTransactionConfig";
 import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
+import EButton from "@/components/buttons/eButton";
+import TransactionListTable from "@/components/table/transaction-list-table";
+import MonthCalander from "@/components/month-calender";
+import MaxCategorySection from "@/components/section/max-category-section";
 
 const ExpenseIndex = () => {
+  /** =========== Navigation =========== */
   const navigate = useNavigate();
+  /** =========== Transaction Config =========== */
+  const { ExpenseList } = useTransactionConfig();
 
   const [filters, setFilters] = useState("None");
   const sortList = Object.values(sortBy);
@@ -42,40 +49,37 @@ const ExpenseIndex = () => {
   };
 
   const handleSortBy = (value) => setFilters(value);
-  const { ExpenseList } = useTransactionConfig();
 
   return (
     <>
       <Flexcol>
+        {/** =========== Top - cards & Calender =========== */}
         <Flexrow className="items-center justify-center">
-          <TotalCardForYear isExpense year={CurrentYear()} />
-          <TotalCardForMonth
-            isExpense
-            year={CurrentYear()}
-            month={CurrentMonth()}
-          />
+          <Flexcol className="w-max">
+            <TotalCardForYear isExpense year={CurrentYear()} />
+            <TotalCardForMonth
+              isExpense
+              year={CurrentYear()}
+              month={CurrentMonth()}
+            />
+          </Flexcol>
+          <MonthCalander isExpense list={ExpenseList ?? []} />
         </Flexrow>
-        <Flexrow className="items-center justify-center">
-          <BudgetStrip />
-          <AddExpenseBtn onClick={() => navigate(PATH.addExpense)} />
-        </Flexrow>
-      </Flexcol>
-      {/*  <Flexcol>
-        <Flexrow className="items-center justify-center">
-          <TotalCardForYear year={CurrentYear()} />
-          <TotalExpenseCardInmonth
-            year={CurrentYear()}
-            month={CurrentMonth()}
-          />
-        </Flexrow>
+        {/** =========== Top - Budget Strip & Add Exp Btn =========== */}
         <Flexrow className="items-center justify-center">
           <BudgetStrip />
-          <AddExpenseBtn onClick={() => navigate(PATH.addExpense)} />
+          <EButton
+            isTextIcon
+            addExpense
+            onClick={() => navigate(PATH.addExpense)}
+          />
         </Flexrow>
       </Flexcol>
- */}
+
+      {/** =========== List and List Filter =========== */}
+
       <Flexcol className="pt-20">
-        <SectionTitle title="Expenses List" isExpense />
+        <SectionTitle title="Expenses Transactions List" isExpense />
         <SelectBar>
           <SelectCard isExpense title={"Sort List"}>
             <SelectFilter
@@ -153,19 +157,32 @@ const ExpenseIndex = () => {
           </Flexrow>
         </SelectBar>
 
-        <TableSection entries={ExpenseList ?? []} />
+        {/** =========== List Component =========== */}
+
+        <TransactionListTable isExpesne entries={ExpenseList ?? []} />
       </Flexcol>
 
+      {/** =========== Bar Graph =========== */}
+
       <Flexcol className="pt-20">
-        <SectionTitle title="Bar Graph" isExpense />
+        <SectionTitle title="Expense Bar Graph" isExpense />
         <SingleYearGraph isExpense></SingleYearGraph>
       </Flexcol>
 
+      {/** =========== Max Expenses =========== */}
+
       <Flexcol className="pt-20">
-        <SectionTitle title="Top 5 Max Expense Categories" isExpense />
-        <Flexrow className="text-14 items-center justify-end font-medium">
+        <SectionTitle title="Top 5 Maximum Expense Categories" isExpense />
+        <MaxCategorySection isExpense />
+        <Flexrow className="text-14px pt-5 items-center justify-end font-medium">
           <h4>For Detailed Expense Analysis</h4>
-          <ExpButton label={"Check Analysis"} btnfor={"expense"} />
+          <EButton
+            isTextIcon
+            className={"bg-exp"}
+            onClick={() => navigate(PATH.expenseAnalysis)}
+          >
+            <Icons.upbar /> Check Analysis
+          </EButton>
         </Flexrow>
       </Flexcol>
     </>
@@ -178,7 +195,7 @@ export const AmountField = () => {
   return (
     <>
       <input
-        className="text-14 number-filed-arrow-none bg-darkBlack w-25 rounded-md px-3 py-1 outline-none"
+        className="text-14px number-filed-arrow-none bg-darkBlack w-25 rounded-md px-3 py-1 outline-none"
         type="number"
       />
     </>
