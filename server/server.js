@@ -9,6 +9,8 @@ import { budgetRouter } from "./routes/budgetRoute.js";
 import { totalRouter } from "./routes/totalRoute.js";
 import { minmaxRouter } from "./routes/minmaxRoute.js";
 import { transactionRouter } from "./routes/transactionRoute.js";
+import { tripRouter } from "./routes/tripRoute.js";
+import { hfRouter } from "./routes/hfRoute.js";
 
 dotenv.config();
 const app = express();
@@ -21,14 +23,23 @@ app.use(
 
 app.use(express.json());
 
-// NOTE connection to mongoDB host
-mongoConnectHost(process.env.MONGO_HOST);
 app.use("/auth", authRouter);
 app.use("/transaction", transactionRouter);
 app.use("/budget", budgetRouter);
 app.use("/total", totalRouter);
 app.use("/minmax", minmaxRouter);
+app.use("/trip", tripRouter);
+app.use("/hf", hfRouter);
 
-//ANCHOR server running on port
-const PORT = 8080;
-app.listen(PORT, () => console.log("Server is running at : " + PORT));
+const StratServer = async () => {
+  try {
+    await mongoConnectHost(process.env.MONGO_HOST);
+    console.log("Database connection successful.");
+    const PORT = 8080;
+    app.listen(PORT, () => console.log("Server Running : " + PORT));
+  } catch (error) {
+    console.error("DB & Server Error.", error);
+  }
+};
+
+StratServer();

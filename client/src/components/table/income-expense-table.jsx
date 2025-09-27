@@ -5,75 +5,73 @@ import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
 import TH from "./TH";
 import TD from "./TD";
+import { cardBgv2 } from "@/global/style";
+import { cn } from "@/lib/utils";
 
 const IncomeExpenseTable = ({ data }) => {
   return (
     <>
-      <Flexrow>
-        <div className="shadow-shadowBlack border-br1 w-full cursor-default overflow-hidden rounded-md border shadow">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gradBot">
-                <TH className="px-5">
-                  <Icons.checkCircle className={`text-inc`} />
-                </TH>
-                <TH className="pr-12">Month</TH>
-                <TH className="pr-8">Income</TH>
-                <TH className="pr-8">Expense</TH>
-                <TH className="pr-8">%</TH>
-                <TH className="px-5"></TH>
-              </tr>
-            </thead>
-            <tbody className="border-0">
-              {data.map((b) => (
-                <>
-                  <tr className="bg-darkBlack text-14px font-medium" key={b.id}>
-                    <TD className="h-max px-5">
-                      <span className="text-14px">
-                        <Icons.checkCircle className={`text-inc`} />
-                      </span>
-                    </TD>
-                    <TD className="h-max">
-                      {" "}
-                      <span>{b.month}</span>
-                    </TD>
-                    <TD className="h-max">
-                      {b.income == 0 ? (
-                        <span className="text-91"> --/-- </span>
-                      ) : (
-                        <span> {amountFloat(b.income)} </span>
-                      )}
-                    </TD>
-                    <TD className="h-max">
-                      {b.expense == 0 ? (
-                        <span className="text-91"> --/-- </span>
-                      ) : (
-                        <span> {amountFloat(b.expense)} </span>
-                      )}
-                    </TD>
-                    <TD
-                      className={`${b.percent < 0 && "text-gg"} ${b.percent > 0 && "text-rr"} h-max`}
-                    >
-                      {b.percent == 0 ? (
-                        <span className="text-91"> --/-- </span>
-                      ) : (
-                        <span> {b.percent}% </span>
-                      )}
-                    </TD>
-                    <TD
-                      className={`${b.percent <= 0 ? "text-gg" : "text-rr"} h-max`}
-                    >
-                      <span className="text-12px">
-                        {b.percent < 0 && <Icons.graphdown />}
-                        {b.percent > 0 && <Icons.graphup />}
-                      </span>
-                    </TD>
-                  </tr>
-                </>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <Flexrow className={cn("overflow-hidden", cardBgv2)}>
+        <table className="w-full">
+          <thead>
+            <tr className="bg-dark-a5 text-slate-a1">
+              <TH className="px-5">
+                <Icons.checkCircle className={`text-inc-a3`} />
+              </TH>
+              <TH className="pr-12">Month</TH>
+              <TH className="pr-8">Income</TH>
+              <TH className="pr-8">Expense</TH>
+              <TH className="pr-8">%</TH>
+              <TH className="px-5"></TH>
+            </tr>
+          </thead>
+          <tbody className="text-slate-a3 border-0">
+            {data.map((b) => (
+              <>
+                <tr className="text-14px" key={b.id}>
+                  <TD className="px-5">
+                    <span className="text-14px">
+                      <Icons.checkCircle className={`text-inc-a3`} />
+                    </span>
+                  </TD>
+                  <TD className="">
+                    {" "}
+                    <span>{b.month}</span>
+                  </TD>
+                  <TD className="">
+                    {b.income == 0 ? (
+                      <span className="text-slate-a7"> --/-- </span>
+                    ) : (
+                      <span> {amountFloat(b.income)} </span>
+                    )}
+                  </TD>
+                  <TD className="">
+                    {b.expense == 0 ? (
+                      <span className="text-slate-a7"> --/-- </span>
+                    ) : (
+                      <span> {amountFloat(b.expense)} </span>
+                    )}
+                  </TD>
+                  <TD
+                    className={`${b.percent < 0 && "text-gg"} ${b.percent > 0 && "text-rr"} `}
+                  >
+                    {b.percent == 0 ? (
+                      <span className="text-slate-a7"> --/-- </span>
+                    ) : (
+                      <span> {b.percent}% </span>
+                    )}
+                  </TD>
+                  <TD className={`${b.percent <= 0 ? "text-gg" : "text-rr"} `}>
+                    <span className="text-12px">
+                      {b.percent < 0 && <Icons.graphdown />}
+                      {b.percent > 0 && <Icons.graphup />}
+                    </span>
+                  </TD>
+                </tr>
+              </>
+            ))}
+          </tbody>
+        </table>
       </Flexrow>
     </>
   );

@@ -16,6 +16,7 @@ import { Icons } from "../icons";
 import SubmitBtn from "../buttons/text-btns/submit-btn";
 import { useDispatch } from "react-redux";
 import { insertBudget } from "@/redux/slices/budget-slice";
+import EButton from "../buttons/eButton";
 
 const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
   const dispatch = useDispatch();
@@ -75,10 +76,10 @@ const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
     <>
       <Drawer>
         <DrawerTrigger>{children}</DrawerTrigger>
-        <DrawerContent className={`from-gradBot to-gradTop bg-gradient-to-t`}>
+        <DrawerContent className={`from-dark-a5 to-dark-a3 bg-gradient-to-t`}>
           <DrawerHeader>
             {isEdit && (
-              <DrawerTitle className={"text-budget italic"}>
+              <DrawerTitle className={"text italic"}>
                 NOTE : editing current budget will change your Budget Analysis
               </DrawerTitle>
             )}
@@ -115,13 +116,19 @@ const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
                   <ErrorField error={errors.amount} />
                 </Flexrow>
                 <Flexrow className={"items-center justify-end gap-2"}>
-                  <SubmitBtn className={"bg-budget"} type="submit" />
+                  <EButton
+                    isText
+                    className={"bg-bud-a3 text-dark-a1"}
+                    type="submit"
+                  >
+                    Submit
+                  </EButton>
                   <DrawerClose>
-                    <div className="bg-rr flex cursor-pointer items-center gap-1.5 rounded-md px-5 py-1">
+                    <EButton as={"div"} isText className="bg-error-a1">
                       <span onClick={() => reset()} className="text-14px">
                         Cancel
                       </span>
-                    </div>
+                    </EButton>
                   </DrawerClose>
                 </Flexrow>
               </form>

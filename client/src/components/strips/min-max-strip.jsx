@@ -13,7 +13,7 @@ const MinMaxStrip = ({ data, isExpense, isIncome, isMax, isMin }) => {
         <FlexrowStrip>
           {isExpense && (
             <>
-              <Flexrow className={`text-explight items-center !gap-1`}>
+              <Flexrow className={`text-exp-tlight items-center !gap-1`}>
                 {isMax && (
                   <>
                     <Icons.asc />

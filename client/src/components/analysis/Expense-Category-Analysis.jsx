@@ -16,6 +16,8 @@ import Boxcard from "../section/boxcard";
 import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
+import { cn } from "@/lib/utils";
+import { cardBgv2 } from "@/global/style";
 
 const spendBar = (input, total, name) => {
   const p = Math.round((input / total) * 100);
@@ -94,48 +96,45 @@ const ExpenseCategoryAnalysis = () => {
           </SelectBar>
         </Flexrow>
         <Flexrow>
-          <Boxcard className={"w-full flex-col gap-2"}>
+          <Flexcol className={cn("text-slate-a1 gap-2 p-10 px-12", cardBgv2)}>
             <Flexrow className="items-center gap-2 font-medium">
-              <GraphTitleSquare className={"bg-exp"} />
-              <span className="pr-2">Prime Category - {year} </span>
-              <span className="text-14px">
-                <Icons.checkCircle className="text-exp" />
-              </span>
-              <span>Total Expense </span>
+              <GraphTitleSquare className={"bg-exp-a1"} />
+              Prime Category - {year}
+              <Icons.checkCircle className="text-exp-a3 ml-2" />
+              Total Expense
               <HorizontalDivider className="bg-white" />
               Rs.
-              <span className="text-exp">{amountFloat(TotalExpenseYear)}</span>
-            </Flexrow>
-            <Flexrow className={"gap-2 pb-5"}>
-              <span className="!text-14px text-91">
-                Bars Showing Expense in a Year by Category
+              <span className="text-exp-a3">
+                {amountFloat(TotalExpenseYear)}
               </span>
             </Flexrow>
+            <p className={"text-14px pb-5"}>
+              Bars Showing Expense in a Year by Category
+            </p>
             {PrimeOfYear.map((m, idx) => (
               <Flexrow key={idx} className={"items-center py-2"}>
                 <Checkbox
                   className={
-                    "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                    "data-[state=checked]:bg-exp-a1 border-slate-a8 size-5 border hover:cursor-pointer"
                   }
                   onCheckedChange={() => handleChange(idx)}
                   checked={selected === idx}
-                ></Checkbox>
+                />
                 <Flexcol className="gap-1.5">
                   <Flexrow className={"text-14px items-center gap-2"}>
                     <GraphTitleSquare
                       className={"size-3"}
                       style={{ backgroundColor: getPrimeColor(m.name) }}
                     />
-                    <span>{m.name}</span>
-                    <span className="text-14px pl-2">
-                      <Icons.checkCircle
-                        style={{ color: getPrimeColor(m.name) }}
-                      />
-                    </span>
+                    {m.name}
+
+                    <Icons.checkCircle
+                      className="ml-2"
+                      style={{ color: getPrimeColor(m.name) }}
+                    />
 
                     <Flexrow className={"w-max items-center gap-0.25"}>
-                      {" "}
-                      <Icons.rupee className="text-12px pr-1" />{" "}
+                      <Icons.rupee className="text-12px pr-1" />
                       {amountFloat(m.total)}
                     </Flexrow>
                   </Flexrow>
@@ -147,64 +146,59 @@ const ExpenseCategoryAnalysis = () => {
               </Flexrow>
             ))}
             <Flexrow
-              className={
-                "!text-14px text-91 items-center justify-center gap-2 pt-5"
-              }
+              className={"!text-14px items-center justify-center gap-2 pt-5"}
             >
               <Icons.textline /> Showing Total Expense of Each Prime Categories
               in Year
             </Flexrow>
-          </Boxcard>
+          </Flexcol>
 
-          <Boxcard className={"h-max w-100 flex-wrap gap-2 p-8"}>
+          <Flexcol
+            className={cn(
+              "text-slate-a1 h-max w-100 flex-wrap gap-2 p-8",
+              cardBgv2,
+            )}
+          >
             <Flexrow className="items-center gap-2 font-medium">
-              <GraphTitleSquare className={"bg-exp"} />
-              <span className="pr-2">Sub Categories</span>
+              <GraphTitleSquare className={"bg-exp-a1"} />
+              Sub Categories
             </Flexrow>
             <Flexrow
-              className={
-                "!text-14px text-91 items-center justify-center gap-2 pb-8"
-              }
+              className={"!text-14px items-center justify-center gap-2 pb-6"}
             >
               Expenses in Each Sub Categories of Selected Prime Category
             </Flexrow>
             {SubCat.map((sc, idx) => (
               <>
-                <FlexrowStrip
+                <Flexrow
                   key={idx}
-                  className="text-14px items-center gap-2"
+                  className={cn(
+                    "text-14px !text-slate-a3 border-slate-a7 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
+                  )}
                 >
-                  <span className="text-14px">
-                    <Icons.checkCircle className={`${"text-exp"}`} />
-                  </span>
-                  <span>{sc.subName}</span>
+                  <Icons.checkCircle className={"text-exp-a3"} />
+                  {sc.subName}
                   <HorizontalDivider className="mx-0.25 bg-white" />
                   <Flexrow className={"w-max items-center gap-0.75"}>
-                    <span className="text-12px">
-                      <Icons.rupee />
-                    </span>
-                    <span>{sc.total}</span>
+                    <Icons.rupee className="text-12px" />
+                    {sc.total}
                   </Flexrow>
-                </FlexrowStrip>
+                </Flexrow>
               </>
             ))}
-            <Flexrow className={"items-center gap-2 pt-8 font-medium"}>
-              <span className="text-14px">
-                <Icons.checkCircle className="text-exp" />
-              </span>
-              <span>Total</span>
-              <Flexrow className={"w-max items-center gap-0.75"}>
-                <span className="text-12px">
-                  <Icons.rupee />
-                </span>
-                <span>{PrimeCat.total}</span>
+            <Flexrow className={"items-center gap-2 pt-6 font-medium"}>
+              <Icons.checkCircle className="text-exp-a1 !text-14px" />
+              Total
+              <Flexrow className={"w-max items-center gap-0.5"}>
+                <Icons.rupee className="text-12px" />
+                {PrimeCat.total}
               </Flexrow>
             </Flexrow>
-            <Flexrow className={"!text-14px text-91 items-center gap-2"}>
-              <GraphTitleSquare className={"bg-91 size-3"} />
-              <span>In {PrimeCat.name}</span>
+            <Flexrow className={"!text-14px w-max items-center gap-2"}>
+              <GraphTitleSquare className={"bg-exp-a1 size-3"} />
+              In {PrimeCat.name}
             </Flexrow>
-          </Boxcard>
+          </Flexcol>
         </Flexrow>
       </Flexcol>
     </>

@@ -1,21 +1,25 @@
-import { useMemo } from "react";
+import {
+  selectExpenseList,
+  selectIncomeList,
+} from "@/redux/slices/transaction-slice";
 import { useSelector } from "react-redux";
 
 const useTransactionConfig = () => {
-  const ExpenseData = useSelector((state) => state.transaction.expenseData);
-  const IncomeData = useSelector((state) => state.transaction.incomeData);
+  const { expenseLoading, expenseError, incomeLoading, incomeError } =
+    useSelector((state) => state.transaction);
 
-  const ExpenseList = useMemo(() => {
-    if (!Array.isArray(ExpenseData)) return null;
-    return ExpenseData;
-  }, [ExpenseData]);
+  // Directly select the pre-processed lists. No useMemo needed!
+  const ExpenseList = useSelector(selectExpenseList);
+  const IncomeList = useSelector(selectIncomeList);
 
-  const IncomeList = useMemo(() => {
-    if (!Array.isArray(IncomeData)) return null;
-    return IncomeData;
-  }, [IncomeData]);
-
-  return { ExpenseList, IncomeList };
+  return {
+    ExpenseList,
+    IncomeList,
+    expenseLoading,
+    expenseError,
+    incomeLoading,
+    incomeError,
+  };
 };
 
 export default useTransactionConfig;

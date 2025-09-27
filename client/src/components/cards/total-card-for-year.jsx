@@ -1,41 +1,29 @@
-import { Icons } from "../icons";
-import Flexrow from "../section/flexrow";
-import { amountFloat } from "../utilityFilter";
+import useRecurringConfig from "@/hooks/useRecurringConfig";
 import TotalCard from "./TotalCard";
-
 import useTotalConfig from "@/hooks/useTotalConfig";
 
-const TotalCardForYear = ({ isExpense, isAnalysis, year }) => {
-  //NOTE - TOTAL CONFIG
+const TotalCardForYear = ({ isExpense, isReccuring, year }) => {
+  //NOTE - TOTAL Exp and Inc CONFIG
   const { TotalByYear_EXP, TotalByYear_INC, getTotalOfYear } = useTotalConfig();
   const YearData = isExpense ? TotalByYear_EXP : TotalByYear_INC;
-  const total = getTotalOfYear(YearData, year);
-  const HeadText = isExpense ? "Year Expense" : "Year Income";
-  const Color = isExpense ? "text-exp" : "text-inc";
-  const diff =
-    getTotalOfYear(TotalByYear_INC, year) -
-    getTotalOfYear(TotalByYear_EXP, year);
-  const FooterText = isAnalysis ? (
-    <>
-      <Flexrow className={"items-center gap-1"}>
-        <span>
-          {diff > 0 && "You Saved"} {diff < 0 && "You Over Spent"}{" "}
-          {diff == 0 && "Break Even"}
-        </span>
-        <span>Rs.</span>
-        <span
-          className={` ${diff > 0 && "text-gg"} ${diff < 0 && "text-rr"} ${diff == 0 && "text-budget"}`}
-        >
-          {" "}
-          {amountFloat(diff)}
-        </span>
-      </Flexrow>
-    </>
-  ) : isExpense ? (
-    `Your Total Spending in Year ${year}`
-  ) : (
-    `Your Total Earning in Year ${year}`
-  );
+  //NOTE - TOTAL Reccuring Exp CONFIG
+  const { rcTotal } = useRecurringConfig();
+
+  // NOTE - total crad vars
+  const total =
+    (isReccuring && rcTotal.byYear) || getTotalOfYear(YearData, year);
+  const HeadText =
+    (isReccuring && "Recurring Expense") ||
+    (isExpense && "Year Expense") ||
+    (!isExpense && "Year Income");
+  const Color =
+    (isReccuring && "text-rep-a1") ||
+    (isExpense && "text-exp-a1") ||
+    (!isExpense && "text-inc-a2");
+  const FooterText =
+    (isReccuring && `Your Total Reccuring Expense in Year`) ||
+    (isExpense && `Your Total Spending in Year ${year}`) ||
+    (!isExpense && `Your Total Earning in Year ${year}`);
 
   return (
     <TotalCard
@@ -49,3 +37,25 @@ const TotalCardForYear = ({ isExpense, isAnalysis, year }) => {
 };
 
 export default TotalCardForYear;
+
+/**!SECTION
+ * 
+ * 
+ * 
+ * isAnalysis ? (
+    <>
+      <Flexrow className={"items-center gap-1"}>
+        <span>
+          {diff > 0 && "You Saved"} {diff < 0 && "You Over Spent"}{" "}
+          {diff == 0 && "Break Even"}
+        </span>
+        <span>Rs.</span>
+        <span
+          className={` ${diff > 0 && "text-gg"} ${diff < 0 && "text-rr"} ${diff == 0 && "text-budget"}`}
+        >
+          {amountFloat(diff)}
+        </span>
+      </Flexrow>
+    </>
+  )
+ */

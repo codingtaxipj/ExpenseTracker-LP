@@ -178,3 +178,8 @@ export const sortByWeekAsDates = (entries, week) => {
   }
   return stack;
 };
+
+export const ArrayCheck = (data) => {
+  if (!Array.isArray(data) || !data.length) return null;
+  else return data;
+};

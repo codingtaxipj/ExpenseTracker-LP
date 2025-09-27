@@ -11,7 +11,7 @@ const TooltipStrip = ({ children, content = "Tooltip Text", className }) => {
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent
         fill="fill-white bg-white"
-        className={cn("bg-white text-black font-14", className)}
+        className={cn("font-14 bg-white text-black", className)}
       >
         <p>{content}</p>
       </TooltipContent>

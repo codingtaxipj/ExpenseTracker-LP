@@ -1,6 +1,9 @@
-const SelectBar = ({ children }) => {
+import { cardBgv2 } from "@/global/style";
+import { cn } from "@/lib/utils";
+
+const SelectBar = ({ children, className }) => {
   return (
-    <div className="bg-gradBot shadow-shadowBlack border-br1 flex w-max gap-4 rounded-lg border px-2.5 py-1 shadow-md">
+    <div className={cn("flex w-max px-3.5 py-1", cardBgv2, "rounded-sm", className)}>
       {children}
     </div>
   );

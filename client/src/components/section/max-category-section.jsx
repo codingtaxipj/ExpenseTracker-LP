@@ -13,6 +13,7 @@ import Boxcard from "./boxcard";
 import { GraphTitleSquare } from "../analysis/Single-Year-Graph";
 import FlexrowStrip from "../strips/flexrow-strip";
 import { cn } from "@/lib/utils";
+import {  cardBgv2 } from "@/global/style";
 
 const MaxCategorySection = ({ isExpense }) => {
   //NOTE - year state
@@ -42,7 +43,7 @@ const MaxCategorySection = ({ isExpense }) => {
   const subYear = getSubListOfYear(sub, year);
   const subMax = sortByMax(subYear);
 
-  const txtColor = isExpense ? "text-exp" : "text-inc";
+  const txtColor = isExpense ? "text-exp-a2" : "text-inc-a3";
 
   return (
     <>
@@ -59,23 +60,25 @@ const MaxCategorySection = ({ isExpense }) => {
             </SelectCard>
           </SelectBar>
         </Flexrow>
-        <Boxcard className={"h-max flex-row flex-wrap gap-2 p-8"}>
+        <Flexrow className={cn("flex-wrap gap-2 p-8", cardBgv2)}>
           {isExpense && (
             <>
-              <Flexrow className="items-center gap-2 pb-2 font-medium">
+              <Flexrow className="items-center gap-2 pb-2.5 font-medium">
                 <span className="text-16px">
                   <Icons.checkCircle className={cn(txtColor)} />
                 </span>
-                <span className="pr-2">
+                <span className="text-slate-a1 pr-2">
                   Top 5 Maximun Prime Category - {year}{" "}
                 </span>
               </Flexrow>
 
               {primeMax.map((sc, idx) => (
                 <>
-                  <FlexrowStrip
+                  <Flexrow
                     key={idx}
-                    className="text-14px items-center gap-2"
+                    className={cn(
+                      "text-14px !text-slate-a3 border-slate-a7 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
+                    )}
                   >
                     <span className="text-14px">
                       <Icons.checkCircle className={cn(txtColor)} />
@@ -90,13 +93,13 @@ const MaxCategorySection = ({ isExpense }) => {
                         {amountFloat(sc.total)}
                       </span>
                     </Flexrow>
-                  </FlexrowStrip>
+                  </Flexrow>
                 </>
               ))}
             </>
           )}
 
-          <Flexrow className="items-center gap-2 pt-5 pb-2 font-medium">
+          <Flexrow className="items-center gap-2 pt-5 pb-2.5 font-medium">
             <span className="text-16px">
               <Icons.checkCircle className={cn(txtColor)} />
             </span>
@@ -105,8 +108,13 @@ const MaxCategorySection = ({ isExpense }) => {
 
           {subMax.map((sc, idx) => (
             <>
-              <FlexrowStrip key={idx} className="text-14px items-center gap-2">
-                <span className="text-14px">
+              <Flexrow
+                key={idx}
+                className={cn(
+                  "text-14px !text-slate-a3 border-slate-a7 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
+                )}
+              >
+                <span>
                   <Icons.checkCircle className={cn(txtColor)} />
                 </span>
                 <span>{sc.subName}</span>
@@ -117,15 +125,15 @@ const MaxCategorySection = ({ isExpense }) => {
                   </span>
                   <span className={cn(txtColor)}>{amountFloat(sc.total)}</span>
                 </Flexrow>
-              </FlexrowStrip>
+              </Flexrow>
             </>
           ))}
 
-          <Flexrow className={"!text-14px text-91 items-center gap-2 pt-8"}>
-            <Icons.textline /> Showing Top 5 Maximum{" "}
+          <Flexrow className={"!text-14px items-center gap-2 pt-6"}>
+            <Icons.textline /> Showing Top 5 Maximum
             {isExpense ? "Expense" : "Income"} Categories in Year
           </Flexrow>
-        </Boxcard>
+        </Flexrow>
       </Flexcol>
     </>
   );

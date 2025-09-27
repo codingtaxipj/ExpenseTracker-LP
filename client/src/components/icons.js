@@ -1,10 +1,18 @@
-import { MdEventRepeat, MdCalculate, MdDelete } from "react-icons/md";
+import {
+  MdEventRepeat,
+  MdCalculate,
+  MdDelete,
+  MdCancel,
+  MdSpaceDashboard,
+  MdEditNote,
+} from "react-icons/md";
 import {
   FaCalendar,
   FaCalendarCheck,
   FaCalculator,
   FaCalendarDay,
   FaCarSide,
+  FaEdit,
 } from "react-icons/fa";
 import { BsBarChartFill } from "react-icons/bs";
 
@@ -32,12 +40,22 @@ import { RiShareForwardFill } from "react-icons/ri";
 import { HiPencil } from "react-icons/hi";
 import { TbCancel } from "react-icons/tb";
 
+import { CgAdd } from "react-icons/cg";
+
 import {
   IoIosCheckmarkCircle,
   IoMdEye,
   IoIosArrowForward,
   IoIosArrowBack,
+  IoMdAdd,
 } from "react-icons/io";
+
+import {
+  RiAddFill,
+  RiDeleteBin5Fill,
+  RiEdit2Fill,
+  RiExternalLinkFill,
+} from "react-icons/ri";
 
 export const Icons = {
   analysis: MdCalculate,
@@ -72,7 +90,14 @@ export const Icons = {
   view: IoMdEye,
   del: MdDelete,
   toDelete: MdDelete,
-  gotoPage: RiShareForwardFill,
+  gotoPage: RiExternalLinkFill,
   pageNext: IoIosArrowForward,
   pageBack: IoIosArrowBack,
+  cross: MdCancel,
+  calander_date: FaCalendarDay,
+  dashbaord: MdSpaceDashboard,
+  add_circle_v2: CgAdd,
+  add_plus: IoMdAdd,
+  delete_bin: RiDeleteBin5Fill,
+  edit: RiEdit2Fill,
 };

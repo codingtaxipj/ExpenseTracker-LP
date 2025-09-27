@@ -3,13 +3,17 @@ import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getBudgetExpPercent } from "./useBudgetConfig";
+import { ArrayCheck } from "@/components/utility";
 
 const useTotalConfig = () => {
-  const TotalData = useSelector((state) => state.total.data);
+  const { TotalData, TotalLoading, TotalError } = useSelector(
+    (state) => state.total,
+  );
 
   const TotalByYear = useMemo(() => {
-    if (!Array.isArray(TotalData)) return null;
-    return TotalData.map((m) => ({
+    const total = ArrayCheck(TotalData);
+    if (!total) return null;
+    return total.map((m) => ({
       year: m.year,
       total: m.total,
       isTypeExpense: m.isTypeExpense,
@@ -23,8 +27,9 @@ const useTotalConfig = () => {
     list?.find((l) => l.year === year)?.total ?? [];
 
   const TotalByMonth = useMemo(() => {
-    if (!Array.isArray(TotalData)) return null;
-    return TotalData.map((m) => ({
+    const total = ArrayCheck(TotalData);
+    if (!total) return null;
+    return total.map((m) => ({
       year: m.year,
       monthList: m.monthList,
       isTypeExpense: m.isTypeExpense,
@@ -42,8 +47,9 @@ const useTotalConfig = () => {
     getMonthListOfYear(list, year)?.find((l) => l.month === month)?.total ?? [];
 
   const YearsList = useMemo(() => {
-    if (!Array.isArray(TotalData)) return [];
-    return [...new Set(TotalData.map((m) => m.year))];
+    const total = ArrayCheck(TotalData);
+    if (!total) return null;
+    return [...new Set(total.map((m) => m.year))];
   }, [TotalData]);
 
   const createIncomeWithExpense = (income, expense) => {
@@ -64,8 +70,9 @@ const useTotalConfig = () => {
   };
 
   const TotalByPrime = useMemo(() => {
-    if (!Array.isArray(TotalData)) return null;
-    return TotalData.map((m) => ({
+    const total = ArrayCheck(TotalData);
+    if (!total) return null;
+    return total.map((m) => ({
       year: m.year,
       primeList: m.primeList,
       isTypeExpense: m.isTypeExpense,
@@ -81,8 +88,9 @@ const useTotalConfig = () => {
     [...list].sort((a, b) => b.total - a.total).slice(0, 5);
 
   const TotalBySub = useMemo(() => {
-    if (!Array.isArray(TotalData)) return null;
-    return TotalData.map((m) => ({
+    const total = ArrayCheck(TotalData);
+    if (!total) return null;
+    return total.map((m) => ({
       year: m.year,
       subList: m.subList,
       isTypeExpense: m.isTypeExpense,
@@ -110,6 +118,8 @@ const useTotalConfig = () => {
     TotalBySub_INC,
     getSubListOfYear,
     sortByMax,
+    TotalLoading,
+    TotalError,
   };
 };
 

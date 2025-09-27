@@ -15,28 +15,62 @@ import { useNavigate } from "react-router-dom";
 import TransactionListTable from "@/components/table/transaction-list-table";
 import MonthCalander from "@/components/month-calender";
 import MaxCategorySection from "@/components/section/max-category-section";
+import ExpButton from "@/components/buttons/exp-button";
+import { Spinner } from "flowbite-react";
 
 const IncomeIndex = () => {
   const navigate = useNavigate();
-  const { IncomeList } = useTransactionConfig();
+  const { IncomeList, incomeLoading, incomeError } = useTransactionConfig();
 
+  // NOTE: 1. Handle the loading state first
+  if (incomeLoading) {
+    // Replace with your preferred loading spinner component
+    return (
+      <Flexrow className="h-full items-center justify-center">
+        <Spinner
+          className="text-slate-a3 fill-inc-a1"
+          size="lg"
+          aria-label="expense page loader"
+        />
+      </Flexrow>
+    );
+  }
+
+  // NOTE: 2. Handle the error state next
+  if (incomeError) {
+    return (
+      <>
+        <Flexrow className="h-full items-center justify-center">
+          ERROR : {incomeError}
+        </Flexrow>
+      </>
+    );
+  }
+
+  //NOTE: 3. Handle the "no data" state
+  if (!IncomeList || IncomeList.length === 0) {
+    // This gives the user a clear message if there's nothing to show
+    return (
+      <Flexrow className="h-full items-center justify-center">
+        <p>No Income Data found. Add one to get started!</p>
+      </Flexrow>
+    );
+  }
+
+  // NOTE: 4. If all checks pass, render the main content
   return (
     <>
-      <Flexcol>
-        <Flexrow className="items-center justify-center">
+      <Flexcol className="gap-8">
+        <Flexrow className="items-center justify-center gap-10">
           <Flexcol className="w-max">
             <TotalCardForYear year={CurrentYear()} />
             <TotalCardForMonth year={CurrentYear()} month={CurrentMonth()} />
           </Flexcol>
-          <MonthCalander list={IncomeList} />
+          <MonthCalander list={IncomeList ?? []} />
         </Flexrow>
-        <Flexrow className="items-center justify-center">
+        <Flexrow className="items-center justify-evenly px-5">
           <BudgetStrip />
-          <EButton
-            isTextIcon
-            addIncome
-            onClick={() => navigate(PATH.addIncome)}
-          />
+          <ExpButton addIncome />
         </Flexrow>
       </Flexcol>
 
@@ -51,7 +85,7 @@ const IncomeIndex = () => {
       <Flexcol className="pt-20">
         <SectionTitle title="Top 5 Maximum Expense Categories" isIncome />
         <MaxCategorySection />
-        <Flexrow className="text-14px items-center justify-end font-medium pt-5">
+        <Flexrow className="text-14px items-center justify-end pt-5 font-medium">
           <h4>For Detailed Income Analysis</h4>
           <EButton
             isTextIcon

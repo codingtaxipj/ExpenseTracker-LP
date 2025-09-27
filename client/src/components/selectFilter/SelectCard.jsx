@@ -1,19 +1,24 @@
+import { cn } from "@/lib/utils";
 import { Icons } from "../icons";
+import Flexrow from "../section/flexrow";
 
-const SelectCard = ({ title, children, isExpense, noIcon, className = "" }) => {
+const SelectCard = ({ title, children, isExpense, noIcon, className }) => {
   return (
     <>
-      <div
-        className={`text-14px flex flex-row items-center gap-2 font-medium ${className} `}
+      <Flexrow
+        className={cn(
+          "text-14px w-max items-center gap-2.5 font-medium",
+          className,
+        )}
       >
         {!noIcon && (
           <Icons.filter
-            className={`${isExpense ? "text-exp text-16px" : "text-inc text-16px"}`}
+            className={`${isExpense ? "text-exp-t text-16px" : "text-inc text-16px"}`}
           />
         )}
         {title && <button className="tracking-wide">{title}</button>}
-        <div className="flex"> {children}</div>
-      </div>
+        <Flexrow className="w-max"> {children}</Flexrow>
+      </Flexrow>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import Flexrow from "@/components/section/flexrow";
 import TypewriterAni from "../../components/TypewriterAni";
 import Flexcol from "@/components/section/flexcol";
-import ExpButton from "@/components/buttons/expButton";
+import ExpButton from "@/components/buttons/xpButton";
 
 const HomeIndex = () => {
   return (
@@ -10,15 +10,52 @@ const HomeIndex = () => {
         <TypewriterAni />
       </Flexrow>
 
-      <Flexcol className="pt-10">
-        <ExpButton btnfor="expense" label={"add expense"} />
-        <ExpButton btnfor="income" label={"add income"} />
-        <ExpButton btnfor="trip" label={"add trip"} />
-        <ExpButton btnfor="repeatexpense" label={"add recuring Expense"} />
-        <ExpButton btnfor="budget" label={"add budget"} />
-        <ExpButton btnfor="cancel" label={"cancel"} />
-        <ExpButton btnfor="success" label={"success"} />
-      </Flexcol>
+      <Flexrow className="gap-10 pt-5">
+        <div className="flex grid-cols-2 flex-col gap-5">
+          <Flexrow>
+            <div className="bg-exp-b size-15 rounded-lg"></div>
+            <span className="text-exp-t">This is Expense text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-inc-b size-15 rounded-lg"></div>
+            <span className="text-inc-t">This is Income text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-trip-b size-15 rounded-lg"></div>
+            <span className="text-trip-b">This is Trip text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-repeat-b size-15 rounded-lg"></div>
+            <span className="text-repeat-b">This is Reccuring text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-budget-b size-15 rounded-lg"></div>
+            <span className="text-budget-b">This is Budget text color</span>
+          </Flexrow>
+        </div>
+        <div className="flex grid-cols-2 flex-col gap-5">
+          <Flexrow>
+            <div className="bg-exp-b size-15 rounded-lg"></div>
+            <span className="text-exp-b">This is Expense text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-inc-b size-15 rounded-lg"></div>
+            <span className="text-inc-b">This is Income text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-trip-b size-15 rounded-lg"></div>
+            <span className="text-trip-b">This is Trip text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-repeat-b size-15 rounded-lg"></div>
+            <span className="text-repeat-b">This is Reccuring text color</span>
+          </Flexrow>
+          <Flexrow>
+            <div className="bg-budget-b size-15 rounded-lg"></div>
+            <span className="text-budget-b">This is Budget text color</span>
+          </Flexrow>
+        </div>
+      </Flexrow>
     </>
   );
 };

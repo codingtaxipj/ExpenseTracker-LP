@@ -1,3 +1,4 @@
+import { ArrayCheck } from "@/components/utility";
 import { percentSigned, percentUnSigned } from "@/components/utilityFilter";
 import {
   CurrentMonth,
@@ -8,23 +9,30 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const useBudgetConfig = () => {
-  const BudgetData = useSelector((state) => state.budget.data);
+  const {
+    BudgetData,
+    BudgetLoading,
+    BudgetError,
+    BudgetInsertLoading,
+    BudgetInsertError,
+  } = useSelector((state) => state.budget);
+
+  const Budget = useMemo(() => ArrayCheck(BudgetData), [BudgetData]);
 
   //NOTE - gets the active budget data of user
   const ActiveBudget = useMemo(() => {
-    // checks redux state var
-    if (!Array.isArray(BudgetData)) return null;
+    if (!Budget) return null;
     // find data of current year
-    const currentYear =
-      BudgetData.find((b) => b.year === CurrentYear()) || null;
+    const currentYear = Budget.find((b) => b.year === CurrentYear()) || null;
     // if data is not there return null
     if (!currentYear) return null;
     // if data is present then gets the values
     const { userID, year, budgetList } = currentYear;
     // if budget list is empty then return null
-    if (!budgetList || budgetList.length === 0) return null;
+    const bList = ArrayCheck(budgetList);
+    if (!bList) return null;
     // if budget list exists then finds the active budget
-    const list = budgetList.filter((b) => b.month <= CurrentMonth());
+    const list = bList.filter((b) => b.month <= CurrentMonth());
     const latest = list.length > 0 ? list[list.length - 1] : list[0];
 
     return {
@@ -33,14 +41,27 @@ const useBudgetConfig = () => {
       month: latest.month,
       amount: latest.budget,
     };
-  }, [BudgetData]);
+  }, [Budget]);
+
+  const budgetList = useMemo(() => {
+    if (!Budget) return null;
+    const dd = Budget.flatMap(({ year, budgetList }) =>
+      (budgetList ?? []).map((bd) => ({
+        year,
+        month: bd.month,
+        budget: bd.budget,
+      })),
+    );
+    return dd.reverse();
+  }, [Budget]);
 
   //NOTE - creates arr objs of year wise each month budget list and year total
   const BudgetByMonth = useMemo(() => {
     // checks redux state var
-    if (!Array.isArray(BudgetData)) return null;
+   
+    if (!Budget) return null;
 
-    return BudgetData.map((data) => {
+    return Budget.map((data) => {
       // gets the values from each array obj
       const { year, budgetList } = data;
       // gets the array list of budget according to each month
@@ -53,7 +74,7 @@ const useBudgetConfig = () => {
         totalBudget,
       };
     });
-  }, [BudgetData]);
+  }, [Budget]);
 
   const getBudgetListOfYear = (list, year = CurrentYear()) =>
     list?.find((l) => l.year === year)?.list ?? [];
@@ -62,26 +83,27 @@ const useBudgetConfig = () => {
 
   //NOTE - creates a group of budget in month range
   const createBudgetRange = (data) => {
-    if (!Array.isArray(data) || data.length <= 0) return null;
+    const checkedData = ArrayCheck(data);
+    if (!checkedData) return null;
     const result = [];
-    let start = data[0].month;
-    let currentBudget = data[0].budget;
-    for (let i = 1; i < data.length; i++) {
-      if (data[i].budget !== currentBudget) {
+    let start = checkedData[0].month;
+    let currentBudget = checkedData[0].budget;
+    for (let i = 1; i < checkedData.length; i++) {
+      if (checkedData[i].budget !== currentBudget) {
         result.push({
           start,
-          end: data[i - 1].month,
+          end: checkedData[i - 1].month,
           budget: currentBudget,
         });
 
-        start = data[i].month;
-        currentBudget = data[i].budget;
+        start = checkedData[i].month;
+        currentBudget = checkedData[i].budget;
       }
     }
     // Push the last group
     result.push({
       start,
-      end: data[data.length - 1].month,
+      end: checkedData[checkedData.length - 1].month,
       budget: currentBudget,
     });
 
@@ -89,16 +111,16 @@ const useBudgetConfig = () => {
   };
 
   const createBudgetWithExpense = (budget, expense) => {
-    if (!Array.isArray(budget) || !Array.isArray(expense)) return [];
+    const checkedBudget = ArrayCheck(budget);
+    const checkedExpense = ArrayCheck(expense);
+    if (!checkedBudget || checkedExpense) return null;
     const arr = [];
     for (let i = 0; i < 12; i++) {
       let b =
-        budget.length <= 0
+        checkedBudget.length <= 0
           ? 0
-          : (budget?.find((b) => b.month === i)?.budget ?? 0);
-      let e = expense?.find((e) => e.month === i)?.total ?? 0;
-
-    
+          : (checkedBudget?.find((b) => b.month === i)?.budget ?? 0);
+      let e = checkedExpense?.find((e) => e.month === i)?.total ?? 0;
 
       arr.push({
         id: i,
@@ -108,18 +130,23 @@ const useBudgetConfig = () => {
         percent: e == 0 || b == 0 ? "00.00" : getBudgetExpPercent(b, e),
       });
     }
-  
 
     return arr;
   };
 
   return {
+    Budget,
     ActiveBudget,
     BudgetByMonth,
+    budgetList,
     getBudgetListOfYear,
     createBudgetRange,
     createBudgetWithExpense,
     getTotalBudgetOfYear,
+    BudgetLoading,
+    BudgetError,
+    BudgetInsertLoading,
+    BudgetInsertError,
   };
 };
 

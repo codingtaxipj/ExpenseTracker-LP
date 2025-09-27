@@ -8,6 +8,7 @@ export const navVars = {
   ELEMENTS: "elements",
   LOGIN: "login",
   REGISTER: "sign-up",
+  TRIP: "trip",
 };
 export const btnVars = {
   expense: "expense",
@@ -26,7 +27,7 @@ export const calander = {
 };
 
 export const sortBy = {
-  none: "None",
+  default: "Default",
   primeCategory: "Prime Category",
   subCategory: "Sub Category",
   date: "Date",
@@ -41,4 +42,15 @@ export const PaymentStatus = {
   OVERDUE: 2,
   UPCOMING: 3,
   DUE: 4,
+};
+
+export const TripType = {
+  domestic: 0,
+  abroad: 1,
+};
+export const TravelType = {
+  solo: 0,
+  family: 1,
+  group: 2,
+  famGroup: 3,
 };

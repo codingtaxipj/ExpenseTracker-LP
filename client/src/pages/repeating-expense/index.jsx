@@ -1,38 +1,41 @@
-
 import Flexrow from "@/components/section/flexrow";
-import { PATH } from "@/router/routerConfig";
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
+
 import Flexcol from "@/components/section/flexcol";
 import SectionTitle from "@/components/section/section-title";
 import RecurringExpenseTable from "@/components/table/recurring-expense-table";
 import useRecurringConfig from "@/hooks/useRecurringConfig";
-import TotalCardRecurring from "@/components/cards/total-card-recurring";
+
 import { amountFloat } from "@/components/utilityFilter";
 import { GraphTitleSquare } from "@/components/analysis/Single-Year-Graph";
 import HorizontalDivider from "@/components/strips/horizontal-divider";
 import SingleBarChart from "@/components/charts/SingleBarChart";
-import EButton from "@/components/buttons/eButton";
+
+import TotalCardForYear from "@/components/cards/total-card-for-year";
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import TotalCardForMonth from "@/components/cards/total-card-for-month";
+import ExpButton from "@/components/buttons/exp-button";
 
 const RepeatingExpenseIndex = () => {
-  const navigate = useNavigate();
+  
   const { RecurringList, rcTotal, recurringChartData } = useRecurringConfig();
 
   const barInfo = {
     data: recurringChartData,
     label: "Expense",
-    color: "var(--color-exp)",
+    color: "var(--color-rep-a1)",
   };
 
   const chartInfo = {
     title: (
       <>
         <Flexrow className="text-16px w-max items-center gap-1.25">
-          <GraphTitleSquare className={"bg-exp"} />
-          <span> Bar Graph - Total Recurring Expense </span>
+          <GraphTitleSquare className={"bg-rep-a1"} />
+          Bar Graph - Total Recurring Expense
           <HorizontalDivider className="bg-white" />
           Rs.
-          <span className={"text-exp"}>
+          <span className={"text-rep-a3"}>
             {amountFloat(rcTotal.byMonth + rcTotal.byYear)}
           </span>
         </Flexrow>
@@ -44,19 +47,20 @@ const RepeatingExpenseIndex = () => {
 
   return (
     <>
-      <Flexcol>
-        <Flexrow className="items-center justify-center">
-          <TotalCardRecurring isMonth total={rcTotal.byMonth} />
-          <TotalCardRecurring total={rcTotal.byYear} />
-        </Flexrow>
-        <Flexrow className="items-center justify-center">
-          <EButton
-            isTextIcon
-            addExpense
-            onClick={() => navigate(PATH.addRepeatingExpense)}
+      <Flexrow className="justify-center gap-8">
+        <Flexcol className="w-max items-center justify-center gap-5">
+          <TotalCardForYear isReccuring year={CurrentYear()} />
+          <TotalCardForMonth
+            isReccuring
+            year={CurrentYear()}
+            month={CurrentMonth()}
           />
-        </Flexrow>
-      </Flexcol>
+        </Flexcol>
+        <Flexcol className="justify-top w-max items-center gap-5">
+          <ExpButton addReccuring_card />
+        </Flexcol>
+      </Flexrow>
+
       <Flexcol className="pt-20">
         <SectionTitle title="Recurring Expenses List" isExpense />
         <RecurringExpenseTable entries={RecurringList ?? []} />

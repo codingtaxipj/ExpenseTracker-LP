@@ -199,4 +199,48 @@ const fetchTotal = async (req, res) => {
   }
 };
 
-export { insertTotal, fetchTotal };
+const decrementTotal = async (req, res, next) => {
+  try {
+    const {
+      userID,
+      isTypeExpense,
+      ofAmount,
+      onDate,
+      primeCategory,
+      subCategory,
+    } = req.body;
+
+    const year = moment(onDate).year();
+    const month = moment(onDate).month();
+
+    await totalModal.updateOne(
+      { userID, year, isTypeExpense },
+      {
+        $inc: {
+          total: -ofAmount,
+          "monthList.$[m].total": -ofAmount,
+          "primeList.$[p].total": -ofAmount,
+          "subList.$[s].total": -ofAmount,
+          "subList.$[s].monthList.$[sm].total": -ofAmount,
+        },
+      },
+      {
+        arrayFilters: [
+          { "m.month": month },
+          { "p.name": primeCategory },
+          { "s.subName": subCategory },
+          { "sm.month": month },
+        ],
+      }
+    );
+
+    req.minmaxData = { year, userID, isTypeExpense };
+    next();
+  } catch (error) {
+    console.error(error);
+    console.log("error Occured !! decrementing total");
+    return;
+  }
+};
+
+export { insertTotal, fetchTotal, decrementTotal };

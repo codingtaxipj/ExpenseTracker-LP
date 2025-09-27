@@ -64,6 +64,48 @@ const expenseValidation = [
     .isString()
     .withMessage("Sub-category must be a string"),
 
+  // Validate Trip type: must exist, not be empty, and be boolean
+  body("isTripExpense")
+    .exists()
+    .withMessage("Trip type is required")
+    .notEmpty()
+    .withMessage("Trip type cannot be empty")
+    .isBoolean()
+    .withMessage("Trip type must be a boolean value"),
+
+  // validation for if exp is trip then
+  body("ofTrip").custom((value, { req }) => {
+    if (req.body.isTripExpense) {
+      if (!value) {
+        throw new Error(
+          "Trip ID (ofTrip) is required when isTripExpense is true"
+        );
+      }
+    }
+    return true;
+  }),
+
+  // Validate Recurring type: must exist, not be empty, and be boolean
+  body("isRecurringExpense")
+    .exists()
+    .withMessage("Recurring Expense type is required")
+    .notEmpty()
+    .withMessage("Recurring type cannot be empty")
+    .isBoolean()
+    .withMessage("Recurring type must be a boolean value"),
+
+  // validation for if exp is Recurring then
+  body("ofRecurring").custom((value, { req }) => {
+    if (req.body.isRecurringExpense) {
+      if (!value) {
+        throw new Error(
+          "Recurring ID (ofRecurring) is required when isRecurringExpense is true"
+        );
+      }
+    }
+    return true;
+  }),
+
   // Middleware to handle validation errors
   (req, res, next) => {
     const errors = validationResult(req);

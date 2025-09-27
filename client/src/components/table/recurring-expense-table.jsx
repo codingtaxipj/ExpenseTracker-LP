@@ -19,8 +19,10 @@ import IconCircle from "../IconCircle";
 import Flexcol from "../section/flexcol";
 import { amountFloat } from "../utilityFilter";
 import { Icons } from "../icons";
-import ExpButton from "../buttons/expButton";
-import TD from "./TD";
+
+import { cardBg } from "@/global/style";
+import { cn } from "@/lib/utils";
+import ExpButton from "../buttons/exp-button";
 
 const RecurringExpenseTable = ({ entries }) => {
   //Pagination
@@ -34,98 +36,73 @@ const RecurringExpenseTable = ({ entries }) => {
 
   return (
     <>
-      <div className="border-grey-hover w-full cursor-default overflow-hidden rounded-md">
-        <table className="w-full">
-          <tbody className="border-0">
-            {currentPageItems.map((data) => (
-              <TooltipStrip
-                key={data._id}
-                content={
-                  data.isNote ? data.isNote : "No Transaction Note Given"
-                }
-              >
-                <tr>
-                  <TD className="border-b-0 px-0">
-                    <Flexrow className="bg-gradBot rounded-lg px-5 py-2.5">
-                      <Flexrow className="w-max items-center">
-                        <IconCircle
-                          className={"!text-24px rounded-lg"}
-                          bgColor={data.primeCategory}
-                          setIcon={data.subCategory}
-                        />
-                      </Flexrow>
-                      <Flexcol className="gap-0.5">
-                        <div className="text-22px font-medium">
-                          {data.subCategory}
-                        </div>
-                        <Flexrow className="!text-91 text-12px w-max gap-3">
-                          <Flexrow className={"w-max items-center gap-1"}>
-                            <span
-                              className="size-3 rounded-xs"
-                              style={{
-                                backgroundColor: getPrimeColor(
-                                  data.primeCategory,
-                                ),
-                              }}
-                            ></span>
-                            {data.primeCategory}
-                          </Flexrow>
-                          <Flexrow className={"w-max items-center gap-1"}>
-                            <Icons.repeat />
-                            <span>Bill Cycle </span>
-                            <span>
-                              {data.isRepeatBy == 1 && "Monthly"}
-                              {data.isRepeatBy == 2 && "Yearly"}
-                            </span>
-                          </Flexrow>
-                          <Flexrow className={"w-max items-center gap-1"}>
-                            <Icons.checkCircle />
-                            <span> On {moment(data.onDate).format("Do")}</span>
-                          </Flexrow>
-                          <Flexrow className={"w-max items-center gap-1"}>
-                            <Icons.dayCal />
-                            <span>
-                              Created {""}
-                              {moment(data.onDate).format("MMM, YYYY")}
-                            </span>
-                          </Flexrow>
-                        </Flexrow>
-                      </Flexcol>
-                      <Flexrow className="text-28px w-max items-center gap-1 pl-2 font-bold">
-                        <Icons.rupee className="text-18px" />{" "}
-                        <span>{amountFloat(data.ofAmount)}</span>
-                      </Flexrow>
-                      <Flexrow className="w-max items-center gap-2 pl-2">
-                        <TooltipStrip content="Edit Record">
-                          <ExpButton
-                            btnfor="trip"
-                            className="!text-18px !p-2"
-                            label={<Icons.pencil />}
-                          />
-                        </TooltipStrip>
-                        <TooltipStrip content="View Record">
-                          <ExpButton
-                            btnfor="trip"
-                            className="!text-18px !p-2"
-                            label={<Icons.view />}
-                          />
-                        </TooltipStrip>
-                        <TooltipStrip content="Delete Record">
-                          <ExpButton
-                            btnfor="trip"
-                            className="!text-18px !p-2"
-                            label={<Icons.del />}
-                          />
-                        </TooltipStrip>
-                      </Flexrow>
-                    </Flexrow>
-                  </TD>
-                </tr>
-              </TooltipStrip>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Flexcol className="cursor-default">
+        {currentPageItems.map((data) => (
+          <TooltipStrip
+            key={data._id}
+            content={data.isNote ? data.isNote : "No Transaction Note Given"}
+          >
+            {/** ======== main rectangle box ======== */}
+
+            <Flexrow className={cn("px-5 py-2.5", cardBg)}>
+              <Flexrow className="w-max items-center">
+                <IconCircle
+                  className={"!text-24px rounded-lg"}
+                  bgColor={data.primeCategory}
+                  setIcon={data.subCategory}
+                />
+              </Flexrow>
+              <Flexcol className="gap-0.5">
+                <div className="text-22px font-medium">{data.subCategory}</div>
+                <Flexrow className="text-12px w-max gap-2.5">
+                  <Flexrow className={"w-max items-center gap-1.25"}>
+                    <span
+                      className="size-3 rounded-xs"
+                      style={{
+                        backgroundColor: getPrimeColor(data.primeCategory),
+                      }}
+                    ></span>
+                    {data.primeCategory}
+                  </Flexrow>
+                  <Flexrow className={"w-max items-center gap-1.25"}>
+                    <Icons.repeat />
+                    Billed
+                    <span>
+                      {data.isRepeatBy == 1 && "Monthly"}
+                      {data.isRepeatBy == 2 && "Yearly"}
+                    </span>
+                  </Flexrow>
+
+                  <Flexrow className={"w-max items-center gap-1.25"}>
+                    <Icons.dayCal />
+                    Created
+                    <span> {moment(data.onDate).format("DD MMM, YYYY")}</span>
+                  </Flexrow>
+                </Flexrow>
+              </Flexcol>
+              <Flexrow className="text-28px w-max items-center gap-1.25 pl-2 font-bold">
+                <Icons.rupee className="text-18px" />
+                {amountFloat(data.ofAmount)}
+              </Flexrow>
+              <Flexrow className="w-max items-center gap-2.5">
+                <TooltipStrip content="Edit Record">
+                  <ExpButton
+                    edit_iconbtn
+                    className={cn("text-slate-a1 bg-rep-a1")}
+                  />
+                </TooltipStrip>
+
+                <TooltipStrip content="Delete Record">
+                  <ExpButton
+                    delete_iconbtn
+                    className={"bg-error-a1 text-slate-a1"}
+                  />
+                </TooltipStrip>
+              </Flexrow>
+            </Flexrow>
+          </TooltipStrip>
+        ))}
+      </Flexcol>
 
       <Pagination className="mt-4">
         <PaginationContent>
@@ -134,13 +111,15 @@ const RecurringExpenseTable = ({ entries }) => {
               onClick={() => setPage((p) => Math.max(p - 1, 1))}
               className={
                 page === 1
-                  ? "pointer-events-none cursor-not-allowed opacity-50"
-                  : "cursor-pointer"
+                  ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
+                  : `bg-rep-a1 cursor-pointer`
               }
-            />
+            >
+              <Icons.pageBack />
+            </PaginationPrevious>
           </PaginationItem>
 
-          <PaginationItem className="px-2 text-sm">
+          <PaginationItem className="text-14px px-5">
             Page {page} of {totalPages}
           </PaginationItem>
 
@@ -149,10 +128,12 @@ const RecurringExpenseTable = ({ entries }) => {
               onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
               className={
                 page === totalPages
-                  ? "pointer-events-none cursor-not-allowed opacity-50"
-                  : "cursor-pointer"
+                  ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
+                  : `bg-rep-a1 cursor-pointer`
               }
-            />
+            >
+              <Icons.pageNext />
+            </PaginationNext>
           </PaginationItem>
         </PaginationContent>
       </Pagination>

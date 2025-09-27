@@ -1,6 +1,3 @@
-import TotalCard from "@/components/cards/TotalCard";
-import BudgetTable from "@/components/table/budget-table";
-import ExpButton from "@/components/buttons/expButton";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
 
@@ -24,6 +21,9 @@ import FlexrowStrip from "@/components/strips/flexrow-strip";
 import { amountFloat } from "@/components/utilityFilter";
 import HorizontalDivider from "@/components/strips/horizontal-divider";
 
+import ExpButton from "@/components/buttons/exp-button";
+import BudgetTable from "@/components/table/budget-table";
+
 const BudgetIndex = () => {
   //NOTE - TOTAL CONFIG
   const {
@@ -35,11 +35,16 @@ const BudgetIndex = () => {
   } = useTotalConfig();
   //NOTE - BUDGET CONFIG
   const {
+    Budget,
+    BudgetLoading,
+    BudgetError,
     getBudgetListOfYear,
     BudgetByMonth,
+    budgetList,
     createBudgetWithExpense,
     getTotalBudgetOfYear,
   } = useBudgetConfig();
+
   //NOTE - year state
   const [year, setYear] = useState(CurrentYear());
   //NOTE - sets the year to get the months data
@@ -67,20 +72,52 @@ const BudgetIndex = () => {
   const diff = BE_Difference;
   const per = BE_Percent;
 
+  console.log({ budgetList });
+
+  // NOTE: 1. Handle the loading state first
+  if (BudgetLoading) {
+    // Replace with your preferred loading spinner component
+    return (
+      <Flexrow className="h-full items-center justify-center">
+        <Spinner
+          className="text-slate-a3 fill-exp-a1"
+          size="lg"
+          aria-label="expense page loader"
+        />
+      </Flexrow>
+    );
+  }
+
+  // NOTE: 2. Handle the error state next
+  if (BudgetError) {
+    return (
+      <>
+        <Flexrow className="h-full items-center justify-center">
+          ERROR : {BudgetError}
+        </Flexrow>
+      </>
+    );
+  }
+  // NOTE: 3. Handle the "no data" state
+  if (!Budget || Budget.length === 0) {
+    // This gives the user a clear message if there's nothing to show
+    return "Set Budget";
+  }
+  // NOTE: 4. If all checks pass, render the main content
   return (
     <>
-      <Flexrow>
-        <Flexcol className="items-center justify-center">
+      <Flexrow className={""}>
+        <Flexcol className="items-center">
           <TotalCardForYear isExpense year={CurrentYear()} />
           <ActiveBudgetCard />
 
           <Flexrow className="justify-center">
-            <ExpButton btnfor={"budget"} label={"Edit Budget"} />
-            <ExpButton btnfor={"budget"} label={"New Budget"} />
+            <ExpButton as="div" setBudget_textbtn />
+            <ExpButton as="div" editBudget_textbtn />
           </Flexrow>
         </Flexcol>
-        <Flexcol className="from-gradBot to-gradTop shadow-shadowBlack border-br1 rounded-lg border bg-gradient-to-t shadow-md">
-          {/*  <BudgetTable list={BudgetList} /> */}
+        <Flexcol>
+          <BudgetTable list={budgetList ?? []} />
         </Flexcol>
       </Flexrow>
 
@@ -111,6 +148,7 @@ const BudgetIndex = () => {
           {per !== null && (
             <>
               <BudgetExpenseTable inBudgeting data={BudgetExpenseCombo} />
+
               <FlexrowStrip className="text-14px gap-1.25">
                 <span>Comparatively in {year} </span>
                 <HorizontalDivider className="bg-white" />
@@ -154,7 +192,7 @@ const BudgetIndex = () => {
 
         <Flexrow className="flex-wrap items-center">
           <div className="flex flex-wrap gap-5">
-            {/* {MonthList.map((item) => (
+            {/*  {MonthList.map((item) => (
               <MonthlyBudgetStrip
                 isExpense
                 key={item.month}
@@ -162,7 +200,7 @@ const BudgetIndex = () => {
                 budget={bb(BudgetListByMonth, item.month)}
                 amount={item.total}
               />
-            ))} */}
+            ))}  */}
           </div>
         </Flexrow>
         <Flexrow className="text-14px items-center justify-start font-medium">

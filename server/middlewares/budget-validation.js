@@ -4,35 +4,45 @@
 
 import { body, validationResult } from "express-validator";
 const budgetValidation = [
+  // userID must exist, not empty, and numeric
   body("userID")
     .exists()
+    .withMessage("userID is required")
     .notEmpty()
-    .withMessage("userID Cannot be Empty")
-    .isInt()
-    .withMessage("userID must be 16 digit Integer"),
+    .withMessage("userID cannot be empty")
+    .isNumeric()
+    .withMessage("userID must be a number"),
+
+  // year must exist, not empty, numeric, and >= 2000
   body("year")
     .exists()
+    .withMessage("year is required")
     .notEmpty()
-    .withMessage("year cannot be empty")
-    .isInt()
-    .withMessage("year must be a Year Number")
-    .custom(value => value >= 0)
-    .withMessage("year must be a Positive Nmmber"),
-  body("month")
+    .withMessage("year cannot be empty"),
+
+  // budgetList must exist, must be an array, and not empty
+  body("budgetList")
     .exists()
-    .notEmpty()
-    .withMessage("month cannot be empty")
-    .isInt()
-    .withMessage("month must be a Year Number")
-    .custom(value => value >= 0)
-    .withMessage("month must be a Positive Nmmber"),
-  body("amount")
+    .withMessage("budgetList is required")
+    .isArray({ min: 1 })
+    .withMessage("budgetList must be a non-empty array"),
+
+  // Validate each item inside budgetList
+  body("budgetList.*.month")
     .exists()
+    .withMessage("month is required in each budgetList entry")
     .notEmpty()
-    .withMessage("amount cannot be empty")
-    .isInt()
-    .custom(value => value >= 0)
-    .withMessage("amount must be a Positive Nmmber"),
+    .withMessage("month cannot be empty in budgetList entry")
+    .isInt({ min: 0, max: 11 })
+    .withMessage("month must be between 1 and 12"),
+
+  body("budgetList.*.budget")
+    .exists()
+    .withMessage("budget is required in each budgetList entry")
+    .notEmpty()
+    .withMessage("budget cannot be empty in budgetList entry")
+    .isNumeric()
+    .withMessage("budget must be a number"),
 
   // Middleware function to check validation errors
   (req, res, next) => {

@@ -18,7 +18,7 @@ const BudgetPercentStrip = ({ data }) => {
         <Flexrow className="w-max items-center gap-1">
           <span className="text-14px">
             <Icons.checkCircle
-              className={`${d.id === CurrentMonth() ? "text-white" : "text-exp"}`}
+              className={`${d.id === CurrentMonth() ? "text-white" : "text-exp-t"}`}
             />
           </span>
           <span>{d.month}</span>

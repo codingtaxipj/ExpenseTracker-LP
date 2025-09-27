@@ -16,12 +16,12 @@ const ActiveBudgetCard = () => {
   return (
     <>
       <TotalCard
-        color="text-budget"
+        color="text-bud-a1"
         headText="Active Budget"
         total={
           BudgetEachMonth?.find((bm) => bm.month === CurrentMonth())?.budget
         }
-        footerText={`Budget of ${getMonthName(CurrentMonth(), "MMMM")}, ${CurrentYear()}`}
+        footerText={`Budget of ${getMonthName(CurrentMonth(), "MMMM")}`}
         date={CurrentYear()}
       ></TotalCard>
     </>

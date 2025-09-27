@@ -1,21 +1,26 @@
+import { apiCLient } from "@/api/apiClient";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
 const initialState = {
-  data: null,
-  loading: false,
-  error: false,
+  TotalData: null,
+  TotalLoading: false,
+  TotalError: null,
 };
 
 const userID = "123456";
 
-export const fetchTotal = createAsyncThunk("total/fetchTotal", async () => {
-  const res = await axios.get(
-    `http://127.0.0.1:8080/total/get-total/${userID}`,
-  );
-
-  return res.data;
-});
+export const fetchTotal = createAsyncThunk(
+  "total/fetchTotal",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await apiCLient.get(`/total/get-total/${userID}`);
+      return res.data;
+    } catch (err) {
+      // 'err.message' is now the clean string from our interceptor.
+      return rejectWithValue(err.message);
+    }
+  },
+);
 
 const total = createSlice({
   name: "total",
@@ -24,16 +29,16 @@ const total = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTotal.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.TotalLoading = true;
+        state.TotalError = null;
       })
       .addCase(fetchTotal.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
+        state.TotalLoading = false;
+        state.TotalData = action.payload;
       })
       .addCase(fetchTotal.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.TotalLoading = false;
+        state.TotalError = action.payload;
       });
   },
 });

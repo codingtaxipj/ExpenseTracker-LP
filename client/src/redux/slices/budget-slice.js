@@ -1,44 +1,44 @@
+import { apiCLient } from "@/api/apiClient";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
 const initialState = {
-  data: null,
-  loading: false,
-  error: false,
+  BudgetData: null,
+  BudgetLoading: false,
+  BudgetError: null,
+
+  BudgetInsertLoading: false,
+  BudgetInsertError: null,
 };
 
 const userID = 123456;
 
-export const fetchBudget = createAsyncThunk("budget/fetchBudget", async () => {
-  const res = await axios.get(
-    `http://127.0.0.1:8080/budget/get-data/${userID}`,
-  );
-  return res.data;
-});
+export const fetchBudget = createAsyncThunk(
+  "budget/fetchBudget",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await apiCLient.get(`/budget/get-data/${userID}`);
+      return res.data;
+    } catch (err) {
+      // 'err.message' is now the clean string from our interceptor.
+      return rejectWithValue(err.message);
+    }
+  },
+);
 
 export const insertBudget = createAsyncThunk(
   "budget/insertBudget",
-  async ({ mode, data }, { dispatch }) => {
+  async ({ mode, data }, { dispatch, rejectWithValue }) => {
     try {
       let res;
       if (mode === "new") {
-        res = await axios.post(`http://127.0.0.1:8080/budget/add-data`, data);
+        res = await apiCLient.post(`/budget/add-data`, data);
       } else if (mode === "update") {
-        res = await axios.patch(
-          `http://127.0.0.1:8080/budget/update-budget`,
-          data,
-        );
+        res = await apiCLient.patch(`/budget/update-budget`, data);
       }
-
       await dispatch(fetchBudget());
       return { success: true, message: res.data.message };
-    } catch (error) {
-      const message =
-        error?.response?.data?.errors?.[0]?.msg ||
-        error?.response?.data?.message ||
-        "Budget action failed.";
-
-      return { success: false, message };
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   },
 );
@@ -49,28 +49,32 @@ const budget = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+
+      //Budget Fetch
       .addCase(fetchBudget.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.BudgetLoading = true;
+        state.BudgetError = null;
       })
       .addCase(fetchBudget.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
+        state.BudgetLoading = false;
+        state.BudgetData = action.payload;
       })
       .addCase(fetchBudget.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.BudgetLoading = false;
+        state.BudgetError = action.payload;
       })
+
+      // Budget Insert
       .addCase(insertBudget.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.BudgetInsertLoading = true;
+        state.BudgetInsertError = null;
       })
       .addCase(insertBudget.fulfilled, (state) => {
-        state.loading = false;
+        state.BudgetInsertLoading = false;
       })
       .addCase(insertBudget.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.BudgetInsertLoading = false;
+        state.BudgetInsertError = action.payload;
       });
   },
 });

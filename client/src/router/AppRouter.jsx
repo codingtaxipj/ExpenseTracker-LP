@@ -16,6 +16,9 @@ import Trip from "@/pages/trip-expense/trip.jsx";
 import Budget from "@/pages/budget/budget.jsx";
 import BudgetIndex from "@/pages/budget/index.jsx";
 import RepeatingExpenseForm from "@/components/Forms/repeating-expense-form.jsx";
+import TripIndex from "@/pages/trip-expense/index.jsx";
+import TripDetails from "@/pages/trip-expense/trip-details.jsx";
+import TripExpenseForm from "@/components/Forms/trip-expense-form.jsx";
 
 const AppRouter = () => {
   return (
@@ -44,7 +47,14 @@ const AppRouter = () => {
         element={<IncomeAnalysis />}
       ></Route>
 
-      <Route index path={PATH.trip} element={<Trip />}></Route>
+      <Route path={PATH.trip} element={<Trip />}>
+        <Route index element={<TripIndex />} />
+        <Route path={":tripid"} element={<TripDetails />} />
+        <Route
+          path={`:tripid/${PATH.addTripExpense}`}
+          element={<TripExpenseForm />}
+        />
+      </Route>
 
       <Route path={PATH.repeat} element={<Repeating />}>
         <Route index element={<RepeatingExpenseIndex />} />

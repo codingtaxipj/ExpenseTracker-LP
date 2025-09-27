@@ -117,24 +117,24 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   const barInfo = {
     data: chartData,
     label: isExpense ? "Expense" : "Income",
-    color: isExpense ? "var(--color-exp)" : "var(--color-inc)",
+    color: isExpense ? "var(--color-exp-a1)" : "var(--color-inc-a2)",
   };
 
   const chartInfo = {
     title: (
       <>
-        <GraphTitleSquare className={isExpense ? "bg-exp" : "bg-inc"} />
+        <GraphTitleSquare className={isExpense ? "bg-exp-a1" : "bg-inc-a2"} />
         <span className="mr-2.5"> Bar Graph - {year}</span>
         <Flexrow className="text-16px w-max items-center gap-1.25">
           <span className="text-14px">
             <Icons.checkCircle
-              className={isExpense ? "text-exp" : "text-inc"}
+              className={isExpense ? "text-exp-a3" : "text-inc-a3"}
             />
           </span>
           <span>Total {isExpense ? "Expense" : "Income"}</span>
           <HorizontalDivider className="bg-white" />
           Rs.
-          <span className={isExpense ? "text-exp" : "text-inc"}>
+          <span className={isExpense ? "text-exp-a3" : "text-inc-a3"}>
             {amountFloat(TotalExpenseYear)}
           </span>
         </Flexrow>
@@ -180,81 +180,15 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
        */}
       {isAnalysis && (
         <>
-          {/*  <Card className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-col gap-0.5 border px-12 py-10 text-white shadow-md">
-            <Flexcol>
-              <Flexrow className="items-center gap-2 pb-5">
-                <GraphTitleSquare className={"bg-budget"} />
-                <span className="mr-2.5 font-medium"> Ratio - {year}</span>
-                <FlexrowStrip className="text-14px gap-1.25">
-                  <span className="text-14px">
-                    <Icons.checkCircle className="text-budget" />
-                  </span>
-                  <span>Total Budget</span>
-                  <HorizontalDivider className="bg-white" />
-                  Rs.
-                  <span className="text-budget">
-                    {amountFloat(TotalBudgetYear)}
-                  </span>
-                </FlexrowStrip>
-                <FlexrowStrip className="text-14px gap-1.25">
-                  <span className="text-14px">
-                    <Icons.checkCircle className="text-exp" />
-                  </span>
-                  <span>Total Expense</span>
-                  <HorizontalDivider className="bg-white" />
-                  Rs.
-                  <span className="text-exp">
-                    {amountFloat(TotalExpenseYear)}
-                  </span>
-                </FlexrowStrip>
-                <FlexrowStrip className="text-14px gap-1.25">
-                  <span className="text-14px">
-                    <Icons.checkCircle className="text-white" />
-                  </span>
-                  <span>{BE_Percent}%</span>
-                  <span className="text-14px">
-                    {BE_Percent < 0 && <Icons.graphdown className="text-gg" />}
-                    {BE_Percent > 0 && <Icons.graphup className="text-rr" />}
-                  </span>
-                </FlexrowStrip>
-              </Flexrow>
-
-              {BudgetRange.map((br) => (
-                <>
-                  <Flexcol>
-                    <Flexrow className="items-center justify-between gap-2 py-2.5">
-                      <span
-                        className={`text-14px min-w-[70px] cursor-pointer text-right font-medium ${br.start === CurrentMonth() && `bg-exp rounded-[5px] !text-center text-white`}`}
-                      >
-                        {getMonthName(br.start, "MMMM")}
-                      </span>
-                      <TimelineDots range={br} />
-                      <span
-                        className={`text-14px min-w-[70px] cursor-pointer text-left font-medium ${br.end === CurrentMonth() && `bg-exp rounded-[5px] !text-center text-white`}`}
-                      >
-                        {getMonthName(br.end, "MMMM")}
-                      </span>
-                    </Flexrow>
-                    <Flexrow className={"flex-wrap justify-center"}>
-                      <BudgetRangeMonths
-                        range={br}
-                        combo={BudgetExpenseCombo}
-                        isExpense={isExpense}
-                      />
-                    </Flexrow>
-                  </Flexcol>
-                </>
-              ))}
-            </Flexcol>
-          </Card> */}
-
-          <Flexrow>
+          <Flexrow className={"justify-between gap-10 py-3.5"}>
             {isExpense && TotalBudgetYear && (
               <BudgetExpenseTable data={BudgetExpenseCombo} />
             )}
             {!isExpense && <IncomeExpenseTable data={IncomeExpenseCombo} />}
             <Flexrow className={"w-max"}>
-              <Flexcol>
+              <Flexcol
+                className={cn(isExpense ? "justify-between" : "justify-center")}
+              >
                 {isExpense && TotalBudgetYear && (
                   <>
                     <TotalCardForYear isExpense year={year} />
@@ -341,7 +275,7 @@ export const TimelineDots = ({ range }) => {
           >
             <div
               key={d}
-              className={`z-10 size-3 rounded-full ${d === CurrentMonth() ? `bg-exp size-4 border-2 border-white` : `bg-budget`}`}
+              className={`z-10 size-3 rounded-full ${d === CurrentMonth() ? `bg-exp-bsize-4 border-2 border-white` : `bg-budget`}`}
             ></div>
           </TooltipStrip>
         </>

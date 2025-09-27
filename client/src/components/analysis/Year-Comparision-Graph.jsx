@@ -143,7 +143,7 @@ const YearComparisionGraph = ({ isExpense }) => {
               <HorizontalDivider className="bg-white" />
               <span className="text-14px">
                 <Icons.checkCircle
-                  className={`${isExpense ? "text-exp" : "text-inc"}`}
+                  className={`${isExpense ? "text-exp-t" : "text-inc"}`}
                 />
               </span>
               <span> You are </span>

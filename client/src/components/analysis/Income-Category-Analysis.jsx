@@ -12,6 +12,8 @@ import { Icons } from "../icons";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import HorizontalDivider from "../strips/horizontal-divider";
 import { amountFloat } from "../utilityFilter";
+import { cardBgv2 } from "@/global/style";
+import { cn } from "@/lib/utils";
 
 const IncomeCategoryAnalysis = () => {
   //NOTE - year state
@@ -47,42 +49,49 @@ const IncomeCategoryAnalysis = () => {
             </SelectCard>
           </SelectBar>
         </Flexrow>
-        <Boxcard className={"h-max flex-row flex-wrap gap-2 p-8"}>
+        <Flexcol className={cn("text-slate-a1 gap-2 p-10 px-12", cardBgv2)}>
           <Flexrow className="items-center gap-2 font-medium">
-            <GraphTitleSquare className={"bg-inc"} />
+            <GraphTitleSquare className={"bg-inc-a2"} />
             <span className="pr-2">Income Category - {year} </span>
             <span className="text-14px">
-              <Icons.checkCircle className="text-inc" />
+              <Icons.checkCircle className="text-inc-a3" />
             </span>
             <span>Total Income </span>
             <HorizontalDivider className="bg-white" />
             Rs.
-            <span className="text-inc">{amountFloat(TotalIncomeYear)}</span>
+            <span className="text-inc-a3">{amountFloat(TotalIncomeYear)}</span>
           </Flexrow>
-          <Flexrow className={"!text-14px text-91 items-center gap-2 pb-8"}>
+          <Flexrow className={"!text-14px items-center gap-2 pb-8"}>
             Expenses in Each Sub Categories of Selected Prime Category
           </Flexrow>
-          {SubOfYear.map((sc, idx) => (
-            <>
-              <FlexrowStrip key={idx} className="text-14px items-center gap-2">
-                <span className="text-14px">
-                  <Icons.checkCircle className={`${"text-inc"}`} />
-                </span>
-                <span>{sc.subName}</span>
-                <HorizontalDivider className="mx-0.25 bg-white" />
-                <Flexrow className={"w-max items-center gap-0.75"}>
-                  <span className="text-12px">
-                    <Icons.rupee />
+          <Flexrow className={"flex-wrap gap-2"}>
+            {SubOfYear.map((sc, idx) => (
+              <>
+                <Flexrow
+                  key={idx}
+                  className={cn(
+                    "text-14px !text-slate-a3 border-slate-a7 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
+                  )}
+                >
+                  <span className="text-14px">
+                    <Icons.checkCircle className={"text-inc-a2"} />
                   </span>
-                  <span className="text-inc">{sc.total}</span>
+                  <span>{sc.subName}</span>
+                  <HorizontalDivider className="mx-0.25 bg-white" />
+                  <Flexrow className={"w-max items-center gap-0.75"}>
+                    <span className="text-12px">
+                      <Icons.rupee />
+                    </span>
+                    <span className="text-inc-a3">{sc.total}</span>
+                  </Flexrow>
                 </Flexrow>
-              </FlexrowStrip>
-            </>
-          ))}
-          <Flexrow className={"!text-14px text-91 items-center gap-2 pt-8"}>
+              </>
+            ))}
+          </Flexrow>
+          <Flexrow className={"!text-14px items-center gap-2 pt-8"}>
             <Icons.textline /> Showing Total Income of Each Category in Year
           </Flexrow>
-        </Boxcard>
+        </Flexcol>
       </Flexcol>
     </>
   );

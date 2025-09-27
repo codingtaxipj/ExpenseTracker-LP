@@ -17,6 +17,7 @@ import budgetReducer from "@/redux/slices/budget-slice.js";
 import totalReducer from "@/redux/slices/total-slice.js";
 import MinMaxReducer from "@/redux/slices/minmax-slice.js";
 import transactionReducer from "@/redux/slices/transaction-slice.js";
+import tripReducer from "@/redux/slices/trip-slice.js";
 
 export const rootReducer = combineReducers({
   user: authReducer,
@@ -24,6 +25,7 @@ export const rootReducer = combineReducers({
   MM: MinMaxReducer,
   total: totalReducer,
   transaction: transactionReducer,
+  trip: tripReducer,
 });
 
 // Persist config

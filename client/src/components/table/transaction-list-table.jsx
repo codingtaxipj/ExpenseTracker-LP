@@ -23,6 +23,12 @@ import { getPrimeColor } from "@/global/categories";
 import TD from "./TD";
 import EButton from "@/components/buttons/eButton";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+import { useDispatch } from "react-redux";
+import { deleteExpense, deleteIncome } from "@/redux/slices/transaction-slice";
+import { cardBg } from "@/global/style";
+import ExpButton from "../buttons/exp-button";
 
 const TransactionListTable = ({ isExpesne, entries }) => {
   //Pagination
@@ -34,100 +40,148 @@ const TransactionListTable = ({ isExpesne, entries }) => {
   const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   //const emptyRows = ITEMS_PER_PAGE - currentPageItems.length;
 
-  const bgColor = isExpesne ? "bg-exp" : "bg-inc";
+  const bgColor = isExpesne ? "bg-exp-a3" : "bg-inc-a2";
+
+  const dispatch = useDispatch();
+
+  const deleteToast = (ID, userID = 123456) => {
+    return new Promise((resolve) => {
+      toast.custom((t) => (
+        <Flexrow
+          className={cn(
+            "!text-14px bg-dark-br1 text-slate-1 border-dark-br1 shadow-dark-p2 w-[24rem] items-center gap-2 rounded-lg border px-4 py-2 shadow-md",
+          )}
+        >
+          <Flexcol className="flex-1 gap-0">
+            <span className="font-medium">Delete Expense ?</span>
+            <span>Do you want to delete ?</span>
+          </Flexcol>
+
+          <Flexrow className="w-max justify-end gap-2">
+            <EButton
+              isText
+              className="bg-ggbg"
+              onClick={async () => {
+                const result = isExpesne
+                  ? await dispatch(
+                      deleteExpense({ expID: ID, userID }),
+                    ).unwrap()
+                  : await dispatch(
+                      deleteIncome({ incID: ID, userID }),
+                    ).unwrap();
+                toast.dismiss(t.id); // dismiss the toast first
+
+                if (result.success) {
+                  toast.success(result.message || "Deleted successfully", {
+                    style: {
+                      width: "24rem", // custom width
+                    },
+                  });
+                  resolve(true);
+                } else {
+                  toast.error(result.message || "Failed to delete", {
+                    style: {
+                      width: "24rem", // custom width
+                    },
+                  });
+                  resolve(false);
+                }
+              }}
+            >
+              Yes
+            </EButton>
+            <EButton
+              isText
+              className="bg-rrbg"
+              onClick={() => {
+                toast.dismiss(t.id);
+                resolve(false);
+              }}
+            >
+              No
+            </EButton>
+          </Flexrow>
+        </Flexrow>
+      ));
+    });
+  };
 
   return (
     <>
-      <div className="border-grey-hover w-full cursor-default overflow-hidden rounded-md">
-        <table className="w-full">
-          {/*  <thead>
-            <tr className="bg-gradBot">
-              <TH className="w-0"></TH>
-              <TH className="">Category</TH>
-              <TH className="w-50">From</TH>
-              <TH className="w-fit">Date</TH>
+      <Flexcol className="cursor-default">
+        {currentPageItems.map((data) => (
+          <TooltipStrip
+            key={data._id}
+            content={data.isNote ? data.isNote : "No Transaction Note Given"}
+          >
+            {/** ======== main rectangle box ======== */}
+            <Flexrow className={cn("px-5 py-2.5", cardBg)}>
+              <Flexrow className="w-max items-center">
+                <IconCircle
+                  className={"!text-24px rounded-lg"}
+                  bgColor={data.primeCategory}
+                  setIcon={data.subCategory}
+                />
+              </Flexrow>
+              <Flexcol className="gap-0.5">
+                <p className="text-22px font-medium">{data.subCategory}</p>
+                <Flexrow className="text-12px w-max gap-2.5">
+                  <Flexrow className={"w-max items-center gap-1.25"}>
+                    <span
+                      className="size-3 rounded-xs"
+                      style={{
+                        backgroundColor: getPrimeColor(data.primeCategory),
+                      }}
+                    ></span>
+                    {data.primeCategory}
+                  </Flexrow>
+                  <Flexrow className={"w-max items-center gap-1.25"}>
+                    <Icons.dayCal />
+                    {moment(data.onDate).format("Do MMM, yyyy")}
+                  </Flexrow>
+                  <Flexrow className={"w-max items-center gap-1.25"}>
+                    {data.isTripExpense && (
+                      <>
+                        <Icons.trip />
+                        {"Trip Expense"}
+                      </>
+                    )}
+                    {data.isReccuringExpense && (
+                      <>
+                        <Icons.repeat />
+                        {"Reccuring Expense"}
+                      </>
+                    )}
+                  </Flexrow>
+                </Flexrow>
+              </Flexcol>
+              <Flexrow className="text-28px w-max items-center gap-1.25 font-bold">
+                <Icons.rupee className="text-18px" />
+                {amountFloat(data.ofAmount)}
+              </Flexrow>
+              <Flexrow className="w-max items-center gap-2.5">
+                <TooltipStrip content="Edit Record">
+                  <ExpButton
+                    edit_iconbtn
+                    className={cn(
+                      "text-slate-a1",
+                      isExpesne ? "bg-exp-aa" : "bg-inc-a0",
+                    )}
+                  />
+                </TooltipStrip>
 
-              <TH className="w-fit"></TH>
-              <TH className="w-fit !text-right">Amount</TH>
-              <TH className="w-fit"></TH>
-            </tr>
-          </thead> */}
-
-          <tbody className="border-0">
-            {currentPageItems.map((data) => (
-              <TooltipStrip
-                key={data._id}
-                content={
-                  data.isNote ? data.isNote : "No Transaction Note Given"
-                }
-              >
-                <tr>
-                  <TD className="border-b-0 px-0">
-                    <Flexrow className="from-gradBot to-gradTop shadow-shadowBlack border-br1 rounded-lg border bg-gradient-to-t px-5 py-2.5">
-                      <Flexrow className="w-max items-center">
-                        <IconCircle
-                          className={"!text-24px rounded-lg"}
-                          bgColor={data.primeCategory}
-                          setIcon={data.subCategory}
-                        />
-                      </Flexrow>
-                      <Flexcol className="gap-0.5">
-                        <div className="text-22px font-medium">
-                          {data.subCategory}
-                        </div>
-                        <Flexrow className="!text-91 text-12px w-max gap-3">
-                          <Flexrow className={"w-max items-center gap-1"}>
-                            <span
-                              className="size-3 rounded-xs"
-                              style={{
-                                backgroundColor: getPrimeColor(
-                                  data.primeCategory,
-                                ),
-                              }}
-                            ></span>
-                            {data.primeCategory}
-                          </Flexrow>
-                          <Flexrow className={"w-max items-center gap-1"}>
-                            <Icons.dayCal />
-                            {moment(data.onDate).format("Do MMM, yyyy")}
-                          </Flexrow>
-                        </Flexrow>
-                      </Flexcol>
-                      <Flexrow className="text-28px w-max items-center gap-1 pl-2 font-bold">
-                        <Icons.rupee className="text-18px" />
-                        <span>{amountFloat(data.ofAmount)}</span>
-                      </Flexrow>
-                      <Flexrow className="w-max items-center gap-2 pl-2">
-                        <TooltipStrip content="Edit Record">
-                          <EButton
-                            isIcon
-                            editIcon
-                            className={cn("!text-18px", bgColor)}
-                          />
-                        </TooltipStrip>
-                        <TooltipStrip content="View Record">
-                          <EButton
-                            isIcon
-                            viewIcon
-                            className={cn("!text-18px", bgColor)}
-                          />
-                        </TooltipStrip>
-                        <TooltipStrip content="Delete Record">
-                          <EButton
-                            isIcon
-                            deleteIcon
-                            className={cn("!text-18px", bgColor)}
-                          />
-                        </TooltipStrip>
-                      </Flexrow>
-                    </Flexrow>
-                  </TD>
-                </tr>
-              </TooltipStrip>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                <TooltipStrip content="Delete Record">
+                  <ExpButton
+                    delete_iconbtn
+                    className={"bg-error-a1 text-slate-a1"}
+                    onClick={() => deleteToast(data._id)}
+                  />
+                </TooltipStrip>
+              </Flexrow>
+            </Flexrow>
+          </TooltipStrip>
+        ))}
+      </Flexcol>
 
       <Pagination className="mt-4">
         <PaginationContent>
@@ -136,15 +190,15 @@ const TransactionListTable = ({ isExpesne, entries }) => {
               onClick={() => setPage((p) => Math.max(p - 1, 1))}
               className={
                 page === 1
-                  ? "bg-br2 pointer-events-none cursor-not-allowed opacity-50"
-                  : `cursor-pointer ${bgColor}`
+                  ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
+                  : `text-dark-a1 cursor-pointer ${bgColor}`
               }
             >
               <Icons.pageBack />
             </PaginationPrevious>
           </PaginationItem>
 
-          <PaginationItem className="px-5 text-sm">
+          <PaginationItem className="text-14px px-5">
             Page {page} of {totalPages}
           </PaginationItem>
 
@@ -153,8 +207,8 @@ const TransactionListTable = ({ isExpesne, entries }) => {
               onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
               className={
                 page === totalPages
-                  ? "bg-br2 pointer-events-none cursor-not-allowed opacity-50"
-                  : `cursor-pointer ${bgColor}`
+                  ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
+                  : `text-dark-a1 cursor-pointer ${bgColor}`
               }
             >
               <Icons.pageNext />

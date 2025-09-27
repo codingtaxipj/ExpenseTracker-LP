@@ -1,6 +1,13 @@
 import { Icons } from "../icons";
 
-const SectionTitle = ({ title, isAnalysis, isExpense, isIncome, isBudget }) => {
+const SectionTitle = ({
+  title,
+  isAnalysis,
+  isExpense,
+  isIncome,
+  isBudget,
+  isTrip,
+}) => {
   return (
     <>
       <div className="text-14px flex flex-row items-center pb-5">
@@ -16,6 +23,7 @@ const SectionTitle = ({ title, isAnalysis, isExpense, isIncome, isBudget }) => {
           {isExpense && <Icons.expense />}
           {isIncome && <Icons.income />}
           {isBudget && <Icons.calc />}
+          {isTrip && <Icons.trip />}
         </span>
       </div>
     </>

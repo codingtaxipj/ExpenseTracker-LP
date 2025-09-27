@@ -1,29 +1,38 @@
-import React from "react";
 import { Icons } from "../icons";
 import { amountFloat } from "../utilityFilter";
+import { cn } from "@/lib/utils";
+import { cardBg } from "@/global/style";
+import Flexcol from "../section/flexcol";
+import Flexrow from "../section/flexrow";
 
 const TotalCard = ({ date, total, footerText, headText, color }) => {
   return (
     <>
-      <div className="from-gradBot to-gradTop shadow-shadowBlack border-br1 flex w-max flex-col gap-2 rounded-lg border bg-gradient-to-t p-5 shadow-md">
-        <div className="text-14px flex w-[16rem] flex-row">
-          <div className="flex flex-row items-center gap-2">
-            <Icons.upbar className={color} />
+      <Flexcol
+        className={cn(
+          "text-14px h-[10rem] w-[20rem] justify-between gap-2 p-5",
+          cardBg,
+        )}
+      >
+        {/** ===== top section ===== */}
+        <Flexrow className="font-medium">
+          <Flexrow className="items-center gap-2">
+            <Icons.upbar className={cn(color)} />
             {headText}
-          </div>
-          <div className="flex flex-1 items-center justify-end font-medium">
-            <Icons.yearCal className={`${color} l mr-1.5`} />
+          </Flexrow>
+          <Flexrow className="w-max items-center justify-end gap-2">
+            <Icons.yearCal className={cn(color)} />
             {date}
-          </div>
-        </div>
-        <div className="text-32px flex flex-row items-center gap-0.5 font-bold">
+          </Flexrow>
+        </Flexrow>
+        {/** ===== middle section ===== */}
+        <Flexrow className="text-32px items-center gap-0.5 font-bold">
           <Icons.rupee />
           {amountFloat(total)}
-        </div>
-        <div className="text-14px text-ddd flex w-[14rem] flex-row items-center gap-1 pt-2 pb-2.5">
-          {footerText}
-        </div>
-      </div>
+        </Flexrow>
+        {/** ===== bottom section ===== */}
+        <Flexrow className={"py-1"}>{footerText}</Flexrow>
+      </Flexcol>
     </>
   );
 };

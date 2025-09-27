@@ -13,6 +13,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Icons } from "../icons";
+import { cardBgv2 } from "@/global/style";
+import { cn } from "@/lib/utils";
 
 const DoubleLineChart = ({ barInfo, chartInfo }) => {
   const chartData = barInfo.data;
@@ -28,14 +30,14 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
   };
   return (
     <>
-      <Card className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-1 flex-col gap-0.5 border px-3 py-9 text-white shadow-md">
+       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
         <CardHeader className="items-center pb-5 pl-10">
           <CardTitle>
             <div className="flex flex-row items-center gap-2">
               {chartInfo.title}
             </div>
           </CardTitle>
-          <CardDescription className="text-91 pt-1.25">
+          <CardDescription className="text-slate-a1 pt-1.25">
             {chartInfo.subtext}
           </CardDescription>
         </CardHeader>
@@ -53,7 +55,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
               }}
             >
               <CartesianGrid
-                stroke="var(--color-greyMedium)"
+                stroke="var(--color-dark-a6)"
                 vertical={false}
               />
               <XAxis
@@ -61,7 +63,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                className="[&_.recharts-cartesian-axis-tick_text]:fill-white"
+                className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
                 tickFormatter={(value) => value.slice(0, 3)}
               />
               <ChartTooltip
@@ -86,7 +88,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
           </ChartContainer>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <div className="text-91 text-14px flex gap-2 pt-8 leading-none">
+          <div className="text-slate-a1 text-14px flex gap-2 pt-8 leading-none">
             <Icons.textline /> {chartInfo.footertext}
           </div>
         </CardFooter>

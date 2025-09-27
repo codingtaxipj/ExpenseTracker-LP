@@ -6,6 +6,8 @@ import {
 } from "../middlewares/transaction-validation.js";
 
 import {
+  deleteExpense,
+  deleteIncome,
   fetchExpense,
   fetchIncome,
   fetchRecurringExpense,
@@ -13,7 +15,10 @@ import {
   insertIncome,
   insertRecurringExpense,
 } from "../controllers/transaction-controller.js";
-import { insertTotal } from "../controllers/total-controller.js";
+import {
+  decrementTotal,
+  insertTotal,
+} from "../controllers/total-controller.js";
 import { insertMinMax } from "../controllers/minmax-controller.js";
 
 const transactionRouter = express.Router();
@@ -37,6 +42,20 @@ transactionRouter.post(
   incomeValidation,
   insertIncome,
   insertTotal,
+  insertMinMax
+);
+
+transactionRouter.delete(
+  "/delete-expense/:userID/:expID",
+  deleteExpense,
+  decrementTotal,
+  insertMinMax
+);
+
+transactionRouter.delete(
+  "/delete-income/:userID/:incID",
+  deleteIncome,
+  decrementTotal,
   insertMinMax
 );
 

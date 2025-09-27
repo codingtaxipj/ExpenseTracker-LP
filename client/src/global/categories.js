@@ -162,7 +162,7 @@ export const incomeCategories = [
   {
     id: "income",
     title: "Income",
-    color: "var(--color-inc)",
+    color: "var(--color-inc-a1)",
     subcategories: [
       { id: "salary", name: "Salary" },
       { id: "salary_bonus", name: "Salary Bonus" },
@@ -196,4 +196,4 @@ export const getSubOfPrime = (prime, isExpense) => {
 
 const allCats = [...expenseCategories, ...incomeCategories];
 export const getPrimeColor = (prime) =>
-  allCats?.find((e) => e.title === prime)?.color ?? "var(--color-exp)";
+  allCats?.find((e) => e.title === prime)?.color ?? "var(--color-exp-aa)";

@@ -1,6 +1,10 @@
 import moment from "moment";
-import HorizontalDivider from "./strips/horizontal-divider";
 import { Icons } from "./icons";
+import { Separator } from "./ui/separator";
+import Flexrow from "./section/flexrow";
+import { cn } from "@/lib/utils";
+import { cardBg } from "@/global/style";
+import Flexcol from "./section/flexcol";
 
 const MonthCalander = ({ isExpense, list }) => {
   const currentMonth = moment().month(); // current month index (0-11)
@@ -23,15 +27,19 @@ const MonthCalander = ({ isExpense, list }) => {
 
   return (
     <div className="!text-14px w-max font-medium">
-      <div className="mb-2 flex items-center rounded-md px-2">
-        <Icons.checkCircle
-          className={`mr-1.5 ${isExpense ? "text-exp" : "text-inc"}`}
+      <Flexrow className="mb-4 items-center gap-2 rounded-md">
+        <Icons.calander_date
+          className={`${isExpense ? "text-exp-a1" : "text-inc-a2"} text-16px`}
         />
-        {moment().format("MMMM, YYYY")} <HorizontalDivider />{" "}
+        {moment().format("MMMM, YYYY")}
+        <Separator
+          orientation="vertical"
+          className="bg-slate-2 data-[orientation=vertical]:h-3"
+        />
         {isExpense ? "Expense Dates" : "Income Dates"}
-      </div>
+      </Flexrow>
       {/* Days Header */}
-      <div className="from-gradBot to-gradTop shadow-shadowBlack border-br1 mb-2 grid grid-cols-7 rounded-md border bg-gradient-to-t px-2">
+      <div className={cn("mb-2 grid grid-cols-7 px-2", cardBg, "rounded-sm")}>
         {daysOfWeek.map((day) => (
           <div key={day} className="p-1.5 text-center text-white">
             {day}
@@ -52,27 +60,27 @@ const MonthCalander = ({ isExpense, list }) => {
             );
 
           return (
-            <div
+            <Flexcol
               key={idx}
-              className="border-br1 relative flex cursor-pointer flex-col items-center justify-center py-1.5 text-white"
+              className="relative cursor-pointer items-center gap-0 py-1.5"
             >
               {day ? (
                 <>
                   <div
-                    className={`mb-1 h-1.5 w-1.5 rounded-full ${
+                    className={`mb-0.5 size-2 rounded-full ${
                       hasTransaction
                         ? isExpense
-                          ? "bg-exp"
-                          : "bg-inc"
+                          ? "bg-exp-a0"
+                          : "bg-inc-a1"
                         : "bg-transparent"
                     }`}
-                  ></div>
+                  />
                   {day}
                 </>
               ) : (
                 <span className="opacity-0">•</span>
               )}
-            </div>
+            </Flexcol>
           );
         })}
       </div>

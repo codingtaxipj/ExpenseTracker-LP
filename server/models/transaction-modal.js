@@ -39,11 +39,40 @@ const expenseSchema = new Schema(
       type: Date,
       required: true,
     },
+    isTripExpense: {
+      type: Boolean,
+      index: true,
+      required: true,
+    },
+
+    ofTrip: {
+      type: Schema.Types.ObjectId,
+      ref: "Trip",
+      index: true,
+      required: function () {
+        return this.isTripExpense === true; // only required if it's a recurring expense
+      },
+      default: null,
+    },
+    isRecurringExpense: {
+      type: Boolean,
+      index: true,
+      required: true,
+    },
+    ofRecurring: {
+      type: Schema.Types.ObjectId,
+      ref: "RecurringExpense",
+      index: true,
+      default: null,
+      required: function () {
+        return this.isRecurringExpense === true; // only required if it's a recurring expense
+      },
+    },
   },
   {
     collection: "default-expense", // <-- this line overrides pluralization of adding "s" at last of collection name
     timestamps: true,
-    
+    strict: true, // only allow schema-defined + timestamps
   }
 );
 
@@ -85,7 +114,7 @@ const incomeSchema = new Schema(
   {
     collection: "default-income", // <-- this line overrides pluralization of adding "s" at last of collection name
     timestamps: true,
-    
+    strict: true, // only allow schema-defined + timestamps
   }
 );
 
@@ -148,7 +177,7 @@ const recurringExpSchema = new Schema(
   {
     collection: "default-recurring", // <-- this line overrides pluralization of adding "s" at last of collection name
     timestamps: true,
-  
+    strict: true, // only allow schema-defined + timestamps
   }
 );
 
@@ -157,7 +186,7 @@ expenseSchema.index({ "isTransactionTrip.valid": 1 });
 expenseSchema.index({ "isTransactionRepeating.valid": 1 }); */
 
 const mainDB = await mongoConnectDB("expense-db");
-const expenseModal = mainDB.model("default-expense", expenseSchema);
-const recurringExpModal = mainDB.model("default-recurring", recurringExpSchema);
-const incomeModal = mainDB.model("default-income", incomeSchema);
+const expenseModal = mainDB.model("Expense", expenseSchema);
+const recurringExpModal = mainDB.model("RecurringExpense", recurringExpSchema);
+const incomeModal = mainDB.model("Income", incomeSchema);
 export { expenseModal, recurringExpModal, incomeModal };

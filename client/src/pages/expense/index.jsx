@@ -1,11 +1,9 @@
-import TableSection from "@/components/table/transaction-list-table";
 import BudgetStrip from "@/components/strips/budget-strip";
 import Flexrow from "@/components/section/flexrow";
 import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
-import { useNavigate } from "react-router-dom";
-import { PATH } from "@/router/routerConfig";
+
 import { sortBy } from "@/global/globalVariables";
 import { useState } from "react";
 import {
@@ -13,29 +11,32 @@ import {
   getPrimeCategories,
   getSubCategories,
 } from "@/global/categories";
-import ExpButton from "@/components/buttons/expButton";
+
 import { Icons } from "@/components/icons";
 import SectionTitle from "@/components/section/section-title";
 import Flexcol from "@/components/section/flexcol";
-import AddExpenseBtn from "@/components/buttons/text-btns/add-expense-btn";
-import SelectFilterIcon from "@/components/buttons/icon-only-btns/select-filter-icon";
+
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
 import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
-import EButton from "@/components/buttons/eButton";
+
 import TransactionListTable from "@/components/table/transaction-list-table";
 import MonthCalander from "@/components/month-calender";
 import MaxCategorySection from "@/components/section/max-category-section";
+import ExpButton from "@/components/buttons/exp-button";
+import { cn } from "@/lib/utils";
+import { Spinner } from "flowbite-react";
+import NewExpense from "./NewExpense";
 
 const ExpenseIndex = () => {
   /** =========== Navigation =========== */
-  const navigate = useNavigate();
-  /** =========== Transaction Config =========== */
-  const { ExpenseList } = useTransactionConfig();
 
-  const [filters, setFilters] = useState("None");
+  /** =========== Transaction Config =========== */
+  const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
+
+  const [filter, setFilter] = useState("Default");
   const sortList = Object.values(sortBy);
 
   const primeCats = getPrimeCategories(expenseCategories);
@@ -48,13 +49,43 @@ const ExpenseIndex = () => {
     console.log("Sub : ", value);
   };
 
-  const handleSortBy = (value) => setFilters(value);
+  const handleSortBy = (value) => setFilter(value);
 
+  // NOTE: 1. Handle the loading state first
+  if (expenseLoading) {
+    // Replace with your preferred loading spinner component
+    return (
+      <Flexrow className="h-full items-center justify-center">
+        <Spinner
+          className="text-slate-a3 fill-exp-a1"
+          size="lg"
+          aria-label="expense page loader"
+        />
+      </Flexrow>
+    );
+  }
+
+  // NOTE: 2. Handle the error state next
+  if (expenseError) {
+    return (
+      <>
+        <Flexrow className="h-full items-center justify-center">
+          ERROR : {expenseError}
+        </Flexrow>
+      </>
+    );
+  }
+  // NOTE: 3. Handle the "no data" state
+  if (!ExpenseList || ExpenseList.length === 0) {
+    // This gives the user a clear message if there's nothing to show
+    return <NewExpense />;
+  }
+  // NOTE: 4. If all checks pass, render the main content
   return (
     <>
-      <Flexcol>
+      <Flexcol className="gap-8">
         {/** =========== Top - cards & Calender =========== */}
-        <Flexrow className="items-center justify-center">
+        <Flexrow className="items-center justify-center gap-10">
           <Flexcol className="w-max">
             <TotalCardForYear isExpense year={CurrentYear()} />
             <TotalCardForMonth
@@ -66,13 +97,9 @@ const ExpenseIndex = () => {
           <MonthCalander isExpense list={ExpenseList ?? []} />
         </Flexrow>
         {/** =========== Top - Budget Strip & Add Exp Btn =========== */}
-        <Flexrow className="items-center justify-center">
+        <Flexrow className="items-center justify-evenly px-5">
           <BudgetStrip />
-          <EButton
-            isTextIcon
-            addExpense
-            onClick={() => navigate(PATH.addExpense)}
-          />
+          <ExpButton addExpense />
         </Flexrow>
       </Flexcol>
 
@@ -80,82 +107,85 @@ const ExpenseIndex = () => {
 
       <Flexcol className="pt-20">
         <SectionTitle title="Expenses Transactions List" isExpense />
-        <SelectBar>
-          <SelectCard isExpense title={"Sort List"}>
-            <SelectFilter
-              placeholder={"Select Type"}
-              onValueChange={handleSortBy}
-              defaultValue={sortBy.none}
-              list={sortList}
-            ></SelectFilter>
-          </SelectCard>
-          {filters === sortBy.none && (
-            <SelectCard isExpense title={"NONE"}></SelectCard>
-          )}
-          {filters === sortBy.primeCategory && (
-            <SelectCard isExpense>
+        <Flexrow>
+          <SelectBar>
+            <SelectCard isExpense title={"Sort List"}>
               <SelectFilter
-                placeholder={"Select Prime Category"}
-                onValueChange={handlePrimeCat}
-                list={primeCats}
-              ></SelectFilter>
+                placeholder={"Select Type"}
+                onValueChange={handleSortBy}
+                defaultValue={sortBy.default}
+                list={sortList}
+              />
             </SelectCard>
-          )}
-          {filters === sortBy.subCategory && (
-            <SelectCard isExpense>
-              <SelectFilter
-                placeholder={"Select Sub Category"}
-                onValueChange={handleSubCat}
-                list={subCats}
-              ></SelectFilter>
-            </SelectCard>
-          )}
-          {filters === sortBy.date && (
-            <SelectCard isExpense title={"Select Range"}>
-              Date 1 to Date 2
-            </SelectCard>
-          )}
-          {filters === sortBy.amount && (
-            <SelectCard isExpense title="From">
-              <AmountField></AmountField>
-              <button className="px-2">To</button>
-              <AmountField></AmountField>
-            </SelectCard>
-          )}
-          {filters === sortBy.trip && (
-            <SelectCard isExpense title={"Select Trip"}>
-              <SelectFilter
-                placeholder={"Select Trip"}
-                defaultValue={"2024"}
-                list={[2024, 2025, 2026]}
-              ></SelectFilter>
-            </SelectCard>
-          )}
-          {filters === sortBy.repeating && (
-            <SelectCard isExpense title={"Repeat By"}>
-              <SelectFilter
-                placeholder={"Repeat By"}
-                defaultValue={"2024"}
-                list={[2024, 2025, 2026]}
-              ></SelectFilter>
-            </SelectCard>
-          )}
+          </SelectBar>
 
-          <Flexrow className={"w-max gap-2"}>
-            <SelectFilterIcon inactive className={"hover:bg-exp"}>
-              <Icons.check />
-            </SelectFilterIcon>
-            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+          <Flexrow className={"text-18px items-center gap-2.5"}>
+            <ExpButton
+              custom_iconbtn
+              custom_toolContent="Amount Ascending"
+              className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+            >
               <Icons.asc />
-            </SelectFilterIcon>
-            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+            </ExpButton>
+            <ExpButton
+              custom_iconbtn
+              custom_toolContent="Amount Descending"
+              className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+            >
               <Icons.desc />
-            </SelectFilterIcon>
-            <SelectFilterIcon inactive className={"hover:bg-exp"}>
+            </ExpButton>
+            <ExpButton
+              custom_iconbtn
+              custom_toolContent="Reverse Order"
+              className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+            >
               <Icons.listSort />
-            </SelectFilterIcon>
+            </ExpButton>
           </Flexrow>
-        </SelectBar>
+        </Flexrow>
+
+        {/* <Flexrow className={"w-max gap-2"}>
+            
+          </Flexrow> */}
+
+        {filter !== sortBy.default && (
+          <>
+            <SelectBar>
+              <SelectCard isExpense title={"Sort List"}>
+                {filter === sortBy.primeCategory && (
+                  <SelectFilter
+                    placeholder={"Select Prime Category"}
+                    onValueChange={handlePrimeCat}
+                    list={primeCats}
+                  />
+                )}
+                {filter === sortBy.subCategory && (
+                  <SelectFilter
+                    placeholder={"Select Sub Category"}
+                    onValueChange={handleSubCat}
+                    list={subCats}
+                  />
+                )}
+                {filter === sortBy.date && "Date 1 to Date 2"}
+                {filter === sortBy.amount && "Amount 1 to Amount 2"}
+                {filter === sortBy.trip && (
+                  <SelectFilter
+                    placeholder={"Select Trip"}
+                    defaultValue={"2024"}
+                    list={[2024, 2025, 2026]}
+                  />
+                )}
+                {filter === sortBy.repeating && (
+                  <SelectFilter
+                    placeholder={"Repeat By"}
+                    defaultValue={"2024"}
+                    list={[2024, 2025, 2026]}
+                  />
+                )}
+              </SelectCard>
+            </SelectBar>
+          </>
+        )}
 
         {/** =========== List Component =========== */}
 
@@ -174,16 +204,6 @@ const ExpenseIndex = () => {
       <Flexcol className="pt-20">
         <SectionTitle title="Top 5 Maximum Expense Categories" isExpense />
         <MaxCategorySection isExpense />
-        <Flexrow className="text-14px pt-5 items-center justify-end font-medium">
-          <h4>For Detailed Expense Analysis</h4>
-          <EButton
-            isTextIcon
-            className={"bg-exp"}
-            onClick={() => navigate(PATH.expenseAnalysis)}
-          >
-            <Icons.upbar /> Check Analysis
-          </EButton>
-        </Flexrow>
       </Flexcol>
     </>
   );

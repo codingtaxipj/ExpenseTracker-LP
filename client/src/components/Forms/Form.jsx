@@ -22,7 +22,7 @@ import OuterBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import { Icons } from "../icons";
-import ExpButton from "../buttons/expButton";
+import ExpButton from "../buttons/exp-button";
 import {
   expenseCategories,
   getPrimeCategories,
@@ -38,13 +38,32 @@ import {
 } from "@/redux/slices/transaction-slice";
 import { PaymentStatus } from "@/global/globalVariables";
 
-const Form = ({ isExpense, isIncome, isRepeat }) => {
+/**
+ * @function Form
+ * @param isExpense
+ * @param isIncome
+ * @param isRepeat
+ * @param isTripV1
+ * @returns the form inserts the expense of selected trip
+ * @param isTripV2
+ * @returns the form asks in which trip user wish to insert trip expense
+ */
+
+const Form = ({
+  newExpense,
+  isExpense,
+  isIncome,
+  isRepeat,
+  isTrip,
+  tripID,
+}) => {
   const dispatch = useDispatch();
 
   //NOTE - date label for expense / Income
   const dateLabel =
-    (isRepeat && isExpense && "Bill Generation Date ?") ||
+    (isRepeat && "Bill Generation Date ?") ||
     (isExpense && "Expense Date") ||
+    (isTrip && "Trip Expense Date") ||
     (isIncome && "Income Date");
 
   //NOTE page navigation
@@ -89,36 +108,16 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
   };
 
   //NOTE get prime categories
-  const listOfPrimeCats = isExpense
-    ? getPrimeCategories(expenseCategories)
-    : getPrimeCategories(incomeCategories);
+  const listOfPrimeCats =
+    isExpense || isRepeat || isTrip
+      ? getPrimeCategories(expenseCategories)
+      : getPrimeCategories(incomeCategories);
 
   //NOTE get sub cat of selected prime cat
-  const listOfSubCat = isExpense
-    ? getSubOfPrime(selectedPrimeCat, isExpense) || null
-    : getSubOfPrime(selectedPrimeCat) || null;
-
-  /*   
-  
-  //NOTE for setting repeating payment is by month or year
-  const [repeatBy, setRepeatBy] = useState(null);
-  
-  const updateRepeating = (newValues) => {
-    const prev = getValues("isTransactionRepeating") || {};
-    setValue("isTransactionRepeating", {
-      ...prev,
-      ...newValues,
-    });
-  }; 
-   const handleRepeatBy = (check) => {
-    if (repeatBy === check) {
-      setRepeatBy(null);
-    } else {
-      setRepeatBy(check);
-    }
-    updateRepeating({ by: check });
-    setValue("repeatBy", check, { shouldValidate: true });
-  }; */
+  const listOfSubCat =
+    isExpense || isTrip || isRepeat
+      ? getSubOfPrime(selectedPrimeCat, isExpense || isRepeat || isTrip) || null
+      : getSubOfPrime(selectedPrimeCat) || null;
 
   //NOTE : react from hook initalize
   const {
@@ -131,7 +130,11 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
   } = useForm({
     defaultValues: {
       userID: 123456,
-      isTypeExpense: isRepeat ? true : isExpense ? true : false,
+      isTypeExpense: isRepeat || isTrip || isExpense ? true : false,
+      isTripExpense: isTrip ? true : false,
+      isRecurringExpense: isRepeat ? true : false,
+      ofTrip: isTrip ? tripID : null,
+      ofRecurring: null,
     },
   });
 
@@ -173,29 +176,37 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
       await delay(200);
     }
 
-    let result;
-    if (isRepeat && isExpense) {
-      result = await dispatch(insertRecurringExpense({ data })).unwrap();
-    } else if (isExpense) {
-      result = await dispatch(insertExpense({ data })).unwrap();
-    } else if (isIncome) {
-      result = await dispatch(insertIncome({ data })).unwrap();
-    }
+    console.log("data", data);
 
-    if (result.success) {
-      toast.success("Success", {
-        description: result.message,
+    try {
+      let result;
+      if (isRepeat) {
+        result = await dispatch(insertRecurringExpense({ data })).unwrap();
+      } else if (isExpense || isTrip) {
+        result = await dispatch(insertExpense({ data })).unwrap();
+      } else if (isIncome) {
+        result = await dispatch(insertIncome({ data })).unwrap();
+      }
+
+      // If we get to this line, the dispatch was successful.
+      // The 'result' variable now holds the new expense/income object.
+      toast.success("Added Transaction !", {
+        description: `A new entry for Amount ${result.amount} was saved successfully.`, // A generic success message
         action: {
           label: "Ok!",
           onClick: () => reset(),
         },
       });
-    } else if (!result.success) {
-      toast.error("Success", {
-        description: result.message,
+    } catch (error) {
+      // If the dispatch fails (is rejected), this block will run.
+      // The 'error' variable contains the message from rejectWithValue().
+      toast.error("Operation Failed !", {
+        description: error, // 'error' is the message string from your thunk
         action: {
-          label: "Ok!",
-          onClick: () => reset(),
+          label: "Try Again",
+          onClick: () => {
+            /* maybe don't reset here */
+          },
         },
       });
     }
@@ -203,7 +214,10 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
 
   //NOTE - form label icon color
   const formLabelIconColor =
-    (isExpense && "text-exp") || (isIncome && "text-inc");
+    (isExpense && "text-exp-a1") ||
+    (isIncome && "text-inc-a1") ||
+    (isTrip && "text-trip-a1") ||
+    (isRepeat && "text-rep-a1");
 
   /**==================================================================== */
 
@@ -229,6 +243,8 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
     }
   };
 
+  /**==================================================================== */
+
   return (
     <>
       <div className="text-14px font-medium">
@@ -239,26 +255,41 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
           }
 
           {/** ANCHOR select form for inc or exp ---------------- */}
-          {!isRepeat && (isExpense || isIncome) && (
-            <FormField>
-              <div className="flex gap-2">
-                <ExpButton
-                  onClick={() => navigateToExpense()}
-                  type="button"
-                  btnfor={isExpense ? "expense" : "expenseInactive"}
-                  label="Expense"
-                  className="w-1/2"
-                />
-                <ExpButton
-                  onClick={() => navigateToIncome()}
-                  type="button"
-                  btnfor={isIncome ? "income" : "incomeInactive"}
-                  label="Income"
-                  className="w-1/2"
-                />
-              </div>
-            </FormField>
-          )}
+          {!isRepeat &&
+            !isTrip &&
+            newExpense &&
+            ((!newExpense && isExpense) || isIncome) && (
+              <FormField>
+                <div className="flex gap-2">
+                  <ExpButton
+                    onClick={() => navigateToExpense()}
+                    custom_textbtn
+                    type="button"
+                    className={cn(
+                      "w-1/2",
+                      isExpense
+                        ? "bg-exp-a3 text-dark-a1"
+                        : "bg-dark-a5 text-slate-a5 hover:bg-exp-a3 hover:text-dark-a1",
+                    )}
+                  >
+                    Expense Form
+                  </ExpButton>
+                  <ExpButton
+                    onClick={() => navigateToIncome()}
+                    custom_textbtn
+                    type="button"
+                    className={cn(
+                      "w-1/2",
+                      isIncome
+                        ? "bg-inc-a3 text-dark-a1"
+                        : "bg-dark-a5 text-slate-a5 hover:bg-inc-a3 hover:text-dark-a1",
+                    )}
+                  >
+                    Income Form
+                  </ExpButton>
+                </div>
+              </FormField>
+            )}
           {/**ANCHOR ##END: select form for inc or exp ---------------- */}
 
           {/**ANCHOR AMOUNT Field ---------------- */}
@@ -268,8 +299,8 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
               htmlFor="Amount"
               label="Amount"
             />
-            <div className="border-br1 inline-flex w-full items-center border-b-1 font-bold">
-              <Icons.rupee className="text-[18px]" />
+            <div className="border-slate-a7 inline-flex w-full items-center border-b-1 font-bold">
+              <Icons.rupee className="text-18px" />
               <input
                 className="inputType-number text-24px w-full rounded-md border-none px-3 py-1 outline-none"
                 type="number"
@@ -279,7 +310,7 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
                   valueAsNumber: true,
                 })}
               />
-              <span className="text-[18px]">INR</span>
+              <span className="text-18px">INR</span>
             </div>
             <ErrorField error={errors.ofAmount} />
           </FormField>
@@ -293,7 +324,7 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
               label="Transaction Note"
             />
             <textarea
-              className="focus-visible:border-ring focus-visible:ring-gradBot border-br1 w-full rounded-md border p-2 outline-none focus-visible:ring-[1px]"
+              className="border-dark-a3 bg-dark-a3 focus:bg-dark-a2 hover:bg-dark-a2 w-full rounded-md border p-2 outline-none"
               placeholder="Transaction Note..."
               {...register("isNote")}
             />
@@ -331,7 +362,7 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
                   <Flexrow className={"w-max items-center gap-2"}>
                     <Checkbox
                       className={
-                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                        "data-[state=checked]:bg-rep-a3 border-slate-a7 hover:cursor-pointer"
                       }
                       checked={repeatBy === 1}
                       onCheckedChange={() => handleRepeat(1)}
@@ -341,7 +372,7 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
                   <Flexrow className={"w-max items-center gap-2"}>
                     <Checkbox
                       className={
-                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                        "data-[state=checked]:bg-rep-a3 border-slate-a7 hover:cursor-pointer"
                       }
                       checked={repeatBy === 2}
                       onCheckedChange={() => handleRepeat(2)}
@@ -361,7 +392,7 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
                   <Flexrow className={"w-max items-center gap-2"}>
                     <Checkbox
                       className={
-                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                        "data-[state=checked]:bg-rep-a3 border-slate-a7 hover:cursor-pointer"
                       }
                       checked={lastDate === 0}
                       onCheckedChange={() => handleDeadline(0)}
@@ -371,7 +402,7 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
                   <Flexrow className={"w-max items-center gap-2"}>
                     <Checkbox
                       className={
-                        "data-[state=checked]:bg-exp border border-[#505050] hover:cursor-pointer"
+                        "data-[state=checked]:bg-rep-a3 border-slate-a7 hover:cursor-pointer"
                       }
                       checked={lastDate === 1}
                       onCheckedChange={() => handleDeadline(1)}
@@ -397,45 +428,6 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
           )}
           {/**ANCHOR ##END: Repeat by month or year Field ---------------- */}
 
-          {/**ANCHOR Repeating Payment BY MONTH or YEAR 
-          {isRepeatingExpense && (
-            <FormField>
-              <Flexrow className="items-center">
-                <FieldLabel
-                  iconColor={formLabelIconColor}
-                  htmlFor="Recurring Transaction"
-                  label="Tansaction Reoccur Every"
-                />
-
-                <Checkbox
-                  className={
-                    "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
-                  }
-                  checked={repeatBy === "month"}
-                  onCheckedChange={() => handleRepeatBy("month")}
-                ></Checkbox>
-                <span>Month</span>
-
-                <Checkbox
-                  className={
-                    "data-[state=checked]:bg-exp border-dimText hover:cursor-pointer"
-                  }
-                  checked={repeatBy === "year"}
-                  onCheckedChange={() => handleRepeatBy("year")}
-                ></Checkbox>
-                <span>Year</span>
-              </Flexrow>
-              <input
-                type="hidden"
-                {...register("repeatBy", {
-                  required: "* Please select when to repeat transaction.",
-                })}
-              />
-              <ErrorField error={errors.repeatBy} />
-            </FormField>
-          )}
-          ANCHOR ##END:Repeating Payment BY MONTH or YEAR */}
-
           {/**ANCHOR MAIN CATEGORY Field ---------------- */}
           <FormField>
             <FieldLabel
@@ -444,8 +436,11 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
               label="Main Category"
             />
             <OuterBar>
-              <SelectCard isExpense={isExpense} title={"Select Main Category"}>
-                {isExpense && (
+              <SelectCard
+                isExpense={isExpense || isTrip || isRepeat}
+                title={"Select Main Category"}
+              >
+                {(isExpense || isTrip || isRepeat) && (
                   <SelectFilter
                     placeholder={"Select"}
                     onValueChange={handleSelectExpensePrime}
@@ -489,25 +484,30 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
                 <div className="inline-flex flex-wrap gap-2">
                   {listOfSubCat.map((buttons) => (
                     <ExpButton
-                      type="button"
-                      btnfor={
-                        isExpense
-                          ? selectedSubCat === buttons
-                            ? "expense"
-                            : "expenseInactive"
-                          : selectedSubCat === buttons
-                            ? "income"
-                            : "incomeInactive"
-                      }
+                      custom_textbtn
                       onClick={() => {
                         setValue("subCategory", buttons, {
                           shouldValidate: true,
                         });
                         setSelectedSubCat(buttons);
                       }}
-                      label={buttons}
+                      type="button"
                       key={buttons}
-                    ></ExpButton>
+                      className={cn(
+                        selectedSubCat === buttons
+                          ? (isExpense && "bg-exp-a3 text-dark-a1") ||
+                              (isIncome && "bg-inc-a3 text-dark-a1") ||
+                              (isTrip && "bg-trip-a4 text-dark-a1") ||
+                              (isRepeat && "bg-rep-a3 text-dark-a1")
+                          : "bg-dark-a3 text-slate-a5 hover:text-dark-a1",
+                        (isExpense && "hover:bg-exp-a3") ||
+                          (isIncome && "hover:bg-inc-a3") ||
+                          (isTrip && "hover:bg-trip-a4") ||
+                          (isRepeat && "hover:bg-rep-a3"),
+                      )}
+                    >
+                      {buttons}
+                    </ExpButton>
                   ))}
                 </div>
               </>
@@ -527,20 +527,31 @@ const Form = ({ isExpense, isIncome, isRepeat }) => {
           {/**ANCHOR SUBMIT & CANCEL Buttons ---------------- */}
           <FormField className="items-end">
             <div className="flex gap-2">
-              {isExpense ? (
-                <ExpButton type="submit" btnfor="expense" label={"Add Now"} />
-              ) : (
-                <ExpButton type="submit" btnfor="income" label={"Add Now"} />
-              )}
+              <ExpButton
+                type="submit"
+                className={cn(
+                  "text-dark-a1",
+                  (isExpense && "bg-exp-a3") ||
+                    (isIncome && "bg-inc-a3") ||
+                    (isTrip && "bg-trip-a4") ||
+                    (isRepeat && "bg-rep-a3"),
+                )}
+                custom_textbtn
+              >
+                Add Now
+              </ExpButton>
+
               <ExpButton
                 onClick={() => {
                   reset();
                   handleCancel();
                 }}
                 type="button"
-                btnfor="cancel"
-                label={"Cancel"}
-              />
+                custom_textbtn
+                className={cn("bg-error-a1")}
+              >
+                Cancel
+              </ExpButton>
             </div>
           </FormField>
           {/**ANCHOR ##END: SUBMIT & CANCEL Buttons ---------------- */}
@@ -562,7 +573,7 @@ export const SelectDate = ({ setValue, valVar }) => {
         <PopoverTrigger asChild>
           <Button
             className={cn(
-              "border-br1 w-full justify-between border bg-transparent text-left hover:bg-transparent hover:text-white",
+              "border-dark-a3 bg-dark-a3 hover:bg-dark-a2 focus:bg-dark-a2 text-slate-a2 w-full justify-between border text-left",
               !date && "text-muted-foreground",
             )}
           >

@@ -7,9 +7,10 @@ const PATH = {
   addIncome: "add-income",
   expenseAnalysis: "/expense-analysis",
   incomeAnalysis: "/income-analysis",
-  trip: "/trip-expense",
+  trip: "/trip",
   repeat: "/recurring-expense",
-  budget:"/budget"
+  budget: "/budget",
+  addTripExpense:"add-trip-expense"
 };
 
 export { PATH };

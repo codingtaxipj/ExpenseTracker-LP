@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 @import "tw-animate-css";
 
 @theme {
@@ -6,28 +8,31 @@
   --color-greyBlack: #151515;
   --color-greyMedium: #252525;
 
-  --color-shadowBlack: #080808;
-  --color-gradBot: #1e1e1e;
+  --color-shadowBlack: #030303;
+  --color-gradBot: #222222;
   --color-gradTop: #121212;
   --color-gradTop2: #151515;
+  --color-gradTop3: #0d0d0d;
   --color-br1: #282828;
   --color-br2: #323232;
   --color-dim: #9c9c9c;
   --color-ddd: #dddddd;
   --color-91: #919191;
-  --color-rr: #ff0000;
+  --color-rr: #e32038;
   --color-rrbg: #cc1b1b;
-  --color-gg: #12cf12;
+  --color-gg: #4e9f3d;
   --color-ggbg: #16a016;
 
-  --color-exp: #993ff8;
+  --color-exp: #7425d9;
+  --color-repeat: #0499c9;
   --color-explight: #a456f6;
-  --color-inc: #4fa200;
-  --color-trip: #0099f8;
-  --color-budget: #ee8801;
+  --color-inc: #089c71;
 
-  --color-year1: #ffbf00;
-  --color-year2: #ff5f1f;
+  --color-trip2: #0099f8;
+  --color-budget: #f66e00;
+
+  --color-year1: #f7bb16;
+  --color-year2: #247df2;
 
   --color-black: #000;
   --color-white: #fff;
@@ -48,6 +53,84 @@
 
   --color-grey-border: #676767;
   --color-grey-hover: #2c2c2c;
+
+  --color-dark-prime: #0f0f0f;
+  --color-dark-p2: #0d0d0d;
+
+  --color-dark-sec: #181818;
+  --color-dark-s2: #141414;
+  --color-dark-s3: #252525;
+
+  --color-dark-br1: #202020;
+
+  --color-slate-br1: #2c2c2c;
+  --color-slate-1: #e8e8e8;
+  --color-slate-2: #707070;
+
+  --color-exp-t: #b26dfc;
+  --color-exp-b: #a04af7;
+
+  --color-dark-a0: #050505;
+  --color-dark-a1: #0d0d0d;
+  --color-dark-a2: #181818;
+  --color-dark-a3: #202020;
+  --color-dark-a4: #252525;
+  --color-dark-a5: #2b2b2b;
+  --color-dark-a6: #303030;
+  --color-dark-a7: #404040;
+
+  --color-slate-a1: #fafafa;
+  --color-slate-a2: #fafafa;
+  --color-slate-a3: #d1d1d1;
+  --color-slate-a4: #b3b3b3;
+  --color-slate-a5: #919191;
+  --color-slate-a6: #808080;
+  --color-slate-a7: #666666;
+  --color-slate-a8: #5c5c5c;
+
+  --color-exp-aa: #9a3df2;
+  --color-exp-a0: #aa5bfc;
+  --color-exp-a1: #b26dfc;
+  --color-exp-a2: #bc7efd;
+  --color-exp-a3: #c68efe;
+  --color-exp-a4: #cf9efe;
+  --color-exp-a5: #d8aeff;
+  --color-exp-a6: #e0beff;
+
+  --color-inc-a0: #09ab66;
+  --color-inc-a1: #21c27e;
+  --color-inc-a2: #4cc98d;
+  --color-inc-a3: #69d19a;
+  --color-inc-a4: #81d8a8;
+
+  --color-rep-a0: #069bcc;
+  --color-rep-a1: #07b0e8;
+  --color-rep-a2: #49b9eb;
+  --color-rep-a3: #69c1ed;
+  --color-rep-a4: #83caf0;
+
+  --color-bud-a0: #fab025;
+  --color-bud-a1: #f7bc4f;
+  --color-bud-a2: #fac364;
+  --color-bud-a3: #fccb78;
+  --color-bud-a4: #fed28b;
+
+  --color-trip-a1: #f55ba5;
+  --color-trip-a2: #f871af;
+  --color-trip-a3: #fb85b8;
+  --color-trip-a4: #fd97c2;
+  --color-trip-a5: #ffa9cc;
+
+  --color-error-a1: #e31709;
+
+  --color-sam: C892F7;
+
+  --color-inc-t: #21c27e;
+  --color-inc-b: #0c9c5d;
+
+  --color-trip: #984ca1;
+  --color-trip-t: #984ca1;
+  --color-trip-b: #984ca1;
 }
 @theme {
   --text-12px: 12px;
@@ -236,6 +319,20 @@
 }
 .number-filed-arrow-none::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+
+.scrollBar::-webkit-scrollbar {
+  width: 0.55rem; /* 8px */
+}
+
+.scrollBar::-webkit-scrollbar-track {
+  border-radius: 100px;
+  /* creates space on X-axis (left/right) */
+}
+
+.scrollBar::-webkit-scrollbar-thumb {
+  background-color: #707070;
+  border-radius: 100px;
 }
 
 @layer base {

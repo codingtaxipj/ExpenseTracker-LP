@@ -6,6 +6,7 @@ import {
   fetchIncome,
   fetchRecurringExpense,
 } from "@/redux/slices/transaction-slice";
+import { fetchTrips } from "@/redux/slices/trip-slice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -18,6 +19,7 @@ const useInitalLoad = () => {
     dispatch(fetchRecurringExpense());
     dispatch(fetchIncome());
     dispatch(fetchTotal());
+    dispatch(fetchTrips());
   }, [dispatch]);
 };
 

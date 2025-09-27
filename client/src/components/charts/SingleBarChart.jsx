@@ -16,12 +16,15 @@ import {
 
 import { Icons } from "../icons";
 import { amountFloat } from "../utilityFilter";
+import { cn } from "@/lib/utils";
+import { cardBgv2 } from "@/global/style";
+import Flexrow from "../section/flexrow";
 
 const SingleBarChart = ({
   barInfo = {
     data: [],
     label: "",
-    color: "var(--color-exp)",
+    color: "var(--color-exp-a1",
   },
   chartInfo = {
     title: false,
@@ -39,7 +42,7 @@ const SingleBarChart = ({
   };
   return (
     <>
-      <Card className="shadow-shadowBlack border-br1 bg-gradTop2 flex flex-1 flex-col gap-0.5 border px-3 py-9 text-white shadow-md">
+      <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
         <CardHeader className="items-center pb-5 pl-10">
           {chartInfo.title && (
             <CardTitle>
@@ -49,7 +52,7 @@ const SingleBarChart = ({
             </CardTitle>
           )}
           {chartInfo.subtext && (
-            <CardDescription className="text-91 pt-1.25">
+            <CardDescription className="text-slate-a1 pt-1.25">
               {chartInfo.subtext}
             </CardDescription>
           )}
@@ -68,13 +71,13 @@ const SingleBarChart = ({
                 right: 20,
               }}
             >
-              <CartesianGrid stroke="var(--color-br1)" vertical={false} />
+              <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
               <XAxis
                 dataKey="month"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                className="[&_.recharts-cartesian-axis-tick_text]:fill-white"
+                className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
                 tickFormatter={(value) => value}
               />
               <ChartTooltip
@@ -85,7 +88,7 @@ const SingleBarChart = ({
                 <LabelList
                   position="top"
                   offset={12}
-                  className="fill-[white]"
+                  className="fill-slate-a1"
                   fontSize={12}
                   formatter={(value) => amountFloat(value)}
                 />
@@ -95,9 +98,9 @@ const SingleBarChart = ({
         </CardContent>
         {chartInfo.footertext && (
           <CardFooter className="flex-col gap-2">
-            <div className="text-91 flex gap-2 pt-8 text-sm leading-none">
+            <Flexrow className="!text-slate-1 text-14px items-center justify-center gap-2 pt-8 leading-none">
               <Icons.textline /> {chartInfo.footertext}
-            </div>
+            </Flexrow>
           </CardFooter>
         )}
       </Card>
