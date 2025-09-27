@@ -10,7 +10,6 @@ import { totalRouter } from "./routes/totalRoute.js";
 import { minmaxRouter } from "./routes/minmaxRoute.js";
 import { transactionRouter } from "./routes/transactionRoute.js";
 import { tripRouter } from "./routes/tripRoute.js";
-import { hfRouter } from "./routes/hfRoute.js";
 
 dotenv.config();
 const app = express();
@@ -22,14 +21,12 @@ app.use(
 );
 
 app.use(express.json());
-
 app.use("/auth", authRouter);
 app.use("/transaction", transactionRouter);
 app.use("/budget", budgetRouter);
 app.use("/total", totalRouter);
 app.use("/minmax", minmaxRouter);
 app.use("/trip", tripRouter);
-app.use("/hf", hfRouter);
 
 const StratServer = async () => {
   try {
