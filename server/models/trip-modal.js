@@ -3,7 +3,7 @@
  */
 
 import mongoose from "mongoose";
-import { mongoConnectDB } from "../database/connection.js";
+import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 
 const tripSchema = new Schema(
@@ -73,6 +73,5 @@ const tripSchema = new Schema(
   }
 );
 
-const mainDB = await mongoConnectDB("expense-db");
-const tripModal = mainDB.model("Trip", tripSchema);
+const tripModal = primaryConnection.model("Trip", tripSchema);
 export { tripModal };

@@ -3,7 +3,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { mongoConnectHost } from "./database/connection.js";
 import { authRouter } from "./routes/authRoute.js";
 import { budgetRouter } from "./routes/budgetRoute.js";
 import { totalRouter } from "./routes/totalRoute.js";
@@ -30,8 +29,6 @@ app.use("/trip", tripRouter);
 
 const StratServer = async () => {
   try {
-    await mongoConnectHost(process.env.MONGO_HOST);
-    console.log("Database connection successful.");
     const PORT = 8080;
     app.listen(PORT, () => console.log("Server Running : " + PORT));
   } catch (error) {

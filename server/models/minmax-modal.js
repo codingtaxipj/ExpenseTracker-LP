@@ -3,7 +3,7 @@
  */
 
 import mongoose from "mongoose";
-import { mongoConnectDB } from "../database/connection.js";
+import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 
 const minmaxMonth = new Schema(
@@ -73,6 +73,6 @@ const minmaxSchema = new Schema(
   }
 );
 minmaxSchema.index({ userID: 1, year: 1, isTypeExpense: 1 }, { unique: true });
-const mainDB = await mongoConnectDB("expense-db");
-const minmaxModal = mainDB.model("default-minmax", minmaxSchema);
+
+const minmaxModal = primaryConnection.model("default-minmax", minmaxSchema);
 export { minmaxModal };

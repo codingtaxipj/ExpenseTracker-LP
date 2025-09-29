@@ -3,14 +3,14 @@
  */
 
 import mongoose from "mongoose";
-import { mongoConnectDB } from "../database/connection.js";
+import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 const budgetlist = new Schema(
   {
     month: { type: Number, required: true, index: true },
     budget: { type: Number, required: true },
   },
-  { _id: false, timestamps: true, }
+  { _id: false, timestamps: true }
 );
 const budgetSchema = new Schema(
   {
@@ -30,11 +30,10 @@ const budgetSchema = new Schema(
   {
     collection: "default-budget",
     // NOTE - this line overrides pluralization of adding "s" at last of collection name
- 
+
     timestamps: true,
   }
 );
 
-const mainDB = await mongoConnectDB("expense-db");
-const budgetModal = mainDB.model("default-budget", budgetSchema);
+const budgetModal = primaryConnection.model("default-budget", budgetSchema);
 export { budgetModal };
