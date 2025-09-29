@@ -204,9 +204,6 @@ const Form = ({
         description: error, // 'error' is the message string from your thunk
         action: {
           label: "Try Again",
-          onClick: () => {
-            /* maybe don't reset here */
-          },
         },
       });
     }

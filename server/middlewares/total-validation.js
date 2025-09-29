@@ -45,15 +45,6 @@ const totalValidation = [
   body("subList.*.total")
     .isNumeric()
     .withMessage("subList.total must be a number"),
-  body("subList.*.monthList")
-    .isArray()
-    .withMessage("subList.monthList must be an array"),
-  body("subList.*.monthList.*.month")
-    .isInt({ min: 0, max: 11 })
-    .withMessage("subList.monthList.month must be between 0 and 11"),
-  body("subList.*.monthList.*.total")
-    .isNumeric()
-    .withMessage("subList.monthList.total must be a number"),
 
   // Middleware function to check validation errors
   (req, res, next) => {

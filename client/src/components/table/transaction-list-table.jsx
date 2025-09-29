@@ -62,24 +62,25 @@ const TransactionListTable = ({ isExpesne, entries }) => {
               isText
               className="bg-ggbg"
               onClick={async () => {
-                const result = isExpesne
-                  ? await dispatch(
-                      deleteExpense({ expID: ID, userID }),
-                    ).unwrap()
-                  : await dispatch(
-                      deleteIncome({ incID: ID, userID }),
-                    ).unwrap();
-                toast.dismiss(t.id); // dismiss the toast first
-
-                if (result.success) {
-                  toast.success(result.message || "Deleted successfully", {
+                try {
+                  const result = isExpesne
+                    ? await dispatch(
+                        deleteExpense({ expID: ID, userID }),
+                      ).unwrap()
+                    : await dispatch(
+                        deleteIncome({ incID: ID, userID }),
+                      ).unwrap();
+                  toast.dismiss(t.id);
+                  toast.success("Transaction Deleted !", {
+                    description: `Amount : ${result.ofAmount} | Category : ${result.subCategory},${result.primeCategory}`,
                     style: {
                       width: "24rem", // custom width
                     },
                   });
                   resolve(true);
-                } else {
-                  toast.error(result.message || "Failed to delete", {
+                } catch (error) {
+                  toast.error("Operation Failed !", {
+                    description: error,
                     style: {
                       width: "24rem", // custom width
                     },

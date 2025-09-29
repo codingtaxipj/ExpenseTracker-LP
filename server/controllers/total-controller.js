@@ -1,7 +1,16 @@
 import { totalModal } from "../models/total-modal.js";
 import moment from "moment";
 
-const insertTotal = async (req, res, next) => {
+/**
+ * @see insertTotal - add the transaction amount in total DB
+ * @see decrementTotal - subtracts the transaction amount in total DB
+ * @param {object} entry - data obj of transaction used update total DB
+ * @param {import('mongoose').ClientSession} session -  to be sure that db updates without error if so then whole process will fail so that data remain persistant
+ * @throws {Error} Throws an error if the database update fails.
+ * @see fetchTotal - fetches the total DB data
+ */
+
+export const insertTotal = async (entry, session) => {
   try {
     const {
       userID,
@@ -10,183 +19,111 @@ const insertTotal = async (req, res, next) => {
       onDate,
       primeCategory,
       subCategory,
-    } = req.trnxData;
+    } = entry;
 
     const year = moment(onDate).year();
     const month = moment(onDate).month();
 
-    let doc = await totalModal.findOne({
-      userID,
-      year,
-      isTypeExpense,
-    });
-    if (!doc) {
-      await totalModal.create({
-        userID,
-        year,
-        isTypeExpense,
-        total: ofAmount,
-        monthList: [{ month, total: ofAmount }],
-        primeList: [{ name: primeCategory, total: ofAmount }],
-        subList: [
-          {
-            primeName: primeCategory,
-            subName: subCategory,
-            total: ofAmount,
-            monthList: [{ month, total: ofAmount }],
-          },
-        ],
-      });
-      console.log("Created new yearly total");
-      next();
-      return;
-    }
     await totalModal.updateOne(
+      // 1. Find the document
       { userID, year, isTypeExpense },
+
+      // 2. Define all the updates to perform
       {
+        // Always increment the grand total
         $inc: {
           total: ofAmount,
+          "monthList.$[m].total": ofAmount,
+          "primeList.$[p].total": ofAmount,
+          "subList.$[s].total": ofAmount,
         },
+        // Only push new items to arrays if they don't already exist
+        $addToSet: {
+          monthList: { month, total: 0 },
+          primeList: { name: primeCategory, total: 0 },
+          subList: {
+            primeName: primeCategory,
+            subName: subCategory,
+            total: 0,
+          },
+        },
+        // If a new document is created, set these initial values
+        $setOnInsert: {
+          userID,
+          year,
+          isTypeExpense,
+        },
+      },
+
+      // 3. Set the options
+      {
+        session,
+        upsert: true, // Create the document if it doesn't exist
+        arrayFilters: [
+          { "m.month": month },
+          { "p.name": primeCategory },
+          { "s.subName": subCategory },
+        ],
       }
     );
 
-    // Fetch the updated document to ensure latest data
-    doc = await totalModal.findOne({
-      userID,
-      year,
-      isTypeExpense,
-    });
-
-    const monthExists = doc?.monthList?.some(m => m.month === month);
-    const primeExists = doc?.primeList?.some(p => p.name === primeCategory);
-    const subExists = doc?.subList?.some(s => s.subName === subCategory);
-    const subEntry = doc?.subList?.find(
-      s => s.primeName === primeCategory && s.subName === subCategory
-    );
-    const subMonthExist = subEntry?.monthList?.some(sm => sm.month === month);
-
-    if (monthExists) {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $inc: {
-            "monthList.$[m].total": ofAmount,
-          },
-        },
-        {
-          arrayFilters: [{ "m.month": month }],
-        }
-      );
-    } else {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $push: {
-            monthList: { month, total: ofAmount },
-          },
-        }
-      );
-    }
-
-    if (primeExists) {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $inc: {
-            "primeList.$[p].total": ofAmount,
-          },
-        },
-        {
-          arrayFilters: [{ "p.name": primeCategory }],
-        }
-      );
-    } else {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $push: {
-            primeList: { name: primeCategory, total: ofAmount },
-          },
-        }
-      );
-    }
-
-    if (subExists) {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $inc: {
-            "subList.$[s].total": ofAmount,
-          },
-        },
-        {
-          arrayFilters: [
-            { "s.primeName": primeCategory, "s.subName": subCategory },
-          ],
-        }
-      );
-    } else {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $push: {
-            subList: {
-              primeName: primeCategory,
-              subName: subCategory,
-              total: ofAmount,
-            },
-          },
-        }
-      );
-    }
-
-    if (subMonthExist) {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $inc: {
-            "subList.$[sub].monthList.$[sm].total": ofAmount,
-          },
-        },
-        {
-          arrayFilters: [
-            { "sub.primeName": primeCategory, "sub.subName": subCategory },
-            { "sm.month": month },
-          ],
-        }
-      );
-    } else {
-      await totalModal.updateOne(
-        { userID, year, isTypeExpense },
-        {
-          $push: {
-            "subList.$[sub].monthList": { month: month, total: ofAmount },
-          },
-        },
-        {
-          arrayFilters: [
-            { "sub.primeName": primeCategory, "sub.subName": subCategory },
-          ],
-        }
-      );
-    }
-    console.log("Transaction added to total breakdown");
-
-    req.minmaxData = { year, userID, isTypeExpense };
-    next();
-    return;
+    console.log("Totals updated efficiently and correctly.");
   } catch (error) {
-    console.error(error);
-    console.log("error Occured !! inserting total");
-    return;
+    console.error("Error occurred in updateTotal:", error);
+    throw new Error("Failed to update total breakdown.");
   }
 };
 
-/* NOTE - fetchTotal
- ** it will fetch the budget data of given user
- ** if no data is found then return null
- */
-const fetchTotal = async (req, res) => {
+export const decrementTotal = async (entry, session) => {
+  try {
+    const {
+      userID,
+      isTypeExpense,
+      ofAmount,
+      onDate,
+      primeCategory,
+      subCategory,
+    } = entry;
+
+    const year = moment(onDate).year();
+    const month = moment(onDate).month();
+
+    await totalModal.updateOne(
+      { userID, year, isTypeExpense },
+      [
+        {
+          $set: {
+            total: decrementBy("$total", ofAmount),
+            "monthList.$[m].total": decrementBy(
+              "$monthList.$[m].total",
+              ofAmount
+            ),
+            "primeList.$[p].total": decrementBy(
+              "$primeList.$[p].total",
+              ofAmount
+            ),
+            "subList.$[s].total": decrementBy("$subList.$[s].total", ofAmount),
+          },
+        },
+      ],
+      {
+        session,
+        arrayFilters: [
+          { "m.month": month },
+          { "p.name": primeCategory },
+          { "s.subName": subCategory },
+        ],
+      }
+    );
+
+    console.log("Totals Decremented efficiently and correctly.");
+  } catch (error) {
+    console.error("Error occurred in decrementTotal:", error);
+    throw new Error("Failed to decrement total breakdown.");
+  }
+};
+
+export const fetchTotal = async (req, res) => {
   try {
     const { userID } = req.params;
     const data = await totalModal.find({ userID });
@@ -199,48 +136,20 @@ const fetchTotal = async (req, res) => {
   }
 };
 
-const decrementTotal = async (req, res, next) => {
-  try {
-    const {
-      userID,
-      isTypeExpense,
-      ofAmount,
-      onDate,
-      primeCategory,
-      subCategory,
-    } = req.body;
-
-    const year = moment(onDate).year();
-    const month = moment(onDate).month();
-
-    await totalModal.updateOne(
-      { userID, year, isTypeExpense },
-      {
-        $inc: {
-          total: -ofAmount,
-          "monthList.$[m].total": -ofAmount,
-          "primeList.$[p].total": -ofAmount,
-          "subList.$[s].total": -ofAmount,
-          "subList.$[s].monthList.$[sm].total": -ofAmount,
-        },
-      },
-      {
-        arrayFilters: [
-          { "m.month": month },
-          { "p.name": primeCategory },
-          { "s.subName": subCategory },
-          { "sm.month": month },
-        ],
-      }
-    );
-
-    req.minmaxData = { year, userID, isTypeExpense };
-    next();
-  } catch (error) {
-    console.error(error);
-    console.log("error Occured !! decrementing total");
-    return;
-  }
+/**
+ * Creates a MongoDB aggregation expression to safely decrement a field,
+ * preventing it from going below zero.
+ * @method decrementBy()
+ * @param {string} fieldPath - The path to the field to decrement (e.g., "$total").
+ * @param {number} amountToSubtract - The amount to subtract.
+ * @returns {object} The MongoDB $cond expression.
+ */
+const decrementBy = (fieldPath, amountToSubtract) => {
+  return {
+    $cond: {
+      if: { $gte: [fieldPath, amountToSubtract] },
+      then: { $subtract: [fieldPath, amountToSubtract] },
+      else: fieldPath, // If subtraction would go negative, keep original value
+    },
+  };
 };
-
-export { insertTotal, fetchTotal, decrementTotal };

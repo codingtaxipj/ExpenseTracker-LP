@@ -15,50 +15,23 @@ import {
   insertIncome,
   insertRecurringExpense,
 } from "../controllers/transaction-controller.js";
-import {
-  decrementTotal,
-  insertTotal,
-} from "../controllers/total-controller.js";
-import { insertMinMax } from "../controllers/minmax-controller.js";
 
 const transactionRouter = express.Router();
 
-transactionRouter.post(
-  "/add-expense",
-  expenseValidation,
-  insertExpense,
-  insertTotal,
-  insertMinMax
-);
-
+//* ====================== INSERT API ======================
+transactionRouter.post("/add-expense", expenseValidation, insertExpense);
+transactionRouter.post("/add-income", incomeValidation, insertIncome);
 transactionRouter.post(
   "/add-recurring-expense",
   recurringValidation,
   insertRecurringExpense
 );
 
-transactionRouter.post(
-  "/add-income",
-  incomeValidation,
-  insertIncome,
-  insertTotal,
-  insertMinMax
-);
+//* ====================== DELETE API ======================
+transactionRouter.delete("/delete-expense/:userID/:expID", deleteExpense);
+transactionRouter.delete("/delete-income/:userID/:incID", deleteIncome);
 
-transactionRouter.delete(
-  "/delete-expense/:userID/:expID",
-  deleteExpense,
-  decrementTotal,
-  insertMinMax
-);
-
-transactionRouter.delete(
-  "/delete-income/:userID/:incID",
-  deleteIncome,
-  decrementTotal,
-  insertMinMax
-);
-
+//* ====================== FETCH API ======================
 transactionRouter.get("/get-expense/:userID", fetchExpense);
 transactionRouter.get("/get-recurring-expense/:userID", fetchRecurringExpense);
 transactionRouter.get("/get-income/:userID", fetchIncome);

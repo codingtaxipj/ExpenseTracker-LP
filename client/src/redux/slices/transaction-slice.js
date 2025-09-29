@@ -40,7 +40,22 @@ const initialState = {
   deleteIncomeError: null,
 };
 
+/**
+ ** ===================== important documentation =====================
+ ** every insert and delete will call for below functions
+ * @see fetchTotal - will fetch the Total DB
+ * @see fetchMM - will fetch the Min Max DB
+ */
+
 const userID = 123456;
+
+/**
+ ** ===================== EXPENSE =====================
+ * @see fetchExpense - fetch expense transactions
+ * @see insertExpense - inserts expense transaction
+ * @see deleteExpense - deletes expesne transaction
+ *
+ */
 
 export const fetchExpense = createAsyncThunk(
   "transaction/fetchExpense",
@@ -60,14 +75,96 @@ export const insertExpense = createAsyncThunk(
   async ({ data }, { dispatch, rejectWithValue }) => {
     try {
       const res = await apiCLient.post(`/transaction/add-expense`, data);
+
       dispatch(fetchTotal());
       dispatch(fetchMM());
+
       return res.data;
     } catch (err) {
       return rejectWithValue(err.message);
     }
   },
 );
+
+export const deleteExpense = createAsyncThunk(
+  "transaction/deleteExpense",
+  async ({ userID, expID }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.delete(
+        `/transaction/delete-expense/${userID}/${expID}`,
+      );
+
+      dispatch(fetchTotal());
+      dispatch(fetchMM());
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+/**
+ ** ===================== INCOME =====================
+ * @see fetchIncome - fetch income transactions
+ * @see insertIncome - inserts income transaction
+ * @param {object} data - has the transaction data
+ * @see deleteIncome - deletes income transaction
+ *
+ */
+
+export const fetchIncome = createAsyncThunk(
+  "transaction/fetchIncome",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await apiCLient.get(`/transaction/get-income/${userID}`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+export const insertIncome = createAsyncThunk(
+  "transaction/insertIncome",
+  async ({ data }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.post(`/transaction/add-income`, data);
+
+      dispatch(fetchTotal());
+      dispatch(fetchMM());
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+export const deleteIncome = createAsyncThunk(
+  "transaction/deleteIncome",
+  async ({ userID, incID }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.delete(
+        `/transaction/delete-income/${userID}/${incID}`,
+      );
+
+      dispatch(fetchTotal());
+      dispatch(fetchMM());
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+/**
+ ** ===================== RECURRING EXPENSE =====================
+ * @see fetchRecurringExpense - fetch recurring expense transactions
+ * @see insertRecurringExpense - insert recurring expense transaction
+ *
+ */
 
 export const fetchRecurringExpense = createAsyncThunk(
   "transaction/fetchRecurringExpense",
@@ -83,84 +180,20 @@ export const fetchRecurringExpense = createAsyncThunk(
   },
 );
 
-export const fetchIncome = createAsyncThunk(
-  "transaction/fetchIncome",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await apiCLient.get(`/transaction/get-income/${userID}`);
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  },
-);
-
 export const insertRecurringExpense = createAsyncThunk(
   "transaction/insertRecurringExpense",
   async ({ data }, { dispatch, rejectWithValue }) => {
-    const { isRepeatStatus } = data;
-
     try {
       const res = await apiCLient.post(
         `/transaction/add-recurring-expense`,
         data,
       );
-
-      if (isRepeatStatus === PaymentStatus.PAID) {
-        const expenseData = removeKeys(data, [
-          "isRepeatBy",
-          "isRepeatStatus",
-          "lastPaymentDate",
-        ]);
-        await dispatch(insertExpense({ data: expenseData }));
-        await fetchAllData(dispatch);
-      } else {
-        await dispatch(fetchRecurringExpense());
+      const { newExpense } = res.data;
+      if (newExpense) {
+        dispatch(fetchTotal());
+        dispatch(fetchMM());
       }
-      return { success: true, message: res.data.message };
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  },
-);
-
-export const insertIncome = createAsyncThunk(
-  "transaction/insertIncome",
-  async ({ data }, { dispatch, rejectWithValue }) => {
-    try {
-      const res = await apiCLient.post(`/transaction/add-income`, data);
-      await fetchAllData(dispatch);
-      return { success: true, message: res.data.message };
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  },
-);
-
-export const deleteExpense = createAsyncThunk(
-  "transaction/deleteExpense",
-  async ({ userID, expID }, { dispatch, rejectWithValue }) => {
-    try {
-      const res = await apiCLient.delete(
-        `/transaction/delete-expense/${userID}/${expID}`,
-      );
-      await fetchAllData(dispatch);
-      return { success: true, message: res.data.message };
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  },
-);
-
-export const deleteIncome = createAsyncThunk(
-  "transaction/deleteIncome",
-  async ({ userID, incID }, { dispatch, rejectWithValue }) => {
-    try {
-      const res = await apiCLient.delete(
-        `/transaction/delete-income/${userID}/${incID}`,
-      );
-      await fetchAllData(dispatch);
-      return { success: true, message: res.data.message };
+      return res.data; // This will be { newRecurringExpense, newExpense }
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -173,7 +206,11 @@ const transaction = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // NOTE - Expense Fetch
+      /**
+       ** =========================================
+       ** Fetch Expense
+       ** =========================================
+       */
       .addCase(fetchExpense.pending, (state) => {
         state.expenseLoading = true;
         state.expenseError = null;
@@ -186,31 +223,55 @@ const transaction = createSlice({
         state.expenseLoading = false;
         state.expenseError = action.payload;
       })
-      // NOTE - Insert Expense
+      /**
+       ** =========================================
+       ** Insert Expense
+       ** =========================================
+       */
       .addCase(insertExpense.pending, (state) => {
         state.insertExpenseLoading = true;
         state.insertExpenseError = null;
       })
       .addCase(insertExpense.fulfilled, (state, action) => {
         state.insertExpenseLoading = false;
-        // action.payload is the new expense object from the thunk
-        // We add it to our existing array in the state.
-        // Using unshift() adds it to the beginning of the list.
         if (state.expenseData) {
           state.expenseData.unshift(action.payload);
         } else {
-          // If the list was empty before, create it
           state.expenseData = [action.payload];
         }
       })
       .addCase(insertExpense.rejected, (state, action) => {
-        // If the API call fails, we do nothing to expenseData.
-        // The user's list remains unchanged.
         state.insertExpenseLoading = false;
         state.insertExpenseError = action.payload;
       })
+      /**
+       ** =========================================
+       ** Delete Expense
+       ** =========================================
+       */
+      .addCase(deleteExpense.pending, (state) => {
+        state.deleteExpenseLoading = true;
+        state.deleteExpenseError = null;
+      })
+      .addCase(deleteExpense.fulfilled, (state, action) => {
+        state.deleteExpenseLoading = false;
+        const deletedExp = action.payload;
+        if (state.expenseData && deletedExp?._id) {
+          state.expenseData = state.expenseData.filter(
+            (expense) => expense._id !== deletedExp._id,
+          );
+        }
+      })
+      .addCase(deleteExpense.rejected, (state, action) => {
+        state.deleteExpenseLoading = false;
+        state.deleteExpenseError = action.payload;
+      })
 
-      // NOTE - Recurring Expense Fetch
+      /**
+       ** =========================================
+       ** Fetch Recurring Expense
+       ** =========================================
+       */
       .addCase(fetchRecurringExpense.pending, (state) => {
         state.recurringLoading = true;
         state.recurringError = null;
@@ -223,8 +284,41 @@ const transaction = createSlice({
         state.recurringLoading = false;
         state.recurringError = action.payload; // Use payload from rejectWithValue
       })
+      /**
+       ** =========================================
+       ** Insert Recurring Expense
+       ** =========================================
+       */
+      .addCase(insertRecurringExpense.pending, (state) => {
+        state.insertRecurringLoading = true;
+        state.insertRecurringError = null;
+      })
+      .addCase(insertRecurringExpense.fulfilled, (state, action) => {
+        state.insertRecurringLoading = false;
+        const { newRecurringExpense, newExpense } = action.payload;
+        if (state.recurringData) {
+          state.recurringData.unshift(newRecurringExpense);
+        } else {
+          state.recurringData = [newRecurringExpense];
+        }
+        if (newExpense) {
+          if (state.expenseData) {
+            state.expenseData.unshift(newExpense);
+          } else {
+            state.expenseData = [newExpense];
+          }
+        }
+      })
+      .addCase(insertRecurringExpense.rejected, (state, action) => {
+        state.insertRecurringLoading = false;
+        state.insertRecurringError = action.payload;
+      })
 
-      // NOTE - Income Fetch
+      /**
+       ** =========================================
+       ** Fetch Income
+       ** =========================================
+       */
       .addCase(fetchIncome.pending, (state) => {
         state.incomeLoading = true;
         state.incomeError = null;
@@ -237,53 +331,44 @@ const transaction = createSlice({
         state.incomeLoading = false;
         state.incomeError = action.payload; // Use payload from rejectWithValue
       })
-
-      // NOTE - Insert Recurring Expense
-      .addCase(insertRecurringExpense.pending, (state) => {
-        state.insertRecurringLoading = true;
-        state.insertRecurringError = null;
-      })
-      .addCase(insertRecurringExpense.fulfilled, (state) => {
-        state.insertRecurringLoading = false;
-      })
-      .addCase(insertRecurringExpense.rejected, (state, action) => {
-        state.insertRecurringLoading = false;
-        state.insertRecurringError = action.payload;
-      })
-
-      // NOTE - Insert Income
+      /**
+       ** =========================================
+       ** Insert Income
+       ** =========================================
+       */
       .addCase(insertIncome.pending, (state) => {
         state.insertIncomeLoading = true;
         state.insertIncomeError = null;
       })
-      .addCase(insertIncome.fulfilled, (state) => {
+      .addCase(insertIncome.fulfilled, (state, action) => {
         state.insertIncomeLoading = false;
+        if (state.incomeData) {
+          state.incomeData.unshift(action.payload);
+        } else {
+          state.incomeData = [action.payload];
+        }
       })
       .addCase(insertIncome.rejected, (state, action) => {
         state.insertIncomeLoading = false;
         state.insertIncomeError = action.payload;
       })
-
-      // NOTE - Delete Expense
-      .addCase(deleteExpense.pending, (state) => {
-        state.deleteExpenseLoading = true;
-        state.deleteExpenseError = null;
-      })
-      .addCase(deleteExpense.fulfilled, (state) => {
-        state.deleteExpenseLoading = false;
-      })
-      .addCase(deleteExpense.rejected, (state, action) => {
-        state.deleteExpenseLoading = false;
-        state.deleteExpenseError = action.payload;
-      })
-
-      // NOTE - Delete Income
+      /**
+       ** =========================================
+       ** Delete Income
+       ** =========================================
+       */
       .addCase(deleteIncome.pending, (state) => {
         state.deleteIncomeLoading = true;
         state.deleteIncomeError = null;
       })
-      .addCase(deleteIncome.fulfilled, (state) => {
+      .addCase(deleteIncome.fulfilled, (state, action) => {
         state.deleteIncomeLoading = false;
+        const deletedInc = action.payload;
+        if (state.incomeData && deletedInc?._id) {
+          state.incomeData = state.incomeData.filter(
+            (income) => income._id !== deletedInc._id,
+          );
+        }
       })
       .addCase(deleteIncome.rejected, (state, action) => {
         state.deleteIncomeLoading = false;
@@ -294,33 +379,8 @@ const transaction = createSlice({
 
 export default transaction.reducer;
 
-// NOTE - fun to remove given keys from obj
-function removeKeys(obj, keysToRemove) {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !keysToRemove.includes(key)),
-  );
-}
-
-//
-/**
-what promise do ??
-Start all three fetches at the same time (parallel execution).
-Wait until all of them are finished (resolved).
-Only then move to the next line in your code.
-=================================
-async will fetch one by one , remove it to fetch parallely also remove the promise then
- */
-export const fetchAllData = (dispatch) => {
-  return Promise.all([
-    dispatch(fetchIncome()),
-    dispatch(fetchTotal()),
-    dispatch(fetchMM()),
-    dispatch(fetchExpense()),
-  ]);
-};
-
 // ====================================================================
-// ++ NEW SECTION: MEMOIZED SELECTORS for Transactions ++ ✅
+// ? ++ NEW SECTION: MEMOIZED SELECTORS for Transactions ++ ✅
 // ====================================================================
 
 const selectTransactionState = (state) => state.transaction;
@@ -335,7 +395,18 @@ const selectRawIncomeData = createSelector(
   (transaction) => transaction.incomeData,
 );
 
-// Memoized selectors that return the processed, ready-to-use lists
+const selectRawRecurringExpenseData = createSelector(
+  [selectTransactionState],
+  (transaction) => transaction.recurringData,
+);
+
+/**
+ ** Memoized selectors that return the processed, ready-to-use lists
+ * =====================================================================
+ * @see ArrayCheck - ensure it returns [] if null
+ ** so that.... If state variable is [] (an empty array), [].map() is perfectly safe to run without giving error.
+ */
+
 export const selectExpenseList = createSelector(
   [selectRawExpenseData],
   (expenseData) => ArrayCheck(expenseData) || [],
@@ -345,4 +416,8 @@ export const selectIncomeList = createSelector(
   [selectRawIncomeData],
   (incomeData) => ArrayCheck(incomeData) || [],
 );
-//NOTE: Use ArrayCheck and ensure it returns [] if null so that.... If expenseData is [] (an empty array), [].map() is perfectly safe. It just does nothing.
+
+export const selectRecurringExpenseList = createSelector(
+  [selectRawRecurringExpenseData],
+  (recurringData) => ArrayCheck(recurringData) || [],
+);
