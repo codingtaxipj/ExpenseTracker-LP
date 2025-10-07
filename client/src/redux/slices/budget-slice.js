@@ -1,5 +1,11 @@
 import { apiCLient } from "@/api/apiClient";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
+import { ArrayCheck } from "@/components/utility";
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 
 const initialState = {
   BudgetData: null,
@@ -10,33 +16,31 @@ const initialState = {
   BudgetInsertError: null,
 };
 
-const userID = 123456;
-
-export const fetchBudget = createAsyncThunk(
-  "budget/fetchBudget",
-  async (_, { rejectWithValue }) => {
+// The NEW thunk for creating/updating a budget
+export const setBudget = createAsyncThunk(
+  "budget/setBudget",
+  async ({ data }, { rejectWithValue }) => {
     try {
-      const res = await apiCLient.get(`/budget/get-data/${userID}`);
+      // It makes one simple API call to your new smart endpoint.
+      const res = await apiCLient.post(`/budget/set-budget`, data);
+
+      // It returns the full, updated budget data from the server.
+      // NO need to dispatch fetchBudget().
       return res.data;
     } catch (err) {
-      // 'err.message' is now the clean string from our interceptor.
       return rejectWithValue(err.message);
     }
   },
 );
 
-export const insertBudget = createAsyncThunk(
-  "budget/insertBudget",
-  async ({ mode, data }, { dispatch, rejectWithValue }) => {
+// The CORRECTED thunk for fetching
+export const fetchBudget = createAsyncThunk(
+  "budget/fetchBudget",
+  async ({ userID }, { rejectWithValue }) => {
+    // <-- userID must be passed in
     try {
-      let res;
-      if (mode === "new") {
-        res = await apiCLient.post(`/budget/add-data`, data);
-      } else if (mode === "update") {
-        res = await apiCLient.patch(`/budget/update-budget`, data);
-      }
-      await dispatch(fetchBudget());
-      return { success: true, message: res.data.message };
+      const res = await apiCLient.get(`/budget/get-data/${userID}`);
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -65,14 +69,16 @@ const budget = createSlice({
       })
 
       // Budget Insert
-      .addCase(insertBudget.pending, (state) => {
+      .addCase(setBudget.pending, (state) => {
         state.BudgetInsertLoading = true;
-        state.BudgetInsertError = null;
       })
-      .addCase(insertBudget.fulfilled, (state) => {
+      .addCase(setBudget.fulfilled, (state, action) => {
         state.BudgetInsertLoading = false;
+        // action.payload is the full, updated budget data.
+        // Simply replace the old state with the new state from the server.
+        state.BudgetData = action.payload;
       })
-      .addCase(insertBudget.rejected, (state, action) => {
+      .addCase(setBudget.rejected, (state, action) => {
         state.BudgetInsertLoading = false;
         state.BudgetInsertError = action.payload;
       });
@@ -80,3 +86,75 @@ const budget = createSlice({
 });
 
 export default budget.reducer;
+
+// ====================================================================
+// ? ++ NEW SECTION: MEMOIZED SELECTORS for Budget ++ ✅
+// ====================================================================
+
+const selectBudgetState = (state) => state.budget;
+
+export const selectBudgetData = createSelector([selectBudgetState], (budget) =>
+  ArrayCheck(budget.BudgetData),
+);
+
+export const SelectActiveBudget = createSelector(
+  [selectBudgetData],
+  (budget) => {
+    if (!budget) return [];
+    const currentYear = budget.find((b) => b.year === CurrentYear());
+    if (!currentYear) return [];
+    const bList = ArrayCheck(currentYear.budgetList);
+    if (!bList) return [];
+    const list = bList.filter((b) => b.month <= CurrentMonth());
+    if (list.length === 0) return [];
+    const latest = list[list.length - 1];
+    return {
+      userID: currentYear.userID,
+      year: currentYear.year,
+      month: latest.month,
+      amount: latest.budget,
+    };
+  },
+);
+
+export const selectBudgetList = createSelector([selectBudgetData], (budget) => {
+  if (!budget) return [];
+  const flatList = budget.flatMap(({ year, budgetList }) =>
+    (budgetList ?? []).map((bd) => ({
+      year,
+      month: bd.month,
+      budget: bd.budget,
+    })),
+  );
+  return flatList.reverse();
+});
+
+export const selectBudgetByMonth = createSelector(
+  [selectBudgetData],
+  (budget) => {
+    if (!budget) return [];
+    return budget.map((data) => {
+      const { year, budgetList } = data;
+      const list = createBudgetArray(budgetList);
+      const totalBudget = list.reduce((sum, b) => sum + b.budget, 0);
+      return { year, list, totalBudget };
+    });
+  },
+);
+
+export const createBudgetArray = (list = []) => {
+  const arr = [];
+  let bud = null;
+  for (let i = 0; i < 12; i++) {
+    const match = list.find((b) => b.month === i);
+    if (match) {
+      bud = match.budget;
+      arr.push({ month: i, budget: bud });
+    } else if (bud !== null) {
+      arr.push({ month: i, budget: bud });
+    } else {
+      arr.push({ month: i, budget: 0 });
+    }
+  }
+  return arr;
+};

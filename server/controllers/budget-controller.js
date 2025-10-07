@@ -1,82 +1,38 @@
-import moment from "moment";
+
 import { budgetModal } from "../models/budget-modal.js";
 
-/* NOTE - insertBudget
- ** it will take the validated form data and then inject into the DB
- */
-const insertBudget = async (req, res) => {
+export const setBudget = async (req, res) => {
   try {
     const { userID, year, month, amount } = req.body;
-    const doc = await budgetModal.findOne({ userID, year });
 
-    if (!doc) {
-      await budgetModal.create({
-        userID,
-        year: moment().year(),
-        budgetList: [{ month: moment().month(), budget: amount }],
-      });
-      return res.status(201).json({ message: "Budget Created Successfully!" });
-    } else {
+    // First, try to update an existing month in the budgetList array
+    const result = await budgetModal.updateOne(
+      { userID, year, "budgetList.month": month },
+      { $set: { "budgetList.$.budget": amount } }
+    );
+
+    // If no document was modified, it means the month wasn't in the array.
+    if (result.modifiedCount === 0) {
+      // So, we push it. We use upsert:true to also create the yearly doc if it doesn't exist.
       await budgetModal.updateOne(
         { userID, year },
-        {
-          $push: {
-            budgetList: { month: month, budget: amount },
-          },
-        }
+        { $push: { budgetList: { month, budget: amount } } },
+        { upsert: true }
       );
-      return res
-        .status(201)
-        .json({ message: "New Budget Inserted Successfully!" });
     }
+
+    // After the update, re-fetch the entire budget data to send back to the client
+    // for a consistent optimistic update.
+    const updatedBudgetData = await budgetModal
+      .find({ userID })
+      .sort({ year: 1 });
+
+    return res.status(200).json(updatedBudgetData);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      message: error.message || "Failed to Create or Insert Budget!!",
-    });
-  }
-};
-
-/* NOTE - updateBudget
- ** it will update your current active budget with a new value
- */
-
-const updateBudget = async (req, res) => {
-  try {
-    const { userID, amount, year, month } = req.body;
-    const doc = await budgetModal.findOne({ userID, year });
-    const monthExist = doc?.budgetList?.find(m => m.month === month);
-
-    if (monthExist) {
-      await budgetModal.updateOne(
-        { userID, year },
-        {
-          $set: {
-            "budgetList.$[b].budget": amount,
-            "budgetList.$[b].updatedAt": moment(),
-          },
-        },
-        {
-          arrayFilters: [{ "b.month": month }],
-        }
-      );
-      return res.status(201).json({ message: "Budget Updated Successfully!" });
-    }
-    if (!monthExist) {
-      return res.status(404).json({
-        message: "user and year exists but not month to update the budget",
-      });
-    }
-    if (!doc) {
-      return res
-        .status(404)
-        .json({ message: "No budget document found for this user and year." });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: error.message || "Failed to Update Budget at express!!",
-    });
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to set budget" });
   }
 };
 
@@ -97,4 +53,4 @@ const fetchBudget = async (req, res) => {
   }
 };
 
-export { insertBudget, fetchBudget, updateBudget };
+export { setBudget, fetchBudget };

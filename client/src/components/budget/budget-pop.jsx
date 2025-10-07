@@ -15,10 +15,10 @@ import Flexrow from "../section/flexrow";
 import { Icons } from "../icons";
 import SubmitBtn from "../buttons/text-btns/submit-btn";
 import { useDispatch } from "react-redux";
-import { insertBudget } from "@/redux/slices/budget-slice";
+import { setBudget } from "@/redux/slices/budget-slice";
 import EButton from "../buttons/eButton";
 
-const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
+const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
   const dispatch = useDispatch();
   //NOTE default userID
   const userID = 12345;
@@ -42,32 +42,38 @@ const BudgetPop = ({ children, isEdit, isNew, isSet, activeBudget }) => {
 
   //NOTE form on submit
   const onSubmit = async (form) => {
-    const mode = (isEdit && "update") || ((isNew || isSet) && "new");
-    const data =
-      (isEdit && {
-        userID: activeBudget.userID,
-        year: activeBudget.year,
-        month: activeBudget.month,
-        amount: form.amount,
-      }) ||
-      ((isNew || isSet) && form);
+    const data = isEdit
+      ? {
+          // If editing, use the activeBudget's info
+          userID: activeBudget.userID,
+          year: activeBudget.year,
+          month: activeBudget.month,
+          amount: form.amount, // Only amount comes from the new form input
+        }
+      : {
+          // If creating a new budget, use all the data from the form
+          userID: form.userID,
+          year: form.year,
+          month: form.month,
+          amount: form.amount,
+        };
 
-    const result = await dispatch(insertBudget({ mode, data })).unwrap();
-
-    if (result.success) {
-      toast.success("Success", {
-        description: result.message,
+    try {
+      await dispatch(setBudget({ data })).unwrap();
+      // If the await succeeds, show the success toast.
+      toast.success("Success!", {
+        description: "Your budget has been saved.",
         action: {
           label: "Ok!",
-          onClick: () => reset(),
+          onClick: () => reset(), // Assuming reset() clears your form
         },
       });
-    } else if (!result.success) {
-      toast.error("Success", {
-        description: result.message,
+    } catch (error) {
+      toast.error("Operation Failed", {
+        description: error, // 'error' is the clean error message from rejectWithValue
         action: {
           label: "Ok!",
-          onClick: () => reset(),
+          onClick: () => {},
         },
       });
     }

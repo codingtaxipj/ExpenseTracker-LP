@@ -1,85 +1,28 @@
 import { ArrayCheck } from "@/components/utility";
 import { percentSigned, percentUnSigned } from "@/components/utilityFilter";
-import {
-  CurrentMonth,
-  CurrentYear,
-  getMonthName,
-} from "@/utilities/calander-utility";
-import { useMemo } from "react";
+import { getMonthName, CurrentYear } from "@/utilities/calander-utility";
+
 import { useSelector } from "react-redux";
+import {
+  selectBudget,
+  selectActiveBudget,
+  selectBudgetByMonth,
+  selectBudgetList,
+} from "@/redux/slices/budget-slice";
 
 const useBudgetConfig = () => {
-  const {
-    BudgetData,
-    BudgetLoading,
-    BudgetError,
-    BudgetInsertLoading,
-    BudgetInsertError,
-  } = useSelector((state) => state.budget);
+  const { BudgetLoading, BudgetError, BudgetInsertLoading, BudgetInsertError } =
+    useSelector((state) => state.budget);
+  const Budget = useSelector(selectBudget);
+  const ActiveBudget = useSelector(selectActiveBudget);
+  const BudgetByMonth = useSelector(selectBudgetByMonth);
+  const budgetList = useSelector(selectBudgetList);
 
-  const Budget = useMemo(() => ArrayCheck(BudgetData), [BudgetData]);
+  const getBudgetListOfYear = (year = CurrentYear()) =>
+    BudgetByMonth?.find((l) => l.year === year)?.list ?? [];
 
-  //NOTE - gets the active budget data of user
-  const ActiveBudget = useMemo(() => {
-    if (!Budget) return null;
-    // find data of current year
-    const currentYear = Budget.find((b) => b.year === CurrentYear()) || null;
-    // if data is not there return null
-    if (!currentYear) return null;
-    // if data is present then gets the values
-    const { userID, year, budgetList } = currentYear;
-    // if budget list is empty then return null
-    const bList = ArrayCheck(budgetList);
-    if (!bList) return null;
-    // if budget list exists then finds the active budget
-    const list = bList.filter((b) => b.month <= CurrentMonth());
-    const latest = list.length > 0 ? list[list.length - 1] : list[0];
-
-    return {
-      userID,
-      year,
-      month: latest.month,
-      amount: latest.budget,
-    };
-  }, [Budget]);
-
-  const budgetList = useMemo(() => {
-    if (!Budget) return null;
-    const dd = Budget.flatMap(({ year, budgetList }) =>
-      (budgetList ?? []).map((bd) => ({
-        year,
-        month: bd.month,
-        budget: bd.budget,
-      })),
-    );
-    return dd.reverse();
-  }, [Budget]);
-
-  //NOTE - creates arr objs of year wise each month budget list and year total
-  const BudgetByMonth = useMemo(() => {
-    // checks redux state var
-   
-    if (!Budget) return null;
-
-    return Budget.map((data) => {
-      // gets the values from each array obj
-      const { year, budgetList } = data;
-      // gets the array list of budget according to each month
-      const list = createBudgetArray(budgetList);
-      // gets total budget of year based on above array list
-      const totalBudget = list.reduce((sum, b) => sum + b.budget, 0);
-      return {
-        year,
-        list,
-        totalBudget,
-      };
-    });
-  }, [Budget]);
-
-  const getBudgetListOfYear = (list, year = CurrentYear()) =>
-    list?.find((l) => l.year === year)?.list ?? [];
-  const getTotalBudgetOfYear = (list, year = CurrentYear()) =>
-    list?.find((l) => l.year === year)?.totalBudget ?? null;
+  const getTotalBudgetOfYear = (year = CurrentYear()) =>
+    BudgetByMonth?.find((l) => l.year === year)?.totalBudget ?? 0;
 
   //NOTE - creates a group of budget in month range
   const createBudgetRange = (data) => {
@@ -113,7 +56,7 @@ const useBudgetConfig = () => {
   const createBudgetWithExpense = (budget, expense) => {
     const checkedBudget = ArrayCheck(budget);
     const checkedExpense = ArrayCheck(expense);
-    if (!checkedBudget || checkedExpense) return null;
+    if (!checkedBudget || !checkedExpense) return null;
     const arr = [];
     for (let i = 0; i < 12; i++) {
       let b =
@@ -151,26 +94,6 @@ const useBudgetConfig = () => {
 };
 
 export default useBudgetConfig;
-
-//NOTE - creates the array list of budget according to each month of year
-export const createBudgetArray = (list = []) => {
-  const arr = [];
-  let bud = null;
-
-  for (let i = 0; i < 12; i++) {
-    const match = list.find((b) => b.month === i);
-    if (match) {
-      bud = match.budget;
-      arr.push({ month: i, budget: bud });
-    } else if (bud !== null) {
-      arr.push({ month: i, budget: bud });
-    } else {
-      arr.push({ month: i, budget: 0 });
-    }
-  }
-
-  return arr;
-};
 
 export const getBudgetExpPercent = (b, e) => {
   if (b === 0) return percentUnSigned(0);
