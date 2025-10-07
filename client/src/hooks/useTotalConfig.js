@@ -1,56 +1,47 @@
-import { filterByExpense, filterByIncome } from "@/components/utilityFilter";
 import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getBudgetExpPercent } from "./useBudgetConfig";
-import { ArrayCheck } from "@/components/utility";
+
+import {
+  selectYearsList,
+  selectExpenseTotal_ByYear,
+  selectExpenseTotal_ByMonth,
+  selectExpenseTotal_ByPrime,
+  selectExpenseTotal_BySub,
+  selectIncomeTotal_ByYear,
+  selectIncomeTotal_ByMonth,
+  selectIncomeTotal_ByPrime,
+  selectIncomeTotal_BySub,
+} from "@/redux/slices/total-slice";
 
 const useTotalConfig = () => {
-  const { TotalData, TotalLoading, TotalError } = useSelector(
-    (state) => state.total,
-  );
-
-  const TotalByYear = useMemo(() => {
-    const total = ArrayCheck(TotalData);
-    if (!total) return null;
-    return total.map((m) => ({
-      year: m.year,
-      total: m.total,
-      isTypeExpense: m.isTypeExpense,
-    }));
-  }, [TotalData]);
-  const TotalByYear_EXP = filterByExpense(TotalByYear);
-  const TotalByYear_INC = filterByIncome(TotalByYear);
+  const { TotalLoading, TotalError } = useSelector((state) => state.total);
+  // YEAR LIST
+  const YearsList = useSelector(selectYearsList);
+  // EXPENSE
+  const TotalByYear_EXP = useSelector(selectExpenseTotal_ByYear);
+  const TotalByMonth_EXP = useSelector(selectExpenseTotal_ByMonth);
+  const TotalByPrime_EXP = useSelector(selectExpenseTotal_ByPrime);
+  const TotalBySub_EXP = useSelector(selectExpenseTotal_BySub);
+  // INCOME
+  const TotalByYear_INC = useSelector(selectIncomeTotal_ByYear);
+  const TotalByMonth_INC = useSelector(selectIncomeTotal_ByMonth);
+  const TotalByPrime_INC = useSelector(selectIncomeTotal_ByPrime);
+  const TotalBySub_INC = useSelector(selectIncomeTotal_BySub);
 
   //NOTE - gets the total of given year (mostly used card)
   const getTotalOfYear = (list, year) =>
-    list?.find((l) => l.year === year)?.total ?? [];
-
-  const TotalByMonth = useMemo(() => {
-    const total = ArrayCheck(TotalData);
-    if (!total) return null;
-    return total.map((m) => ({
-      year: m.year,
-      monthList: m.monthList,
-      isTypeExpense: m.isTypeExpense,
-    }));
-  }, [TotalData]);
-  const TotalByMonth_EXP = filterByExpense(TotalByMonth);
-  const TotalByMonth_INC = filterByIncome(TotalByMonth);
-
+    list?.find((l) => l.year === year)?.total ?? 0;
   //NOTE - gets the monthList of given year (mostly used in graph)
   const getMonthListOfYear = (list, year) =>
     list?.find((l) => l.year === year)?.monthList ?? [];
-
+  const getPrimeListOfYear = (list, year) =>
+    list?.find((l) => l.year === year)?.primeList ?? [];
+  const getSubListOfYear = (list, year) =>
+    list?.find((l) => l.year === year)?.subList ?? [];
   //NOTE - gets the total in month of given year (mostly used card)
   const getTotalInMonthOfYear = (list, year, month) =>
-    getMonthListOfYear(list, year)?.find((l) => l.month === month)?.total ?? [];
-
-  const YearsList = useMemo(() => {
-    const total = ArrayCheck(TotalData);
-    if (!total) return null;
-    return [...new Set(total.map((m) => m.year))];
-  }, [TotalData]);
+    getMonthListOfYear(list, year)?.find((l) => l.month === month)?.total ?? 0;
 
   const createIncomeWithExpense = (income, expense) => {
     const arr = [];
@@ -69,37 +60,8 @@ const useTotalConfig = () => {
     return arr;
   };
 
-  const TotalByPrime = useMemo(() => {
-    const total = ArrayCheck(TotalData);
-    if (!total) return null;
-    return total.map((m) => ({
-      year: m.year,
-      primeList: m.primeList,
-      isTypeExpense: m.isTypeExpense,
-    }));
-  }, [TotalData]);
-  const TotalByPrime_EXP = filterByExpense(TotalByPrime);
-  const TotalByPrime_INC = filterByIncome(TotalByPrime);
-
-  const getPrimeListOfYear = (list, year = CurrentYear()) =>
-    list?.find((l) => l.year === year)?.primeList ?? [];
-
   const sortByMax = (list = []) =>
     [...list].sort((a, b) => b.total - a.total).slice(0, 5);
-
-  const TotalBySub = useMemo(() => {
-    const total = ArrayCheck(TotalData);
-    if (!total) return null;
-    return total.map((m) => ({
-      year: m.year,
-      subList: m.subList,
-      isTypeExpense: m.isTypeExpense,
-    }));
-  }, [TotalData]);
-  const TotalBySub_EXP = filterByExpense(TotalBySub);
-  const TotalBySub_INC = filterByIncome(TotalBySub);
-  const getSubListOfYear = (list, year) =>
-    list?.find((l) => l.year === year)?.subList ?? [];
 
   return {
     YearsList,

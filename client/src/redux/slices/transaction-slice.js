@@ -5,7 +5,6 @@ import {
 } from "@reduxjs/toolkit";
 import { fetchTotal } from "./total-slice";
 import { fetchMM } from "./minmax-slice";
-import { PaymentStatus } from "@/global/globalVariables";
 import { apiCLient } from "@/api/apiClient";
 import { ArrayCheck } from "@/components/utility";
 
