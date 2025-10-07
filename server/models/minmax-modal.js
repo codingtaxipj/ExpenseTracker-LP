@@ -11,14 +11,14 @@ const minmaxMonth = new Schema(
     month: { type: Number, required: true, index: true },
     total: { type: Number, required: true },
   },
-  { _id: false,}
+  { _id: false }
 );
 const minmaxPrime = new Schema(
   {
     name: { type: String, required: true, index: true },
     total: { type: Number, required: true },
   },
-  { _id: false,  }
+  { _id: false }
 );
 const minmaxSub = new Schema(
   {
@@ -26,7 +26,7 @@ const minmaxSub = new Schema(
     subName: { type: String, required: true, index: true },
     total: { type: Number, required: true },
   },
-  { _id: false, }
+  { _id: false }
 );
 
 const minmaxSchema = new Schema(
@@ -63,16 +63,15 @@ const minmaxSchema = new Schema(
       type: minmaxPrime,
       required: true,
     },
-    maxSub: [minmaxSub],
-    minSub: [minmaxSub],
+    maxSub: { type: minmaxSub, required: false, default: null }, // no longer [minmaxSub]
+    minSub: { type: minmaxSub, required: false, default: null },
   },
   {
     collection: "default-minmax", // <-- this line overrides pluralization of adding "s" at last of collection name
     timestamps: true,
-    
   }
 );
 minmaxSchema.index({ userID: 1, year: 1, isTypeExpense: 1 }, { unique: true });
 
-const minmaxModal = primaryConnection.model("default-minmax", minmaxSchema);
+const minmaxModal = primaryConnection.model("MinMax", minmaxSchema);
 export { minmaxModal };

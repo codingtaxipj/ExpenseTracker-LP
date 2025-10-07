@@ -1,101 +1,70 @@
 import { minmaxModal } from "../models/minmax-modal.js";
-import isEqual from "lodash.isequal";
 import { totalModal } from "../models/total-modal.js";
+import moment from "moment";
 
-const insertMinMax = async (req, res) => {
+/**
+ * Recalculates and upserts the min/max document for a given year using an
+ * efficient aggregation pipeline.
+ * @param {object} entry - The transaction data object.
+ * @param {import('mongoose').ClientSession} session - The Mongoose session for the transaction.
+ */
+
+export const updateMinMax = async (entry, session) => {
   try {
-    const { userID, year, isTypeExpense } = req.minmaxData;
-    const totalDB = await totalModal.findOne({
-      userID,
-      year,
-      isTypeExpense,
-    });
+    const { userID, onDate, isTypeExpense } = entry;
+    const year = moment(onDate).year();
 
-    const { monthList, primeList, subList } = totalDB;
-    const { min: minMonth, max: maxMonth } = getMinMax(monthList);
-
-    const { min: minPrime, max: maxPrime } = getMinMax(primeList);
-    const primeCats = [...new Set(subList.map(sub => sub.primeName))];
-    const minSub = [];
-    const maxSub = [];
-    for (let prime of primeCats) {
-      const subsForPrime = subList.filter(sub => sub.primeName === prime);
-      const { min, max } = getMinMax(subsForPrime);
-      if (min) minSub.push(min);
-      if (max) maxSub.push(max);
-    }
-
-    const newMinMaxDoc = {
-      userID,
-      year,
-      isTypeExpense,
-      minMonth,
-      maxMonth,
-      minPrime,
-      maxPrime,
-      minSub,
-      maxSub,
-    };
-
-    const existingDoc = await minmaxModal.findOne({
-      userID,
-      year,
-      isTypeExpense,
-    });
-    const isDifferent =
-      !existingDoc ||
-      !isEqual(
+    await totalModal
+      .aggregate([
+        // Stage 1: Find the single, relevant total document for the year.
         {
-          userID: existingDoc.userID,
-          year: existingDoc.year,
-          isTypeExpense: existingDoc.isTypeExpense,
-          minMonth: existingDoc.minMonth,
-          maxMonth: existingDoc.maxMonth,
-          minPrime: existingDoc.minPrime,
-          maxPrime: existingDoc.maxPrime,
-          minSub: existingDoc.minSub,
-          maxSub: existingDoc.maxSub,
+          $match: { userID, year, isTypeExpense },
         },
-        newMinMaxDoc
-      );
 
-    if (isDifferent) {
-      await minmaxModal.findOneAndUpdate(
-        { userID, year, isTypeExpense },
-        { $set: newMinMaxDoc },
-        { upsert: true, new: true }
-      );
-      console.log("MinMax saved/updated.");
-    } else {
-      console.log("No change. Skipped saving.");
-    }
+        // Stage 2: Calculate all min/max values in one go.
+        {
+          $project: {
+            _id: 0, // Exclude the default _id field
+            userID: "$userID",
+            year: "$year",
+            isTypeExpense: "$isTypeExpense",
+            minMonth: { $min: "$monthList.total" },
+            maxMonth: { $max: "$monthList.total" },
+            minPrime: { $min: "$primeList.total" },
+            maxPrime: { $max: "$primeList.total" },
+            minSub: { $min: "$subList.total" },
+            maxSub: { $max: "$subList.total" },
+          },
+        },
+
+        // Stage 3: Write the result directly to the minmax collection.
+        {
+          $merge: {
+            into: minmaxModal.collection.name, // The name of the collection to write to
+            on: ["userID", "year", "isTypeExpense"], // The unique key to match on
+            whenMatched: "replace", // If a doc exists, replace it
+            whenNotMatched: "insert", // If not, insert a new one
+          },
+        },
+      ])
+      .session(session);
+
+    console.log("MinMax updated efficiently.");
   } catch (err) {
-    console.error(err);
+    console.error("Error occurred in updateMinMax:", error);
+    throw new Error("Failed to update Min/Max values.");
   }
 };
 
-const fetchMM = async (req, res) => {
+export const fetchMM = async (req, res) => {
   try {
     const { userID } = req.params;
     const data = await minmaxModal.find({ userID });
-    if (!data || data.length === 0) return res.status(404).json(null);
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ message: error.message || "Failed to Fetch MInMAx" });
+      .json({ message: error.message || "Failed to Fetch Min/Max Data" });
   }
-};
-
-export { insertMinMax, fetchMM };
-
-const getMinMax = (list, key = "total") => {
-  if (!list || !list.length) return { min: null, max: null };
-  if (list.length === 1) return { min: list[0], max: list[0] };
-  const sorted = [...list].sort((a, b) => a[key] - b[key]);
-  return {
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
-  };
 };

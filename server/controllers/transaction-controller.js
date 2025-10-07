@@ -5,8 +5,8 @@ import {
   incomeModal,
   recurringExpModal,
 } from "../models/transaction-modal.js";
-import { tripModal } from "../models/trip-modal.js";
 import { decrementTotal, insertTotal } from "./total-controller.js";
+import { updateMinMax } from "./minmax-controller.js";
 
 /**
  * *==================== FETCH Functions ====================
@@ -134,7 +134,7 @@ export const insertExpense = async (req, res) => {
     const savedEntry = await newExpense.save({ session });
 
     await insertTotal(savedEntry, { session });
-    // await updateMinMax(savedEntry);
+    await updateMinMax(savedEntry, { session });
 
     // If everything succeeded, commit
     await session.commitTransaction();
@@ -247,6 +247,7 @@ export const deleteExpense = async (req, res) => {
     }
     // --- Operation 2: Decrement the totals ---
     await decrementTotal(expData, { session });
+    await updateMinMax(expData, { session });
     await session.commitTransaction();
     res.status(200).json(expData);
   } catch (error) {

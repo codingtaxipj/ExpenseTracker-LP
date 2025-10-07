@@ -1,5 +1,10 @@
 import { apiCLient } from "@/api/apiClient";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
+import { ArrayCheck } from "@/components/utility";
 
 const initialState = {
   MinMaxData: null,
@@ -44,3 +49,44 @@ const MinMax = createSlice({
 });
 
 export default MinMax.reducer;
+
+// ====================================================================
+// ? ++ NEW SECTION: MEMOIZED SELECTORS for MinMax ++
+// ====================================================================
+
+const selectMinMaxState = (state) => state.MM;
+
+export const selectMinMaxData = createSelector([selectMinMaxState], (MM) =>
+  ArrayCheck(MM.MinMaxData),
+);
+
+export const selectMMofMonth = createSelector([selectMinMaxData], (minmax) =>
+  !minmax
+    ? []
+    : minmax.map((mm) => ({
+        year: mm.year,
+        min: mm.minMonth,
+        max: mm.maxMonth,
+      })),
+);
+
+export const selectMMofPrime = createSelector([selectMinMaxData], (minmax) =>
+  !minmax
+    ? []
+    : minmax.map((mm) => ({
+        year: mm.year,
+        min: mm.minPrime,
+        max: mm.maxPrime,
+        isTypeExpense: mm.isTypeExpense,
+      })),
+);
+
+export const selectMMofSub = createSelector([selectMinMaxData], (minmax) =>
+  !minmax
+    ? []
+    : minmax.map((mm) => ({
+        year: mm.year,
+        min: mm.minSub,
+        max: mm.maxSub,
+      })),
+);

@@ -1,49 +1,27 @@
-import { ArrayCheck } from "@/components/utility";
-import { filterByExpense } from "@/components/utilityFilter";
-import { useMemo } from "react";
+import {
+  selectMMofMonth,
+  selectMMofPrime,
+  selectMMofSub,
+} from "@/redux/slices/minmax-slice";
 import { useSelector } from "react-redux";
 
 const useMinMaxConfig = () => {
-  const { MinMaxData, MinMaxLoading, MinMaxError } = useSelector(
-    (state) => state.MM,
-  );
+  const { MinMaxLoading, MinMaxError } = useSelector((state) => state.MM);
+  const MMofMonth = useSelector(selectMMofMonth);
+  const MMofPrime = useSelector(selectMMofPrime);
+  const MMofSub = useSelector(selectMMofSub);
 
-  const MMofMonth = useMemo(() => {
-    const minmax = ArrayCheck(MinMaxData);
-    if (!minmax) return null;
-    return minmax.map((mm) => ({
-      year: mm.year,
-      min: mm.minMonth,
-      max: mm.maxMonth,
-    }));
-  }, [MinMaxData]);
+  const MMgetPrimeofYear = (year) =>
+    MMofPrime?.find((l) => l.year === year) ?? null;
 
-  const MMofPrime = useMemo(() => {
-    const minmax = ArrayCheck(MinMaxData);
-    if (!minmax) return null;
-    return minmax.map((mm) => ({
-      year: mm.year,
-      min: mm.minPrime,
-      max: mm.maxPrime,
-      isTypeExpense: mm.isTypeExpense,
-    }));
-  }, [MinMaxData]);
-
-  const MMofPrime_EXP = filterByExpense(MMofPrime);
-  const MMgetPrimeofYear = (list, year) =>
-    list?.find((l) => l.year === year) ?? [];
-
-  const MMofSub = useMemo(() => {
-    const minmax = ArrayCheck(MinMaxData);
-    if (!minmax) return null;
-    return minmax.map((mm) => ({
-      year: mm.year,
-      min: mm.minSub,
-      max: mm.maxSub,
-    }));
-  }, [MinMaxData]);
-
-  return { MMofPrime_EXP, MMgetPrimeofYear, MinMaxLoading, MinMaxError };
+  return {
+    MMofMonth,
+    MMofPrime,
+    MMofSub,
+    MMgetPrimeofYear,
+    MinMaxLoading,
+    MinMaxError,
+  };
 };
 
 export default useMinMaxConfig;
