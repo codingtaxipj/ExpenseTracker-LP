@@ -4,17 +4,13 @@ import "./index.css";
 import App from "./App.jsx";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "@/redux/store.js"; // update path as needed
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { store } from "@/redux/store.js"; // update path as needed
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <App />
-        </PersistGate>
+        <App />
       </Provider>
     </BrowserRouter>
   </StrictMode>,

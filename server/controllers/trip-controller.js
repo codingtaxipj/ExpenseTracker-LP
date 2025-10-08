@@ -9,7 +9,7 @@ const insertTrip = async (req, res) => {
     await entry.save();
 
     // Send success response
-    res.status(201).json({ message: "Trip inserted successfully!" });
+    res.status(201).json(entry);
   } catch (error) {
     console.error("Insert Trip Error:", error);
     return res
