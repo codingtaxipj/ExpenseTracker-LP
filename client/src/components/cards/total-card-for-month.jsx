@@ -5,6 +5,7 @@ import useTotalConfig from "@/hooks/useTotalConfig";
 import { getMonthName } from "@/utilities/calander-utility";
 import useRecurringConfig from "@/hooks/useRecurringConfig";
 
+
 const TotalCardForMonth = ({ isExpense, isReccuring, year, month }) => {
   //NOTE - TOTAL Exp and Inc CONFIG
   const { TotalByMonth_EXP, TotalByMonth_INC, getTotalInMonthOfYear } =

@@ -190,7 +190,7 @@ export const insertRecurringExpense = async (req, res) => {
     let savedExpense = null; // This will hold the new expense, if created
 
     // Operation 2: If PAID, create the regular expense
-    if (validatedData.isRepeatStatus === 0) {
+    if (validatedData.isReccuringStatus === 0) {
       // Assuming 0 means PAID
       const expenseData = {
         ...validatedData,

@@ -1,7 +1,7 @@
 import { PATH } from "@/router/routerConfig";
 import NavMenu from "@/components/Navigation/NavMenu";
 import { Outlet } from "react-router-dom";
-const Repeating = () => {
+const Reccuring = () => {
   return (
     <NavMenu activeBtn={PATH.repeat}>
       <Outlet />
@@ -9,4 +9,4 @@ const Repeating = () => {
   );
 };
 
-export default Repeating;
+export default Reccuring;

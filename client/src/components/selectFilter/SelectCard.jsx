@@ -2,7 +2,15 @@ import { cn } from "@/lib/utils";
 import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
 
-const SelectCard = ({ title, children, isExpense, noIcon, className }) => {
+const SelectCard = ({
+  title,
+  children,
+  isExpense,
+  isReccuring,
+  isTrip,
+  noIcon,
+  className,
+}) => {
   return (
     <>
       <Flexrow
@@ -13,7 +21,12 @@ const SelectCard = ({ title, children, isExpense, noIcon, className }) => {
       >
         {!noIcon && (
           <Icons.filter
-            className={`${isExpense ? "text-exp-t text-16px" : "text-inc text-16px"}`}
+            className={cn("text-16px", {
+              "text-exp-a1": isExpense,
+              "text-inc-a1": !isExpense,
+              "text-rep-a1": isReccuring,
+              "text-trip-a1": isTrip,
+            })}
           />
         )}
         {title && <button className="tracking-wide">{title}</button>}

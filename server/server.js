@@ -1,16 +1,13 @@
 /* eslint-disable no-undef */
-
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import { authRouter } from "./routes/authRoute.js";
 import { budgetRouter } from "./routes/budgetRoute.js";
 import { totalRouter } from "./routes/totalRoute.js";
 import { minmaxRouter } from "./routes/minmaxRoute.js";
 import { transactionRouter } from "./routes/transactionRoute.js";
 import { tripRouter } from "./routes/tripRoute.js";
 
-dotenv.config();
 const app = express();
 app.use(
   cors({
@@ -20,7 +17,6 @@ app.use(
 );
 
 app.use(express.json());
-app.use("/auth", authRouter);
 app.use("/transaction", transactionRouter);
 app.use("/budget", budgetRouter);
 app.use("/total", totalRouter);

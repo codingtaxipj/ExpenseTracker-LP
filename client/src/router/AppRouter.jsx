@@ -10,12 +10,12 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { PATH } from "./routerConfig.js";
 import ExpenseAnalysis from "@/pages/analysis/ExpenseAnalysis.jsx";
 import IncomeAnalysis from "@/pages/analysis/IncomeAnalysis.jsx";
-import Repeating from "@/pages/repeating-expense/repeating.jsx";
-import RepeatingExpenseIndex from "@/pages/repeating-expense/index.jsx";
+import Reccuring from "@/pages/reccuring-expense/Reccuring.jsx";
+import ReccuringExpenseIndex from "@/pages/reccuring-expense/index.jsx";
 import Trip from "@/pages/trip-expense/trip.jsx";
 import Budget from "@/pages/budget/budget.jsx";
 import BudgetIndex from "@/pages/budget/index.jsx";
-import RepeatingExpenseForm from "@/components/Forms/repeating-expense-form.jsx";
+import ReccuringExpenseForm from "@/components/Forms/reccuring-expense-form.jsx";
 import TripIndex from "@/pages/trip-expense/index.jsx";
 import TripDetails from "@/pages/trip-expense/trip-details.jsx";
 import TripExpenseForm from "@/components/Forms/trip-expense-form.jsx";
@@ -56,11 +56,11 @@ const AppRouter = () => {
         />
       </Route>
 
-      <Route path={PATH.repeat} element={<Repeating />}>
-        <Route index element={<RepeatingExpenseIndex />} />
+      <Route path={PATH.repeat} element={<Reccuring />}>
+        <Route index element={<ReccuringExpenseIndex />} />
         <Route
           path={PATH.addRepeatingExpense}
-          element={<RepeatingExpenseForm />}
+          element={<ReccuringExpenseForm />}
         />
       </Route>
 

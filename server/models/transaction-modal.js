@@ -3,7 +3,7 @@
  */
 
 import mongoose from "mongoose";
-import {  primaryConnection } from "../database/connection.js";
+import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 const expenseSchema = new Schema(
   {
@@ -130,7 +130,7 @@ const recurringExpSchema = new Schema(
       type: Boolean,
       required: true,
     },
-    isRepeatBy: {
+    isReccuringBy: {
       type: Number,
       index: true,
       required: true,
@@ -139,7 +139,7 @@ const recurringExpSchema = new Schema(
         message: "repeatBy must be either 1 or 2",
       },
     },
-    isRepeatStatus: {
+    isReccuringStatus: {
       type: Number,
       index: true,
       required: true,

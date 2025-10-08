@@ -4,17 +4,19 @@ import { getMonthName, CurrentYear } from "@/utilities/calander-utility";
 
 import { useSelector } from "react-redux";
 import {
-  selectBudget,
-  selectActiveBudget,
+  
+ 
   selectBudgetByMonth,
   selectBudgetList,
+  SelectActiveBudget,
+  selectBudgetData,
 } from "@/redux/slices/budget-slice";
 
 const useBudgetConfig = () => {
   const { BudgetLoading, BudgetError, BudgetInsertLoading, BudgetInsertError } =
     useSelector((state) => state.budget);
-  const Budget = useSelector(selectBudget);
-  const ActiveBudget = useSelector(selectActiveBudget);
+  const Budget = useSelector(selectBudgetData);
+  const ActiveBudget = useSelector(SelectActiveBudget);
   const BudgetByMonth = useSelector(selectBudgetByMonth);
   const budgetList = useSelector(selectBudgetList);
 

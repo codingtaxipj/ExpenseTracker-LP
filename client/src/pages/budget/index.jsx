@@ -1,28 +1,41 @@
+// React Core
+import { useCallback, useMemo, useState } from "react";
+
+// --- Components ---
+
+// Layout & Sectioning
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
-
-import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
-
-import { CurrentYear } from "@/utilities/calander-utility";
-
-import TotalCardForYear from "@/components/cards/total-card-for-year";
-import useTotalConfig from "@/hooks/useTotalConfig";
 import SectionTitle from "@/components/section/section-title";
-import MonthlyBudgetStrip from "@/components/strips/budget-percent-strip";
+import HorizontalDivider from "@/components/strips/horizontal-divider";
+
+// Cards
 import ActiveBudgetCard from "@/components/cards/active-budget-card";
-import { useState } from "react";
+import TotalCardForYear from "@/components/cards/total-card-for-year";
+
+// Tables
+import BudgetExpenseTable from "@/components/table/budget-expense-table";
+import BudgetTable from "@/components/table/budget-table";
+
+// Filters & Selectors
 import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
 
-import { Icons } from "@/components/icons";
-import BudgetExpenseTable from "@/components/table/budget-expense-table";
+// Strips & Indicators
 import FlexrowStrip from "@/components/strips/flexrow-strip";
-import { amountFloat } from "@/components/utilityFilter";
-import HorizontalDivider from "@/components/strips/horizontal-divider";
 
+// Buttons & Icons
 import ExpButton from "@/components/buttons/exp-button";
-import BudgetTable from "@/components/table/budget-table";
+import { Icons } from "@/components/icons";
+
+// --- Hooks ---
+import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
+import useTotalConfig from "@/hooks/useTotalConfig";
+
+// --- Utilities ---
+import { CurrentYear } from "@/utilities/calander-utility";
+import { amountFloat } from "@/components/utilityFilter";
 
 const BudgetIndex = () => {
   //NOTE - TOTAL CONFIG
@@ -45,34 +58,38 @@ const BudgetIndex = () => {
     getTotalBudgetOfYear,
   } = useBudgetConfig();
 
-  //NOTE - year state
   const [year, setYear] = useState(CurrentYear());
-  //NOTE - sets the year to get the months data
-  const handleYearSelector = (year) => setYear(Number(year));
-  //NOTE - monthdata will be assign based on graph using for expense or income
-  const MonthData = TotalByMonth_EXP;
-  //NOTE - arry OBJ of each month and budget by year
-  const BudgetEachMonth = getBudgetListOfYear(BudgetByMonth, year);
-  //NOTE - arry OBJ of each month and expense
-  const ExpenseEachMonth = getMonthListOfYear(MonthData, year);
-  //NOTE - arry OBJ {id, month name, expense amount, budget ,its percent }
-  const BudgetExpenseCombo = createBudgetWithExpense(
-    BudgetEachMonth,
-    ExpenseEachMonth,
-  );
+  const handleYearSelector = useCallback((year) => setYear(Number(year)), []);
 
-  const TotalBudgetYear = getTotalBudgetOfYear(BudgetByMonth, year);
-  const TotalExpenseYear = getTotalOfYear(TotalByYear_EXP, year);
-  const BE_Difference = TotalBudgetYear - TotalExpenseYear;
+  const BudgetEachMonth = useMemo(() => {
+    return getBudgetListOfYear(BudgetByMonth, year);
+  }, [BudgetByMonth, year, getBudgetListOfYear]);
+  const ExpenseEachMonth = useMemo(() => {
+    return getMonthListOfYear(TotalByMonth_EXP, year);
+  }, [TotalByMonth_EXP, year, getMonthListOfYear]);
 
-  const BE_Percent = TotalBudgetYear
-    ? getBudgetExpPercent(TotalBudgetYear, TotalExpenseYear)
-    : null;
+  const BudgetExpenseCombo = useMemo(() => {
+    return createBudgetWithExpense(BudgetEachMonth, ExpenseEachMonth);
+  }, [BudgetEachMonth, ExpenseEachMonth, createBudgetWithExpense]);
 
-  const diff = BE_Difference;
-  const per = BE_Percent;
+  const TotalBudgetYear = useMemo(() => {
+    return getTotalBudgetOfYear(BudgetByMonth, year);
+  }, [BudgetByMonth, year, getTotalBudgetOfYear]);
 
-  console.log({ budgetList });
+  const TotalExpenseYear = useMemo(() => {
+    return getTotalOfYear(TotalByYear_EXP, year);
+  }, [TotalByYear_EXP, year, getTotalOfYear]);
+
+  const BE_Difference = useMemo(() => {
+    return TotalBudgetYear - TotalExpenseYear;
+  }, [TotalBudgetYear, TotalExpenseYear]);
+
+  const BE_Percent = useMemo(() => {
+    return TotalBudgetYear
+      ? getBudgetExpPercent(TotalBudgetYear, TotalExpenseYear)
+      : // Return 0 instead of null for easier checks in JSX
+        0;
+  }, [TotalBudgetYear, TotalExpenseYear]);
 
   // NOTE: 1. Handle the loading state first
   if (BudgetLoading) {
@@ -137,53 +154,44 @@ const BudgetIndex = () => {
         </Flexrow>
 
         <Flexcol>
-          {per === null && (
-            <>
-              <FlexrowStrip>
-                NO Budget Exist To Show Data of Year{" "}
-                <span className="text-budget">{year}</span>
-              </FlexrowStrip>
-            </>
-          )}
-          {per !== null && (
+          {!TotalBudgetYear ? (
+            <FlexrowStrip>
+              NO Budget Exist To Show Data of Year{" "}
+              <span className="text-budget">{year}</span>
+            </FlexrowStrip>
+          ) : (
             <>
               <BudgetExpenseTable inBudgeting data={BudgetExpenseCombo} />
-
               <FlexrowStrip className="text-14px gap-1.25">
                 <span>Comparatively in {year} </span>
                 <HorizontalDivider className="bg-white" />
-                <span className="text-14px">
-                  <Icons.checkCircle className={`${"text-budget"}`} />
-                </span>
                 <span> You are </span>
                 <span>
-                  {diff > 0 && "Under Budget"}
-                  {diff < 0 && "Over Budget"}
-                  {diff == 0 && "Break Even"}
+                  {BE_Difference > 0 && "Under Budget"}
+                  {BE_Difference < 0 && "Over Budget"}
+                  {BE_Difference === 0 && "Break Even"}
                 </span>
                 <HorizontalDivider className="bg-white" />
                 <span>
-                  {diff > 0 && "You Saved"}
-                  {diff < 0 && "Your Over Spent"}
+                  {BE_Difference > 0 && "You Saved"}
+                  {BE_Difference < 0 && "Your Over Spent"}
                 </span>
                 <span className="text-12px">
                   <Icons.rupee />
                 </span>
                 <span
-                  className={`${diff > 0 && "text-gg"} ${diff < 0 && "text-rr"} ${diff == 0 && "text-budget"}`}
+                  className={`${BE_Difference > 0 ? "text-gg" : "text-rr"}`}
                 >
-                  {amountFloat(diff)}
+                  {amountFloat(BE_Difference)}
                 </span>
                 <HorizontalDivider className="bg-white" />
                 i.e
-                <span
-                  className={`${per < 0 && "text-gg"} ${per > 0 && "text-rr"} ${per == 0 && "text-budget"}`}
-                >
-                  {per} %
+                <span className={`${BE_Percent < 0 ? "text-gg" : "text-rr"}`}>
+                  {BE_Percent} %
                 </span>
                 <span className="text-12px">
-                  {per < 0 && <Icons.graphdown className="text-gg" />}
-                  {per > 0 && <Icons.graphup className="text-rr" />}
+                  {BE_Percent < 0 && <Icons.graphdown className="text-gg" />}
+                  {BE_Percent > 0 && <Icons.graphup className="text-rr" />}
                 </span>
               </FlexrowStrip>
             </>

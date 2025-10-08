@@ -1,3 +1,4 @@
+
 import useRecurringConfig from "@/hooks/useRecurringConfig";
 import TotalCard from "./TotalCard";
 import useTotalConfig from "@/hooks/useTotalConfig";

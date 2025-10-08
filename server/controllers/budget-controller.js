@@ -40,7 +40,7 @@ export const setBudget = async (req, res) => {
  ** it will fetch the budget data of given user
  ** if no data is found then return null
  */
-const fetchBudget = async (req, res) => {
+export const fetchBudget = async (req, res) => {
   try {
     const { userID } = req.params;
     const data = await budgetModal.find({ userID }).sort({ year: 1 });
@@ -53,4 +53,3 @@ const fetchBudget = async (req, res) => {
   }
 };
 
-export { setBudget, fetchBudget };

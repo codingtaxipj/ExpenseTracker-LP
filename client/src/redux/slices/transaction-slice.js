@@ -7,6 +7,8 @@ import { fetchTotal } from "./total-slice";
 import { fetchMM } from "./minmax-slice";
 import { apiCLient } from "@/api/apiClient";
 import { ArrayCheck } from "@/components/utility";
+import moment from "moment";
+import { getMonthName } from "@/utilities/calander-utility";
 
 const initialState = {
   // --- States for FETCHING data ---
@@ -419,4 +421,56 @@ export const selectIncomeList = createSelector(
 export const selectRecurringExpenseList = createSelector(
   [selectRawRecurringExpenseData],
   (recurringData) => ArrayCheck(recurringData) || [],
+);
+
+export const selectRecurringTotals = createSelector(
+  [selectRecurringExpenseList],
+  (recurringList) => {
+    if (!recurringList) return { byMonth: 0, byYear: 0 };
+
+    const byMonth = recurringList
+      .filter((m) => m.isReccuringBy === 1)
+      .reduce((total, item) => total + item.ofAmount, 0);
+
+    const byYear = recurringList
+      .filter((m) => m.isReccuringBy === 2)
+      .reduce((total, item) => total + item.ofAmount, 0);
+
+    return { byMonth, byYear };
+  },
+);
+
+export const selectRecurringChartData = createSelector(
+  [selectRecurringExpenseList, selectRecurringTotals],
+  (recurringList, rcTotal) => {
+    if (!recurringList || !rcTotal) return [];
+
+    // Start with a 12-month array where each month has the base 'byMonth' total
+    let monthlyTotals = Array.from({ length: 12 }, (_, i) => ({
+      month: i,
+      expense: rcTotal.byMonth,
+    }));
+
+    // Get the specific 'byYear' expenses
+    const yearlyExpenses = recurringList
+      .filter((r) => r.isReccuringBy === 2)
+      .map((r) => ({
+        month: moment(r.onDate).month(),
+        total: r.ofAmount,
+      }));
+
+    // Add the yearly totals to their corresponding months
+    monthlyTotals = monthlyTotals.map((item) => {
+      const totalForMonth = yearlyExpenses
+        .filter((entry) => entry.month === item.month)
+        .reduce((sum, entry) => sum + entry.total, 0);
+      return { ...item, expense: item.expense + totalForMonth };
+    });
+
+    // Format for the chart
+    return monthlyTotals.map((a) => ({
+      amount: a.expense,
+      month: getMonthName(a.month, "MMMM"),
+    }));
+  },
 );

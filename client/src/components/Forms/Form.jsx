@@ -41,9 +41,10 @@ import { useState } from "react";
 
 const Form = ({
   newExpense,
+  newIncome,
   isExpense,
   isIncome,
-  isRepeat,
+  isReccuring,
   isTrip,
   tripID,
 }) => {
@@ -68,15 +69,15 @@ const Form = ({
   } = useForm({
     defaultValues: {
       userID: 123456,
-      isTypeExpense: !!(isRepeat || isTrip || isExpense),
+      isTypeExpense: !!(isReccuring || isTrip || isExpense),
       isTripExpense: !!isTrip,
-      isRecurringExpense: !!isRepeat,
+      isRecurringExpense: !!isReccuring,
       ofTrip: isTrip ? tripID : null,
       ofRecurring: null,
       primeCategory: null,
       subCategory: null,
       onDate: new Date(),
-      isRepeatBy: null,
+      isReccuringBy: null,
       lastPaymentDate: null,
       isNote: "",
       ofAmount: "",
@@ -86,7 +87,7 @@ const Form = ({
   // Watch for changes to these fields to reactively update the UI.
   const selectedPrimeCat = watch("primeCategory");
   const selectedSubCat = watch("subCategory");
-  const repeatBy = watch("isRepeatBy");
+  const repeatBy = watch("isReccuringBy");
 
   /**
    * =============================================================
@@ -102,10 +103,10 @@ const Form = ({
     }
 
     // --- Complex Logic for Recurring Status ---
-    if (isRepeat) {
+    if (isReccuring) {
       const status = await determineRepeatStatus(data);
       if (status === null) return; // User cancelled the confirmation toast
-      data.isRepeatStatus = status;
+      data.isReccuringStatus = status;
       data.lastPaymentDate = data.lastPaymentDate
         ? moment(data.lastPaymentDate).toISOString()
         : moment(data.onDate).toISOString();
@@ -113,7 +114,7 @@ const Form = ({
 
     try {
       let result;
-      if (isRepeat) {
+      if (isReccuring) {
         result = await dispatch(insertRecurringExpense({ data })).unwrap();
       } else if (isExpense || isTrip) {
         result = await dispatch(insertExpense({ data })).unwrap();
@@ -147,7 +148,7 @@ const Form = ({
   const handleCancel = () => navigate(desegmentPath());
 
   const dateLabel =
-    (isRepeat && "Bill Generation Date") ||
+    (isReccuring && "Bill Generation Date") ||
     (isTrip && "Trip Expense Date") ||
     (isExpense && "Expense Date") ||
     (isIncome && "Income Date");
@@ -155,16 +156,20 @@ const Form = ({
     (isExpense && "text-exp-a1") ||
     (isIncome && "text-inc-a1") ||
     (isTrip && "text-trip-a1") ||
-    (isRepeat && "text-rep-a1");
+    (isReccuring && "text-rep-a1");
 
   const listOfPrimeCats =
-    isExpense || isRepeat || isTrip
+    isExpense || isReccuring || isTrip
       ? getPrimeCategories(expenseCategories)
       : getPrimeCategories(incomeCategories);
+
+  console.log("on PC", selectedPrimeCat);
+
   const listOfSubCat = getSubOfPrime(
     selectedPrimeCat,
-    isExpense || isRepeat || isTrip,
+    isExpense || isReccuring || isTrip,
   );
+  console.log("SC List : ", listOfSubCat);
 
   /**==================================================================== */
 
@@ -172,7 +177,7 @@ const Form = ({
     <div className="text-14px font-medium">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* --- Form Switcher for Expense/Income --- */}
-        {!isRepeat && !isTrip && newExpense && (
+        {!isReccuring && !isTrip && newExpense && newIncome && (
           <div className="flex gap-2 py-4">
             <ExpButton
               onClick={() => navigate(desegmentPath() + "/" + PATH.addExpense)}
@@ -248,7 +253,7 @@ const Form = ({
         </FormField>
 
         {/* --- Recurring Expense Fields --- */}
-        {isRepeat && (
+        {isReccuring && (
           <>
             <FormField>
               <FieldLabel
@@ -263,7 +268,7 @@ const Form = ({
                       checked={repeatBy === value}
                       onCheckedChange={() =>
                         setValue(
-                          "isRepeatBy",
+                          "isReccuringBy",
                           repeatBy === value ? null : value,
                           { shouldValidate: true },
                         )
@@ -275,11 +280,11 @@ const Form = ({
               </Flexrow>
               <input
                 type="hidden"
-                {...register("isRepeatBy", {
+                {...register("isReccuringBy", {
                   required: "* Please select a repeat type",
                 })}
               />
-              <ErrorField error={errors.isRepeatBy} />
+              <ErrorField error={errors.isReccuringBy} />
             </FormField>
 
             <FormField>
@@ -307,7 +312,9 @@ const Form = ({
           <FieldLabel iconColor={formLabelIconColor} label="Main Category" />
           <OuterBar>
             <SelectCard
-              isExpense={isExpense || isTrip || isRepeat}
+              isExpense={isExpense}
+              isTrip={isTrip}
+              isReccuring={isReccuring}
               title={"Select Main Category"}
             >
               <Controller
@@ -319,7 +326,7 @@ const Form = ({
                     placeholder="Select"
                     onValueChange={field.onChange}
                     list={listOfPrimeCats}
-                    value={field.value}
+                    value={field.value || ""}
                   />
                 )}
               />
@@ -328,35 +335,61 @@ const Form = ({
           <ErrorField error={errors.primeCategory} />
         </FormField>
 
-        {/* --- Sub Category --- */}
+        {/* --- SUB CATEGORY FIELD --- */}
         {selectedPrimeCat && (
           <FormField>
             <FieldLabel iconColor={formLabelIconColor} label="Sub Category" />
-            <div className="inline-flex flex-wrap gap-2">
-              {listOfSubCat?.map((button) => (
-                <ExpButton
-                  type="button"
-                  key={button}
-                  onClick={() =>
-                    setValue("subCategory", button, { shouldValidate: true })
-                  }
-                  className={cn(
-                    selectedSubCat === button
-                      ? (isExpense && "bg-exp-a3 text-dark-a1") ||
-                          (isIncome && "bg-inc-a3 text-dark-a1") ||
-                          (isTrip && "bg-trip-a4 text-dark-a1") ||
-                          (isRepeat && "bg-rep-a3 text-dark-a1")
-                      : "bg-dark-a3 text-slate-a5 hover:text-dark-a1",
-                    (isExpense && "hover:bg-exp-a3") ||
-                      (isIncome && "hover:bg-inc-a3") ||
-                      (isTrip && "hover:bg-trip-a4") ||
-                      (isRepeat && "hover:bg-rep-a3"),
-                  )}
-                >
-                  {button}
-                </ExpButton>
-              ))}
-            </div>
+
+            {console.log("Inside JSX, listOfSubCat is:", listOfSubCat)}
+
+            {/* This is the key change. We check for a non-empty array. */}
+            {listOfSubCat && listOfSubCat.length > 0 ? (
+              <Flexrow className="flex-wrap gap-2">
+                {listOfSubCat.map((button) => (
+                  <ExpButton
+                    custom_textbtn
+                    type="button"
+                    key={button}
+                    onClick={() =>
+                      setValue("subCategory", button, { shouldValidate: true })
+                    }
+                    className={cn(
+                      // --- Base classes for all buttons ---
+                      "bg-dark-a3 text-slate-a1 hover:text-dark-a1",
+
+                      // --- Conditional hover classes ---
+                      {
+                        "hover:bg-exp-a3": isExpense,
+                        "hover:bg-inc-a3": isIncome,
+                        "hover:bg-trip-a4": isTrip,
+                        "hover:bg-rep-a3": isReccuring,
+                      },
+
+                      // --- Conditional classes for the SELECTED button ---
+                      // These will override the base classes when true.
+                      {
+                        "bg-exp-a3 text-dark-a1":
+                          selectedSubCat === button && isExpense,
+                        "bg-inc-a3 text-dark-a1":
+                          selectedSubCat === button && isIncome,
+                        "bg-trip-a4 text-dark-a1":
+                          selectedSubCat === button && isTrip,
+                        "bg-rep-a3 text-dark-a1":
+                          selectedSubCat === button && isReccuring,
+                      },
+                    )}
+                  >
+                    {button}
+                  </ExpButton>
+                ))}
+              </Flexrow>
+            ) : (
+              // This provides a helpful message if no sub-categories are found.
+              <span className="text-sm text-slate-500 italic">
+                No sub-categories found for {selectedPrimeCat}.
+              </span>
+            )}
+
             <input
               type="hidden"
               {...register("subCategory", {
@@ -413,7 +446,9 @@ export const SelectDate = ({
         <Button
           className={cn(
             "border-dark-a3 bg-dark-a3 hover:bg-dark-a2 focus:bg-dark-a2 text-slate-a2 w-full justify-between border text-left",
-            !selected && "text-muted-foreground",
+            {
+              "text-muted-foreground": !selected,
+            },
           )}
         >
           {selected ? moment(selected).format("LL") : placeholder}

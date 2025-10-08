@@ -68,8 +68,8 @@ const RecurringExpenseTable = ({ entries }) => {
                     <Icons.repeat />
                     Billed
                     <span>
-                      {data.isRepeatBy == 1 && "Monthly"}
-                      {data.isRepeatBy == 2 && "Yearly"}
+                      {data.isReccuringBy == 1 && "Monthly"}
+                      {data.isReccuringBy == 2 && "Yearly"}
                     </span>
                   </Flexrow>
 

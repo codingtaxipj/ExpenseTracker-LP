@@ -1,22 +1,31 @@
+// --- React & Related ---
+import { useNavigate } from "react-router-dom";
+
+// --- 3rd Party Libraries ---
+import { Spinner } from "flowbite-react";
+
+// --- App Hooks ---
+import useTransactionConfig from "@/hooks/useTransactionConfig";
+
+// --- App Components ---
 import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
 import EButton from "@/components/buttons/eButton";
-
+import ExpButton from "@/components/buttons/exp-button";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
 import { Icons } from "@/components/icons";
+import MonthCalander from "@/components/month-calender";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
+import MaxCategorySection from "@/components/section/max-category-section";
 import SectionTitle from "@/components/section/section-title";
 import BudgetStrip from "@/components/strips/budget-strip";
-import useTransactionConfig from "@/hooks/useTransactionConfig";
+import TransactionListTable from "@/components/table/transaction-list-table";
+
+// --- App Utilities & Config ---
 import { PATH } from "@/router/routerConfig";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
-import { useNavigate } from "react-router-dom";
-import TransactionListTable from "@/components/table/transaction-list-table";
-import MonthCalander from "@/components/month-calender";
-import MaxCategorySection from "@/components/section/max-category-section";
-import ExpButton from "@/components/buttons/exp-button";
-import { Spinner } from "flowbite-react";
+import NewIncome from "./NewIncome";
 
 const IncomeIndex = () => {
   const navigate = useNavigate();
@@ -50,11 +59,7 @@ const IncomeIndex = () => {
   //NOTE: 3. Handle the "no data" state
   if (!IncomeList || IncomeList.length === 0) {
     // This gives the user a clear message if there's nothing to show
-    return (
-      <Flexrow className="h-full items-center justify-center">
-        <p>No Income Data found. Add one to get started!</p>
-      </Flexrow>
-    );
+    return <NewIncome />;
   }
 
   // NOTE: 4. If all checks pass, render the main content

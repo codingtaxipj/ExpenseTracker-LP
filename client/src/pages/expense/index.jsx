@@ -1,47 +1,52 @@
-import BudgetStrip from "@/components/strips/budget-strip";
+// --- React Core ---
+import { useState, useCallback } from "react";
+
+// --- 3rd Party Libraries ---
+import { Spinner } from "flowbite-react";
+import { cn } from "@/lib/utils";
+
+// --- App Hooks ---
+import useTransactionConfig from "@/hooks/useTransactionConfig";
+
+// --- App Components ---
+import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
+import ExpButton from "@/components/buttons/exp-button";
+import TotalCardForMonth from "@/components/cards/total-card-for-month";
+import TotalCardForYear from "@/components/cards/total-card-for-year";
+import { Icons } from "@/components/icons";
+import MonthCalander from "@/components/month-calender";
+import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
+import MaxCategorySection from "@/components/section/max-category-section";
+import SectionTitle from "@/components/section/section-title";
 import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
+import BudgetStrip from "@/components/strips/budget-strip";
+import TransactionListTable from "@/components/table/transaction-list-table";
+import NewExpense from "./NewExpense";
 
-import { sortBy } from "@/global/globalVariables";
-import { useState } from "react";
+// --- Global Variables & Utilities ---
 import {
   expenseCategories,
   getPrimeCategories,
   getSubCategories,
 } from "@/global/categories";
-
-import { Icons } from "@/components/icons";
-import SectionTitle from "@/components/section/section-title";
-import Flexcol from "@/components/section/flexcol";
-
+import { sortBy } from "@/global/globalVariables";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
-import useTransactionConfig from "@/hooks/useTransactionConfig";
-import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
-import TotalCardForYear from "@/components/cards/total-card-for-year";
-import TotalCardForMonth from "@/components/cards/total-card-for-month";
 
-import TransactionListTable from "@/components/table/transaction-list-table";
-import MonthCalander from "@/components/month-calender";
-import MaxCategorySection from "@/components/section/max-category-section";
-import ExpButton from "@/components/buttons/exp-button";
-import { cn } from "@/lib/utils";
-import { Spinner } from "flowbite-react";
-import NewExpense from "./NewExpense";
+const SORT_LIST = Object.values(sortBy);
+const PRIME_CATS = getPrimeCategories(expenseCategories);
+const SUB_CATS = getSubCategories(expenseCategories);
 
 const ExpenseIndex = () => {
-  /** =========== Navigation =========== */
-
   /** =========== Transaction Config =========== */
   const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
 
+  // --- UI State ---
   const [filter, setFilter] = useState("Default");
-  const sortList = Object.values(sortBy);
 
-  const primeCats = getPrimeCategories(expenseCategories);
-  const subCats = getSubCategories(expenseCategories);
-
+  //! make below handler as callback when complete
   const handlePrimeCat = (value) => {
     console.log("Prime : ", value);
   };
@@ -49,7 +54,9 @@ const ExpenseIndex = () => {
     console.log("Sub : ", value);
   };
 
-  const handleSortBy = (value) => setFilter(value);
+  const handleSortBy = useCallback((value) => {
+    setFilter(value);
+  }, []);
 
   // NOTE: 1. Handle the loading state first
   if (expenseLoading) {
@@ -114,7 +121,7 @@ const ExpenseIndex = () => {
                 placeholder={"Select Type"}
                 onValueChange={handleSortBy}
                 defaultValue={sortBy.default}
-                list={sortList}
+                list={SORT_LIST}
               />
             </SelectCard>
           </SelectBar>
@@ -156,14 +163,14 @@ const ExpenseIndex = () => {
                   <SelectFilter
                     placeholder={"Select Prime Category"}
                     onValueChange={handlePrimeCat}
-                    list={primeCats}
+                    list={PRIME_CATS}
                   />
                 )}
                 {filter === sortBy.subCategory && (
                   <SelectFilter
                     placeholder={"Select Sub Category"}
                     onValueChange={handleSubCat}
-                    list={subCats}
+                    list={SUB_CATS}
                   />
                 )}
                 {filter === sortBy.date && "Date 1 to Date 2"}

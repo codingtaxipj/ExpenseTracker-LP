@@ -136,15 +136,15 @@ const recurringValidation = [
     .isBoolean()
     .withMessage("Transaction type must be boolean"),
 
-  // isRepeatBy (must be 1 or 2)
-  body("isRepeatBy")
+  // isReccuringBy (must be 1 or 2)
+  body("isReccuringBy")
     .exists()
     .withMessage("Repeat By is required")
     .isIn([1, 2])
     .withMessage("Repeat By must be either 1 or 2"),
 
-  // isRepeatStatus (must be 0, 1, 2, 3, 4)
-  body("isRepeatStatus")
+  // isReccuringStatus (must be 0, 1, 2, 3, 4)
+  body("isReccuringStatus")
     .exists()
     .withMessage("Repeat Status is required")
     .isIn([0, 1, 2, 3, 4])
