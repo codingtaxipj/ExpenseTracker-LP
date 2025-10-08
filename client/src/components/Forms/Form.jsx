@@ -120,23 +120,31 @@ const Form = ({
       : getSubOfPrime(selectedPrimeCat) || null;
 
   //NOTE : react from hook initalize
-  const {
-    register,
-    setValue,
+ // At the top of your Form component
+const {
+  register,
+  control, // We will use this for custom components
+  handleSubmit,
+  reset,
+  watch,   // Use watch to get current form values
+  formState: { errors },
+} = useForm({
+  defaultValues: {
+    userID: 123456,
+    isTypeExpense: isRepeat || isTrip || isExpense ? true : false,
+    isTripExpense: isTrip ? true : false,
+    isRecurringExpense: isRepeat ? true : false,
+    ofTrip: isTrip ? tripID : null,
+    ofRecurring: null,
+    primeCategory: null, // Add all form fields here
+    subCategory: null,
+    isRepeatBy: 0,
+    lastPaymentDate: null,
+  },
+});
 
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      userID: 123456,
-      isTypeExpense: isRepeat || isTrip || isExpense ? true : false,
-      isTripExpense: isTrip ? true : false,
-      isRecurringExpense: isRepeat ? true : false,
-      ofTrip: isTrip ? tripID : null,
-      ofRecurring: null,
-    },
-  });
+// Watch for changes to the primeCategory to update the UI
+const selectedPrimeCat = watch("primeCategory");
 
   //NOTE : form handle submit function
   const onSubmit = async (data) => {

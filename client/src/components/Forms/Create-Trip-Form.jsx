@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Icons } from "../icons";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { getCodeOf, getCountryNames } from "@/global/countries";
@@ -21,289 +21,116 @@ import { cardBg, cardBgv2 } from "@/global/style";
 import ExpButton from "../buttons/exp-button";
 
 const CreateTripForm = () => {
-  /**
-   * ====================================
-   *  @function dispatch
-   * ====================================
-   */
   const dispatch = useDispatch();
-
-  /**
-   * ====================================
-   * @function states
-   * ====================================
-   */
-  const [errors, setErrors] = useState({});
-  const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [triptype, setTriptype] = useState(0);
-  const [grouptype, setGrouptype] = useState(0);
-  const [CCdata, setCCdata] = useState(null);
+  const [open, setOpen] = useState(false);
 
   /**
-   * ====================================
-   *  @function react-hook-form
-   * ====================================
+   * =============================================================
+   * * ANCHOR react-hook-form Setup
+   * All form state and validation is now managed here.
+   * ==============================================================
    */
-  //NOTE - react-hook-form
-  const { register, setValue, getValues, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control, // For controlled components like SelectDate
+    watch, // To watch for changes in form values
+    trigger, // To validate specific steps
+    setValue, // To set form values programmatically
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       userID: 123456,
-      isInternational: null,
+      tripType: 0,
+      travelType: 0,
+      abroadInfo: null,
       ofGroup: 1,
       tripTotal: 0,
       tripTitle: "",
+      startOn: null,
+      endsOn: null,
     },
   });
 
-  /**
-   * ====================================
-   * @function useffect
-   * NOTE - assigns values to form inputs
-   * ====================================
-   */
-  // NOTE - form values to assign on change
-  useEffect(() => {
-    setValue("travelType", grouptype, { shouldValidate: true });
-    setValue("tripType", triptype, { shouldValidate: true });
-    setValue("abroadInfo", CCdata, { shouldValidate: true });
-  });
-
-  const resetValues = () => {
-    setStep(() => 1);
-    setTriptype(0);
-    setGrouptype(0);
-    setCCdata(null);
-    setErrors({});
-    reset(undefined, {
-      keepErrors: false,
-      keepDirty: false,
-      keepTouched: false,
-    });
-    console.log({ step });
-  };
+  // Watch for changes in these form fields to reactively update the UI.
+  const tripType = watch("tripType");
+  const travelType = watch("travelType");
+  const abroadInfo = watch("abroadInfo");
 
   /**
-   * ====================================
-   * @function next
-   * NOTE - moves to next step. also manually check values for error and call submit at the end
-   * ====================================
+   * =============================================================
+   * * ANCHOR Form Submission
+   * Handles the final submission with a robust try/catch block.
+   * ==============================================================
    */
-  const next = () => {
-    // NOTE - calls the values of form inputs
-    const values = getValues();
-    const newErrors = {};
-    console.log({ grouptype });
-    console.log("tt", values.tripTitle);
-    if (step == 1) {
-      /**
-       * ====================================
-       * NOTE - at STEP 1
-       * -- checks --
-       * -- 1. if trip title is given or not
-       * ====================================
-       */
-      if (
-        !values.tripTitle ||
-        values.tripTitle.trim() === "" ||
-        values.tripTitle == undefined
-      ) {
-        newErrors.tripTitle = "*Trip title is required";
-      }
-    } else if (step == 2) {
-      /**
-       * ====================================
-       * NOTE - at STEP 2
-       * -- checks --
-       * -- 1 . if start and end dates are given or not
-       * -- 2 . if end date is same or in future to start date
-       * ====================================
-       */
-      if (!values.startOn) {
-        newErrors.startOn = "Start date is required";
-      }
-      if (!values.endsOn) {
-        newErrors.endsOn = "End date is required";
-      } else if (
-        values.startOn &&
-        new Date(values.endsOn) < new Date(values.startOn)
-      ) {
-        newErrors.endsOn = "End date cannot be before start date";
-      }
-    } else if (step == 3) {
-      /**
-       * ====================================
-       * NOTE - at STEP 3
-       * -- checks --
-       * -- 1 . if on selecting international trip country data like
-       * -- name / currency / code / rate
-       * -- are generation or not
-       * ====================================
-       */
-      if (values.tripType == 1) {
-        if (!CCdata) {
-          newErrors.CCdata =
-            "Country details are required for international trips";
-        }
-      }
-    } else if (step == 4) {
-      /**
-       * ====================================
-       * NOTE - at STEP 4
-       * -- checks --
-       * -- 1 . on selecting traveling with group
-       * -- No. of Members/Groups given shud be >= 1
-       * --
-       * NOTE - at step 4 if no error then submits the data on clicking submit
-       * ====================================
-       */
-      values.ofGroup = Number(values.ofGroup);
-      if (values.travelType === 2 || values.travelType === 3) {
-        if (values.ofGroup < 1) {
-          newErrors.ofGroup = "Group/Members size must be at least 1";
-        } else {
-          submit(values);
-        }
-      } else {
-        submit(values);
-      }
-    }
-
-    /**
-     * ====================================
-     * @function setErrors
-     * NOTE - sets error generated to page
-     * NOTE - if no error then
-     * -- 1. at step 1 open dialoge box
-     * @function setSteps
-     * NOTE - if step < 4
-     * -- 2. incriment step count
-     * ====================================
-     */
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      if (step == 1) {
-        setOpen(true);
-      }
-      if (step < 4) setStep((s) => s + 1);
-    }
-  };
-
-  /**
-   * ====================================
-   * @function back
-   * NOTE - calls function setStep
-   * -- 1. moves to previous step section
-   * -- 2. decriment step count
-   * -- 3. if step == 1 then close dialog box
-   * ====================================
-   */
-
-  const back = () =>
-    setStep((s) => {
-      let on = s - 1;
-      if (on === 1) setOpen(false);
-      return on;
-    });
-
-  /**
-   * ====================================
-   * @function submit
-   * NOTE - if form values has no errors
-   * -- 1. calls @function insertTrip
-   * -- 2. inserts data in DB and return message
-   * -- 3. toast the success / error message
-   * ====================================
-   */
-  const submit = async (data) => {
-    console.log("data", data);
-
+  const onSubmit = async (data) => {
     try {
-      const result = await dispatch(insertTrip({ data })).unwrap();
-
-      toast.success("Success", {
-        description: result.message,
-        action: {
-          label: "Ok!",
-          onClick: () => {
-            setOpen(false);
-            resetValues();
-          },
-        },
+      await dispatch(insertTrip({ data })).unwrap();
+      toast.success("Success!", {
+        description: "Your new trip has been created.",
+        action: { label: "Ok!", onClick: () => resetForm() },
       });
+      setOpen(false);
     } catch (errMessage) {
-      toast.error("Error", {
+      toast.error("Creation Failed", {
         description: errMessage,
-        action: {
-          label: "Ok!",
-          onClick: () => setOpen(true),
-        },
+        action: { label: "Try Again", onClick: () => {} },
       });
     }
   };
 
   /**
-   * ====================================
-   * @function handleTripType
-   * NOTE - sets trip type state via @function setTriptype
-   * -- 0 = Domestic
-   * -- 1 = International
-   * ====================================
+   * =============================================================
+   * * ANCHOR Multi-Step Logic
+   * Uses react-hook-form's `trigger` to validate each step.
+   * ==============================================================
    */
-  const handleTripType = (index) => {
-    if (triptype === index) {
-      setTriptype(0);
-      // uncheck if already selected
-    } else {
-      setTriptype(index);
-    }
+  const nextStep = async () => {
+    let fieldsToValidate = [];
+    if (step === 1) fieldsToValidate = ["tripTitle"];
+    if (step === 2) fieldsToValidate = ["startOn", "endsOn"];
+    if (step === 3) fieldsToValidate = ["abroadInfo"];
+    if (step === 4) fieldsToValidate = ["ofGroup"];
 
-    if (index === 0) setCCdata(null);
-  };
+    const isValid = await trigger(fieldsToValidate);
 
-  /**
-   * ====================================
-   * @function handleGroupType
-   * NOTE - sets traveling with type state via @function setGrouptype
-   * -- 0 = solo
-   * -- 1 = family
-   * -- 2 = group
-   * -- 3 = family group
-   * ====================================
-   */
-  const handleGroupType = (index) => {
-    if (grouptype === index) {
-      setGrouptype(0);
-      // uncheck if already selected
-    } else {
-      setGrouptype(index);
+    if (isValid && step < 4) {
+      setStep((s) => s + 1);
+    } else if (isValid && step === 4) {
+      // If the last step is valid, call the main submit handler
+      handleSubmit(onSubmit)();
     }
   };
 
-  /**
-   * ====================================
-   * @function handleSelectCountry
-   * NOTE - get exchange rate data of selected country
-   * -- 1. base is by default INR
-   * -- 2. then make obj {country name / currency / code / rate}
-   * -- 3. calls state @function setCCdata to set data
-   * ====================================
-   */
-  const handleSelectCountry = async (c) => {
-    const country = getCodeOf(c);
-    const base = country.currencyCode.toLowerCase();
-    const res = await fetch(
-      `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base}.json`,
-    );
-    const data = await res.json();
-    const result = {
-      country: country.name,
-      currency: country.currency,
-      currencyCode: country.currencyCode,
-      rate: data[base]["inr"] ?? null,
-    };
+  const prevStep = () => setStep((s) => (s > 1 ? s - 1 : 1));
 
-    setCCdata(result);
+  const resetForm = () => {
+    reset();
+    setStep(1);
+    setOpen(false);
+  };
+
+  const handleSelectCountry = async (countryName) => {
+    const countryDetails = getCodeOf(countryName);
+    const currencyCode = countryDetails.currencyCode.toLowerCase();
+    try {
+      const res = await fetch(
+        `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${currencyCode}.json`,
+      );
+      const data = await res.json();
+      const result = {
+        country: countryDetails.name,
+        currency: countryDetails.currency,
+        currencyCode: countryDetails.currencyCode,
+        rate: data[currencyCode]["inr"] ?? null,
+      };
+      setValue("abroadInfo", result, { shouldValidate: true });
+    } catch (error) {
+      console.error("Failed to fetch currency data", error);
+      setValue("abroadInfo", null);
+    }
   };
 
   /**
@@ -322,28 +149,25 @@ const CreateTripForm = () => {
           <span>Trip Title ?</span>
         </Flexrow>
         <Flexrow className="border-dark-a2 items-center border-b-1">
-          <input type="hidden" {...register("userID")} />
-          <input type="hidden" {...register("isInternational")} />
-          <input type="hidden" {...register("tripTotal")} />
-          {/**
-           * ===========================
-           * ANCHOR trip title
-           * ===========================
-           */}
           <input
             className="text-24px placeholder:text-slate-a1/70 w-full rounded-md border-none px-1 py-1 font-bold outline-none"
             type="text"
             placeholder="Himalayan Adventure ..."
-            {...register("tripTitle")}
+            {...register("tripTitle", { required: "* Trip title is required" })}
           />
         </Flexrow>
-        {/* ========= trip title ERROR HANDLER ========= */}
-        <ErrorFieldTrip className={"text-dark-a2"} error={errors.tripTitle} />
-        {/* ========= create trip button ========= */}
+        <ErrorFieldTrip
+          className={"text-dark-a2"}
+          error={errors.tripTitle?.message}
+        />
         <Flexrow className="justify-end">
           <ExpButton
-            onClick={() => {
-              next();
+            onClick={async () => {
+              const isValid = await trigger("tripTitle");
+              if (isValid) {
+                setOpen(true);
+                setStep(2); // Start at step 2 since title is already entered
+              }
             }}
             custom_textbtn
             className={"text-trip-a4 bg-dark-a2"}
@@ -354,49 +178,34 @@ const CreateTripForm = () => {
         </Flexrow>
       </Flexcol>
 
-      {/**
-       * ===========================
-       * ANCHOR Dialog Box Begins
-       * ===========================
-       */}
       {open && (
-        <>
-          <Flexrow className="fixed inset-0 z-40 flex items-center justify-center bg-black/50">
+        <Flexrow className="fixed inset-0 z-40 flex items-center justify-center bg-black/50">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Flexcol
               className={cn(
                 "relative h-[450px] w-[700px] justify-between gap-2.5 p-10",
                 cardBgv2,
               )}
             >
-              {/**
-               * ===========================
-               * ANCHOR Dialog Box - section 1
-               * ===========================
-               */}
-
+              {/* --- Header and Step Indicator --- */}
               <Flexcol>
-                {/*========= title and close button  */}
                 <Flexrow className={"items-center justify-between"}>
                   <span className="text-14px">
-                    {step == 2 && "Select Dates"}
-                    {step == 3 && "Select Desination"}
-                    {step == 4 && "How you are Traveling ?"}
+                    {step === 2 && "Select Dates"}
+                    {step === 3 && "Select Destination"}
+                    {step === 4 && "How are you Traveling?"}
                   </span>
                   <ExpButton
-                    onClick={() => {
-                      resetValues();
-                      setOpen(false);
-                    }}
+                    onClick={resetForm}
                     custom_iconbtn
                     className={"p-2.5"}
                   >
                     <Icons.cross className="text-18px hover:text-trip-a4" />
                   </ExpButton>
                 </Flexrow>
-                {/*========= step indicator ========= */}
                 <Flexrow className={"items-center gap-1"}>
                   {[1, 2, 3, 4].map((s) => (
-                    <>
+                    <Flexrow key={s} className="items-center">
                       <StepRing className={step >= s && "border-trip-a2"}>
                         <StepCircle
                           className={
@@ -411,168 +220,158 @@ const CreateTripForm = () => {
                           className={step >= s && "bg-trip-a2"}
                         />
                       )}
-                    </>
+                    </Flexrow>
                   ))}
                 </Flexrow>
               </Flexcol>
 
-              {/**
-               * ===========================
-               * ANCHOR Dialog Box - section 2
-               * ===========================
-               */}
-
+              {/* --- Form Content by Step --- */}
               <Flexrow>
-                {/**
-                 * ===========================
-                 * ANCHOR Dialog Box - section 2
-                 * NOTE - STEP 2 : select dates
-                 * ===========================
-                 */}
                 {step === 2 && (
-                  <>
-                    <Flexcol className="text-14px gap-2.5">
-                      <span className="px-1">Trip Begins</span>
-                      <SelectDate valVar="startOn" setValue={setValue} />
-                      {/**========= start date ERROR ========= */}
-                      <ErrorFieldTrip error={errors.startOn} />
+                  <Flexcol className="text-14px gap-2.5">
+                    <span className="px-1">Trip Begins</span>
+                    <Controller
+                      name="startOn"
+                      control={control}
+                      rules={{ required: "Start date is required" }}
+                      render={({ field }) => (
+                        <SelectDate
+                          onSelect={field.onChange}
+                          selected={field.value}
+                        />
+                      )}
+                    />
+                    <ErrorFieldTrip error={errors.startOn?.message} />
 
-                      <span className="px-1">Trip Ends</span>
-                      <SelectDate valVar="endsOn" setValue={setValue} />
-                      {/**========= end date ERROR ========= */}
-                      <ErrorFieldTrip error={errors.endsOn} />
-                    </Flexcol>
-                  </>
+                    <span className="px-1">Trip Ends</span>
+                    <Controller
+                      name="endsOn"
+                      control={control}
+                      rules={{
+                        required: "End date is required",
+                        validate: (value, formValues) =>
+                          new Date(value) >= new Date(formValues.startOn) ||
+                          "End date cannot be before start date",
+                      }}
+                      render={({ field }) => (
+                        <SelectDate
+                          onSelect={field.onChange}
+                          selected={field.value}
+                        />
+                      )}
+                    />
+                    <ErrorFieldTrip error={errors.endsOn?.message} />
+                  </Flexcol>
                 )}
-
-                {/**
-                 * ===========================
-                 * ANCHOR Dialog Box - section 2
-                 * NOTE - STEP 3 : trip type - Domestic or International
-                 * ===========================
-                 */}
                 {step === 3 && (
-                  <>
-                    <Flexcol className="text-14px gap-4">
-                      {[0, 1].map((i) => (
-                        <Flexrow className={"w-max items-center gap-2"}>
-                          <Checkbox
-                            className={
-                              "data-[state=checked]:bg-trip-a3 data-[state=checked]:text-dark-a2 text-18px border-dark-a7 size-5 border hover:cursor-pointer"
-                            }
-                            checked={triptype === i}
-                            onCheckedChange={() => handleTripType(i)}
-                          />
-                          <span>
-                            {i == 0 && "Domestic"}
-                            {i == 1 && "Abroad"}
-                          </span>
-                        </Flexrow>
-                      ))}
-                      {/**========= if trip is Abroad select country ========= */}
-                      {triptype == 1 && (
-                        <>
-                          <SelectBar className={cn("bg-dark-a5 shadow-none")}>
-                            <SelectCard
-                              noIcon
-                              isExpense
-                              title={"Select Country"}
-                            >
-                              <SelectFilter
-                                placeholder={"Select"}
-                                onValueChange={handleSelectCountry}
-                                list={getCountryNames()}
-                              ></SelectFilter>
-                            </SelectCard>
-                          </SelectBar>
-                          <ErrorFieldTrip error={errors.CCdata} />
-                        </>
-                      )}
-                      {/**========= on selecting country current INR value appear ========= */}
-                      {CCdata !== null && triptype == 1 && (
-                        <>
+                  <Flexcol className="text-14px gap-4">
+                    {[0, 1].map((i) => (
+                      <Flexrow key={i} className={"w-max items-center gap-2"}>
+                        <Checkbox
+                          className="data-[state=checked]:bg-trip-a3 data-[state=checked]:text-dark-a2 text-18px border-dark-a7 size-5 border hover:cursor-pointer"
+                          checked={tripType === i}
+                          onCheckedChange={() =>
+                            setValue("tripType", tripType === i ? 0 : i)
+                          }
+                        />
+                        <span>{i === 0 ? "Domestic" : "Abroad"}</span>
+                      </Flexrow>
+                    ))}
+                    {tripType === 1 && (
+                      <>
+                        <Controller
+                          name="abroadInfo"
+                          control={control}
+                          rules={{
+                            validate: (value) =>
+                              tripType !== 1 ||
+                              (value && value.country) ||
+                              "Country details are required for international trips",
+                          }}
+                          render={() => (
+                            <SelectBar className={cn("bg-dark-a5 shadow-none")}>
+                              <SelectCard
+                                noIcon
+                                isExpense
+                                title={"Select Country"}
+                              >
+                                <SelectFilter
+                                  placeholder={"Select"}
+                                  onValueChange={handleSelectCountry}
+                                  list={getCountryNames()}
+                                />
+                              </SelectCard>
+                            </SelectBar>
+                          )}
+                        />
+                        <ErrorFieldTrip error={errors.abroadInfo?.message} />
+                        {abroadInfo && (
                           <Flexrow className={"text-14px w-max items-center"}>
-                            <span>{CCdata.country}</span>
+                            <span>{abroadInfo.country}</span>
                             <HorizontalDivider />
+                            <span>1 {abroadInfo.currencyCode} =</span>
                             <span>
-                              Exchange Rate of 1 {CCdata.currencyCode} in INR
-                            </span>
-                            <HorizontalDivider />
-                            <span>
-                              Rs. {numeral(CCdata.rate).format("0.000")}
+                              Rs. {numeral(abroadInfo.rate).format("0.000")}
                             </span>
                           </Flexrow>
-                          {/**========= if country not selected ERROR ========= */}
-                        </>
-                      )}
-                    </Flexcol>
-                  </>
+                        )}
+                      </>
+                    )}
+                  </Flexcol>
                 )}
-
-                {/**
-                 * ===========================
-                 * ANCHOR Dialog Box - section 2
-                 * NOTE - STEP 4 : select solor or group type with members
-                 * ===========================
-                 */}
-                {step >= 4 && (
-                  <>
-                    <Flexcol className="text-14px gap-2.5">
-                      {[0, 1, 2, 3].map((i) => (
-                        <Flexrow className={"w-max items-center gap-2"}>
-                          <Checkbox
-                            className={
-                              "data-[state=checked]:bg-trip-a3 data-[state=checked]:text-dark-a2 text-18px border-dark-a7 size-5 border hover:cursor-pointer"
-                            }
-                            checked={grouptype === i}
-                            onCheckedChange={() => handleGroupType(i)}
+                {step === 4 && (
+                  <Flexcol className="text-14px gap-2.5">
+                    {[0, 1, 2, 3].map((i) => (
+                      <Flexrow key={i} className={"w-max items-center gap-2"}>
+                        <Checkbox
+                          className="data-[state=checked]:bg-trip-a3 data-[state=checked]:text-dark-a2 text-18px border-dark-a7 size-5 border hover:cursor-pointer"
+                          checked={travelType === i}
+                          onCheckedChange={() =>
+                            setValue("travelType", travelType === i ? 0 : i)
+                          }
+                        />
+                        <span>
+                          {i === 0 && "Solo Trip"}
+                          {i === 1 && "Solo Family Trip"}
+                          {i === 2 && "Group Trip"}
+                          {i === 3 && "Group Family Trip"}
+                        </span>
+                      </Flexrow>
+                    ))}
+                    {travelType >= 2 && (
+                      <>
+                        <Flexrow className={"items-baseline"}>
+                          <span>How many Members/Families?</span>
+                          <input
+                            className="inputType-number border-dark-a6 bg-dark-a6 hover:bg-dark-a2 hover:border-dark-a4 focus:bg-dark-a2 focus:border-dark-a4 hover:text-slate-a1 text-14px w-max rounded-sm border px-2.5 py-1 outline-none"
+                            type="number"
+                            {...register("ofGroup", {
+                              valueAsNumber: true,
+                              validate: (value) =>
+                                travelType < 2 ||
+                                value >= 1 ||
+                                "Group size must be at least 1",
+                            })}
                           />
-                          <span>
-                            {i == 0 && "Solo Trip"}
-                            {i == 1 && "Solo Family Trip"}
-                            {i == 2 && "Group Trip"}
-                            {i == 3 && "Group Family Trip"}
-                          </span>
                         </Flexrow>
-                      ))}
-                      {/**========= if trip is in Group ask for No. of Members/Groups ? ========= */}
-                      {grouptype >= 2 && (
-                        <>
-                          <Flexrow className={"items-baseline"}>
-                            <span>How many Members/Families ?</span>
-                            <input
-                              className="inputType-number border-dark-a6 bg-dark-a6 hover:bg-dark-a2 hover:border-dark-a4 focus:bg-dark-a2 focus:border-dark-a4 hover:text-slate-a1 text-14px w-max rounded-sm border px-2.5 py-1 outline-none"
-                              type="number"
-                              onBlur={"This cannot be empty"}
-                              {...register("ofGroup")}
-                            />
-                          </Flexrow>
-                          {/**========= No. of Members/Groups not given ERROR ========= */}
-                          <ErrorFieldTrip error={errors.ofGroup} />
-                        </>
-                      )}
-                    </Flexcol>
-                  </>
+                        <ErrorFieldTrip error={errors.ofGroup?.message} />
+                      </>
+                    )}
+                  </Flexcol>
                 )}
               </Flexrow>
 
-              {/**
-               * ===========================
-               * ANCHOR Dialog Box - section 3
-               * ===========================
-               */}
+              {/* --- Footer Buttons --- */}
               <Flexrow className={"text-14px"}>
-                {/**========= back Button ========= */}
                 <ExpButton
-                  onClick={back}
+                  onClick={prevStep}
                   custom_textbtn
                   className={"bg-trip-a2 text-dark-a2"}
                 >
                   Back
                 </ExpButton>
-                {/**========= next & submit Button ========= */}
                 <ExpButton
-                  onClick={next}
+                  onClick={nextStep}
                   custom_textbtn
                   className={"bg-trip-a2 text-dark-a2"}
                 >
@@ -580,73 +379,53 @@ const CreateTripForm = () => {
                 </ExpButton>
               </Flexrow>
             </Flexcol>
-          </Flexrow>
-        </>
+          </form>
+        </Flexrow>
       )}
     </>
   );
 };
 
 export default CreateTripForm;
-
 /**
  * ===========================
- * @function StepCircle
- * NOTE - circle to indicate dialog step
+ * Helper Components
  * ===========================
  */
 
-export const StepCircle = ({ children, className }) => {
-  return (
-    <Flexrow
-      className={cn(
-        "bg-br2 size-8 items-center justify-center rounded-full",
-        className,
-      )}
-    >
-      {children}
-    </Flexrow>
-  );
-};
+export const StepCircle = ({ children, className }) => (
+  <Flexrow
+    className={cn(
+      "bg-br2 size-8 items-center justify-center rounded-full",
+      className,
+    )}
+  >
+    {children}
+  </Flexrow>
+);
 
-/**
- * ===========================
- * @function StepRing
- * NOTE - outer ring of circle to indicate dialog step
- * ===========================
- */
-export const StepRing = ({ className, children }) => {
-  return (
-    <Flexrow
-      className={cn(
-        "border-dark-a6 size-10 items-center justify-center rounded-full border-2 bg-transparent",
-        className,
-      )}
-    >
-      {children}
-    </Flexrow>
-  );
-};
+export const StepRing = ({ className, children }) => (
+  <Flexrow
+    className={cn(
+      "border-dark-a6 size-10 items-center justify-center rounded-full border-2 bg-transparent",
+      className,
+    )}
+  >
+    {children}
+  </Flexrow>
+);
 
-/**
- * ===========================
- * @function ErrorFieldTrip
- * NOTE - displays the error element
- * ===========================
- */
-export const ErrorFieldTrip = ({ error, className }) => {
-  return (
-    <>
-      {error && (
-        <p
-          className={cn(
-            "!text-12px text-error-a1 font-semibold italic",
-            className,
-          )}
-        >
-          {error}
-        </p>
-      )}
-    </>
-  );
-};
+export const ErrorFieldTrip = ({ error, className }) => (
+  <>
+    {error && (
+      <p
+        className={cn(
+          "!text-12px text-error-a1 font-semibold italic",
+          className,
+        )}
+      >
+        {error}
+      </p>
+    )}
+  </>
+);

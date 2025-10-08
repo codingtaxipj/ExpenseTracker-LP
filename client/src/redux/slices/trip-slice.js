@@ -1,5 +1,10 @@
 import { apiCLient } from "@/api/apiClient";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
+import { ArrayCheck } from "@/components/utility";
 
 const initialState = {
   TripData: null,
@@ -15,11 +20,11 @@ const userID = 123456;
 export const fetchTrips = createAsyncThunk(
   "trip/fetchTrips",
   async (_, { rejectWithValue }) => {
+    // <-- userID must be passed in
     try {
       const res = await apiCLient.get(`/trip/get-trip/${userID}`);
       return res.data;
     } catch (err) {
-      // 'err.message' is now the clean string from our interceptor.
       return rejectWithValue(err.message);
     }
   },
@@ -28,12 +33,11 @@ export const fetchTrips = createAsyncThunk(
 // Add a new trip
 export const insertTrip = createAsyncThunk(
   "trip/insertTrip",
-  async ({ data }, { dispatch, rejectWithValue }) => {
+  async ({ data }, { rejectWithValue }) => {
     try {
+      // Your server's /add-trip endpoint must return the newly created trip object
       const res = await apiCLient.post(`/trip/add-trip`, data);
-      await dispatch(fetchTrips());
-      return { success: true, message: res.data.message };
-      // server responds with { message, tripData? }
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -63,10 +67,16 @@ const trip = createSlice({
       // Insert trip
       .addCase(insertTrip.pending, (state) => {
         state.CreateTripLoading = true;
-        state.CreateTripError = null;
       })
-      .addCase(insertTrip.fulfilled, (state) => {
+      .addCase(insertTrip.fulfilled, (state, action) => {
         state.CreateTripLoading = false;
+        // action.payload is the new trip object from the server.
+        // Add it to the beginning of the TripData array.
+        if (state.TripData) {
+          state.TripData.unshift(action.payload);
+        } else {
+          state.TripData = [action.payload];
+        }
       })
       .addCase(insertTrip.rejected, (state, action) => {
         state.CreateTripLoading = false;
@@ -76,3 +86,20 @@ const trip = createSlice({
 });
 
 export default trip.reducer;
+
+// ====================================================================
+// ++ MEMOIZED SELECTORS for Trips ++
+// ====================================================================
+
+const selectTripState = (state) => state.trip;
+
+export const selectRawTripData = createSelector(
+  [selectTripState],
+  (trip) => trip.TripData,
+);
+
+// This selector replaces your useMemo block
+export const selectTripList = createSelector(
+  [selectRawTripData],
+  (data) => ArrayCheck(data) || [],
+);
