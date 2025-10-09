@@ -1,3 +1,4 @@
+# ## General ##
 # Logs
 logs
 *.log
@@ -7,20 +8,36 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment Variables - VERY IMPORTANT
+# Ignore all .env files in any directory
+.env
+.env.local
+.env.*.local
 
-# Editor directories and files
+# ## Dependencies ##
+# Ignore all node_modules directories in the entire project
+node_modules/
+
+# ## Build & Cache Output ##
+# Ignore Vite build output and cache
+dist/
+dist-ssr/
+.vite/
+
+# Ignore test coverage output
+coverage/
+
+# ## Editor & OS Files ##
+# VS Code
 .vscode/*
 !.vscode/extensions.json
-.idea
+!.vscode/settings.json
+
+# Other editors and OS specific files
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-# Environment Variables
-.env
