@@ -20,7 +20,13 @@ import { updateMinMax } from "./minmax-controller.js";
 
 export const fetchExpense = async (req, res) => {
   try {
-    const { userID } = req.params;
+    let { userID } = req.params;
+    userID = parseInt(userID, 10);
+    if (isNaN(userID)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid userID format. Must be a number." });
+    }
 
     const data = await expenseModal.aggregate([
       // Stage 1: Find all the expenses for the user
@@ -82,6 +88,8 @@ export const fetchExpense = async (req, res) => {
       },
     ]);
 
+    console.log("Trans data", data);
+
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
@@ -93,7 +101,13 @@ export const fetchExpense = async (req, res) => {
 
 export const fetchIncome = async (req, res) => {
   try {
-    const { userID } = req.params;
+    let { userID } = req.params;
+    userID = parseInt(userID, 10);
+    if (isNaN(userID)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid userID format. Must be a number." });
+    }
     const data = await incomeModal.find({ userID }).sort({ onDate: -1 });
     res.status(200).json(data);
   } catch (error) {
@@ -106,7 +120,13 @@ export const fetchIncome = async (req, res) => {
 
 export const fetchRecurringExpense = async (req, res) => {
   try {
-    const { userID } = req.params;
+    let { userID } = req.params;
+    userID = parseInt(userID, 10);
+    if (isNaN(userID)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid userID format. Must be a number." });
+    }
     const data = await recurringExpModal.find({ userID }).sort({ onDate: -1 });
     res.status(200).json(data);
   } catch (error) {
@@ -128,13 +148,12 @@ export const insertExpense = async (req, res) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-
-    const validatedData = matchedData(req);
-    const newExpense = new expenseModal(validatedData);
+    const data = req.body;
+    const newExpense = new expenseModal(data);
     const savedEntry = await newExpense.save({ session });
 
-    await insertTotal(savedEntry, { session });
-    await updateMinMax(savedEntry, { session });
+    await insertTotal(savedEntry, session);
+    await updateMinMax(savedEntry, session);
 
     // If everything succeeded, commit
     await session.commitTransaction();
@@ -157,10 +176,10 @@ export const insertIncome = async (req, res) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const validatedData = matchedData(req);
-    const newIncome = new incomeModal(validatedData);
+    const data = req.body;
+    const newIncome = new incomeModal(data);
     const savedEntry = await newIncome.save({ session });
-    await insertTotal(savedEntry, { session });
+    await insertTotal(savedEntry, session);
     await session.commitTransaction();
     res.status(201).json(savedEntry);
   } catch (error) {
@@ -181,10 +200,10 @@ export const insertRecurringExpense = async (req, res) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const validatedData = matchedData(req);
+    const data = req.body;
 
     // Operation 1: Create the recurring expense
-    const newRecurring = new recurringExpModal(validatedData);
+    const newRecurring = new recurringExpModal(data);
     const savedRecurringExpense = await newRecurring.save({ session });
 
     let savedExpense = null; // This will hold the new expense, if created
@@ -246,8 +265,8 @@ export const deleteExpense = async (req, res) => {
       return res.status(404).json({ message: "Expense not found." });
     }
     // --- Operation 2: Decrement the totals ---
-    await decrementTotal(expData, { session });
-    await updateMinMax(expData, { session });
+    await decrementTotal(expData, session);
+    await updateMinMax(expData, session);
     await session.commitTransaction();
     res.status(200).json(expData);
   } catch (error) {
@@ -278,7 +297,7 @@ export const deleteIncome = async (req, res) => {
       return res.status(404).json({ message: "Income not found." });
     }
     // --- Operation 2: Decrement the totals ---
-    await decrementTotal(incData, { session });
+    await decrementTotal(incData, session);
     await session.commitTransaction();
     res.status(200).json(incData);
   } catch (error) {

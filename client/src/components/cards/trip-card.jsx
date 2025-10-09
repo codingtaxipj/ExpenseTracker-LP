@@ -2,6 +2,7 @@ import moment from "moment";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Flexcol from "../section/flexcol";
+import ExpButton from "../buttons/exp-button";
 
 const TripCard = ({ list }) => {
   const navigate = useNavigate();
@@ -33,18 +34,16 @@ const TripCard = ({ list }) => {
                 <span>{5000}</span>
               </Flexrow>
               <Flexrow className={"w-max justify-end gap-2"}>
-                <EButton
+                <ExpButton
                   className={"bg-trip"}
-                  isIcon
-                  viewIcon
+                  custom_textbtn
                   onClick={() => navigate(trip._id)}
-                ></EButton>
-                <EButton
+                ></ExpButton>
+                <ExpButton
                   className={"bg-trip"}
-                  isIcon
-                  viewIcon
+                  custom_textbtn
                   onClick={() => navigate(trip._id)}
-                ></EButton>
+                ></ExpButton>
               </Flexrow>
             </Flexrow>
           </Flexcol>

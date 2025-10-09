@@ -50,6 +50,8 @@ const ExpenseCategoryAnalysis = () => {
   const { MMofPrime, MMgetPrimeofYear } = useMinMaxConfig();
   const mmPrime = MMgetPrimeofYear(MMofPrime, year);
 
+  console.log("GG", MMofPrime);
+
   const PrimeOfYear = getPrimeListOfYear(TotalByPrime_EXP, year);
   const SubOfYear = getSubListOfYear(TotalBySub_EXP, year);
   const TotalExpenseYear = getTotalOfYear(TotalByYear_EXP, year);

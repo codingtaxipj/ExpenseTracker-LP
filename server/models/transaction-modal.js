@@ -3,7 +3,6 @@
  */
 
 import mongoose from "mongoose";
-import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 const expenseSchema = new Schema(
   {
@@ -185,10 +184,10 @@ const recurringExpSchema = new Schema(
 expenseSchema.index({ "isTransactionTrip.valid": 1 });
 expenseSchema.index({ "isTransactionRepeating.valid": 1 }); */
 
-const expenseModal = primaryConnection.model("Expense", expenseSchema);
-const recurringExpModal = primaryConnection.model(
+const expenseModal = mongoose.model("Expense", expenseSchema);
+const recurringExpModal = mongoose.model(
   "RecurringExpense",
   recurringExpSchema
 );
-const incomeModal = primaryConnection.model("Income", incomeSchema);
+const incomeModal = mongoose.model("Income", incomeSchema);
 export { expenseModal, recurringExpModal, incomeModal };

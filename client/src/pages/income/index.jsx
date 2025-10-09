@@ -9,7 +9,6 @@ import useTransactionConfig from "@/hooks/useTransactionConfig";
 
 // --- App Components ---
 import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
-import EButton from "@/components/buttons/eButton";
 import ExpButton from "@/components/buttons/exp-button";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
@@ -21,11 +20,11 @@ import MaxCategorySection from "@/components/section/max-category-section";
 import SectionTitle from "@/components/section/section-title";
 import BudgetStrip from "@/components/strips/budget-strip";
 import TransactionListTable from "@/components/table/transaction-list-table";
+import NewIncome from "./NewIncome";
 
 // --- App Utilities & Config ---
 import { PATH } from "@/router/routerConfig";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
-import NewIncome from "./NewIncome";
 
 const IncomeIndex = () => {
   const navigate = useNavigate();
@@ -92,13 +91,13 @@ const IncomeIndex = () => {
         <MaxCategorySection />
         <Flexrow className="text-14px items-center justify-end pt-5 font-medium">
           <h4>For Detailed Income Analysis</h4>
-          <EButton
-            isTextIcon
+          <ExpButton
+            custom_textbtn
             className={"bg-inc"}
             onClick={() => navigate(PATH.incomeAnalysis)}
           >
             <Icons.upbar /> Check Analysis
-          </EButton>
+          </ExpButton>
         </Flexrow>
       </Flexcol>
     </>

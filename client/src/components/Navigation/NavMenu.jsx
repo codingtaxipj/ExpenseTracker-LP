@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 import { Icons } from "../icons";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
-import EButton from "../buttons/eButton";
+
 import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import { bgDarkA3 } from "@/global/style";
+import ExpButton from "../buttons/exp-button";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
@@ -88,10 +89,13 @@ function Dashboard({ activeBtn, children }) {
             bgDarkA3,
           )}
         >
-          <EButton isTextIcon className={"!text-12px w-max space-x-0.75 p-1"}>
+          <ExpButton
+            custom_textbtn
+            className={"!text-12px w-max space-x-0.75 p-1"}
+          >
             <FaCalendarDay />
             <span>{currentDate}</span>
-          </EButton>
+          </ExpButton>
         </Flexrow>
 
         <Flexrow className="flex-1 gap-2.5">
@@ -102,19 +106,22 @@ function Dashboard({ activeBtn, children }) {
             )}
           >
             <div className="bg-exp-a0 mb-2 size-[4rem] rounded-[12px]"></div>
-            <EButton className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2">
+            <ExpButton
+              custom_iconbtn
+              className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2"
+            >
               <FaUser className="text-slate-a5" />
               <span>codingtaxipj</span>
-            </EButton>
+            </ExpButton>
             <Separator
               className={
                 "bg-slate-br1 mx-auto my-4 data-[orientation=horizontal]:w-[95%]"
               }
             />
             {nav.map((n) => (
-              <EButton
+              <ExpButton
                 key={n.id}
-                isTextIcon
+                custom_textbtn
                 className={cn(
                   "!text-14px w-full justify-start space-x-0.75 p-1 px-2",
                   selectedStyle(n.link),
@@ -123,7 +130,7 @@ function Dashboard({ activeBtn, children }) {
               >
                 <span className="text-slate-a5"> {n.icon}</span>
                 {n.name}
-              </EButton>
+              </ExpButton>
             ))}
           </Flexcol>
 

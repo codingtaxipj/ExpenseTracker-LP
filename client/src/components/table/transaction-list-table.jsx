@@ -20,8 +20,7 @@ import TooltipStrip from "@/components/strips/tooltip-strip";
 import Flexcol from "@/components/section/flexcol";
 import { amountFloat } from "@/components/utilityFilter";
 import { getPrimeColor } from "@/global/categories";
-import TD from "./TD";
-import EButton from "@/components/buttons/eButton";
+
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -58,8 +57,8 @@ const TransactionListTable = ({ isExpesne, entries }) => {
           </Flexcol>
 
           <Flexrow className="w-max justify-end gap-2">
-            <EButton
-              isText
+            <ExpButton
+              custom_textbtn
               className="bg-ggbg"
               onClick={async () => {
                 try {
@@ -90,9 +89,9 @@ const TransactionListTable = ({ isExpesne, entries }) => {
               }}
             >
               Yes
-            </EButton>
-            <EButton
-              isText
+            </ExpButton>
+            <ExpButton
+              custom_textbtn
               className="bg-rrbg"
               onClick={() => {
                 toast.dismiss(t.id);
@@ -100,7 +99,7 @@ const TransactionListTable = ({ isExpesne, entries }) => {
               }}
             >
               No
-            </EButton>
+            </ExpButton>
           </Flexrow>
         </Flexrow>
       ));

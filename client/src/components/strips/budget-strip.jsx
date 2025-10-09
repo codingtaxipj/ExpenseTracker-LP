@@ -2,9 +2,9 @@ import { Icons } from "../icons";
 import Flexrow from "../section/flexrow";
 import { amountInteger } from "../utilityFilter";
 import TooltipStrip from "./tooltip-strip";
-import BudgetPop from "../budget/budget-pop";
+
 import UseBudgetConfig from "@/hooks/useBudgetConfig";
-import EButton from "../buttons/eButton";
+
 import HorizontalDivider from "./horizontal-divider";
 import { cn } from "@/lib/utils";
 import ExpButton from "../buttons/exp-button";

@@ -10,7 +10,6 @@ import useRecurringConfig from "@/hooks/useRecurringConfig";
 // --- App Components ---
 import { GraphTitleSquare } from "@/components/analysis/Single-Year-Graph";
 import ExpButton from "@/components/buttons/exp-button";
-import EButton from "@/components/buttons/eButton";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
 import SingleBarChart from "@/components/charts/SingleBarChart";

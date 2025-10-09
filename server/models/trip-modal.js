@@ -3,7 +3,7 @@
  */
 
 import mongoose from "mongoose";
-import { primaryConnection } from "../database/connection.js";
+
 const Schema = mongoose.Schema;
 
 const tripSchema = new Schema(
@@ -73,5 +73,5 @@ const tripSchema = new Schema(
   }
 );
 
-const tripModal = primaryConnection.model("Trip", tripSchema);
+const tripModal = mongoose.model("Trip", tripSchema);
 export { tripModal };

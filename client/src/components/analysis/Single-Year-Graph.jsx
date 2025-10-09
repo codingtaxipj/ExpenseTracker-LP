@@ -74,6 +74,9 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
     ExpenseEachMonth,
   );
 
+  console.log("MAP",ExpenseEachMonth);
+  
+
   const IncomeExpenseCombo = createIncomeWithExpense(
     IncomeEachMonth,
     ExpenseEachMonth,

@@ -14,43 +14,161 @@ export const updateMinMax = async (entry, session) => {
     const { userID, onDate, isTypeExpense } = entry;
     const year = moment(onDate).year();
 
-    await totalModal
+    // --- Step 1: Calculate the new Min/Max values using an aggregation pipeline ---
+    const aggregationResult = await totalModal
       .aggregate([
-        // Stage 1: Find the single, relevant total document for the year.
         {
           $match: { userID, year, isTypeExpense },
         },
-
-        // Stage 2: Calculate all min/max values in one go.
         {
           $project: {
-            _id: 0, // Exclude the default _id field
+            _id: 0,
             userID: "$userID",
             year: "$year",
             isTypeExpense: "$isTypeExpense",
-            minMonth: { $min: "$monthList.total" },
-            maxMonth: { $max: "$monthList.total" },
-            minPrime: { $min: "$primeList.total" },
-            maxPrime: { $max: "$primeList.total" },
-            minSub: { $min: "$subList.total" },
-            maxSub: { $max: "$subList.total" },
-          },
-        },
 
-        // Stage 3: Write the result directly to the minmax collection.
-        {
-          $merge: {
-            into: minmaxModal.collection.name, // The name of the collection to write to
-            on: ["userID", "year", "isTypeExpense"], // The unique key to match on
-            whenMatched: "replace", // If a doc exists, replace it
-            whenNotMatched: "insert", // If not, insert a new one
+            // --- Month Min/Max ---
+            maxMonth: {
+              $reduce: {
+                input: "$monthList",
+                initialValue: { total: -1 },
+                in: {
+                  $cond: [
+                    { $gt: ["$$this.total", "$$value.total"] },
+                    "$$this",
+                    "$$value",
+                  ],
+                },
+              },
+            },
+            minMonth: {
+              $reduce: {
+                // First, filter the array to exclude items with a total of 0
+                input: {
+                  $filter: {
+                    input: "$monthList",
+                    as: "item",
+                    cond: { $gt: ["$$item.total", 0] },
+                  },
+                },
+                initialValue: { total: 9e99 },
+                in: {
+                  $cond: [
+                    { $lt: ["$$this.total", "$$value.total"] },
+                    "$$this",
+                    "$$value",
+                  ],
+                },
+              },
+            },
+
+            // --- Prime Category Min/Max ---
+            maxPrime: {
+              $reduce: {
+                input: "$primeList",
+                initialValue: { total: -1 },
+                in: {
+                  $cond: [
+                    { $gt: ["$$this.total", "$$value.total"] },
+                    "$$this",
+                    "$$value",
+                  ],
+                },
+              },
+            },
+            minPrime: {
+              $reduce: {
+                // Apply the same filter logic here
+                input: {
+                  $filter: {
+                    input: "$primeList",
+                    as: "item",
+                    cond: { $gt: ["$$item.total", 0] },
+                  },
+                },
+                initialValue: { total: 9e99 },
+                in: {
+                  $cond: [
+                    { $lt: ["$$this.total", "$$value.total"] },
+                    "$$this",
+                    "$$value",
+                  ],
+                },
+              },
+            },
+
+            // --- Sub Category Min/Max ---
+            maxSub: {
+              $reduce: {
+                input: "$subList",
+                initialValue: { total: -1 },
+                in: {
+                  $cond: [
+                    { $gt: ["$$this.total", "$$value.total"] },
+                    "$$this",
+                    "$$value",
+                  ],
+                },
+              },
+            },
+            minSub: {
+              $reduce: {
+                // And apply the same filter logic here
+                input: {
+                  $filter: {
+                    input: "$subList",
+                    as: "item",
+                    cond: { $gt: ["$$item.total", 0] },
+                  },
+                },
+                initialValue: { total: 9e99 },
+                in: {
+                  $cond: [
+                    { $lt: ["$$this.total", "$$value.total"] },
+                    "$$this",
+                    "$$value",
+                  ],
+                },
+              },
+            },
           },
         },
       ])
       .session(session);
 
+    const newMinMaxDoc = aggregationResult[0];
+
+    if (newMinMaxDoc) {
+      // --- Step 2: Clean up any fields that resulted in a zero total ---
+      const fieldsToClean = [
+        "minMonth",
+        "maxMonth",
+        "minPrime",
+        "maxPrime",
+        "minSub",
+        "maxSub",
+      ];
+
+      for (const field of fieldsToClean) {
+        // If a field exists and its total is 0 or less, delete it.
+        if (newMinMaxDoc[field] && newMinMaxDoc[field].total <= 0) {
+          delete newMinMaxDoc[field];
+        }
+      }
+
+      // --- Step 3: Save the cleaned result ---
+      await minmaxModal.findOneAndUpdate(
+        { userID, year, isTypeExpense },
+        newMinMaxDoc,
+        {
+          upsert: true,
+          session,
+        }
+      );
+    }
+
     console.log("MinMax updated efficiently.");
-  } catch (err) {
+  } catch (error) {
     console.error("Error occurred in updateMinMax:", error);
     throw new Error("Failed to update Min/Max values.");
   }
@@ -58,7 +176,13 @@ export const updateMinMax = async (entry, session) => {
 
 export const fetchMM = async (req, res) => {
   try {
-    const { userID } = req.params;
+    let { userID } = req.params;
+    userID = parseInt(userID, 10);
+    if (isNaN(userID)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid userID format. Must be a number." });
+    }
     const data = await minmaxModal.find({ userID });
     res.status(200).json(data);
   } catch (error) {

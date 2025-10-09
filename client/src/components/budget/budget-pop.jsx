@@ -13,10 +13,10 @@ import { useForm } from "react-hook-form";
 import { ErrorField, FieldLabel, FormField } from "../Forms/Form";
 import Flexrow from "../section/flexrow";
 import { Icons } from "../icons";
-import SubmitBtn from "../buttons/text-btns/submit-btn";
+
 import { useDispatch } from "react-redux";
 import { setBudget } from "@/redux/slices/budget-slice";
-import EButton from "../buttons/eButton";
+import ExpButton from "../buttons/exp-button";
 
 const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
   const dispatch = useDispatch();
@@ -122,19 +122,24 @@ const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
                   <ErrorField error={errors.amount} />
                 </Flexrow>
                 <Flexrow className={"items-center justify-end gap-2"}>
-                  <EButton
-                    isText
+                  <ExpButton
+                    custom_textbtn
                     className={"bg-bud-a3 text-dark-a1"}
                     type="submit"
                   >
                     Submit
-                  </EButton>
+                  </ExpButton>
                   <DrawerClose>
-                    <EButton as={"div"} isText className="bg-error-a1">
+                    <ExpButton
+                      custom_textbtn
+                      as={"div"}
+                      isText
+                      className="bg-error-a1"
+                    >
                       <span onClick={() => reset()} className="text-14px">
                         Cancel
                       </span>
-                    </EButton>
+                    </ExpButton>
                   </DrawerClose>
                 </Flexrow>
               </form>

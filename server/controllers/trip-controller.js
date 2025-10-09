@@ -20,7 +20,13 @@ const insertTrip = async (req, res) => {
 
 const fetchTrip = async (req, res) => {
   try {
-    const { userID } = req.params;
+    let { userID } = req.params;
+    userID = parseInt(userID, 10);
+    if (isNaN(userID)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid userID format. Must be a number." });
+    }
 
     // Fetch trips for the given user, sorted by trip created date (latest first)
     const data = await tripModal.find({ userID }).sort({ createdAt: -1 });

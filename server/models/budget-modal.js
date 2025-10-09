@@ -3,7 +3,6 @@
  */
 
 import mongoose from "mongoose";
-import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 const budgetlist = new Schema(
   {
@@ -35,5 +34,5 @@ const budgetSchema = new Schema(
   }
 );
 
-const budgetModal = primaryConnection.model("default-budget", budgetSchema);
+const budgetModal = mongoose.model("default-budget", budgetSchema);
 export { budgetModal };

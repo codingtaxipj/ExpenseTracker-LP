@@ -46,6 +46,8 @@ const ExpenseIndex = () => {
   // --- UI State ---
   const [filter, setFilter] = useState("Default");
 
+  console.log("EXP", ExpenseList);
+
   //! make below handler as callback when complete
   const handlePrimeCat = (value) => {
     console.log("Prime : ", value);

@@ -180,6 +180,6 @@ export const sortByWeekAsDates = (entries, week) => {
 };
 
 export const ArrayCheck = (data) => {
-  if (!Array.isArray(data) || !data.length) return null;
+  if (!Array.isArray(data) || !data.length) return [];
   else return data;
 };

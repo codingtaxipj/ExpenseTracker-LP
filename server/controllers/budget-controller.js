@@ -1,4 +1,3 @@
-
 import { budgetModal } from "../models/budget-modal.js";
 
 export const setBudget = async (req, res) => {
@@ -42,7 +41,13 @@ export const setBudget = async (req, res) => {
  */
 export const fetchBudget = async (req, res) => {
   try {
-    const { userID } = req.params;
+    let { userID } = req.params;
+    userID = parseInt(userID, 10);
+    if (isNaN(userID)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid userID format. Must be a number." });
+    }
     const data = await budgetModal.find({ userID }).sort({ year: 1 });
     res.status(200).json(data);
   } catch (error) {
@@ -52,4 +57,3 @@ export const fetchBudget = async (req, res) => {
       .json({ message: error.message || "Failed to Fetch Budget" });
   }
 };
-

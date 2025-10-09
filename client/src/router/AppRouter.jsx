@@ -8,8 +8,6 @@ import ExpenseForm from "@/components/Forms/Expense_Form.jsx";
 import IncomeForm from "@/components/Forms/Income_Form.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { PATH } from "./routerConfig.js";
-import ExpenseAnalysis from "@/pages/analysis/ExpenseAnalysis.jsx";
-import IncomeAnalysis from "@/pages/analysis/IncomeAnalysis.jsx";
 import Reccuring from "@/pages/reccuring-expense/Reccuring.jsx";
 import ReccuringExpenseIndex from "@/pages/reccuring-expense/index.jsx";
 import Trip from "@/pages/trip-expense/trip.jsx";
@@ -19,6 +17,7 @@ import ReccuringExpenseForm from "@/components/Forms/reccuring-expense-form.jsx"
 import TripIndex from "@/pages/trip-expense/index.jsx";
 import TripDetails from "@/pages/trip-expense/trip-details.jsx";
 import TripExpenseForm from "@/components/Forms/trip-expense-form.jsx";
+import Analysis from "@/pages/analysis/analysis.jsx";
 
 const AppRouter = () => {
   return (
@@ -37,15 +36,10 @@ const AppRouter = () => {
         {formRoutes()}
       </Route>
       <Route
-        index
         path={PATH.expenseAnalysis}
-        element={<ExpenseAnalysis />}
+        element={<Analysis isExpense />}
       ></Route>
-      <Route
-        index
-        path={PATH.incomeAnalysis}
-        element={<IncomeAnalysis />}
-      ></Route>
+      <Route path={PATH.incomeAnalysis} element={<Analysis isIncome />}></Route>
 
       <Route path={PATH.trip} element={<Trip />}>
         <Route index element={<TripIndex />} />
@@ -67,6 +61,7 @@ const AppRouter = () => {
       <Route path={PATH.budget} element={<Budget />}>
         <Route index element={<BudgetIndex />} />
       </Route>
+      <Route path="*" element={<NotFound />} /> 
     </Routes>
   );
 };
@@ -77,5 +72,8 @@ const formRoutes = () => (
     <Route path={PATH.addIncome} element={<IncomeForm />} />
   </>
 );
+
+// A simple component for the 404 page
+const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 export { AppRouter };

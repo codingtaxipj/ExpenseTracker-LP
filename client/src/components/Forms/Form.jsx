@@ -126,7 +126,7 @@ const Form = ({
         description: `A new entry for ${result.ofAmount} was saved successfully.`,
         action: { label: "Ok!", onClick: () => reset() },
       });
-      handleCancel(); // Navigate back on success
+      //handleCancel(); // Navigate back on success
     } catch (error) {
       toast.error("Operation Failed!", {
         description: error,
@@ -163,13 +163,10 @@ const Form = ({
       ? getPrimeCategories(expenseCategories)
       : getPrimeCategories(incomeCategories);
 
-  console.log("on PC", selectedPrimeCat);
-
   const listOfSubCat = getSubOfPrime(
     selectedPrimeCat,
     isExpense || isReccuring || isTrip,
   );
-  console.log("SC List : ", listOfSubCat);
 
   /**==================================================================== */
 
@@ -340,8 +337,6 @@ const Form = ({
           <FormField>
             <FieldLabel iconColor={formLabelIconColor} label="Sub Category" />
 
-            {console.log("Inside JSX, listOfSubCat is:", listOfSubCat)}
-
             {/* This is the key change. We check for a non-empty array. */}
             {listOfSubCat && listOfSubCat.length > 0 ? (
               <Flexrow className="flex-wrap gap-2">
@@ -407,15 +402,24 @@ const Form = ({
               type="submit"
               className={cn(
                 "text-dark-a1",
-                formLabelIconColor.replace("text-", "bg-"),
+                (isExpense && "bg-exp-a3") ||
+                  (isIncome && "bg-inc-a3") ||
+                  (isTrip && "bg-trip-a4") ||
+                  (isReccuring && "bg-rep-a3"),
               )}
+              custom_textbtn
             >
               Add Now
             </ExpButton>
+
             <ExpButton
+              onClick={() => {
+                reset();
+                handleCancel();
+              }}
               type="button"
-              onClick={handleCancel}
-              className="bg-error-a1"
+              custom_textbtn
+              className={cn("bg-error-a1")}
             >
               Cancel
             </ExpButton>

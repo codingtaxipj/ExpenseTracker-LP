@@ -3,7 +3,6 @@
  */
 
 import mongoose from "mongoose";
-import { primaryConnection } from "../database/connection.js";
 const Schema = mongoose.Schema;
 const monthList = new Schema(
   {
@@ -60,5 +59,5 @@ const totalSchema = new Schema(
 );
 totalSchema.index({ userID: 1, year: 1, isTypeExpense: 1 }, { unique: true });
 
-const totalModal = primaryConnection.model("default-total", totalSchema);
+const totalModal = mongoose.model("default-total", totalSchema);
 export { totalModal };

@@ -4,8 +4,6 @@ import { getMonthName, CurrentYear } from "@/utilities/calander-utility";
 
 import { useSelector } from "react-redux";
 import {
-  
- 
   selectBudgetByMonth,
   selectBudgetList,
   SelectActiveBudget,
@@ -29,7 +27,7 @@ const useBudgetConfig = () => {
   //NOTE - creates a group of budget in month range
   const createBudgetRange = (data) => {
     const checkedData = ArrayCheck(data);
-    if (!checkedData) return null;
+    if (!checkedData) return [];
     const result = [];
     let start = checkedData[0].month;
     let currentBudget = checkedData[0].budget;
@@ -58,7 +56,7 @@ const useBudgetConfig = () => {
   const createBudgetWithExpense = (budget, expense) => {
     const checkedBudget = ArrayCheck(budget);
     const checkedExpense = ArrayCheck(expense);
-    if (!checkedBudget || !checkedExpense) return null;
+    if (!checkedBudget && !checkedExpense) return [];
     const arr = [];
     for (let i = 0; i < 12; i++) {
       let b =

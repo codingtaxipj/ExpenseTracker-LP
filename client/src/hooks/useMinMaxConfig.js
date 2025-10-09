@@ -11,8 +11,8 @@ const useMinMaxConfig = () => {
   const MMofPrime = useSelector(selectMMofPrime);
   const MMofSub = useSelector(selectMMofSub);
 
-  const MMgetPrimeofYear = (year) =>
-    MMofPrime?.find((l) => l.year === year) ?? null;
+  const MMgetPrimeofYear = (list, year) =>
+    list?.find((l) => l.year === year) ?? [];
 
   return {
     MMofMonth,

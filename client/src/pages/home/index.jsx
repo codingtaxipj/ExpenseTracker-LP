@@ -1,7 +1,5 @@
 import Flexrow from "@/components/section/flexrow";
 import TypewriterAni from "../../components/TypewriterAni";
-import Flexcol from "@/components/section/flexcol";
-import ExpButton from "@/components/buttons/xpButton";
 
 const HomeIndex = () => {
   return (
