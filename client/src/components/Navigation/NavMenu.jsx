@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import { bgDarkA3 } from "@/global/style";
 import ExpButton from "../buttons/exp-button";
+import UserAvatar from "../UserAvatar";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ function Dashboard({ activeBtn, children }) {
               bgDarkA3,
             )}
           >
-            <div className="bg-exp-a0 mb-2 size-[4rem] rounded-[12px]"></div>
+            <UserAvatar />
             <ExpButton
               custom_iconbtn
               className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2"
