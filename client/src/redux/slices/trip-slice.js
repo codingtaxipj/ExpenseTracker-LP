@@ -10,7 +10,6 @@ const initialState = {
   TripData: null,
   TripLoading: false,
   TripError: null,
-
   CreateTripLoading: false,
   CreateTripError: null,
 };

@@ -88,8 +88,6 @@ export const fetchExpense = async (req, res) => {
       },
     ]);
 
-    console.log("Trans data", data);
-
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
