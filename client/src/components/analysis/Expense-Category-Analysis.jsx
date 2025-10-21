@@ -19,7 +19,7 @@ import SelectFilter from "../selectFilter/SelectFilter";
 import { cn } from "@/lib/utils";
 import { cardBgv2 } from "@/global/style";
 
-const spendBar = (input, total, name) => {
+export const spendBar = (input, total, name) => {
   const p = Math.round((input / total) * 100);
   return {
     width: `${p}%`,

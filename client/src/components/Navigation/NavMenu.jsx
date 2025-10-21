@@ -1,9 +1,8 @@
 import { PATH } from "@/router/routerConfig";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
 
-import { FaCalendarDay, FaUser } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { FaPowerOff, FaUser } from "react-icons/fa";
+
 import { Icons } from "../icons";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
@@ -14,22 +13,26 @@ import { bgDarkA3 } from "@/global/style";
 import ExpButton from "../buttons/exp-button";
 import UserAvatar from "../UserAvatar";
 
+import VerticalDevider from "../strips/vertical-devider";
+import {
+  ActiveClock,
+  ActiveDate,
+  PageTitle,
+  UserLogout,
+  UserSettings,
+} from "./top-bar";
+import { AddExp, AddInc, BudgetBarIndicator } from "./bottom-bar";
+
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
+  console.log("GG", activeBtn);
 
   function selectedStyle(toSet) {
     if (activeBtn === toSet) return "bg-slate-a1 [&>span]:text-dark-a1";
     else return "hover:bg-dark-a6 text-salte-a1";
   }
-  const currentDate = moment().format("Do MMMM YYYY");
-  const [time, setTime] = useState(moment());
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(moment());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
+  // ----- Navigation array -----
   const nav = [
     {
       id: 0,
@@ -83,74 +86,97 @@ function Dashboard({ activeBtn, children }) {
 
   return (
     <>
-      <Flexcol className="bg-dark-a1 !text-slate-a1 h-screen gap-2.5 p-5">
-        <Flexrow
-          className={cn(
-            "!text-14px w-full rounded-sm border px-2 py-0.5",
-            bgDarkA3,
-          )}
-        >
-          <ExpButton
-            custom_textbtn
-            className={"!text-12px w-max space-x-0.75 p-1"}
-          >
-            <FaCalendarDay />
-            <span>{currentDate}</span>
-          </ExpButton>
-        </Flexrow>
-
-        <Flexrow className="flex-1 gap-2.5">
-          <Flexcol
+      <Flexrow className="bg-dark-a1 justify-center">
+        {/** ----- Main Body ---- */}
+        <Flexcol className="!text-slate-a1 h-screen max-w-[1600px] gap-2.5 p-5">
+          {/** ----- Top Bar ---- */}
+          <Flexrow
             className={cn(
-              "w-48 gap-0.75 rounded-md border px-2.5 py-6",
+              "!text-14px w-full gap-2.5 rounded-sm border px-5 py-0.5",
               bgDarkA3,
             )}
           >
-            <UserAvatar />
-            <ExpButton
-              custom_iconbtn
-              className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2"
+            <Flexrow className={cn("w-1/2 items-center justify-start gap-2.5")}>
+              <ActiveClock />
+              <VerticalDevider />
+              <ActiveDate />
+              <VerticalDevider />
+              <PageTitle nav={nav} activeBtn={activeBtn} />
+            </Flexrow>
+            <Flexrow className={cn("w-1/2 items-center justify-end gap-2.5")}>
+              <UserSettings />
+              <VerticalDevider />
+              <UserLogout />
+            </Flexrow>
+          </Flexrow>
+
+          {/** ----- Top Bar Ends ---- */}
+
+          {/** ----- Middle ---- */}
+          <Flexrow className="flex-1 gap-2.5">
+            <Flexcol
+              className={cn(
+                "w-48 gap-0.75 rounded-md border px-2.5 py-6",
+                bgDarkA3,
+              )}
             >
-              <FaUser className="text-slate-a5" />
-              <span>codingtaxipj</span>
-            </ExpButton>
-            <Separator
-              className={
-                "bg-slate-br1 mx-auto my-4 data-[orientation=horizontal]:w-[95%]"
-              }
-            />
-            {nav.map((n) => (
+              <UserAvatar />
               <ExpButton
-                key={n.id}
-                custom_textbtn
-                className={cn(
-                  "!text-14px w-full justify-start space-x-0.75 p-1 px-2",
-                  selectedStyle(n.link),
-                )}
-                onClick={() => navigate(n.link)}
+                custom_iconbtn
+                className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2"
               >
-                <span className="text-slate-a5"> {n.icon}</span>
-                {n.name}
+                <FaUser className="text-slate-a5" />
+                <span>codingtaxipj</span>
               </ExpButton>
-            ))}
-          </Flexcol>
+              <Separator
+                className={
+                  "bg-slate-br1 mx-auto my-4 data-[orientation=horizontal]:w-[95%]"
+                }
+              />
+              {nav.map((n) => (
+                <ExpButton
+                  key={n.id}
+                  custom_textbtn
+                  className={cn(
+                    "!text-14px w-full justify-start space-x-0.75 p-1 px-2",
+                    selectedStyle(n.link),
+                  )}
+                  onClick={() => navigate(n.link)}
+                >
+                  <span className="text-slate-a5"> {n.icon}</span>
+                  {n.name}
+                </ExpButton>
+              ))}
+            </Flexcol>
 
-          <div className="!text-slate-1 border-dark-a3 relative flex-1 overflow-hidden rounded-md border bg-[radial-gradient(circle,_#161616_20%,_#080808_100%)]">
-            <div className="scrollBar absolute inset-0 z-20 m-1.25 overflow-y-auto p-16">
-              {children}
+            <div className="!text-slate-1 border-dark-a3 relative flex-1 overflow-hidden rounded-md border bg-[radial-gradient(circle,_#161616_20%,_#080808_100%)]">
+              <div className="scrollBar absolute inset-0 z-20 m-1.25 overflow-y-auto p-16">
+                {children}
+              </div>
             </div>
-          </div>
-        </Flexrow>
+          </Flexrow>
+          {/** ----- Middle Ends ---- */}
 
-        <Flexrow
-          className={cn(
-            "!text-14px w-full rounded-sm border px-2 py-0.5",
-            bgDarkA3,
-          )}
-        >
-          Bottom Bar
-        </Flexrow>
-      </Flexcol>
+          {/** ----- Bottom Bar ---- */}
+          <Flexrow
+            className={cn(
+              "!text-14px w-full gap-2.5 rounded-sm border px-5 py-0.5",
+              bgDarkA3,
+            )}
+          >
+            <Flexrow className={cn("w-1/2 items-center justify-start gap-2.5")}>
+              <BudgetBarIndicator />
+            </Flexrow>
+            <Flexrow className={cn("w-1/2 items-center justify-end gap-2.5")}>
+              <AddExp />
+              <VerticalDevider />
+              <AddInc />
+            </Flexrow>
+          </Flexrow>
+          {/** ----- Bottom Bar Ends ---- */}
+        </Flexcol>
+        {/** ----- Main Body Ends ---- */}
+      </Flexrow>
     </>
   );
 }

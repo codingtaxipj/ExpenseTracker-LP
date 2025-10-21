@@ -1,59 +1,79 @@
 import Flexrow from "@/components/section/flexrow";
 import TypewriterAni from "../../components/TypewriterAni";
+import { bgDarkA3 } from "@/global/style";
+import { cn } from "@/lib/utils";
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import TotalCardForYear from "@/components/cards/total-card-for-year";
+import TotalCardForMonth from "@/components/cards/total-card-for-month";
+import TransactionListTable from "@/components/table/transaction-list-table";
+import useTransactionConfig from "@/hooks/useTransactionConfig";
+import Flexcol from "@/components/section/flexcol";
 
 const HomeIndex = () => {
+  const { RecentTransactionList } = useTransactionConfig();
   return (
     <>
-      <Flexrow>
+      <Flexrow className={"mb-5"}>
         <TypewriterAni />
       </Flexrow>
 
-      <Flexrow className="gap-10 pt-5">
-        <div className="flex grid-cols-2 flex-col gap-5">
-          <Flexrow>
-            <div className="bg-exp-b size-15 rounded-lg"></div>
-            <span className="text-exp-t">This is Expense text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-inc-b size-15 rounded-lg"></div>
-            <span className="text-inc-t">This is Income text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-trip-b size-15 rounded-lg"></div>
-            <span className="text-trip-b">This is Trip text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-repeat-b size-15 rounded-lg"></div>
-            <span className="text-repeat-b">This is Reccuring text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-budget-b size-15 rounded-lg"></div>
-            <span className="text-budget-b">This is Budget text color</span>
-          </Flexrow>
-        </div>
-        <div className="flex grid-cols-2 flex-col gap-5">
-          <Flexrow>
-            <div className="bg-exp-b size-15 rounded-lg"></div>
-            <span className="text-exp-b">This is Expense text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-inc-b size-15 rounded-lg"></div>
-            <span className="text-inc-b">This is Income text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-trip-b size-15 rounded-lg"></div>
-            <span className="text-trip-b">This is Trip text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-repeat-b size-15 rounded-lg"></div>
-            <span className="text-repeat-b">This is Reccuring text color</span>
-          </Flexrow>
-          <Flexrow>
-            <div className="bg-budget-b size-15 rounded-lg"></div>
-            <span className="text-budget-b">This is Budget text color</span>
-          </Flexrow>
-        </div>
+      <Flexrow
+        className={cn(
+          "!text-14px mb-5 w-full gap-2.5 rounded-sm border px-5 py-0.5",
+          bgDarkA3,
+        )}
+      >
+        <Flexrow className="w-1/2 justify-start">Card Section</Flexrow>
+        <Flexrow className="w-1/2 justify-end">FF</Flexrow>
       </Flexrow>
+      <Flexrow className={"mb-20 flex-wrap"}>
+        <TotalCardForYear
+          className="w-full lg:flex-1 lg:basis-[280px]"
+          isExpense
+          year={CurrentYear()}
+        />
+        <TotalCardForMonth
+          className="w-full lg:flex-1 lg:basis-[280px]"
+          isExpense
+          year={CurrentYear()}
+          month={CurrentMonth()}
+        />
+        <TotalCardForYear
+          className="w-full lg:flex-1 lg:basis-[280px]"
+          year={CurrentYear()}
+        />
+        <TotalCardForMonth
+          className="w-full lg:flex-1 lg:basis-[280px]"
+          year={CurrentYear()}
+          month={CurrentMonth()}
+        />
+        <TotalCardForYear
+          className="w-full lg:flex-1 lg:basis-[280px]"
+          year={CurrentYear()}
+        />
+        <TotalCardForMonth
+          className="w-full lg:flex-1 lg:basis-[280px]"
+          year={CurrentYear()}
+          month={CurrentMonth()}
+        />
+      </Flexrow>
+
+      <Flexrow
+        className={cn(
+          "!text-14px mb-5 w-full gap-2.5 rounded-sm border px-5 py-0.5",
+          bgDarkA3,
+        )}
+      >
+        <Flexrow className="w-1/2 justify-start">Latest Transactions</Flexrow>
+        <Flexrow className="w-1/2 justify-end">FF</Flexrow>
+      </Flexrow>
+      <Flexcol>
+        <TransactionListTable
+          isExpesne
+          isRecent
+          entries={RecentTransactionList ?? []}
+        />
+      </Flexcol>
     </>
   );
 };

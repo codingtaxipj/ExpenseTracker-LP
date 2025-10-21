@@ -24,6 +24,9 @@ const initialState = {
   incomeLoading: false,
   incomeError: null,
 
+  recentTransactions: null,
+  recentTransactionsLoading: false,
+
   // --- States for MUTATION (insert, delete, update) operations ---
   insertExpenseLoading: false,
   insertExpenseError: null,
@@ -201,6 +204,41 @@ export const insertRecurringExpense = createAsyncThunk(
   },
 );
 
+// Helper function to build the recent transactions list
+const processRecentTransactions = (state) => {
+  if (!state.expenseData || !state.incomeData) {
+    return;
+  }
+
+  const latestExpenses = state.expenseData.slice(0, 10);
+  const latestIncomes = state.incomeData.slice(0, 10);
+
+  const combined = [...latestExpenses, ...latestIncomes];
+  combined.sort((a, b) => new Date(b.onDate) - new Date(a.onDate));
+
+  state.recentTransactions = combined.slice(0, 10);
+  state.recentTransactionsLoading = false;
+};
+
+// --- HELPER FUNCTION to update the recent list on insert ---
+const updateRecentTransactions = (state, newTransaction) => {
+  if (!state.recentTransactions) {
+    return;
+  }
+
+  if (state.recentTransactions.length >= 10) {
+    const lastItem =
+      state.recentTransactions[state.recentTransactions.length - 1];
+    if (new Date(newTransaction.onDate) <= new Date(lastItem.onDate)) {
+      return;
+    }
+  }
+
+  const updatedList = [newTransaction, ...state.recentTransactions];
+  updatedList.sort((a, b) => new Date(b.onDate) - new Date(a.onDate)); // Use .onDate here too
+  state.recentTransactions = updatedList.slice(0, 10);
+};
+
 const transaction = createSlice({
   name: "transaction",
   initialState,
@@ -219,10 +257,13 @@ const transaction = createSlice({
       .addCase(fetchExpense.fulfilled, (state, action) => {
         state.expenseLoading = false;
         state.expenseData = action.payload;
+        //----- building recent transaction list -----
+        processRecentTransactions(state);
       })
       .addCase(fetchExpense.rejected, (state, action) => {
         state.expenseLoading = false;
         state.expenseError = action.payload;
+        state.recentTransactionsLoading = false;
       })
       /**
        ** =========================================
@@ -240,6 +281,8 @@ const transaction = createSlice({
         } else {
           state.expenseData = [action.payload];
         }
+        //----- logic to get recent transaction -----
+        updateRecentTransactions(state, action.payload);
       })
       .addCase(insertExpense.rejected, (state, action) => {
         state.insertExpenseLoading = false;
@@ -257,11 +300,22 @@ const transaction = createSlice({
       .addCase(deleteExpense.fulfilled, (state, action) => {
         state.deleteExpenseLoading = false;
         const deletedExp = action.payload;
+
+        // 1. See if the deleted item is in our recent list.
+        const isRecent = state.recentTransactions?.find(
+          (tx) => tx._id === deletedExp?._id,
+        );
+
         if (state.expenseData && deletedExp?._id) {
           state.expenseData = state.expenseData.filter(
             (expense) => expense._id !== deletedExp._id,
           );
         }
+        if (!isRecent) {
+          return;
+        }
+        //----- building recent transaction list -----
+        processRecentTransactions(state);
       })
       .addCase(deleteExpense.rejected, (state, action) => {
         state.deleteExpenseLoading = false;
@@ -308,6 +362,8 @@ const transaction = createSlice({
           } else {
             state.expenseData = [newExpense];
           }
+          //----- logic to get recent transaction -----
+          updateRecentTransactions(state, newExpense);
         }
       })
       .addCase(insertRecurringExpense.rejected, (state, action) => {
@@ -327,10 +383,13 @@ const transaction = createSlice({
       .addCase(fetchIncome.fulfilled, (state, action) => {
         state.incomeLoading = false;
         state.incomeData = action.payload;
+        //----- building recent transaction list -----
+        processRecentTransactions(state);
       })
       .addCase(fetchIncome.rejected, (state, action) => {
         state.incomeLoading = false;
         state.incomeError = action.payload; // Use payload from rejectWithValue
+        state.recentTransactionsLoading = false;
       })
       /**
        ** =========================================
@@ -348,6 +407,8 @@ const transaction = createSlice({
         } else {
           state.incomeData = [action.payload];
         }
+        //----- logic to get recent transaction -----
+        updateRecentTransactions(state, action.payload);
       })
       .addCase(insertIncome.rejected, (state, action) => {
         state.insertIncomeLoading = false;
@@ -365,11 +426,22 @@ const transaction = createSlice({
       .addCase(deleteIncome.fulfilled, (state, action) => {
         state.deleteIncomeLoading = false;
         const deletedInc = action.payload;
+
+        // 1. See if the deleted item is in our recent list.
+        const isRecent = state.recentTransactions?.find(
+          (tx) => tx._id === deletedInc?._id,
+        );
+
         if (state.incomeData && deletedInc?._id) {
           state.incomeData = state.incomeData.filter(
             (income) => income._id !== deletedInc._id,
           );
         }
+        if (!isRecent) {
+          return;
+        }
+        //----- building recent transaction list -----
+        processRecentTransactions(state);
       })
       .addCase(deleteIncome.rejected, (state, action) => {
         state.deleteIncomeLoading = false;
@@ -401,6 +473,11 @@ const selectRawRecurringExpenseData = createSelector(
   (transaction) => transaction.recurringData,
 );
 
+const selectRawRecentTransactions = createSelector(
+  [selectTransactionState],
+  (transaction) => transaction.recentTransactions,
+);
+
 /**
  ** Memoized selectors that return the processed, ready-to-use lists
  * =====================================================================
@@ -421,6 +498,11 @@ export const selectIncomeList = createSelector(
 export const selectRecurringExpenseList = createSelector(
   [selectRawRecurringExpenseData],
   (recurringData) => ArrayCheck(recurringData) || [],
+);
+
+export const selectRecentTransactionsList = createSelector(
+  [selectRawRecentTransactions],
+  (recentData) => ArrayCheck(recentData) || [],
 );
 
 export const selectRecurringTotals = createSelector(

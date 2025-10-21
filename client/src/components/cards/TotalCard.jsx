@@ -5,13 +5,14 @@ import { cardBg } from "@/global/style";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
 
-const TotalCard = ({ date, total, footerText, headText, color }) => {
+const TotalCard = ({ date, total, footerText, headText, color, className }) => {
   return (
     <>
       <Flexcol
         className={cn(
-          "text-14px h-[10rem] w-[20rem] justify-between gap-2 p-5",
+          "text-14px min-h-[10rem] w-[20rem] justify-normal gap-2 p-5",
           cardBg,
+          className,
         )}
       >
         {/** ===== top section ===== */}

@@ -29,7 +29,7 @@ import { deleteExpense, deleteIncome } from "@/redux/slices/transaction-slice";
 import { cardBg } from "@/global/style";
 import ExpButton from "../buttons/exp-button";
 
-const TransactionListTable = ({ isExpesne, entries }) => {
+const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
   //Pagination
   const ITEMS_PER_PAGE = 10;
   const [page, setPage] = useState(1);
@@ -183,39 +183,41 @@ const TransactionListTable = ({ isExpesne, entries }) => {
         ))}
       </Flexcol>
 
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setPage((p) => Math.max(p - 1, 1))}
-              className={
-                page === 1
-                  ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
-                  : `text-dark-a1 cursor-pointer ${bgColor}`
-              }
-            >
-              <Icons.pageBack />
-            </PaginationPrevious>
-          </PaginationItem>
+      {!isRecent && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                className={
+                  page === 1
+                    ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
+                    : `text-dark-a1 cursor-pointer ${bgColor}`
+                }
+              >
+                <Icons.pageBack />
+              </PaginationPrevious>
+            </PaginationItem>
 
-          <PaginationItem className="text-14px px-5">
-            Page {page} of {totalPages}
-          </PaginationItem>
+            <PaginationItem className="text-14px px-5">
+              Page {page} of {totalPages}
+            </PaginationItem>
 
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-              className={
-                page === totalPages
-                  ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
-                  : `text-dark-a1 cursor-pointer ${bgColor}`
-              }
-            >
-              <Icons.pageNext />
-            </PaginationNext>
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                className={
+                  page === totalPages
+                    ? "bg-dark-a3 pointer-events-none cursor-not-allowed"
+                    : `text-dark-a1 cursor-pointer ${bgColor}`
+                }
+              >
+                <Icons.pageNext />
+              </PaginationNext>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   );
 };

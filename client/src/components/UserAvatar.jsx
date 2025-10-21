@@ -227,7 +227,7 @@ const UserAvatar = () => {
                   zoom={zoom}
                   rotation={rotation}
                   aspect={1}
-                  cropShape="round"
+                  cropShape="rect"
                   onCropChange={setCrop}
                   onZoomChange={setZoom}
                   onRotationChange={setRotation}

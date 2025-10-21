@@ -1,9 +1,8 @@
-
 import useRecurringConfig from "@/hooks/useRecurringConfig";
 import TotalCard from "./TotalCard";
 import useTotalConfig from "@/hooks/useTotalConfig";
 
-const TotalCardForYear = ({ isExpense, isReccuring, year }) => {
+const TotalCardForYear = ({ isExpense, isReccuring, year, className }) => {
   //NOTE - TOTAL Exp and Inc CONFIG
   const { TotalByYear_EXP, TotalByYear_INC, getTotalOfYear } = useTotalConfig();
   const YearData = isExpense ? TotalByYear_EXP : TotalByYear_INC;
@@ -23,17 +22,19 @@ const TotalCardForYear = ({ isExpense, isReccuring, year }) => {
     (!isExpense && "text-inc-a2");
   const FooterText =
     (isReccuring && `Your Total Reccuring Expense in Year`) ||
-    (isExpense && `Your Total Spending in Year ${year}`) ||
+    (isExpense &&
+      `Your Total Spending in Year ${year}`) ||
     (!isExpense && `Your Total Earning in Year ${year}`);
 
   return (
     <TotalCard
+      className={className}
       color={Color}
       headText={HeadText}
       total={total}
       footerText={FooterText}
       date={year}
-    ></TotalCard>
+    />
   );
 };
 
