@@ -8,9 +8,12 @@ import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TransactionListTable from "@/components/table/transaction-list-table";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
 import Flexcol from "@/components/section/flexcol";
+import BudgetStrip from "@/components/strips/budget-strip";
+import useRecurringConfig from "@/hooks/useRecurringConfig";
 
 const HomeIndex = () => {
   const { RecentTransactionList } = useTransactionConfig();
+  const {} = useRecurringConfig();
   return (
     <>
       <Flexrow className={"mb-5"}>
@@ -26,11 +29,14 @@ const HomeIndex = () => {
         <Flexrow className="w-1/2 justify-start">Card Section</Flexrow>
         <Flexrow className="w-1/2 justify-end">FF</Flexrow>
       </Flexrow>
+      <Flexrow className={"mb-5 flex-wrap"}>
+        <BudgetStrip className="w-full lg:flex-1 lg:basis-[280px]" />
+        <BudgetStrip className="w-full lg:flex-1 lg:basis-[280px]" />
+      </Flexrow>
       <Flexrow className={"mb-20 flex-wrap"}>
         <TotalCardForYear
           className="w-full lg:flex-1 lg:basis-[280px]"
           isExpense
-          year={CurrentYear()}
         />
         <TotalCardForMonth
           className="w-full lg:flex-1 lg:basis-[280px]"
@@ -38,20 +44,19 @@ const HomeIndex = () => {
           year={CurrentYear()}
           month={CurrentMonth()}
         />
-        <TotalCardForYear
-          className="w-full lg:flex-1 lg:basis-[280px]"
-          year={CurrentYear()}
-        />
+        <TotalCardForYear className="w-full lg:flex-1 lg:basis-[280px]" />
         <TotalCardForMonth
           className="w-full lg:flex-1 lg:basis-[280px]"
           year={CurrentYear()}
           month={CurrentMonth()}
         />
+
         <TotalCardForYear
+          isReccuring
           className="w-full lg:flex-1 lg:basis-[280px]"
-          year={CurrentYear()}
         />
         <TotalCardForMonth
+          isReccuring
           className="w-full lg:flex-1 lg:basis-[280px]"
           year={CurrentYear()}
           month={CurrentMonth()}

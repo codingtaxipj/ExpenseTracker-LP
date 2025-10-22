@@ -17,6 +17,7 @@ import VerticalDevider from "../strips/vertical-devider";
 import {
   ActiveClock,
   ActiveDate,
+  GlobalFilter,
   PageTitle,
   UserLogout,
   UserSettings,
@@ -25,7 +26,6 @@ import { AddExp, AddInc, BudgetBarIndicator } from "./bottom-bar";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
-  console.log("GG", activeBtn);
 
   function selectedStyle(toSet) {
     if (activeBtn === toSet) return "bg-slate-a1 [&>span]:text-dark-a1";
@@ -96,14 +96,23 @@ function Dashboard({ activeBtn, children }) {
               bgDarkA3,
             )}
           >
-            <Flexrow className={cn("w-1/2 items-center justify-start gap-2.5")}>
+            <Flexrow
+              className={cn(
+                "flex-1 basis-1 items-center justify-start gap-2.5",
+              )}
+            >
               <ActiveClock />
               <VerticalDevider />
               <ActiveDate />
               <VerticalDevider />
               <PageTitle nav={nav} activeBtn={activeBtn} />
             </Flexrow>
-            <Flexrow className={cn("w-1/2 items-center justify-end gap-2.5")}>
+            <Flexrow className={"flex-1 basis-1 items-center justify-center"}>
+              <GlobalFilter />
+            </Flexrow>
+            <Flexrow
+              className={cn("flex-1 basis-1 items-center justify-end gap-2.5")}
+            >
               <UserSettings />
               <VerticalDevider />
               <UserLogout />

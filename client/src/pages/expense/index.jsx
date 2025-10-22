@@ -33,7 +33,8 @@ import {
   getSubCategories,
 } from "@/global/categories";
 import { sortBy } from "@/global/globalVariables";
-import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+
+import { bgDarkA3 } from "@/global/style";
 
 const SORT_LIST = Object.values(sortBy);
 const PRIME_CATS = getPrimeCategories(expenseCategories);
@@ -45,8 +46,6 @@ const ExpenseIndex = () => {
 
   // --- UI State ---
   const [filter, setFilter] = useState("Default");
-
-  console.log("EXP", ExpenseList);
 
   //! make below handler as callback when complete
   const handlePrimeCat = (value) => {
@@ -92,23 +91,24 @@ const ExpenseIndex = () => {
   // NOTE: 4. If all checks pass, render the main content
   return (
     <>
+      <Flexrow
+        className={cn(
+          "!text-14px mb-5 w-full gap-2.5 rounded-sm border px-5 py-0.5",
+          bgDarkA3,
+        )}
+      >
+        Image will be here
+      </Flexrow>
       <Flexcol className="gap-8">
         {/** =========== Top - cards & Calender =========== */}
+
         <Flexrow className="items-center justify-center gap-10">
-          <Flexcol className="w-max">
-            <TotalCardForYear isExpense year={CurrentYear()} />
-            <TotalCardForMonth
-              isExpense
-              year={CurrentYear()}
-              month={CurrentMonth()}
-            />
-          </Flexcol>
           <MonthCalander isExpense list={ExpenseList ?? []} />
+          <ExpButton addExpense />
         </Flexrow>
         {/** =========== Top - Budget Strip & Add Exp Btn =========== */}
         <Flexrow className="items-center justify-evenly px-5">
-          <BudgetStrip />
-          <ExpButton addExpense />
+          <SingleYearGraph isExpense></SingleYearGraph>
         </Flexrow>
       </Flexcol>
 
@@ -205,7 +205,6 @@ const ExpenseIndex = () => {
 
       <Flexcol className="pt-20">
         <SectionTitle title="Expense Bar Graph" isExpense />
-        <SingleYearGraph isExpense></SingleYearGraph>
       </Flexcol>
 
       {/** =========== Max Expenses =========== */}

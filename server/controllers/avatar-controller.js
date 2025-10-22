@@ -8,7 +8,7 @@ export const avatarUpload = async (req, res) => {
         .send({ message: "Error: File could not be uploaded." });
     }
 
-    console.log("avatar", req.file);
+ 
 
     const fileUrl = `http://localhost:${PORT}/users/upload/profile/${req.file.filename}`;
 

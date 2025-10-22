@@ -8,6 +8,7 @@ import MinMaxReducer from "@/redux/slices/minmax-slice.js";
 import transactionReducer from "@/redux/slices/transaction-slice.js";
 import tripReducer from "@/redux/slices/trip-slice.js";
 import userReducer from "@/redux/slices/user-slice.js";
+import filterReducer from "@/redux/slices/filter-slice.js";
 
 export const rootReducer = combineReducers({
   budget: budgetReducer,
@@ -16,6 +17,7 @@ export const rootReducer = combineReducers({
   transaction: transactionReducer,
   trip: tripReducer,
   user: userReducer,
+  filter: filterReducer,
 });
 
 // Configure store

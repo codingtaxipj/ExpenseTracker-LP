@@ -74,9 +74,6 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
     ExpenseEachMonth,
   );
 
-  console.log("MAP",ExpenseEachMonth);
-  
-
   const IncomeExpenseCombo = createIncomeWithExpense(
     IncomeEachMonth,
     ExpenseEachMonth,
@@ -161,7 +158,7 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
                 onValueChange={handleYearSelector}
                 defaultValue={String(CurrentYear())}
                 list={YearsList}
-              ></SelectFilter>
+              />
             </SelectCard>
           </SelectBar>
         </Flexrow>

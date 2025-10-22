@@ -10,18 +10,24 @@ import { cn } from "@/lib/utils";
 import ExpButton from "../buttons/exp-button";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@/router/routerConfig";
+import VerticalDevider from "./vertical-devider";
 
-const BudgetStrip = () => {
+const BudgetStrip = ({ isHome, className }) => {
   const { ActiveBudget } = UseBudgetConfig();
+
   const navigate = useNavigate();
   const budget = ActiveBudget === null ? null : ActiveBudget.amount;
   return (
     <>
-      <Flexrow className="w-max items-center gap-2 font-medium">
+      <Flexrow
+        className={cn(
+          "text-slate-a1 w-max cursor-default items-center gap-2 font-medium",
+          className,
+        )}
+      >
         <Flexrow
           className={cn(
-            "text-14px bg-dark-a5 shadow-dark-a1 mr-2 w-max items-center gap-2.5 px-5 py-2 shadow-md",
-
+            "text-14px bg-dark-a5 shadow-dark-a1 mr-2 w-full items-center gap-2.5 px-5 py-2 shadow-md",
             "rounded-sm",
           )}
         >
@@ -29,7 +35,7 @@ const BudgetStrip = () => {
           {budget && (
             <>
               {"Your Monthly Budget is"}
-              <HorizontalDivider className={"h-3.5"} />
+              <VerticalDevider />
               <Flexrow className={"w-max items-center gap-1"}>
                 <Icons.rupee className="!text-14px" />
                 <h4>{amountInteger(budget)}</h4>

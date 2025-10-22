@@ -33,11 +33,11 @@ export const setBudget = createAsyncThunk(
   },
 );
 
+const userID = 123456;
 // The CORRECTED thunk for fetching
 export const fetchBudget = createAsyncThunk(
   "budget/fetchBudget",
-  async ({ userID }, { rejectWithValue }) => {
-    // <-- userID must be passed in
+  async (_, { rejectWithValue }) => {
     try {
       const res = await apiCLient.get(`/budget/get-data/${userID}`);
       return res.data;
@@ -102,12 +102,14 @@ export const SelectActiveBudget = createSelector(
   (budget) => {
     if (!budget) return [];
     const currentYear = budget.find((b) => b.year === CurrentYear());
+
     if (!currentYear) return [];
     const bList = ArrayCheck(currentYear.budgetList);
     if (!bList) return [];
-    const list = bList.filter((b) => b.month <= CurrentMonth());
-    if (list.length === 0) return [];
-    const latest = list[list.length - 1];
+    bList.sort((a, b) => a.month - b.month);
+    if (bList.length === 0) return [];
+    const latest = bList[bList.length - 1];
+
     return {
       userID: currentYear.userID,
       year: currentYear.year,

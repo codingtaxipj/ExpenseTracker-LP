@@ -49,6 +49,7 @@ export const fetchBudget = async (req, res) => {
         .json({ message: "Invalid userID format. Must be a number." });
     }
     const data = await budgetModal.find({ userID }).sort({ year: 1 });
+
     res.status(200).json(data);
   } catch (error) {
     console.error(error);

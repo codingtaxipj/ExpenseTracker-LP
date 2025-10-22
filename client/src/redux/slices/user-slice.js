@@ -24,7 +24,7 @@ export const setProfileImage = createAsyncThunk(
         },
       });
 
-      console.log("my url", res.data.url);
+  
 
       return res.data;
     } catch (err) {

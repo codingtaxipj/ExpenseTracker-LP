@@ -6,6 +6,7 @@ import NewIncome from "../income/NewIncome";
 import Flexrow from "@/components/section/flexrow";
 import { Spinner } from "flowbite-react";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
+import YearComparisionGraph from "@/components/analysis/Year-Comparision-Graph";
 
 const IncomeAnalysisIndex = () => {
   const { IncomeList, incomeLoading, incomeError } = useTransactionConfig();

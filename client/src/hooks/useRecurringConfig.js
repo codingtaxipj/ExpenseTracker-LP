@@ -11,6 +11,8 @@ const useRecurringConfig = () => {
   const rcTotal = useSelector(selectRecurringTotals);
   const recurringChartData = useSelector(selectRecurringChartData);
 
+
+
   // You can still select loading/error states if needed
   const { recurringLoading, recurringError } = useSelector(
     (state) => state.transaction,
