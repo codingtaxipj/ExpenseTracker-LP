@@ -7,23 +7,22 @@ import useRecurringConfig from "@/hooks/useRecurringConfig";
 import { useFilterConfig } from "@/hooks/useFilterConfig";
 
 const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
-  //NOTE - TOTAL Exp and Inc CONFIG
-  const { TotalByMonth_EXP, TotalByMonth_INC, getTotalInMonthOfYear } =
-    useTotalConfig();
-
-  //NOTE - TOTAL Reccuring Exp CONFIG
+  //? ----- Total Config -----
+  const { ExpenseOfMonth, IncomeOfMonth } = useTotalConfig();
+  //? ----- Recurring Config -----
   const { rcTotal } = useRecurringConfig();
+  //? ----- Filter Config -----
   const { currentFilter } = useFilterConfig();
-  const FilterYear = currentFilter.values.year;
-  const FilterMonth = currentFilter.values.month;
+  const FilterYear = Number(currentFilter.values.year);
+  const FilterMonth = Number(currentFilter.values.month);
 
-  // NOTE - total crad vars
-  const MonthData = isExpense ? TotalByMonth_EXP : TotalByMonth_INC;
+  /** ============================================================== */
 
-  // NOTE - total crad vars
+  //NOTE - Card Props
   const total =
     (isReccuring && rcTotal.monthly) ??
-    getTotalInMonthOfYear(MonthData, FilterYear, FilterMonth);
+    (isExpense && ExpenseOfMonth) ??
+    (!isExpense && IncomeOfMonth);
   const HeadText =
     (isReccuring && "Monthly Recurring Exp") ||
     (isExpense && "Monthly Expense") ||
@@ -33,8 +32,7 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
     (isExpense && "text-exp-a1") ||
     (!isExpense && "text-inc-a2");
   const FooterText =
-    (isReccuring &&
-      `Your Total Reccuring Expense in ${getMonthName(FilterMonth, "MMMM")} `) ||
+    (isReccuring && `Your Total Monthly Reccuring Expense `) ||
     (isExpense &&
       `Your Total Spending in ${getMonthName(FilterMonth, "MMMM")}`) ||
     (!isExpense &&
@@ -48,7 +46,7 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
       total={total}
       footerText={FooterText}
       date={FilterYear}
-    ></TotalCard>
+    />
   );
 };
 

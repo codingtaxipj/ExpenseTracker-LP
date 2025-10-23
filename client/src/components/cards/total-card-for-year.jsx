@@ -4,19 +4,21 @@ import useTotalConfig from "@/hooks/useTotalConfig";
 import { useFilterConfig } from "@/hooks/useFilterConfig";
 
 const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
-  //NOTE - TOTAL Exp and Inc CONFIG
-  const { TotalByYear_EXP, TotalByYear_INC, getTotalOfYear } = useTotalConfig();
-  const YearData = isExpense ? TotalByYear_EXP : TotalByYear_INC;
-  //NOTE - TOTAL Reccuring Exp CONFIG
+  //? ----- Total Config -----
+  const { ExpenseOfYear, IncomeOfYear } = useTotalConfig();
+  //? ----- Recurring Config -----
   const { rcTotal } = useRecurringConfig();
+  //? ----- Filter Config -----
   const { currentFilter } = useFilterConfig();
   const FilterYear = Number(currentFilter.values.year);
 
-  console.log("RC", rcTotal.yearly);
+  /** ============================================================== */
 
-  // NOTE - total crad vars
+  //NOTE - Card Props
   const total =
-    (isReccuring && rcTotal.yearly) ?? getTotalOfYear(YearData, FilterYear);
+    (isReccuring && rcTotal.yearly) ??
+    (isExpense && ExpenseOfYear) ??
+    (!isExpense && IncomeOfYear);
   const HeadText =
     (isReccuring && "Recurring Expense") ||
     (isExpense && "Year Expense") ||
@@ -26,7 +28,7 @@ const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
     (isExpense && "text-exp-a1") ||
     (!isExpense && "text-inc-a2");
   const FooterText =
-    (isReccuring && `Your Total Reccuring Expense in Year`) ||
+    (isReccuring && `Your Total Yearly Reccuring Expense`) ||
     (isExpense && `Your Total Spending in Year ${FilterYear}`) ||
     (!isExpense && `Your Total Earning in Year ${FilterYear}`);
 

@@ -2,7 +2,7 @@ import {
   selectExpenseList,
   selectIncomeList,
   selectRecentTransactionsList,
-} from "@/redux/slices/transaction-slice";
+} from "@/redux/selectors/transaction-selector";
 import { useSelector } from "react-redux";
 
 const useTransactionConfig = () => {

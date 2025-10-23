@@ -18,8 +18,8 @@ const useInitalLoad = () => {
     dispatch(fetchExpense());
     dispatch(fetchRecurringExpense());
     dispatch(fetchIncome());
-    dispatch(fetchTotal());
     dispatch(fetchTrips());
+    dispatch(fetchTotal());
   }, [dispatch]);
 };
 

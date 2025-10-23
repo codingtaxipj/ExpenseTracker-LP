@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 /**
  * Establishes the default connection to the MongoDB database.
@@ -10,5 +10,5 @@ export const connectToDatabase = () => {
     socketTimeoutMS: 10000,
   };
   // This returns the promise from mongoose.connect
-  return mongoose.connect(process.env.MONGO_URI, options);
+  return mongoose.connect(process.env.MONGO_HOST, options);
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
@@ -26,48 +26,91 @@ import TotalCardForYear from "../cards/total-card-for-year";
 import TotalBudgetCard from "../cards/total-budget-card";
 import BudgetExpenseTable from "../table/budget-expense-table";
 import IncomeExpenseTable from "../table/income-expense-table";
+import { useFilterConfig } from "@/hooks/useFilterConfig";
+
+import { selectGraphData } from "@/redux/selectors/graph-selector";
+import { useSelector } from "react-redux";
+import { filterTypes, selectCurrentFilter } from "@/redux/slices/filter-slice";
+import { TotalOfSelectedMonth } from "@/redux/selectors/total-selector";
 
 const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   /** ============================================================ */
 
-  //NOTE - BUDGET CONFIG
-  const {
-    getBudgetListOfYear,
-    BudgetByMonth,
-    createBudgetWithExpense,
-    getTotalBudgetOfYear,
-  } = useBudgetConfig();
+  /** ============================================================ */
+  const { ExpenseGraphData, IncomeGraphData } = useSelector(selectGraphData);
+  const { ExpenseOfYear, IncomeOfYear, ExpenseOfMonth, IncomeOfMonth } =
+    useTotalConfig();
+
+  const currentFilter = useSelector(selectCurrentFilter);
+  const FilterYear = Number(currentFilter.values.year);
+  const FilterMonth = Number(currentFilter.values.month);
+  const FilterType = currentFilter.type;
+
+  const { GraphTitle, GraphSubText, GraphFootText, TitleTotal } =
+    useMemo(() => {
+      let GraphTitle;
+      let GraphSubText;
+      let GraphFootText;
+      let TitleTotal = 0;
+
+      if (
+        FilterType === filterTypes.BY_YEAR ||
+        FilterType === filterTypes.THIS_YEAR
+      ) {
+        GraphTitle = isExpense
+          ? `Expense in Year ${FilterYear}`
+          : `Income in Year ${FilterYear}`;
+        GraphSubText = `Tracking monthly ${isExpense ? "expenses" : "income"} for ${FilterYear}.`;
+        GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each month.`;
+        TitleTotal = isExpense ? ExpenseOfYear : IncomeOfYear;
+      }
+      if (
+        FilterType === filterTypes.BY_MONTH ||
+        FilterType === filterTypes.THIS_MONTH
+      ) {
+        GraphTitle = isExpense
+          ? `Expense in ${getMonthName(FilterMonth, "MMMM")}`
+          : `Income in ${getMonthName(FilterMonth, "MMMM")}`;
+        GraphSubText = `Tracking daily ${isExpense ? "expenses" : "income"} for ${getMonthName(FilterMonth, "MMMM")}, ${FilterYear}.`;
+        GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each Day.`;
+        TitleTotal = isExpense ? ExpenseOfMonth : IncomeOfMonth;
+      }
+      return { GraphTitle, GraphSubText, GraphFootText, TitleTotal };
+    }, [
+      filterTypes,
+      FilterType,
+      FilterYear,
+      FilterMonth,
+      ExpenseOfYear,
+      IncomeOfYear,
+      ExpenseOfMonth,
+      IncomeOfMonth,
+      isExpense,
+    ]);
 
   /** ============================================================ */
 
-  //NOTE - TOTAL CONFIG
-  const {
-    TotalByMonth_EXP,
-    TotalByMonth_INC,
-    TotalByYear_EXP,
-    TotalByYear_INC,
-    YearsList,
-    getMonthListOfYear,
-    getTotalOfYear,
-    createIncomeWithExpense,
-  } = useTotalConfig();
+  const textStyle = isExpense ? "text-exp-a3" : "text-inc-a3";
+  const bgStyle = isExpense ? "bg-exp-a3" : "bg-inc-a3";
 
   /** ============================================================ */
 
-  //NOTE - year state
-  const [year, setYear] = useState(CurrentYear());
-  //NOTE - sets the year to get the months data
-  const handleYearSelector = (year) => setYear(Number(year));
-
   /** ============================================================ */
 
-  //NOTE - arry OBJ of each month and expense
-  const ExpenseEachMonth = getMonthListOfYear(TotalByMonth_EXP, year);
-  const IncomeEachMonth = getMonthListOfYear(TotalByMonth_INC, year);
+  /* 
+//NOTE - Income
+  const IncomeEachMonth = useMemo(
+    () => getMonthListOfYear(TotalByMonth_INC, FilterYear),
+    [TotalByMonth_INC, FilterYear],
+  );
 
-  //NOTE - arry OBJ of each month and budget by year
-  const BudgetEachMonth = getBudgetListOfYear(BudgetByMonth, year);
+  //NOTE - budget of each month of year
+  const BudgetEachMonth = useMemo(
+    () => getBudgetListOfYear(BudgetByMonth, FilterYear),
+    [BudgetByMonth, FilterYear],
+  );
 
+  
   //NOTE - arry OBJ {id, month name, expense amount, budget ,its percent }
   const BudgetExpenseCombo = createBudgetWithExpense(
     BudgetEachMonth,
@@ -79,11 +122,10 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
     ExpenseEachMonth,
   );
 
-  /** ============================================================ */
   //NOTE - gets the total budget of year
-  const TotalBudgetYear = getTotalBudgetOfYear(BudgetByMonth, year);
-  const TotalExpenseYear = getTotalOfYear(TotalByYear_EXP, year);
-  const TotalIncomeYear = getTotalOfYear(TotalByYear_INC, year);
+  const TotalBudgetYear = getTotalBudgetOfYear(BudgetByMonth, FilterYear);
+
+  const TotalIncomeYear = getTotalOfYear(TotalByYear_INC, FilterYear);
 
   const IE_Difference = TotalIncomeYear - TotalExpenseYear;
   const IE_Percent = getBudgetExpPercent(TotalIncomeYear, TotalExpenseYear);
@@ -95,27 +137,14 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
     : null;
 
   const diff = isExpense ? BE_Difference : IE_Difference;
-  const per = isExpense ? BE_Percent : IE_Percent;
+  const per = isExpense ? BE_Percent : IE_Percent; */
 
   /** ============================================================ */
 
   //NOTE - chart data for graph
-  const chartData = isExpense
-    ? [
-        ...BudgetExpenseCombo.map((be) => ({
-          month: be.month,
-          amount: be.expense,
-        })),
-      ]
-    : [
-        ...IncomeExpenseCombo.map((ie) => ({
-          month: ie.month,
-          amount: ie.income,
-        })),
-      ];
 
   const barInfo = {
-    data: chartData,
+    data: isExpense ? ExpenseGraphData : IncomeGraphData,
     label: isExpense ? "Expense" : "Income",
     color: isExpense ? "var(--color-exp-a1)" : "var(--color-inc-a2)",
   };
@@ -123,25 +152,17 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   const chartInfo = {
     title: (
       <>
-        <GraphTitleSquare className={isExpense ? "bg-exp-a1" : "bg-inc-a2"} />
-        <span className="mr-2.5"> Bar Graph - {year}</span>
-        <Flexrow className="text-16px w-max items-center gap-1.25">
-          <span className="text-14px">
-            <Icons.checkCircle
-              className={isExpense ? "text-exp-a3" : "text-inc-a3"}
-            />
-          </span>
-          <span>Total {isExpense ? "Expense" : "Income"}</span>
-          <HorizontalDivider className="bg-white" />
-          Rs.
-          <span className={isExpense ? "text-exp-a3" : "text-inc-a3"}>
-            {amountFloat(TotalExpenseYear)}
-          </span>
+        <Flexrow className={"items-center gap-2"}>
+          <GraphTitleSquare className={cn(bgStyle)} />
+          <span className="mr-5">{GraphTitle}</span>
+          <Icons.checkCircle className={cn(textStyle)} />
+          <span>Rs.</span>
+          <span className={cn(textStyle)}>{amountFloat(TitleTotal)}</span>
         </Flexrow>
       </>
     ),
-    subtext: `Graph of ${isExpense ? "Expenses" : "Income"} in Year by Month`,
-    footertext: `Showing Total ${isExpense ? "Expense" : "Income"} of Each Month in a Year `,
+    subtext: GraphSubText,
+    footertext: GraphFootText,
   };
 
   /** ============================================================ */
@@ -149,31 +170,15 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   return (
     <>
       <Flexcol>
-        {/** NOTE - filter to select year to dsplay graph and budget info */}
-        <Flexrow>
-          <SelectBar>
-            <SelectCard isExpense={isExpense} title={"Select Year"}>
-              <SelectFilter
-                placeholder={"Select Year"}
-                onValueChange={handleYearSelector}
-                defaultValue={String(CurrentYear())}
-                list={YearsList}
-              />
-            </SelectCard>
-          </SelectBar>
-        </Flexrow>
-
-        {/* <Flexrow>
-          <MinMaxStrip data={monthMAX} isExpense isMax />
-          <MinMaxStrip data={monthMIN} isExpense isMin />
-        </Flexrow> */}
         {/** NOTE - GRAPH SECTION  */}
-        <Flexrow>
-          <SingleBarChart
-            barInfo={barInfo}
-            chartInfo={chartInfo}
-          ></SingleBarChart>
-        </Flexrow>
+        {}
+        {barInfo.data && barInfo.data.length > 0 ? (
+          <SingleBarChart barInfo={barInfo} chartInfo={chartInfo} />
+        ) : (
+          <div className="text-slate-a4 py-10 text-center">
+            No expense data available for this period.
+          </div>
+        )}
       </Flexcol>
       {/** NOTE - BUDGET ANALYSIS SECTION
        *  only display if conditions are true

@@ -6,13 +6,6 @@ import { Icons } from "../icons";
 import { cn } from "@/lib/utils";
 import { IoMdSettings } from "react-icons/io";
 import SelectFilter from "../selectFilter/SelectFilter";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  filterTypes,
-  selectCurrentFilter,
-  setGlobalFilter,
-} from "@/redux/slices/filter-slice";
-import useTotalConfig from "@/hooks/useTotalConfig";
 import { useFilterConfig } from "@/hooks/useFilterConfig";
 
 const style = "!text-12px w-max  space-x-0.75 p-1";
@@ -73,77 +66,18 @@ export const UserSettings = () => {
 };
 
 export const GlobalFilter = () => {
-  const { YearsList } = useTotalConfig();
-  const { currentFilter, dispatch } = useFilterConfig();
-  const MonthList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const {
+    currentFilter,
+    filterTypes,
+    handleFilterChange,
+    handleYearChange,
+    handleMonthChange,
+    MonthList,
+    YearsList,
+    year,
+    month,
+  } = useFilterConfig();
 
-  const defaultYear = Number(currentFilter.values.year) || moment().year();
-  const defaultMonth = Number(currentFilter.values.month) || moment().month();
-
-  const [year, setYear] = useState(defaultYear);
-  const [month, setMonth] = useState(defaultMonth);
-
-  useEffect(() => {
-    setYear(defaultYear);
-    setMonth(defaultMonth);
-  }, [defaultYear, defaultMonth]);
-
-
-
-  const handleFilterChange = (newType) => {
-    const currentValues = currentFilter.values;
-
-      const newMonth = moment().month();
-      const newYear = moment().year();
-      setMonth(defaultMonth);
-      setYear(defaultYear);
-
-    if (newType === filterTypes.BY_YEAR) {
-     
-      dispatch(
-        setGlobalFilter({
-          type: newType,
-          values: { ...currentValues, year: newYear },
-        }),
-      );
-    } else if (newType === filterTypes.BY_MONTH) {
-    
-      dispatch(
-        setGlobalFilter({
-          type: newType,
-          values: { ...currentValues, month: newMonth, year: newYear },
-        }),
-      );
-    } else {
-     
-      dispatch(
-        setGlobalFilter({
-          type: newType,
-          values: { year: newYear, month: newMonth },
-        }),
-      );
-    }
-    }
-  };
-
-  const handleYearChange = (newYear) => {
-    setYear(Number(newYear));
-    dispatch(
-      setGlobalFilter({
-        type: currentFilter.type,
-        values: { ...currentFilter.values, year: newYear },
-      }),
-    );
-  };
-  const handleMonthChange = (newMonth) => {
-    setMonth(Number(newMonth));
-    dispatch(
-      setGlobalFilter({
-        type: filterTypes.BY_MONTH,
-        values: { ...currentFilter.values, month: newMonth, year: year },
-      }),
-    );
-  };
   return (
     <>
       <SelectFilter

@@ -1,18 +1,19 @@
 import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useSelector } from "react-redux";
 import { getBudgetExpPercent } from "./useBudgetConfig";
-
 import {
-  selectYearsList,
-  selectExpenseTotal_ByYear,
   selectExpenseTotal_ByMonth,
   selectExpenseTotal_ByPrime,
   selectExpenseTotal_BySub,
-  selectIncomeTotal_ByYear,
+  selectExpenseTotal_ByYear,
   selectIncomeTotal_ByMonth,
   selectIncomeTotal_ByPrime,
   selectIncomeTotal_BySub,
-} from "@/redux/slices/total-slice";
+  selectIncomeTotal_ByYear,
+  selectYearsList,
+  TotalOfSelectedMonth,
+  TotalOfSelectedYear,
+} from "@/redux/selectors/total-selector";
 
 const useTotalConfig = () => {
   const { TotalLoading, TotalError } = useSelector((state) => state.total);
@@ -28,6 +29,20 @@ const useTotalConfig = () => {
   const TotalByMonth_INC = useSelector(selectIncomeTotal_ByMonth);
   const TotalByPrime_INC = useSelector(selectIncomeTotal_ByPrime);
   const TotalBySub_INC = useSelector(selectIncomeTotal_BySub);
+
+  const getTotalTransactionOfEachMonth = (list, year) => {
+    const data = list?.find((l) => l.year === year)?.monthList ?? [];
+    if (data.length === 0) return [];
+    const arr = [];
+    for (let j = 0; j < 12; j++) {
+      let e = data?.find((m) => m.month === j)?.total ?? 0;
+      arr.push({
+        month: j,
+        amount: e,
+      });
+    }
+    return arr;
+  };
 
   //NOTE - gets the total of given year (mostly used card)
   const getTotalOfYear = (list, year) =>
@@ -63,6 +78,9 @@ const useTotalConfig = () => {
   const sortByMax = (list = []) =>
     [...list].sort((a, b) => b.total - a.total).slice(0, 5);
 
+  const { ExpenseOfYear, IncomeOfYear } = useSelector(TotalOfSelectedYear);
+  const { ExpenseOfMonth, IncomeOfMonth } = useSelector(TotalOfSelectedMonth);
+
   return {
     YearsList,
     TotalByMonth_EXP,
@@ -82,6 +100,11 @@ const useTotalConfig = () => {
     sortByMax,
     TotalLoading,
     TotalError,
+
+    ExpenseOfYear,
+    IncomeOfYear,
+    ExpenseOfMonth,
+    IncomeOfMonth,
   };
 };
 

@@ -31,7 +31,6 @@ const HomeIndex = () => {
       </Flexrow>
       <Flexrow className={"mb-5 flex-wrap"}>
         <BudgetStrip className="w-full lg:flex-1 lg:basis-[280px]" />
-        <BudgetStrip className="w-full lg:flex-1 lg:basis-[280px]" />
       </Flexrow>
       <Flexrow className={"mb-20 flex-wrap"}>
         <TotalCardForYear

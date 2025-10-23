@@ -44,13 +44,7 @@ const SingleBarChart = ({
     <>
       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
         <CardHeader className="items-center pb-5 pl-10">
-          {chartInfo.title && (
-            <CardTitle>
-              <div className="flex flex-row items-center gap-2">
-                {chartInfo.title}
-              </div>
-            </CardTitle>
-          )}
+          {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
           {chartInfo.subtext && (
             <CardDescription className="text-slate-a1 pt-1.25">
               {chartInfo.subtext}
@@ -73,7 +67,7 @@ const SingleBarChart = ({
             >
               <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
               <XAxis
-                dataKey="month"
+                dataKey="indicator"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
