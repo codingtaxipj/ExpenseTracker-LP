@@ -30,7 +30,7 @@ import { bgDarkA3, cardBgv2 } from "@/global/style";
 import Flexrow from "../section/flexrow";
 import { Numeral } from "numeral";
 
-const SingleChart = ({
+export const LinearGraphCode = ({
   isArea,
   barInfo = {
     data: [],
@@ -101,7 +101,7 @@ const SingleChart = ({
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top:25,
+                  top: 25,
                   left: 20,
                   right: 20,
                 }}
@@ -113,10 +113,9 @@ const SingleChart = ({
                   tickMargin={10}
                   axisLine={false}
                   minTickGap={20}
-                  className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4 "
+                  className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
                   tickFormatter={(value) => value}
                   interval={"preserveStartEnd"}
-                
                 />
 
                 <ChartTooltip
@@ -150,7 +149,6 @@ const SingleChart = ({
                   right: 20,
                 }}
               >
-               
                 <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
                 <XAxis
                   dataKey="indicator"
@@ -177,7 +175,7 @@ const SingleChart = ({
                     offset={12}
                     className="fill-slate-a1"
                     fontSize={12}
-                    formatter={(value) => value ? amountFloat(value) : value}
+                    formatter={(value) => (value ? amountFloat(value) : value)}
                   />
                 </Bar>
               </BarChart>
@@ -195,5 +193,3 @@ const SingleChart = ({
     </>
   );
 };
-
-export default SingleBarChart;

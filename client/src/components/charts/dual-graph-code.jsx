@@ -16,7 +16,7 @@ import { Icons } from "../icons";
 import { cardBgv2 } from "@/global/style";
 import { cn } from "@/lib/utils";
 
-const DoubleLineChart = ({ barInfo, chartInfo }) => {
+export const DualGraphCode = ({ barInfo, chartInfo }) => {
   const chartData = barInfo.data;
   const chartConfig = {
     [barInfo.lableOne]: {
@@ -30,7 +30,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
   };
   return (
     <>
-       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
+      <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
         <CardHeader className="items-center pb-5 pl-10">
           <CardTitle>
             <div className="flex flex-row items-center gap-2">
@@ -54,10 +54,7 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
                 right: 20,
               }}
             >
-              <CartesianGrid
-                stroke="var(--color-dark-a6)"
-                vertical={false}
-              />
+              <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
               <XAxis
                 dataKey="month"
                 tickLine={false}
@@ -96,5 +93,3 @@ const DoubleLineChart = ({ barInfo, chartInfo }) => {
     </>
   );
 };
-
-export default DoubleLineChart;

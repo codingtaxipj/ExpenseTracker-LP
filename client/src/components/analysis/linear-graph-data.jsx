@@ -1,19 +1,11 @@
-import { useMemo, useState } from "react";
-import SelectBar from "../selectFilter/SelectBar";
-import SelectCard from "../selectFilter/SelectCard";
-import SelectFilter from "../selectFilter/SelectFilter";
-import SingleBarChart from "../charts/linear-graph-code";
+import { useMemo } from "react";
+import { LinearGraphCode } from "../charts/linear-graph-code";
 
 import Flexrow from "../section/flexrow";
 import Flexcol from "../section/flexcol";
 import useTotalConfig from "@/hooks/useTotalConfig";
-import {
-  CurrentMonth,
-  CurrentYear,
-  getMonthName,
-} from "@/utilities/calander-utility";
+import { CurrentMonth, getMonthName } from "@/utilities/calander-utility";
 import { cn } from "@/lib/utils";
-import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
 
 import { Icons } from "../icons";
 import FlexrowStrip from "../strips/flexrow-strip";
@@ -26,7 +18,6 @@ import TotalCardForYear from "../cards/total-card-for-year";
 import TotalBudgetCard from "../cards/total-budget-card";
 import BudgetExpenseTable from "../table/budget-expense-table";
 import IncomeExpenseTable from "../table/income-expense-table";
-import { useFilterConfig } from "@/hooks/useFilterConfig";
 
 import { selectGraphData } from "@/redux/selectors/graph-selector";
 import { useSelector } from "react-redux";
@@ -237,7 +228,7 @@ export const LinearGraphData = ({ isExpense, isIncome, isAnalysis }) => {
       <Flexcol>
         {/** NOTE - GRAPH SECTION  */}
         {hasDataPoints ? (
-          <SingleBarChart
+          <LinearGraphCode
             isArea={isArea}
             barInfo={barInfo}
             chartInfo={chartInfo}

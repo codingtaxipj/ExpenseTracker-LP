@@ -1,6 +1,6 @@
 import ExpenseCategoryAnalysis from "@/components/analysis/Expense-Category-Analysis";
 import { LinearGraphData } from "@/components/analysis/linear-graph-data";
-import YearComparisionGraph from "@/components/analysis/Year-Comparision-Graph";
+import { DualGraphData } from "@/components/analysis/dual-graph-data";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
 import SectionTitle from "@/components/section/section-title";
@@ -48,7 +48,7 @@ const ExpenseAnalysisIndex = () => {
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Double Line Graph" isExpense />
-        <YearComparisionGraph isExpense />
+        <DualGraphData isExpense />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Expense By Category Analysis" isExpense />

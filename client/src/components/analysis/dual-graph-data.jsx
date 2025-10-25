@@ -1,7 +1,7 @@
 import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
-import DoubleLineChart from "../charts/DoubleLineChart";
+import { DualGraphCode } from "../charts/dual-graph-code";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import HorizontalDivider from "../strips/horizontal-divider";
 import { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
 import FlexrowStrip from "../strips/flexrow-strip";
 
-const YearComparisionGraph = ({ isExpense }) => {
+export const DualGraphData = ({ isExpense, isIncome }) => {
   const {
     TotalByMonth_EXP,
     TotalByMonth_INC,
@@ -110,30 +110,7 @@ const YearComparisionGraph = ({ isExpense }) => {
     <>
       <Flexcol>
         <Flexrow>
-          <SelectBar>
-            <SelectCard isExpense={isExpense} title={"Year"}>
-              <SelectFilter
-                placeholder={"Select Year"}
-                onValueChange={handleYearSelector1}
-                defaultValue={String(year1)}
-                list={YearsList}
-              ></SelectFilter>
-            </SelectCard>
-            <SelectCard noIcon isExpense={isExpense} title={"Compare To Year"}>
-              <SelectFilter
-                placeholder={"Select Year"}
-                onValueChange={handleYearSelector2}
-                defaultValue={String(year1)}
-                list={YearsList}
-              ></SelectFilter>
-            </SelectCard>
-          </SelectBar>
-        </Flexrow>
-        <Flexrow>
-          <DoubleLineChart
-            barInfo={barInfo}
-            chartInfo={chartInfo}
-          ></DoubleLineChart>
+          <DualGraphCode barInfo={barInfo} chartInfo={chartInfo} />
         </Flexrow>
         {year1 !== year2 && (
           <>
@@ -314,5 +291,3 @@ const YearComparisionGraph = ({ isExpense }) => {
     </>
   ); */
 };
-
-export default YearComparisionGraph;

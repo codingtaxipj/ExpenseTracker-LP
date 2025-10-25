@@ -6,7 +6,7 @@ import NewIncome from "../income/NewIncome";
 import Flexrow from "@/components/section/flexrow";
 import { Spinner } from "flowbite-react";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
-import YearComparisionGraph from "@/components/analysis/Year-Comparision-Graph";
+import { DualGraphData } from "@/components/analysis/dual-graph-data";
 
 const IncomeAnalysisIndex = () => {
   const { IncomeList, incomeLoading, incomeError } = useTransactionConfig();
@@ -51,7 +51,7 @@ const IncomeAnalysisIndex = () => {
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Double Line Graph" isExpense />
-        <YearComparisionGraph />
+        <DualGraphData isIncome />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Income Analysis By Category" isExpense />
