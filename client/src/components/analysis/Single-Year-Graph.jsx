@@ -38,54 +38,117 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
 
   /** ============================================================ */
   const { ExpenseGraphData, IncomeGraphData } = useSelector(selectGraphData);
-  const { ExpenseOfYear, IncomeOfYear, ExpenseOfMonth, IncomeOfMonth } =
-    useTotalConfig();
+  const {
+    ExpenseOfYear,
+    IncomeOfYear,
+    ExpenseOfMonth,
+    IncomeOfMonth,
+    ExpenseInLastMonths,
+    IncomeInLastMonths,
+    ExpenseInLastDays,
+    IncomeInLastDays,
+  } = useTotalConfig();
 
   const currentFilter = useSelector(selectCurrentFilter);
   const FilterYear = Number(currentFilter.values.year);
   const FilterMonth = Number(currentFilter.values.month);
   const FilterType = currentFilter.type;
 
-  const { GraphTitle, GraphSubText, GraphFootText, TitleTotal } =
+  const { GraphTitle, GraphSubText, GraphFootText, TitleTotal, isArea } =
     useMemo(() => {
-      let GraphTitle;
-      let GraphSubText;
-      let GraphFootText;
+      // --- Declare variables with default values ---
+      let GraphTitle = "";
+      let GraphSubText = "";
+      let GraphFootText = "";
       let TitleTotal = 0;
+      let isArea = false;
 
-      if (
-        FilterType === filterTypes.BY_YEAR ||
-        FilterType === filterTypes.THIS_YEAR
-      ) {
-        GraphTitle = isExpense
-          ? `Expense in Year ${FilterYear}`
-          : `Income in Year ${FilterYear}`;
-        GraphSubText = `Tracking monthly ${isExpense ? "expenses" : "income"} for ${FilterYear}.`;
-        GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each month.`;
-        TitleTotal = isExpense ? ExpenseOfYear : IncomeOfYear;
+      // --- Determine text and totals based on FilterType ---
+      switch (FilterType) {
+        case filterTypes.BY_YEAR:
+        case filterTypes.THIS_YEAR:
+          GraphTitle = `${isExpense ? "Expense" : "Income"} in Year ${FilterYear}`;
+          GraphSubText = `Tracking monthly ${isExpense ? "expenses" : "income"} for ${FilterYear}.`;
+          GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each month.`;
+          // Get the yearly total from the specific selectors
+          TitleTotal = isExpense ? ExpenseOfYear : IncomeOfYear;
+          break;
+
+        case filterTypes.BY_MONTH:
+        case filterTypes.THIS_MONTH:
+          const monthName = getMonthName(FilterMonth, "MMMM");
+          GraphTitle = `${isExpense ? "Expense" : "Income"} in ${monthName}`;
+          GraphSubText = `Tracking daily ${isExpense ? "expenses" : "income"} for ${monthName}, ${FilterYear}.`;
+          GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each Day.`;
+          // Get the monthly total from the specific selectors
+          TitleTotal = isExpense ? ExpenseOfMonth : IncomeOfMonth;
+          isArea = true;
+          break;
+
+        case filterTypes.LAST_9_MONTHS:
+        case filterTypes.LAST_6_MONTHS:
+        case filterTypes.LAST_3_MONTHS:
+          // Determine the specific number of months
+          const numMonths =
+            FilterType === filterTypes.LAST_9_MONTHS
+              ? 9
+              : FilterType === filterTypes.LAST_6_MONTHS
+                ? 6
+                : 3;
+          GraphTitle = `${isExpense ? "Expense" : "Income"} in Last ${numMonths} Months`;
+          GraphSubText = `Tracking Monthly ${isExpense ? "expenses" : "income"} of Last ${numMonths} Months`;
+          GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each month.`;
+          // Calculate total by summing the graph data for this range
+
+          TitleTotal = isExpense ? ExpenseInLastMonths : IncomeInLastMonths;
+          break;
+
+        case filterTypes.LAST_30_DAYS:
+        case filterTypes.LAST_15_DAYS:
+        case filterTypes.LAST_7_DAYS:
+          // Determine the specific number of days
+          const numDays =
+            FilterType === filterTypes.LAST_30_DAYS
+              ? 30
+              : FilterType === filterTypes.LAST_15_DAYS
+                ? 15
+                : 7;
+          GraphTitle = `${isExpense ? "Expense" : "Income"} in Last ${numDays} Days`;
+          GraphSubText = `Tracking Daily ${isExpense ? "expenses" : "income"} of Last ${numDays} Days`;
+          GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each day.`;
+          // Calculate total by summing the graph data for this range
+          TitleTotal = isExpense ? ExpenseInLastDays : IncomeInLastDays;
+
+          isArea = true;
+
+          break;
+
+        // Add cases for other filter types if needed
+        // case filterTypes.ALL_TIME: ...
+        // case filterTypes.CUSTOM_DATES: ...
+
+        default:
+          // Handle any unexpected filter types
+          GraphTitle = "Select a Filter";
+          break;
       }
-      if (
-        FilterType === filterTypes.BY_MONTH ||
-        FilterType === filterTypes.THIS_MONTH
-      ) {
-        GraphTitle = isExpense
-          ? `Expense in ${getMonthName(FilterMonth, "MMMM")}`
-          : `Income in ${getMonthName(FilterMonth, "MMMM")}`;
-        GraphSubText = `Tracking daily ${isExpense ? "expenses" : "income"} for ${getMonthName(FilterMonth, "MMMM")}, ${FilterYear}.`;
-        GraphFootText = `Showing total ${isExpense ? "expenses" : "income"} recorded each Day.`;
-        TitleTotal = isExpense ? ExpenseOfMonth : IncomeOfMonth;
-      }
-      return { GraphTitle, GraphSubText, GraphFootText, TitleTotal };
+
+      return { GraphTitle, GraphSubText, GraphFootText, TitleTotal, isArea };
     }, [
-      filterTypes,
+      // Ensure ALL dependencies used in the switch are listed
       FilterType,
       FilterYear,
       FilterMonth,
+      isExpense,
       ExpenseOfYear,
       IncomeOfYear,
       ExpenseOfMonth,
       IncomeOfMonth,
-      isExpense,
+      ExpenseInLastMonths, // Add data for range filters
+      IncomeInLastMonths, // Add data for range filters
+      ExpenseInLastDays, // Add data for range filters
+      IncomeInLastDays, // Add data for range filters
+      // filterTypes is usually constant, but include if needed
     ]);
 
   /** ============================================================ */
@@ -152,7 +215,7 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   const chartInfo = {
     title: (
       <>
-        <Flexrow className={"items-center gap-2"}>
+        <Flexrow className={"items-center gap-1.25"}>
           <GraphTitleSquare className={cn(bgStyle)} />
           <span className="mr-5">{GraphTitle}</span>
           <Icons.checkCircle className={cn(textStyle)} />
@@ -167,13 +230,19 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
 
   /** ============================================================ */
 
+  // Check if ANY item in the data array has an amount greater than 0
+  const hasDataPoints = barInfo.data?.some((item) => item.Amount > 0);
+
   return (
     <>
       <Flexcol>
         {/** NOTE - GRAPH SECTION  */}
-        {}
-        {barInfo.data && barInfo.data.length > 0 ? (
-          <SingleBarChart barInfo={barInfo} chartInfo={chartInfo} />
+        {hasDataPoints ? (
+          <SingleBarChart
+            isArea={isArea}
+            barInfo={barInfo}
+            chartInfo={chartInfo}
+          />
         ) : (
           <div className="text-slate-a4 py-10 text-center">
             No expense data available for this period.

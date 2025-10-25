@@ -1,4 +1,13 @@
-import { Bar, BarChart, CartesianGrid, XAxis, LabelList } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  LabelList,
+  AreaChart,
+  Area,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
@@ -17,10 +26,12 @@ import {
 import { Icons } from "../icons";
 import { amountFloat } from "../utilityFilter";
 import { cn } from "@/lib/utils";
-import { cardBgv2 } from "@/global/style";
+import { bgDarkA3, cardBgv2 } from "@/global/style";
 import Flexrow from "../section/flexrow";
+import { Numeral } from "numeral";
 
 const SingleBarChart = ({
+  isArea,
   barInfo = {
     data: [],
     label: "",
@@ -34,12 +45,41 @@ const SingleBarChart = ({
 }) => {
   const chartData = barInfo.data;
   const color = barInfo.color;
+  const label = barInfo.label;
   const chartConfig = {
-    barChart: {
+    [label]: {
       label: barInfo.label,
       color: color,
     },
   };
+
+  console.log("Area is", isArea);
+
+  const myLabelFormatter = (value, payload) => {
+    return (
+      <span style={{ color: color }} className="font-medium">
+        For : {value}
+      </span>
+    );
+  };
+
+  const myTooltipFormatter = (value, name, item, index, payload) => {
+    return (
+      <div key={item.dataKey} className="flex w-full items-center gap-2">
+        {/* Indicator */}
+        <div
+          className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+          style={{ backgroundColor: color }}
+        />
+        {/* Label and Value */}
+        <div className="text-slate-a1 flex flex-1 justify-between leading-none font-medium">
+          <span className="pr-1">{item.name || name} : </span>
+          <span>{amountFloat(value)}</span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
@@ -56,38 +96,92 @@ const SingleBarChart = ({
             config={chartConfig}
             className={"max-h-[500px] w-full"}
           >
-            <BarChart
-              accessibilityLayer
-              data={chartData}
-              margin={{
-                top: 25,
-                left: 20,
-                right: 20,
-              }}
-            >
-              <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
-              <XAxis
-                dataKey="indicator"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
-                tickFormatter={(value) => value}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Bar dataKey="amount" fill={color} radius={8}>
-                <LabelList
-                  position="top"
-                  offset={12}
-                  className="fill-slate-a1"
-                  fontSize={12}
-                  formatter={(value) => amountFloat(value)}
+            {isArea === true && (
+              <AreaChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top:25,
+                  left: 20,
+                  right: 20,
+                }}
+              >
+                <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
+                <XAxis
+                  dataKey="indicator"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  minTickGap={20}
+                  className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4 "
+                  tickFormatter={(value) => value}
+                  interval={"preserveStartEnd"}
+                
                 />
-              </Bar>
-            </BarChart>
+
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      className={"bg-dark-a1.2 border-dark-a6"}
+                      formatter={myTooltipFormatter}
+                      hideIndicator={false}
+                      labelFormatter={myLabelFormatter}
+                    />
+                  }
+                />
+
+                <Area
+                  dataKey={"Amount"}
+                  type="monotone"
+                  fill={color}
+                  fillOpacity={0.2}
+                  stroke={color}
+                />
+              </AreaChart>
+            )}
+            {isArea === false && (
+              <BarChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 25,
+                  left: 20,
+                  right: 20,
+                }}
+              >
+               
+                <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
+                <XAxis
+                  dataKey="indicator"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
+                  tickFormatter={(value) => value}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      className={"bg-dark-a1.2 border-dark-a6"}
+                      formatter={myTooltipFormatter}
+                      hideIndicator={false}
+                      labelFormatter={myLabelFormatter}
+                    />
+                  }
+                />
+                <Bar dataKey="Amount" fill={color} radius={8}>
+                  <LabelList
+                    position="top"
+                    offset={12}
+                    className="fill-slate-a1"
+                    fontSize={12}
+                    formatter={(value) => value ? amountFloat(value) : value}
+                  />
+                </Bar>
+              </BarChart>
+            )}
           </ChartContainer>
         </CardContent>
         {chartInfo.footertext && (

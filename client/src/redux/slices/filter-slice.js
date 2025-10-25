@@ -3,6 +3,7 @@ import moment from "moment";
 export const filterTypes = {
   THIS_YEAR: "This Year",
   THIS_MONTH: "This Month",
+  LAST_9_MONTHS: "Last 9 Months",
   LAST_6_MONTHS: "Last 6 Months",
   LAST_3_MONTHS: "Last 3 Months",
   LAST_30_DAYS: "last 30 days",

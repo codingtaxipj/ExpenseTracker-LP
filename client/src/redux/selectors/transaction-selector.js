@@ -59,45 +59,18 @@ export const selectRecentTransactionsList = createSelector(
 
 export const selectRecurringTotals = createSelector(
   [selectRecurringExpenseList, selectCurrentFilter],
-  (recurringList, currentFilter) => {
+  (recurringList) => {
     if (!recurringList) return { monthly: 0, yearly: 0, total: 0 };
-    const { type, values } = currentFilter;
-    let filterEndDate;
-    let filterYear = Number(values.year);
-    let filterMonth = Number(values.month);
-
-    console.log("Y", filterYear, "-M", filterMonth);
-
-    // Determine the end date of our filter
-    if (type === filterTypes.BY_MONTH) {
-      filterEndDate = moment()
-        .year(filterYear)
-        .month(filterMonth)
-        .endOf("month");
-    } else {
-      filterEndDate = moment().year(filterYear).endOf("year");
-    }
 
     // 2. Filter for monthly expenses
-    const byMonth =
-      recurringList
-        .filter(
-          (m) =>
-            m.isReccuringBy === 1 &&
-            // --- THIS IS THE FIX ---
-            // The start date must be ON OR BEFORE the filter's end date
-            moment(m.onDate).isSameOrBefore(filterEndDate, "day"),
-        )
-        .reduce((total, item) => total + item.ofAmount, 0) || 0;
+    const byMonth = recurringList
+      .filter((m) => m.isReccuringBy === 1)
+      .reduce((total, item) => total + item.ofAmount, 0);
 
     // 3. Filter for yearly expenses
-    const byYear =
-      recurringList
-        .filter(
-          (m) =>
-            m.isReccuringBy === 2 && moment(m.onDate).year() === filterYear,
-        )
-        .reduce((total, item) => total + item.ofAmount, 0) || 0;
+    const byYear = recurringList
+      .filter((m) => m.isReccuringBy === 2)
+      .reduce((total, item) => total + item.ofAmount, 0);
 
     return { monthly: byMonth, yearly: byYear, total: byMonth + byYear };
   },

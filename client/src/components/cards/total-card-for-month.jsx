@@ -5,6 +5,7 @@ import useTotalConfig from "@/hooks/useTotalConfig";
 import { getMonthName } from "@/utilities/calander-utility";
 import useRecurringConfig from "@/hooks/useRecurringConfig";
 import { useFilterConfig } from "@/hooks/useFilterConfig";
+import moment from "moment";
 
 const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
   //? ----- Total Config -----
@@ -24,7 +25,7 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
     (isExpense && ExpenseOfMonth) ??
     (!isExpense && IncomeOfMonth);
   const HeadText =
-    (isReccuring && "Monthly Recurring Exp") ||
+    (isReccuring && "Monthly Recurring Expense") ||
     (isExpense && "Monthly Expense") ||
     (!isExpense && "Monthly Income");
   const Color =
@@ -32,11 +33,9 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
     (isExpense && "text-exp-a1") ||
     (!isExpense && "text-inc-a2");
   const FooterText =
-    (isReccuring && `Your Total Monthly Reccuring Expense `) ||
-    (isExpense &&
-      `Your Total Spending in ${getMonthName(FilterMonth, "MMMM")}`) ||
-    (!isExpense &&
-      `Your Total Earning in ${getMonthName(FilterMonth, "MMMM")}`);
+    (isReccuring && `Total expense recurring every month.`) ||
+    (isExpense && `Total spending in ${getMonthName(FilterMonth, "MMMM")}`) ||
+    (!isExpense && `Total earning in ${getMonthName(FilterMonth, "MMMM")}`);
 
   return (
     <TotalCard
@@ -45,7 +44,7 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
       headText={HeadText}
       total={total}
       footerText={FooterText}
-      date={FilterYear}
+      date={isReccuring ? moment().year() : FilterYear}
     />
   );
 };

@@ -2,6 +2,7 @@ import useRecurringConfig from "@/hooks/useRecurringConfig";
 import TotalCard from "./TotalCard";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import { useFilterConfig } from "@/hooks/useFilterConfig";
+import moment from "moment";
 
 const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
   //? ----- Total Config -----
@@ -28,9 +29,9 @@ const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
     (isExpense && "text-exp-a1") ||
     (!isExpense && "text-inc-a2");
   const FooterText =
-    (isReccuring && `Your Total Yearly Reccuring Expense`) ||
-    (isExpense && `Your Total Spending in Year ${FilterYear}`) ||
-    (!isExpense && `Your Total Earning in Year ${FilterYear}`);
+    (isReccuring && `Total expense recurring every year.`) ||
+    (isExpense && `Total spending in year ${FilterYear}`) ||
+    (!isExpense && `Total earning in year ${FilterYear}`);
 
   return (
     <TotalCard
@@ -39,7 +40,7 @@ const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
       headText={HeadText}
       total={total}
       footerText={FooterText}
-      date={FilterYear}
+      date={isReccuring ? moment().year() : FilterYear}
     />
   );
 };

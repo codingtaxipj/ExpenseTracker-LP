@@ -212,7 +212,7 @@ const getDailyTotalsOfMonth = (list, year, month) => {
   const dailyArr = Array.from({ length: daysInMonth }, (_, i) => ({
     year: year,
     month: month,
-    date: i + 1,
+    date: targetDate.date(i + 1).format(),
     amount: 0,
   }));
 
@@ -229,5 +229,126 @@ const getDailyTotalsOfMonth = (list, year, month) => {
     }
   }
 
+  console.log("dailyarr", targetDate.date(5));
+
   return dailyArr;
 };
+
+//NOTE - total of last 9/6/3 - months of current year
+
+export const TotalOfLastSelectedMonths = createSelector(
+  [selectCurrentFilter, selectExpenseList, selectIncomeList],
+  (filter, expense, income) => {
+    let ofMonths;
+
+    if (filter.type === filterTypes.LAST_9_MONTHS) ofMonths = 9;
+    else if (filter.type === filterTypes.LAST_6_MONTHS) ofMonths = 6;
+    else if (filter.type === filterTypes.LAST_3_MONTHS) ofMonths = 3;
+    else return { ExpenseOfLastMonths: [], IncomeOfLastMonths: [] };
+
+    // set start and end dates of months
+    const startDate = moment()
+      .subtract(ofMonths - 1, "months")
+      .startOf("month");
+    const endDate = moment().endOf("month");
+
+    // transaction list of data in btwn dates
+    const ExpenseList = expense.filter((e) =>
+      moment(e.onDate).isBetween(startDate, endDate, "day", []),
+    );
+    const IncomeList = income.filter((e) =>
+      moment(e.onDate).isBetween(startDate, endDate, "day", []),
+    );
+
+    // empty array of objs of each month
+    const ExpenseOfLastMonths = Array.from({ length: ofMonths }, (_, i) => {
+      const monthDate = moment().subtract(ofMonths - 1 - i, "months");
+      return {
+        month: monthDate.month(),
+        amount: 0,
+        year: monthDate.year(),
+        label: monthDate.format("MMM"),
+      };
+    });
+    // Create a DEEP COPY for income structure only
+    const IncomeOfLastMonths = JSON.parse(JSON.stringify(ExpenseOfLastMonths));
+
+    // caculating the total of dates matching month
+    ExpenseList.forEach((tx) => {
+      const txMonth = moment(tx.onDate).month();
+      const targetMonth = ExpenseOfLastMonths.find((i) => i.month === txMonth);
+      if (targetMonth) {
+        targetMonth.amount += tx.ofAmount;
+      }
+    });
+    IncomeList.forEach((tx) => {
+      const txMonth = moment(tx.onDate).month();
+      const targetMonth = IncomeOfLastMonths.find((i) => i.month === txMonth);
+      if (targetMonth) {
+        targetMonth.amount += tx.ofAmount;
+      }
+    });
+
+    return { ExpenseOfLastMonths, IncomeOfLastMonths };
+  },
+);
+
+//NOTE - total of last 30/15/7 days of current year
+
+export const TotalOfLastSelectedDays = createSelector(
+  [selectCurrentFilter, selectExpenseList, selectIncomeList],
+  (filter, expense, income) => {
+    let ofDates;
+
+    if (filter.type === filterTypes.LAST_30_DAYS) ofDates = 30;
+    else if (filter.type === filterTypes.LAST_15_DAYS) ofDates = 15;
+    else if (filter.type === filterTypes.LAST_7_DAYS) ofDates = 7;
+    else return { ExpenseOfLastDays: [], IncomeOfLastDays: [] };
+
+    // set start and end dates
+    const startDate = moment().subtract(ofDates, "days");
+    const endDate = moment();
+
+    // transaction list of data in btwn dates
+    const ExpenseList = expense.filter((e) =>
+      moment(e.onDate).isBetween(startDate, endDate, "day", []),
+    );
+    const IncomeList = income.filter((e) =>
+      moment(e.onDate).isBetween(startDate, endDate, "day", []),
+    );
+
+    // empty array of objs of each month
+    const ExpenseOfLastDays = Array.from({ length: ofDates }, (_, i) => {
+      const date = moment().subtract(ofDates - i, "days");
+      return {
+        date: date.format("DD-MM-YYYY"),
+        day: date,
+        amount: 0,
+      };
+    });
+    // Create a DEEP COPY for income structure only
+    const IncomeOfLastDays = JSON.parse(JSON.stringify(ExpenseOfLastDays));
+
+    // caculating the total of dates matching dates
+    ExpenseList.forEach((tx) => {
+      const txday = moment(tx.onDate);
+      const targetDay = ExpenseOfLastDays.find((i) =>
+        txday.isSame(i.day, "day"),
+      );
+      if (targetDay) {
+        targetDay.amount += tx.ofAmount;
+      }
+    });
+    IncomeList.forEach((tx) => {
+      const txday = moment(tx.onDate);
+      const targetDay = IncomeOfLastDays.find((i) =>
+        txday.isSame(i.day, "day"),
+      );
+      if (targetDay) {
+        targetDay.amount += tx.ofAmount;
+      }
+    });
+
+    return { ExpenseOfLastDays, IncomeOfLastDays };
+  },
+);

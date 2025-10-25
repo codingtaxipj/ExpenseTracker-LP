@@ -11,6 +11,8 @@ import {
   selectIncomeTotal_BySub,
   selectIncomeTotal_ByYear,
   selectYearsList,
+  TotalOfLastSelectedDays,
+  TotalOfLastSelectedMonths,
   TotalOfSelectedMonth,
   TotalOfSelectedYear,
 } from "@/redux/selectors/total-selector";
@@ -80,6 +82,17 @@ const useTotalConfig = () => {
 
   const { ExpenseOfYear, IncomeOfYear } = useSelector(TotalOfSelectedYear);
   const { ExpenseOfMonth, IncomeOfMonth } = useSelector(TotalOfSelectedMonth);
+  const { ExpenseOfLastMonths, IncomeOfLastMonths } = useSelector(
+    TotalOfLastSelectedMonths,
+  );
+  const { ExpenseOfLastDays, IncomeOfLastDays } = useSelector(
+    TotalOfLastSelectedDays,
+  );
+
+  const ExpenseInLastMonths = getTotalOfTransaction(ExpenseOfLastMonths);
+  const IncomeInLastMonths = getTotalOfTransaction(IncomeOfLastMonths);
+  const ExpenseInLastDays = getTotalOfTransaction(ExpenseOfLastDays);
+  const IncomeInLastDays = getTotalOfTransaction(IncomeOfLastDays);
 
   return {
     YearsList,
@@ -105,7 +118,14 @@ const useTotalConfig = () => {
     IncomeOfYear,
     ExpenseOfMonth,
     IncomeOfMonth,
+    ExpenseInLastMonths,
+    IncomeInLastMonths,
+    ExpenseInLastDays,
+    IncomeInLastDays,
   };
 };
 
 export default useTotalConfig;
+
+const getTotalOfTransaction = (l) =>
+  l.reduce((sum, e) => sum + e.amount, 0) ?? 0;

@@ -2,17 +2,28 @@ import { createSelector } from "@reduxjs/toolkit";
 import { filterTypes, selectCurrentFilter } from "../slices/filter-slice";
 import {
   TotalOfDatesOfSelectedMonth,
+  TotalOfLastSelectedDays,
+  TotalOfLastSelectedMonths,
   TotalOfMonthOfSelectedYear,
 } from "./total-selector";
-import { getMonthName } from "@/utilities/calander-utility";
+import { getDate, getMonthName } from "@/utilities/calander-utility";
+import moment from "moment";
 
 export const selectGraphData = createSelector(
   [
     selectCurrentFilter,
     TotalOfMonthOfSelectedYear,
     TotalOfDatesOfSelectedMonth,
+    TotalOfLastSelectedMonths,
+    TotalOfLastSelectedDays,
   ],
-  (filter, TotalOfMonthOfSelectedYear, TotalOfDatesOfSelectedMonth) => {
+  (
+    filter,
+    TotalOfMonthOfSelectedYear,
+    TotalOfDatesOfSelectedMonth,
+    TotalOfLastSelectedMonths,
+    TotalOfLastSelectedDays,
+  ) => {
     let ExpenseGraphData = [];
     let IncomeGraphData = [];
 
@@ -23,13 +34,13 @@ export const selectGraphData = createSelector(
       ExpenseGraphData = TotalOfMonthOfSelectedYear.ExpenseOfMonthOfYear.map(
         (e) => ({
           indicator: getMonthName(e.month), // e.g., "October"
-          amount: e.amount,
+          Amount: e.amount,
         }),
       );
       IncomeGraphData = TotalOfMonthOfSelectedYear.IncomeOfMonthOfYear.map(
         (e) => ({
           indicator: getMonthName(e.month),
-          amount: e.amount,
+          Amount: e.amount,
         }),
       );
     }
@@ -38,19 +49,50 @@ export const selectGraphData = createSelector(
       filter.type === filterTypes.THIS_MONTH
     ) {
       ExpenseGraphData = TotalOfDatesOfSelectedMonth.ExpenseOfMonthDates.filter(
-        (e) => e.amount > 0,
+        (e) => e.amount >= 0,
       ).map((e) => ({
-        indicator: e.date, // e.g., 23
-        amount: e.amount,
+        indicator: getDate(e.date, "DD, MMM"),
+        Amount: e.amount,
       }));
       IncomeGraphData = TotalOfDatesOfSelectedMonth.IncomeOfMonthDates.filter(
-        (e) => e.amount > 0,
+        (e) => e.amount >= 0,
       ).map((e) => ({
-        indicator: e.date,
-        amount: e.amount,
+        indicator: e.day,
+        Amount: e.amount,
       }));
     }
-
+    if (
+      filter.type === filterTypes.LAST_9_MONTHS ||
+      filter.type === filterTypes.LAST_6_MONTHS ||
+      filter.type === filterTypes.LAST_3_MONTHS
+    ) {
+      ExpenseGraphData = TotalOfLastSelectedMonths.ExpenseOfLastMonths.map(
+        (e) => ({
+          indicator: getMonthName(e.month),
+          Amount: e.amount,
+        }),
+      );
+      IncomeGraphData = TotalOfLastSelectedMonths.IncomeOfLastMonths.map(
+        (e) => ({
+          indicator: getMonthName(e.month),
+          Amount: e.amount,
+        }),
+      );
+    }
+    if (
+      filter.type === filterTypes.LAST_15_DAYS ||
+      filter.type === filterTypes.LAST_7_DAYS ||
+      filter.type === filterTypes.LAST_30_DAYS
+    ) {
+      ExpenseGraphData = TotalOfLastSelectedDays.ExpenseOfLastDays.map((e) => ({
+        indicator: getDate(e.day, "DD, MMM"),
+        Amount: e.amount,
+      }));
+      IncomeGraphData = TotalOfLastSelectedDays.IncomeOfLastDays.map((e) => ({
+        indicator: getDate(e.day, "DD, MMM"),
+        Amount: e.amount,
+      }));
+    }
     return { ExpenseGraphData, IncomeGraphData };
   },
 );
