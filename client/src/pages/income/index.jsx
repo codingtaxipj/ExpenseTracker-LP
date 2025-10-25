@@ -8,7 +8,7 @@ import { Spinner } from "flowbite-react";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
 
 // --- App Components ---
-import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
+import { LinearGraphData } from "@/components/analysis/linear-graph-data";
 import ExpButton from "@/components/buttons/exp-button";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
@@ -84,7 +84,7 @@ const IncomeIndex = () => {
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle isIncome title="Income Bar Graph" />
-        <SingleYearGraph />
+        <LinearGraphData isIncome />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Top 5 Maximum Expense Categories" isIncome />

@@ -30,7 +30,7 @@ import { bgDarkA3, cardBgv2 } from "@/global/style";
 import Flexrow from "../section/flexrow";
 import { Numeral } from "numeral";
 
-const SingleBarChart = ({
+const SingleChart = ({
   isArea,
   barInfo = {
     data: [],

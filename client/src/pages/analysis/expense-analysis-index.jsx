@@ -1,5 +1,5 @@
 import ExpenseCategoryAnalysis from "@/components/analysis/Expense-Category-Analysis";
-import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
+import { LinearGraphData } from "@/components/analysis/linear-graph-data";
 import YearComparisionGraph from "@/components/analysis/Year-Comparision-Graph";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
@@ -44,7 +44,7 @@ const ExpenseAnalysisIndex = () => {
     <>
       <Flexcol className="pt-20">
         <SectionTitle title="Bar Graph" isExpense />
-        <SingleYearGraph isExpense isAnalysis />
+        <LinearGraphData isExpense isAnalysis />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Double Line Graph" isExpense />

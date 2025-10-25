@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
-import SingleBarChart from "../charts/SingleBarChart";
+import SingleBarChart from "../charts/linear-graph-code";
 
 import Flexrow from "../section/flexrow";
 import Flexcol from "../section/flexcol";
@@ -31,12 +31,9 @@ import { useFilterConfig } from "@/hooks/useFilterConfig";
 import { selectGraphData } from "@/redux/selectors/graph-selector";
 import { useSelector } from "react-redux";
 import { filterTypes, selectCurrentFilter } from "@/redux/slices/filter-slice";
-import { TotalOfSelectedMonth } from "@/redux/selectors/total-selector";
 
-const SingleYearGraph = ({ isExpense, isAnalysis }) => {
-  /** ============================================================ */
-
-  /** ============================================================ */
+export const LinearGraphData = ({ isExpense, isIncome, isAnalysis }) => {
+  //
   const { ExpenseGraphData, IncomeGraphData } = useSelector(selectGraphData);
   const {
     ExpenseOfYear,
@@ -153,8 +150,8 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
 
   /** ============================================================ */
 
-  const textStyle = isExpense ? "text-exp-a3" : "text-inc-a3";
-  const bgStyle = isExpense ? "bg-exp-a3" : "bg-inc-a3";
+  const textStyle = (isExpense && "text-exp-a3") || (isIncome && "text-inc-a3");
+  const bgStyle = (isExpense && "bg-exp-a3") || (isIncome && "bg-inc-a3");
 
   /** ============================================================ */
 
@@ -207,9 +204,11 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
   //NOTE - chart data for graph
 
   const barInfo = {
-    data: isExpense ? ExpenseGraphData : IncomeGraphData,
-    label: isExpense ? "Expense" : "Income",
-    color: isExpense ? "var(--color-exp-a1)" : "var(--color-inc-a2)",
+    data: (isExpense && ExpenseGraphData) ?? (isIncome && IncomeGraphData),
+    label: (isExpense && "Expense") || (isIncome && "Income"),
+    color:
+      (isExpense && "var(--color-exp-a1)") ||
+      (isIncome && "var(--color-inc-a2)"),
   };
 
   const chartInfo = {
@@ -230,7 +229,7 @@ const SingleYearGraph = ({ isExpense, isAnalysis }) => {
 
   /** ============================================================ */
 
-  // Check if ANY item in the data array has an amount greater than 0
+  //? Check if ANY item in the data array has an amount greater than 0 if true then graph will show else not
   const hasDataPoints = barInfo.data?.some((item) => item.Amount > 0);
 
   return (
@@ -371,5 +370,3 @@ export const BudgetRangeMonths = ({ range, combo, isExpense }) => {
     </>
   );
 };
-
-export default SingleYearGraph;

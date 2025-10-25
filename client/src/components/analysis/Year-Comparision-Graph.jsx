@@ -5,7 +5,7 @@ import DoubleLineChart from "../charts/DoubleLineChart";
 import useTotalConfig from "@/hooks/useTotalConfig";
 import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useState } from "react";
-import { GraphTitleSquare } from "./Single-Year-Graph";
+import { GraphTitleSquare } from "./linear-graph-data";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
 import { amountFloat } from "../utilityFilter";

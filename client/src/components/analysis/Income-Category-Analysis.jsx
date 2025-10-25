@@ -6,7 +6,7 @@ import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import Boxcard from "../section/boxcard";
-import { GraphTitleSquare } from "./Single-Year-Graph";
+import { GraphTitleSquare } from "./linear-graph-data";
 import FlexrowStrip from "../strips/flexrow-strip";
 import { Icons } from "../icons";
 import useTotalConfig from "@/hooks/useTotalConfig";

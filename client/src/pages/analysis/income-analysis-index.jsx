@@ -1,5 +1,5 @@
 import IncomeCategoryAnalysis from "@/components/analysis/Income-Category-Analysis";
-import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
+import { LinearGraphData } from "@/components/analysis/linear-graph-data";
 import Flexcol from "@/components/section/flexcol";
 import SectionTitle from "@/components/section/section-title";
 import NewIncome from "../income/NewIncome";
@@ -47,7 +47,7 @@ const IncomeAnalysisIndex = () => {
     <>
       <Flexcol className="pt-20">
         <SectionTitle title="Bar Graph" isExpense />
-        <SingleYearGraph isAnalysis />
+        <LinearGraphData isIncome isAnalysis />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle title="Double Line Graph" isExpense />

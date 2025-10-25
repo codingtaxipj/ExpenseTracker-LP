@@ -8,11 +8,11 @@ import { Spinner } from "flowbite-react";
 import useRecurringConfig from "@/hooks/useRecurringConfig";
 
 // --- App Components ---
-import { GraphTitleSquare } from "@/components/analysis/Single-Year-Graph";
+import { GraphTitleSquare } from "@/components/analysis/linear-graph-data";
 import ExpButton from "@/components/buttons/exp-button";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
-import SingleBarChart from "@/components/charts/SingleBarChart";
+import SingleBarChart from "@/components/charts/linear-graph-code";
 import { Icons } from "@/components/icons";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
 
 // --- App Components ---
-import SingleYearGraph from "@/components/analysis/Single-Year-Graph";
+import { LinearGraphData } from "@/components/analysis/linear-graph-data";
 import ExpButton from "@/components/buttons/exp-button";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
@@ -108,7 +108,7 @@ const ExpenseIndex = () => {
         </Flexrow>
         {/** =========== Top - Budget Strip & Add Exp Btn =========== */}
         <Flexrow className="items-center justify-evenly px-5">
-          <SingleYearGraph isExpense></SingleYearGraph>
+          <LinearGraphData isExpense />
         </Flexrow>
       </Flexcol>
 

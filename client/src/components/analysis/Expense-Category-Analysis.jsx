@@ -4,7 +4,7 @@ import Flexrow from "../section/flexrow";
 import FlexrowStrip from "../strips/flexrow-strip";
 import { Card, CardHeader } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
-import { GraphTitleSquare } from "./Single-Year-Graph";
+import { GraphTitleSquare } from "./linear-graph-data";
 import { CurrentYear } from "@/utilities/calander-utility";
 import { useEffect, useState } from "react";
 import { getPrimeColor } from "@/global/categories";
@@ -49,8 +49,6 @@ const ExpenseCategoryAnalysis = () => {
 
   const { MMofPrime, MMgetPrimeofYear } = useMinMaxConfig();
   const mmPrime = MMgetPrimeofYear(MMofPrime, year);
-
-
 
   const PrimeOfYear = getPrimeListOfYear(TotalByPrime_EXP, year);
   const SubOfYear = getSubListOfYear(TotalBySub_EXP, year);

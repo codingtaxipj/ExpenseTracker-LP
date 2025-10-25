@@ -10,10 +10,10 @@ import useTotalConfig from "@/hooks/useTotalConfig";
 import { CurrentYear } from "@/utilities/calander-utility";
 import { amountFloat } from "../utilityFilter";
 import Boxcard from "./boxcard";
-import { GraphTitleSquare } from "../analysis/Single-Year-Graph";
+import { GraphTitleSquare } from "../analysis/linear-graph-data";
 import FlexrowStrip from "../strips/flexrow-strip";
 import { cn } from "@/lib/utils";
-import {  cardBgv2 } from "@/global/style";
+import { cardBgv2 } from "@/global/style";
 
 const MaxCategorySection = ({ isExpense }) => {
   //NOTE - year state
