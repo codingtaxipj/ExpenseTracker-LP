@@ -11,6 +11,9 @@ import Flexcol from "@/components/section/flexcol";
 import BudgetStrip from "@/components/strips/budget-strip";
 import useRecurringConfig from "@/hooks/useRecurringConfig";
 
+import { DualGraphCode } from "@/components/charts/dual-graph-code";
+import { DualGraphData } from "@/components/analysis/dual-graph-data";
+
 const HomeIndex = () => {
   const { RecentTransactionList } = useTransactionConfig();
   const {} = useRecurringConfig();
@@ -19,6 +22,8 @@ const HomeIndex = () => {
       <Flexrow className={"mb-5"}>
         <TypewriterAni />
       </Flexrow>
+
+      <DualGraphData isDashboard />
 
       <Flexrow
         className={cn(

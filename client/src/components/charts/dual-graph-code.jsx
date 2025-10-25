@@ -1,4 +1,4 @@
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { Area, CartesianGrid, XAxis, AreaChart } from "recharts";
 import {
   Card,
   CardContent,
@@ -15,80 +15,140 @@ import {
 import { Icons } from "../icons";
 import { cardBgv2 } from "@/global/style";
 import { cn } from "@/lib/utils";
+import { amountFloat } from "../utilityFilter";
 
-export const DualGraphCode = ({ barInfo, chartInfo }) => {
-  const chartData = barInfo.data;
+export const DualGraphCode = ({
+  isDashboard,
+  graphInfo = {
+    data: [],
+    expense: "Expense",
+    expColor: "var(--color-exp-a1)",
+    income: "Income",
+    incColor: "var(--color-inc-a1)",
+  },
+  chartInfo = {
+    title: false,
+    subtext: false,
+    footertext: false,
+  },
+}) => {
+  const chartData = graphInfo.data;
+  console.log("CDDD", chartData, "dash=", isDashboard);
+
   const chartConfig = {
-    [barInfo.lableOne]: {
-      label: barInfo.lableOne,
-      color: "var(--color-year1)",
+    [graphInfo.expense]: {
+      label: graphInfo.expense,
+      color: "var(--color-exp-a1)",
     },
-    [barInfo.labelTwo]: {
-      label: barInfo.labelTwo,
-      color: "var(--color-year2)",
+    [graphInfo.income]: {
+      label: graphInfo.income,
+      color: "var(--color-inc-a2)",
     },
   };
+
+  const myLabelFormatter = (value, payload) => {
+    // Removed the color styling as it's ambiguous for the shared label
+    return <span className="font-medium">For : {value}</span>;
+  };
+
+  const myTooltipFormatter = (value, name, item, index, payload) => {
+    // FIX: Get the correct color from the 'item' object
+    const indicatorColor = item.color || item.payload?.fill || item.stroke;
+
+    return (
+      <div key={item.dataKey} className="flex w-full items-center gap-2">
+        {/* Indicator */}
+        <div
+          className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+          // FIX: Use the color from the item
+          style={{ backgroundColor: indicatorColor }}
+        />
+        {/* Label and Value */}
+        <div className="text-slate-a1 flex flex-1 justify-between leading-none font-medium">
+          {/* Use 'name' passed by formatter, fallback to item.name */}
+          <span className="pr-1">{name || item.name} : </span>
+          {/* Format the value */}
+          <span>{amountFloat(value)}</span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
         <CardHeader className="items-center pb-5 pl-10">
-          <CardTitle>
-            <div className="flex flex-row items-center gap-2">
-              {chartInfo.title}
-            </div>
-          </CardTitle>
-          <CardDescription className="text-slate-a1 pt-1.25">
-            {chartInfo.subtext}
-          </CardDescription>
+          {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
+          {chartInfo.subtext && (
+            <CardDescription className="text-slate-a1 pt-1.25">
+              {chartInfo.subtext}
+            </CardDescription>
+          )}
         </CardHeader>
+
         <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className={"max-h-[500px] w-full"}
+            className={"max-h-[300px] w-full"}
           >
-            <LineChart
-              accessibilityLayer
-              data={chartData}
-              margin={{
-                left: 20,
-                right: 20,
-              }}
-            >
-              <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
-                tickFormatter={(value) => value.slice(0, 3)}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Line
-                dataKey={barInfo.lableOne}
-                type="monotone"
-                stroke={"var(--color-year1)"}
-                strokeWidth={2}
-                dot={true}
-              />
-              <Line
-                dataKey={barInfo.labelTwo}
-                type="monotone"
-                stroke={"var(--color-year2)"}
-                strokeWidth={2}
-                dot={true}
-              />
-            </LineChart>
+            {isDashboard && (
+              <AreaChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 25,
+                  left: 20,
+                  right: 20,
+                }}
+              >
+                <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
+                <XAxis
+                  dataKey="indicator"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  minTickGap={20}
+                  className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
+                  tickFormatter={(value) => value}
+                  interval={"preserveStartEnd"}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      className={"bg-dark-a1.2 border-dark-a6"}
+                      formatter={myTooltipFormatter}
+                      hideIndicator={false}
+                      labelFormatter={myLabelFormatter}
+                    />
+                  }
+                />
+                <Area
+                  dataKey={graphInfo.expense}
+                  type="monotone"
+                  fill={graphInfo.expColor}
+                  fillOpacity={0.4}
+                  stroke={graphInfo.expColor}
+                  stackId="a"
+                />
+                <Area
+                  dataKey={graphInfo.income}
+                  type="monotone"
+                  fill={graphInfo.incColor}
+                  fillOpacity={0.4}
+                  stroke={graphInfo.incColor}
+                  stackId="a"
+                />
+              </AreaChart>
+            )}
           </ChartContainer>
         </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <div className="text-slate-a1 text-14px flex gap-2 pt-8 leading-none">
+
+        {chartInfo.footertext && (
+          <CardFooter className="text-slate-a4 !text-14px flex-row items-center justify-center gap-2 pt-2.5">
             <Icons.textline /> {chartInfo.footertext}
-          </div>
-        </CardFooter>
+          </CardFooter>
+        )}
       </Card>
     </>
   );

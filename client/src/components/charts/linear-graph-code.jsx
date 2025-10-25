@@ -32,7 +32,7 @@ import { Numeral } from "numeral";
 
 export const LinearGraphCode = ({
   isArea,
-  barInfo = {
+  graphInfo = {
     data: [],
     label: "",
     color: "var(--color-exp-a1",
@@ -43,17 +43,15 @@ export const LinearGraphCode = ({
     footertext: false,
   },
 }) => {
-  const chartData = barInfo.data;
-  const color = barInfo.color;
-  const label = barInfo.label;
+  const chartData = graphInfo.data;
+  const color = graphInfo.color;
+  const label = graphInfo.label;
   const chartConfig = {
     [label]: {
-      label: barInfo.label,
+      label: graphInfo.label,
       color: color,
     },
   };
-
-  console.log("Area is", isArea);
 
   const myLabelFormatter = (value, payload) => {
     return (
@@ -91,10 +89,11 @@ export const LinearGraphCode = ({
             </CardDescription>
           )}
         </CardHeader>
+
         <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className={"max-h-[500px] w-full"}
+            className={"max-h-[400px] w-full"}
           >
             {isArea === true && (
               <AreaChart
@@ -183,10 +182,8 @@ export const LinearGraphCode = ({
           </ChartContainer>
         </CardContent>
         {chartInfo.footertext && (
-          <CardFooter className="flex-col gap-2">
-            <Flexrow className="!text-slate-1 text-14px items-center justify-center gap-2 pt-8 leading-none">
-              <Icons.textline /> {chartInfo.footertext}
-            </Flexrow>
+          <CardFooter className="text-slate-a4 !text-14px flex-row items-center justify-center gap-2 pt-2.5">
+            <Icons.textline /> {chartInfo.footertext}
           </CardFooter>
         )}
       </Card>

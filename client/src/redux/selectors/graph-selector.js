@@ -57,7 +57,7 @@ export const selectGraphData = createSelector(
       IncomeGraphData = TotalOfDatesOfSelectedMonth.IncomeOfMonthDates.filter(
         (e) => e.amount >= 0,
       ).map((e) => ({
-        indicator: e.day,
+        indicator: getDate(e.date, "DD, MMM"),
         Amount: e.amount,
       }));
     }
