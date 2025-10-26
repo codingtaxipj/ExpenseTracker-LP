@@ -1,28 +1,20 @@
 import { ArrayCheck } from "@/components/utility";
 import { percentSigned, percentUnSigned } from "@/components/utilityFilter";
+import {
+  selectBudgetByMonth,
+  selectBudgetData,
+  selectBudgetList,
+} from "@/redux/selectors/budget-selector";
 import { getMonthName, CurrentYear } from "@/utilities/calander-utility";
 
 import { useSelector } from "react-redux";
-import {
-  selectBudgetByMonth,
-  selectBudgetList,
-  SelectActiveBudget,
-  selectBudgetData,
-} from "@/redux/slices/budget-slice";
 
 const useBudgetConfig = () => {
   const { BudgetLoading, BudgetError, BudgetInsertLoading, BudgetInsertError } =
     useSelector((state) => state.budget);
   const Budget = useSelector(selectBudgetData);
-  const ActiveBudget = useSelector(SelectActiveBudget);
   const BudgetByMonth = useSelector(selectBudgetByMonth);
-  const budgetList = useSelector(selectBudgetList);
-
-  const getBudgetListOfYear = (year = CurrentYear()) =>
-    BudgetByMonth?.find((l) => l.year === year)?.list ?? [];
-
-  const getTotalBudgetOfYear = (year = CurrentYear()) =>
-    BudgetByMonth?.find((l) => l.year === year)?.totalBudget ?? 0;
+  const BudgetList = useSelector(selectBudgetList);
 
   //NOTE - creates a group of budget in month range
   const createBudgetRange = (data) => {
@@ -79,13 +71,10 @@ const useBudgetConfig = () => {
 
   return {
     Budget,
-    ActiveBudget,
     BudgetByMonth,
-    budgetList,
-    getBudgetListOfYear,
+    BudgetList,
     createBudgetRange,
     createBudgetWithExpense,
-    getTotalBudgetOfYear,
     BudgetLoading,
     BudgetError,
     BudgetInsertLoading,

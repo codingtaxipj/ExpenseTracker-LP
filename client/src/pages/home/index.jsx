@@ -23,7 +23,19 @@ const HomeIndex = () => {
         <TypewriterAni />
       </Flexrow>
 
-      <DualGraphData isDashboard />
+      <Flexrow
+        className={cn(
+          "!text-14px mb-5 w-full gap-2.5 rounded-sm border px-5 py-0.5",
+          bgDarkA3,
+        )}
+      >
+        <Flexrow className="w-1/2 justify-start">Card Section</Flexrow>
+        <Flexrow className="w-1/2 justify-end">FF</Flexrow>
+      </Flexrow>
+
+      <Flexrow className={"mb-20 flex-wrap"}>
+        <DualGraphData isDashboard />
+      </Flexrow>
 
       <Flexrow
         className={cn(

@@ -6,8 +6,8 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const budgetlist = new Schema(
   {
-    month: { type: Number, required: true, index: true },
-    budget: { type: Number, required: true },
+    month: { type: Number, required: true, index: true, min: 0, max: 11 },
+    budget: { type: Number, required: true, min: 0 },
   },
   { _id: false, timestamps: true }
 );

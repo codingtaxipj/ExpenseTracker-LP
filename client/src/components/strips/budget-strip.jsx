@@ -11,12 +11,22 @@ import ExpButton from "../buttons/exp-button";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@/router/routerConfig";
 import VerticalDevider from "./vertical-devider";
+import useBudgetConfig from "@/hooks/useBudgetConfig";
+import { useFilterConfig } from "@/hooks/useFilterConfig";
+import { useMemo } from "react";
 
 const BudgetStrip = ({ isHome, className }) => {
-  const { ActiveBudget } = UseBudgetConfig();
+  const { BudgetByMonth, Budget } = useBudgetConfig();
+  let isAnyBudgetExist = BudgetByMonth.some((b) => b.amount > 0);
+  const { FilterMonth } = useFilterConfig();
+
+  const budgetAmount =
+    (isAnyBudgetExist &&
+      BudgetByMonth?.find((b) => b.month === FilterMonth)?.amount) ||
+    0;
 
   const navigate = useNavigate();
-  const budget = ActiveBudget === null ? null : ActiveBudget.amount;
+
   return (
     <>
       <Flexrow
@@ -27,31 +37,33 @@ const BudgetStrip = ({ isHome, className }) => {
       >
         <Flexrow
           className={cn(
-            "text-14px bg-dark-a5 shadow-dark-a1 mr-2 w-full items-center gap-2.5 px-5 py-2 shadow-md",
+            "text-14px bg-dark-a5 shadow-dark-a1 mr-2 w-max flex-1 items-center gap-2.5 px-5 py-2 shadow-md",
             "rounded-sm",
           )}
         >
           <Icons.calc className={`text-bud-a2`} />
-          {budget && (
+          {Budget && budgetAmount > 0 && (
             <>
               {"Your Monthly Budget is"}
               <VerticalDevider />
               <Flexrow className={"w-max items-center gap-1"}>
                 <Icons.rupee className="!text-14px" />
-                <h4>{amountInteger(budget)}</h4>
+                <h4>{amountInteger(budgetAmount)}</h4>
               </Flexrow>
             </>
           )}
-          {!budget && <>{"No Monthly Budget is Exist"}</>}
+          {(!Budget || budgetAmount <= 0) && (
+            <>{"No Monthly Budget is Exist"}</>
+          )}
         </Flexrow>
 
-        {!budget && (
+        {(!Budget || budgetAmount <= 0) && (
           <>
             <ExpButton as="div" setBudget_textbtn />
           </>
         )}
 
-        {budget && (
+        {Budget && budgetAmount > 0 && (
           <>
             <ExpButton as="div" editBudget_iconbtn />
             <ExpButton as="div" newBudget_iconbtn />

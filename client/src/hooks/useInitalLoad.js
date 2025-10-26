@@ -13,13 +13,13 @@ import { useDispatch } from "react-redux";
 const useInitalLoad = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchBudget());
-    dispatch(fetchMM());
-    dispatch(fetchExpense());
     dispatch(fetchRecurringExpense());
+    dispatch(fetchExpense());
     dispatch(fetchIncome());
-    dispatch(fetchTrips());
+    dispatch(fetchBudget());
     dispatch(fetchTotal());
+    dispatch(fetchMM());
+    dispatch(fetchTrips());
   }, [dispatch]);
 };
 

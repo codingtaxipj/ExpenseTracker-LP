@@ -89,7 +89,7 @@ export const DualGraphCode = ({
         <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className={"max-h-[300px] w-full"}
+            className={"max-h-[250px] w-full"}
           >
             {isDashboard && (
               <AreaChart

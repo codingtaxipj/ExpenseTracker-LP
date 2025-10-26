@@ -21,7 +21,7 @@ const TotalCard = ({ date, total, footerText, headText, color, className }) => {
             <Icons.upbar className={cn(color)} />
             {headText}
           </Flexrow>
-          <Flexrow className="w-max items-center justify-end gap-2">
+          <Flexrow className="w-full items-center justify-end gap-2">
             <Icons.yearCal className={cn(color)} />
             {date}
           </Flexrow>

@@ -18,13 +18,17 @@ import { useDispatch } from "react-redux";
 import { setBudget } from "@/redux/slices/budget-slice";
 import ExpButton from "../buttons/exp-button";
 
-const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import { useState } from "react";
+
+const BudgetPop = ({ children, isEdit, isNew }) => {
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+
   //NOTE default userID
   const userID = 123456;
-  const date = moment();
-  const month = date.month() === 11 ? 0 : date.month() + 1;
-  const year = date.month() === 11 ? date.year() + 1 : date.year();
+  const year = CurrentYear();
+  const month = CurrentMonth();
 
   //NOTE react-form-hook
   const {
@@ -41,26 +45,11 @@ const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
   });
 
   //NOTE form on submit
-  const onSubmit = async (form) => {
-    const data = isEdit
-      ? {
-          // If editing, use the activeBudget's info
-          userID: activeBudget.userID,
-          year: activeBudget.year,
-          month: activeBudget.month,
-          amount: form.amount, // Only amount comes from the new form input
-        }
-      : {
-          // If creating a new budget, use all the data from the form
-          userID: form.userID,
-          year: form.year,
-          month: form.month,
-          amount: form.amount,
-        };
-
+  const onSubmit = async (data) => {
     try {
       await dispatch(setBudget({ data })).unwrap();
       // If the await succeeds, show the success toast.
+      setIsOpen(false);
       toast.success("Success!", {
         description: "Your budget has been saved.",
         action: {
@@ -80,7 +69,7 @@ const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
   };
   return (
     <>
-      <Drawer>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger>{children}</DrawerTrigger>
         <DrawerContent className={`from-dark-a5 to-dark-a3 bg-gradient-to-t`}>
           <DrawerHeader>
@@ -91,7 +80,7 @@ const BudgetPop = ({ children, isEdit, isNew, activeBudget }) => {
             )}
             {isNew && (
               <DrawerTitle className={"text-budget italic"}>
-                NOTE : New Budget will be applied from the start of next Month
+                NOTE : Setting new budget will also change your analysis.
               </DrawerTitle>
             )}
             <Flexrow className="justify-center text-white">

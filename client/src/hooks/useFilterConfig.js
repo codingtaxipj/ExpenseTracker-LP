@@ -5,7 +5,7 @@ import {
 } from "@/redux/slices/filter-slice";
 import { useDispatch, useSelector } from "react-redux";
 import useTotalConfig from "./useTotalConfig";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 
 export const useFilterConfig = () => {
@@ -17,6 +17,9 @@ export const useFilterConfig = () => {
 
   const defaultYear = Number(currentFilter.values.year) ?? moment().year();
   const defaultMonth = Number(currentFilter.values.month) ?? moment().month();
+
+  const FilterYear = defaultYear;
+  const FilterMonth = defaultMonth;
 
   const [year, setYear] = useState(defaultYear);
   const [month, setMonth] = useState(defaultMonth);
@@ -80,6 +83,8 @@ export const useFilterConfig = () => {
   return {
     currentFilter,
     filterTypes,
+    FilterMonth,
+    FilterYear,
     dispatch,
     handleFilterChange,
     handleYearChange,

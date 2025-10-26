@@ -1,5 +1,40 @@
 import { budgetModal } from "../models/budget-modal.js";
 
+export const deleteBudget = async (req, res) => {
+  try {
+    const { userID, year, month, amount } = req.body;
+
+    const result = await budgetModal.updateOne(
+      { userID, year, "budgetList.month": month },
+      {
+        $set: {
+          "budgetList.$.budget": amount,
+        },
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      await budgetModal.updateOne(
+        { userID, year },
+        {
+          $push: {
+            budgetList: { month, budget: amount },
+          },
+        },
+        { upsert: true }
+      );
+    }
+    const updatedBudgetData = await budgetModal
+      .find({ userID })
+      .sort({ year: 1 });
+    return res.status(200).json(updatedBudgetData);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to delete budget" });
+  }
+};
 export const setBudget = async (req, res) => {
   try {
     const { userID, year, month, amount } = req.body;
@@ -7,7 +42,11 @@ export const setBudget = async (req, res) => {
     // First, try to update an existing month in the budgetList array
     const result = await budgetModal.updateOne(
       { userID, year, "budgetList.month": month },
-      { $set: { "budgetList.$.budget": amount } }
+      {
+        $set: {
+          "budgetList.$.budget": amount,
+        },
+      }
     );
 
     // If no document was modified, it means the month wasn't in the array.
@@ -15,7 +54,11 @@ export const setBudget = async (req, res) => {
       // So, we push it. We use upsert:true to also create the yearly doc if it doesn't exist.
       await budgetModal.updateOne(
         { userID, year },
-        { $push: { budgetList: { month, budget: amount } } },
+        {
+          $push: {
+            budgetList: { month, budget: amount },
+          },
+        },
         { upsert: true }
       );
     }
@@ -25,7 +68,6 @@ export const setBudget = async (req, res) => {
     const updatedBudgetData = await budgetModal
       .find({ userID })
       .sort({ year: 1 });
-
     return res.status(200).json(updatedBudgetData);
   } catch (error) {
     console.error(error);
@@ -42,12 +84,6 @@ export const setBudget = async (req, res) => {
 export const fetchBudget = async (req, res) => {
   try {
     let { userID } = req.params;
-    userID = parseInt(userID, 10);
-    if (isNaN(userID)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid userID format. Must be a number." });
-    }
     const data = await budgetModal.find({ userID }).sort({ year: 1 });
 
     res.status(200).json(data);

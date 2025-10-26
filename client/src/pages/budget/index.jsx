@@ -1,100 +1,97 @@
-// React Core
-import { useCallback, useMemo, useState } from "react";
-
 // --- Components ---
 
-// Layout & Sectioning
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
-import SectionTitle from "@/components/section/section-title";
-import HorizontalDivider from "@/components/strips/horizontal-divider";
 
-// Cards
 import ActiveBudgetCard from "@/components/cards/active-budget-card";
-import TotalCardForYear from "@/components/cards/total-card-for-year";
 
-// Tables
-import BudgetExpenseTable from "@/components/table/budget-expense-table";
 import BudgetTable from "@/components/table/budget-table";
 
-// Filters & Selectors
-import SelectBar from "@/components/selectFilter/SelectBar";
-import SelectCard from "@/components/selectFilter/SelectCard";
-import SelectFilter from "@/components/selectFilter/SelectFilter";
-
-// Strips & Indicators
-import FlexrowStrip from "@/components/strips/flexrow-strip";
-
-// Buttons & Icons
 import ExpButton from "@/components/buttons/exp-button";
-import { Icons } from "@/components/icons";
 
-// --- Hooks ---
 import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
-import useTotalConfig from "@/hooks/useTotalConfig";
 
-// --- Utilities ---
-import { CurrentYear } from "@/utilities/calander-utility";
-import { amountFloat } from "@/components/utilityFilter";
 import { Spinner } from "flowbite-react";
+import { useDispatch } from "react-redux";
+import { deleteBudget } from "@/redux/slices/budget-slice";
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const BudgetIndex = () => {
-  //NOTE - TOTAL CONFIG
-  const {
-    TotalByMonth_EXP,
-    TotalByYear_EXP,
-    YearsList,
-    getMonthListOfYear,
-    getTotalOfYear,
-  } = useTotalConfig();
   //NOTE - BUDGET CONFIG
-  const {
-    Budget,
-    BudgetLoading,
-    BudgetError,
-    getBudgetListOfYear,
-    BudgetByMonth,
-    budgetList,
-    createBudgetWithExpense,
-    getTotalBudgetOfYear,
-  } = useBudgetConfig();
+  const { Budget, BudgetLoading, BudgetError, BudgetByMonth } =
+    useBudgetConfig();
+  const dispatch = useDispatch();
+  console.log("BM", BudgetByMonth);
 
-  const [year, setYear] = useState(CurrentYear());
-  const handleYearSelector = useCallback((year) => setYear(Number(year)), []);
+  let isAnyBudgetExist = BudgetByMonth.some((b) => b.amount > 0);
 
-  const BudgetEachMonth = useMemo(() => {
-    return getBudgetListOfYear(BudgetByMonth, year);
-  }, [BudgetByMonth, year, getBudgetListOfYear]);
-  const ExpenseEachMonth = useMemo(() => {
-    return getMonthListOfYear(TotalByMonth_EXP, year);
-  }, [TotalByMonth_EXP, year, getMonthListOfYear]);
+  const handleDeleteBudget = () => {
+    const data = {
+      userID: 123456,
+      year: CurrentYear(),
+      month: CurrentMonth(),
+      amount: 0,
+    };
+    return new Promise((resolve) => {
+      toast.custom((t) => (
+        <Flexrow
+          className={cn(
+            "!text-14px bg-dark-br1 text-slate-1 border-dark-br1 shadow-dark-p2 w-[24rem] items-center gap-2 rounded-lg border px-4 py-2 shadow-md",
+          )}
+        >
+          <Flexcol className="flex-1 gap-0">
+            <span className="font-medium">Delete Budget ?</span>
+            <span>Do you want to delete ?</span>
+          </Flexcol>
 
-  const BudgetExpenseCombo = useMemo(() => {
-    return createBudgetWithExpense(BudgetEachMonth, ExpenseEachMonth);
-  }, [BudgetEachMonth, ExpenseEachMonth, createBudgetWithExpense]);
-
-  const TotalBudgetYear = useMemo(() => {
-    return getTotalBudgetOfYear(BudgetByMonth, year);
-  }, [BudgetByMonth, year, getTotalBudgetOfYear]);
-
-  const TotalExpenseYear = useMemo(() => {
-    return getTotalOfYear(TotalByYear_EXP, year);
-  }, [TotalByYear_EXP, year, getTotalOfYear]);
-
-  const BE_Difference = useMemo(() => {
-    return TotalBudgetYear - TotalExpenseYear;
-  }, [TotalBudgetYear, TotalExpenseYear]);
-
-  const BE_Percent = useMemo(() => {
-    return TotalBudgetYear
-      ? getBudgetExpPercent(TotalBudgetYear, TotalExpenseYear)
-      : // Return 0 instead of null for easier checks in JSX
-        0;
-  }, [TotalBudgetYear, TotalExpenseYear]);
+          <Flexrow className="w-max justify-end gap-2">
+            <ExpButton
+              custom_textbtn
+              className="bg-ggbg"
+              onClick={async () => {
+                toast.dismiss(t);
+                try {
+                  await dispatch(deleteBudget({ data })).unwrap();
+                  toast.success("Success!", {
+                    description: "Your budget has been deleted.",
+                    action: {
+                      label: "Ok!",
+                      onClick: () => {},
+                    },
+                  });
+                } catch (error) {
+                  toast.error("Operation Failed", {
+                    description: error, // 'error' is the clean error message from rejectWithValue
+                    action: {
+                      label: "Ok!",
+                      onClick: () => {},
+                    },
+                  });
+                }
+              }}
+            >
+              Yes
+            </ExpButton>
+            <ExpButton
+              custom_textbtn
+              className="bg-rrbg"
+              onClick={() => {
+                toast.dismiss(t);
+                resolve(false);
+              }}
+            >
+              No
+            </ExpButton>
+          </Flexrow>
+        </Flexrow>
+      ));
+    });
+  };
 
   // NOTE: 1. Handle the loading state first
   if (BudgetLoading) {
-    // Replace with your preferred loading spinner component
     return (
       <Flexrow className="h-full items-center justify-center">
         <Spinner
@@ -105,7 +102,6 @@ const BudgetIndex = () => {
       </Flexrow>
     );
   }
-
   // NOTE: 2. Handle the error state next
   if (BudgetError) {
     return (
@@ -117,106 +113,30 @@ const BudgetIndex = () => {
     );
   }
   // NOTE: 3. Handle the "no data" state
-  if (!Budget || Budget.length === 0) {
+  if (!Budget || Budget.length === 0 || !isAnyBudgetExist) {
     // This gives the user a clear message if there's nothing to show
     return "Set Budget";
   }
   // NOTE: 4. If all checks pass, render the main content
   return (
     <>
-      <Flexrow className={""}>
+      <Flexrow>
         <Flexcol className="items-center">
-          <TotalCardForYear isExpense year={CurrentYear()} />
           <ActiveBudgetCard />
-
           <Flexrow className="justify-center">
-            <ExpButton as="div" setBudget_textbtn />
+            <ExpButton as="div" newBudget_textbtn />
             <ExpButton as="div" editBudget_textbtn />
+            <ExpButton
+              onClick={handleDeleteBudget}
+              className={"bg-error-a1 text-slate-a1"}
+              delete_iconbtn
+            />
           </Flexrow>
         </Flexcol>
         <Flexcol>
-          <BudgetTable list={budgetList ?? []} />
+          <BudgetTable />
         </Flexcol>
       </Flexrow>
-
-      <Flexcol className="pt-20">
-        <SectionTitle title="Monthly Expense On Budget Analysis" isBudget />
-        <Flexrow>
-          <SelectBar>
-            <SelectCard isExpense title={"Select Year"}>
-              <SelectFilter
-                placeholder={"Select Year"}
-                onValueChange={handleYearSelector}
-                defaultValue={String(CurrentYear())}
-                list={YearsList}
-              ></SelectFilter>
-            </SelectCard>
-          </SelectBar>
-        </Flexrow>
-
-        <Flexcol>
-          {!TotalBudgetYear ? (
-            <FlexrowStrip>
-              NO Budget Exist To Show Data of Year{" "}
-              <span className="text-budget">{year}</span>
-            </FlexrowStrip>
-          ) : (
-            <>
-              <BudgetExpenseTable inBudgeting data={BudgetExpenseCombo} />
-              <FlexrowStrip className="text-14px gap-1.25">
-                <span>Comparatively in {year} </span>
-                <HorizontalDivider className="bg-white" />
-                <span> You are </span>
-                <span>
-                  {BE_Difference > 0 && "Under Budget"}
-                  {BE_Difference < 0 && "Over Budget"}
-                  {BE_Difference === 0 && "Break Even"}
-                </span>
-                <HorizontalDivider className="bg-white" />
-                <span>
-                  {BE_Difference > 0 && "You Saved"}
-                  {BE_Difference < 0 && "Your Over Spent"}
-                </span>
-                <span className="text-12px">
-                  <Icons.rupee />
-                </span>
-                <span
-                  className={`${BE_Difference > 0 ? "text-gg" : "text-rr"}`}
-                >
-                  {amountFloat(BE_Difference)}
-                </span>
-                <HorizontalDivider className="bg-white" />
-                i.e
-                <span className={`${BE_Percent < 0 ? "text-gg" : "text-rr"}`}>
-                  {BE_Percent} %
-                </span>
-                <span className="text-12px">
-                  {BE_Percent < 0 && <Icons.graphdown className="text-gg" />}
-                  {BE_Percent > 0 && <Icons.graphup className="text-rr" />}
-                </span>
-              </FlexrowStrip>
-            </>
-          )}
-        </Flexcol>
-
-        <Flexrow className="flex-wrap items-center">
-          <div className="flex flex-wrap gap-5">
-            {/*  {MonthList.map((item) => (
-              <MonthlyBudgetStrip
-                isExpense
-                key={item.month}
-                month={item.month}
-                budget={bb(BudgetListByMonth, item.month)}
-                amount={item.total}
-              />
-            ))}  */}
-          </div>
-        </Flexrow>
-        <Flexrow className="text-14px items-center justify-start font-medium">
-          <ExpButton label={"Check Analysis"} btnfor={"expense"} />
-          <h4>For Detailed Budget Analysis</h4>
-        </Flexrow>
-      </Flexcol>
     </>
   );
 };

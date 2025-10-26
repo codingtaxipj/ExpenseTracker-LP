@@ -1,29 +1,27 @@
-import React from "react";
+import React, { useMemo } from "react";
 import TotalCard from "./TotalCard";
 import useBudgetConfig from "@/hooks/useBudgetConfig";
-import {
-  CurrentMonth,
-  CurrentYear,
-  getMonthName,
-} from "@/utilities/calander-utility";
+import { getDate } from "@/utilities/calander-utility";
+import moment from "moment";
+import { useFilterConfig } from "@/hooks/useFilterConfig";
 
 const ActiveBudgetCard = () => {
-  const { BudgetByMonth, getBudgetListOfYear } = useBudgetConfig();
-
-  //NOTE - arry OBJ of each month and budget by year
-  const BudgetEachMonth = getBudgetListOfYear(BudgetByMonth);
+  const { BudgetByMonth } = useBudgetConfig();
+  const { FilterMonth } = useFilterConfig();
+  const currentBudget = useMemo(
+    () => BudgetByMonth?.find((b) => b.month === FilterMonth),
+    [BudgetByMonth, FilterMonth],
+  );
 
   return (
     <>
       <TotalCard
         color="text-bud-a1"
         headText="Active Budget"
-        total={
-          BudgetEachMonth?.find((bm) => bm.month === CurrentMonth())?.budget
-        }
-        footerText={`Budget of ${getMonthName(CurrentMonth(), "MMMM")}`}
-        date={CurrentYear()}
-      ></TotalCard>
+        total={currentBudget.amount}
+        footerText={`Active From : ${getDate(currentBudget.created, "MMM, YYYY")}`}
+        date={moment().format("MMM, YYYY")}
+      />
     </>
   );
 };
