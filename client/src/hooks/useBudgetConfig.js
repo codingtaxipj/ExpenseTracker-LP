@@ -1,11 +1,11 @@
 import { ArrayCheck } from "@/components/utility";
 import { percentSigned, percentUnSigned } from "@/components/utilityFilter";
 import {
+  BudgetExpenseComboOfSelectedYear,
   selectBudgetByMonth,
   selectBudgetData,
   selectBudgetList,
 } from "@/redux/selectors/budget-selector";
-import { getMonthName, CurrentYear } from "@/utilities/calander-utility";
 
 import { useSelector } from "react-redux";
 
@@ -15,6 +15,7 @@ const useBudgetConfig = () => {
   const Budget = useSelector(selectBudgetData);
   const BudgetByMonth = useSelector(selectBudgetByMonth);
   const BudgetList = useSelector(selectBudgetList);
+  const BudgetWithExpense = useSelector(BudgetExpenseComboOfSelectedYear);
 
   //NOTE - creates a group of budget in month range
   const createBudgetRange = (data) => {
@@ -41,32 +42,7 @@ const useBudgetConfig = () => {
       end: checkedData[checkedData.length - 1].month,
       budget: currentBudget,
     });
-
     return result;
-  };
-
-  const createBudgetWithExpense = (budget, expense) => {
-    const checkedBudget = ArrayCheck(budget);
-    const checkedExpense = ArrayCheck(expense);
-    if (!checkedBudget && !checkedExpense) return [];
-    const arr = [];
-    for (let i = 0; i < 12; i++) {
-      let b =
-        checkedBudget.length <= 0
-          ? 0
-          : (checkedBudget?.find((b) => b.month === i)?.budget ?? 0);
-      let e = checkedExpense?.find((e) => e.month === i)?.total ?? 0;
-
-      arr.push({
-        id: i,
-        month: getMonthName(i, "MMMM"),
-        budget: b,
-        expense: e,
-        percent: e == 0 || b == 0 ? "00.00" : getBudgetExpPercent(b, e),
-      });
-    }
-
-    return arr;
   };
 
   return {
@@ -74,7 +50,7 @@ const useBudgetConfig = () => {
     BudgetByMonth,
     BudgetList,
     createBudgetRange,
-    createBudgetWithExpense,
+    BudgetWithExpense,
     BudgetLoading,
     BudgetError,
     BudgetInsertLoading,
@@ -85,8 +61,8 @@ const useBudgetConfig = () => {
 export default useBudgetConfig;
 
 export const getBudgetExpPercent = (b, e) => {
-  if (b === 0) return percentUnSigned(0);
+  if (b === 0) return 0;
   const diff = e - b;
   const percent = (diff / b) * 100;
-  return percentSigned(percent);
+  return percent;
 };

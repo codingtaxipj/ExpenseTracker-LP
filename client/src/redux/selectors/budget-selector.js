@@ -6,6 +6,9 @@ import { ArrayCheck } from "@/components/utility";
 import { CurrentYear } from "@/utilities/calander-utility";
 import { createSelector } from "@reduxjs/toolkit";
 import { filterTypes, selectCurrentFilter } from "../slices/filter-slice";
+import { useSelector } from "react-redux";
+import { TotalOfMonthOfSelectedYear } from "./total-selector";
+import { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
 
 const selectBudgetState = (state) => state.budget;
 
@@ -45,7 +48,7 @@ const getBudgetListOfYear = (data, year) => {
   return finalList;
 };
 
-export const createBudgetArray = (list = []) => {
+const createBudgetArray = (list = []) => {
   if (!list.length) return [];
   const year = list[0].year;
   const arr = [];
@@ -69,3 +72,23 @@ export const createBudgetArray = (list = []) => {
 
   return arr;
 };
+
+export const BudgetExpenseComboOfSelectedYear = useSelector(
+  [TotalOfMonthOfSelectedYear, selectBudgetByMonth],
+  (expense, budget) => {
+    if (!budget.length) return [];
+
+    const arr = [];
+
+    for (let i = 0; i < 12; i++) {
+      let b = budget?.find((b) => b.month === i)?.total;
+      let e = expense.ExpenseOfMonthOfYear?.find((e) => e.month === i)?.total;
+      arr.push({
+        month: i,
+        budget: b,
+        expense: e,
+        percent: e == 0 || b == 0 ? 0 : getBudgetExpPercent(b, e),
+      });
+    }
+  },
+);
