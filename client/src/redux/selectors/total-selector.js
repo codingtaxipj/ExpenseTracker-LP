@@ -158,14 +158,9 @@ export const TotalOfMonthOfSelectedYear = createSelector(
   [selectCurrentFilter, selectExpenseTotal_ByMonth, selectIncomeTotal_ByMonth],
   (filter, expense, income) => {
     const year = Number(filter.values.year);
-    if (
-      filter.type === filterTypes.THIS_YEAR ||
-      filter.type === filterTypes.BY_YEAR
-    ) {
-      const ExpenseOfMonthOfYear = createEachMonthArray(expense, year);
-      const IncomeOfMonthOfYear = createEachMonthArray(income, year);
-      return { ExpenseOfMonthOfYear, IncomeOfMonthOfYear };
-    } else return { ExpenseOfMonthOfYear: [], IncomeOfMonthOfYear: [] };
+    const ExpenseOfMonthOfYear = createEachMonthArray(expense, year);
+    const IncomeOfMonthOfYear = createEachMonthArray(income, year);
+    return { ExpenseOfMonthOfYear, IncomeOfMonthOfYear };
   },
 );
 //? ----- creates total of each month of selected year -----

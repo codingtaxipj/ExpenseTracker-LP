@@ -12,10 +12,10 @@ import TD from "./TD";
 import { cn } from "@/lib/utils";
 import { cardBgv2 } from "@/global/style";
 
-const BudgetExpenseTable = ({ data, inBudgeting }) => {
+export const ComboTable = ({ data, inBudgeting }) => {
   return (
     <>
-      <Flexrow className={cn("overflow-hidden", cardBgv2)}>
+      <Flexrow className={cn("overflow-hidden", cardBgv2,"bg-dark-a1.2")}>
         <table className="w-full">
           <thead>
             <tr className="bg-dark-a5 text-slate-a1">
@@ -102,4 +102,4 @@ const BudgetExpenseTable = ({ data, inBudgeting }) => {
   );
 };
 
-export default BudgetExpenseTable;
+

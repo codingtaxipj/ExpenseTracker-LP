@@ -17,12 +17,12 @@ import { cn } from "@/lib/utils";
 import { getMonthName } from "@/utilities/calander-utility";
 import useBudgetConfig from "@/hooks/useBudgetConfig";
 
-const BudgetTable = () => {
+const BudgetTable = ({className}) => {
   const { BudgetList } = useBudgetConfig();
   const filteredList = BudgetList.filter((b) => b.amount > 0);
   return (
     <>
-      <Flexrow className={cn("overflow-hidden", cardBgv2)}>
+      <Flexrow className={cn("overflow-hidden", cardBgv2,className)}>
         <table className="w-full">
           <thead>
             <tr className="bg-dark-a5 text-slate-a1">

@@ -17,15 +17,64 @@ import { deleteBudget } from "@/redux/slices/budget-slice";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ComboTable } from "@/components/table/combo-table";
+import { DualGraphData } from "@/components/analysis/dual-graph-data";
+import { DualGraphCode } from "@/components/charts/dual-graph-code";
+import { Icons } from "@/components/icons";
+import { GraphTitleSquare } from "@/components/analysis/linear-graph-data";
+import { useMemo } from "react";
 
 const BudgetIndex = () => {
   //NOTE - BUDGET CONFIG
-  const { Budget, BudgetLoading, BudgetError, BudgetByMonth } =
-    useBudgetConfig();
+  const {
+    Budget,
+    BudgetLoading,
+    BudgetError,
+    BudgetByMonth,
+    BudgetWithExpense,
+  } = useBudgetConfig();
   const dispatch = useDispatch();
-  console.log("BM", BudgetByMonth);
+  console.log("EBC", BudgetWithExpense);
 
   let isAnyBudgetExist = BudgetByMonth.some((b) => b.amount > 0);
+
+  const { BudgetExpenseGraphData, bugetYearTotal, expenseYearTotal } =
+    useMemo(() => {
+      const BudgetExpenseGraphData = BudgetWithExpense.map((b) => ({
+        ...b,
+        indicator: b.month,
+      }));
+      const bugetYearTotal = BudgetWithExpense.reduce(
+        (sum, b) => b.budget + sum,
+        0,
+      );
+      const expenseYearTotal = BudgetWithExpense.reduce(
+        (sum, b) => b.expense + sum,
+        0,
+      );
+      return { BudgetExpenseGraphData, bugetYearTotal, expenseYearTotal };
+    }, [BudgetWithExpense]);
+
+  const DashboardGraphInfo = {
+    data: BudgetExpenseGraphData,
+    type1: "expense",
+    type1Color: "var(--color-exp-a1)",
+    type2: "budget",
+    type2Color: "var(--color-bud-a1)",
+  };
+
+  const chartInfo = {
+    title: (
+      <>
+        <Flexrow className={"w-max items-center gap-1.25"}>
+          <GraphTitleSquare className={cn("bg-bud-a1")} />
+          <span className="mr-5">Budget Vs Expense {bugetYearTotal}</span>
+        </Flexrow>
+      </>
+    ),
+    subtext: "Tracking Monthly",
+    footertext: "Showing record of each month.",
+  };
 
   const handleDeleteBudget = () => {
     const data = {
@@ -133,9 +182,19 @@ const BudgetIndex = () => {
             />
           </Flexrow>
         </Flexcol>
-        <Flexcol>
+        <Flexcol className="items-center">
           <BudgetTable />
         </Flexcol>
+      </Flexrow>
+      <Flexrow className={"mt-5"}>
+        <DualGraphCode
+          isBudgetExpenseCombo
+          graphInfo={DashboardGraphInfo}
+          chartInfo={chartInfo}
+        />
+      </Flexrow>
+      <Flexrow className={"mt-5"}>
+        <ComboTable data={BudgetWithExpense} inBudgeting />
       </Flexrow>
     </>
   );

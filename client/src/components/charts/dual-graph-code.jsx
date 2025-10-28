@@ -19,6 +19,7 @@ import { amountFloat } from "../utilityFilter";
 
 export const DualGraphCode = ({
   isDashboard,
+  isBudgetExpenseCombo,
   graphInfo = {
     data: [],
     expense: "Expense",
@@ -33,16 +34,15 @@ export const DualGraphCode = ({
   },
 }) => {
   const chartData = graphInfo.data;
-  console.log("CDDD", chartData, "dash=", isDashboard);
 
   const chartConfig = {
-    [graphInfo.expense]: {
-      label: graphInfo.expense,
-      color: "var(--color-exp-a1)",
+    [graphInfo.type1]: {
+      label: graphInfo.type1,
+      color: graphInfo.type1Color,
     },
-    [graphInfo.income]: {
-      label: graphInfo.income,
-      color: "var(--color-inc-a2)",
+    [graphInfo.type2]: {
+      label: graphInfo.type2,
+      color: graphInfo.type2Color,
     },
   };
 
@@ -91,7 +91,7 @@ export const DualGraphCode = ({
             config={chartConfig}
             className={"max-h-[250px] w-full"}
           >
-            {isDashboard && (
+            {(isDashboard || isBudgetExpenseCombo) && (
               <AreaChart
                 accessibilityLayer
                 data={chartData}
@@ -124,20 +124,20 @@ export const DualGraphCode = ({
                   }
                 />
                 <Area
-                  dataKey={graphInfo.expense}
+                  dataKey={graphInfo.type1}
                   type="monotone"
-                  fill={graphInfo.expColor}
+                  fill={graphInfo.type1Color}
                   fillOpacity={0.4}
-                  stroke={graphInfo.expColor}
-                  stackId="a"
+                  stroke={graphInfo.type1Color}
+             
                 />
                 <Area
-                  dataKey={graphInfo.income}
+                  dataKey={graphInfo.type2}
                   type="monotone"
-                  fill={graphInfo.incColor}
+                  fill={graphInfo.type2Color}
                   fillOpacity={0.4}
-                  stroke={graphInfo.incColor}
-                  stackId="a"
+                  stroke={graphInfo.type2Color}
+                
                 />
               </AreaChart>
             )}

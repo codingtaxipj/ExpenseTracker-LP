@@ -8,7 +8,10 @@ import { Icons } from "../icons";
 import { useGraphConfig } from "@/hooks/useGraphConfig";
 import { cn } from "@/lib/utils";
 
-export const DualGraphData = ({ isDashboard, isExpense }) => {
+export const DualGraphData = ({
+  isDashboard,
+  isExpense,
+}) => {
   const {
     ExpenseGraphData,
     IncomeGraphData,
@@ -16,7 +19,7 @@ export const DualGraphData = ({ isDashboard, isExpense }) => {
     GraphSubText,
     GraphFootText,
     TitleTotal,
-  } = useGraphConfig({ isDashboard: isDashboard });
+  } = useGraphConfig({ isDashboard });
 
   const incomeObj = IncomeGraphData.reduce((newObj, item) => {
     newObj[item.indicator] = item.Amount;
@@ -37,14 +40,12 @@ export const DualGraphData = ({ isDashboard, isExpense }) => {
     };
   });
 
-  console.log("COmbData", CombinedGraphData);
-
   const DashboardGraphInfo = {
     data: CombinedGraphData,
-    expense: "Expense",
-    expColor: "var(--color-exp-a1)",
-    income: "Income",
-    incColor: "var(--color-inc-a1)",
+    type1: "Expense",
+    type1Color: "var(--color-exp-a1)",
+    type2: "Income",
+    type2Color: "var(--color-inc-a1)",
   };
   const chartInfo = {
     title: (

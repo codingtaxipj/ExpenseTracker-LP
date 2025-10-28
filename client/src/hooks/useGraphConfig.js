@@ -6,7 +6,11 @@ import { selectGraphData } from "@/redux/selectors/graph-selector";
 import Flexrow from "@/components/section/flexrow";
 import { getMonthName } from "@/utilities/calander-utility";
 
-export const useGraphConfig = ({ isExpense, isDashboard }) => {
+export const useGraphConfig = ({
+  isExpense,
+  isDashboard,
+  isBudgetExpenseCombo,
+}) => {
   //
   const { ExpenseGraphData, IncomeGraphData } = useSelector(selectGraphData);
   const {

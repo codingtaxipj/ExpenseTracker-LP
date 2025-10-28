@@ -1,27 +1,9 @@
-import { useMemo } from "react";
 import { LinearGraphCode } from "../charts/linear-graph-code";
-
 import Flexrow from "../section/flexrow";
 import Flexcol from "../section/flexcol";
-import useTotalConfig from "@/hooks/useTotalConfig";
-import { CurrentMonth, getMonthName } from "@/utilities/calander-utility";
 import { cn } from "@/lib/utils";
-
 import { Icons } from "../icons";
-import FlexrowStrip from "../strips/flexrow-strip";
-import HorizontalDivider from "../strips/horizontal-divider";
-import TooltipStrip from "../strips/tooltip-strip";
-import BudgetPercentStrip from "../strips/budget-percent-strip";
 import { amountFloat } from "../utilityFilter";
-
-import TotalCardForYear from "../cards/total-card-for-year";
-import TotalBudgetCard from "../cards/total-budget-card";
-import BudgetExpenseTable from "../table/budget-expense-table";
-import IncomeExpenseTable from "../table/income-expense-table";
-
-import { selectGraphData } from "@/redux/selectors/graph-selector";
-import { useSelector } from "react-redux";
-import { filterTypes, selectCurrentFilter } from "@/redux/slices/filter-slice";
 import { useGraphConfig } from "@/hooks/useGraphConfig";
 
 export const LinearGraphData = ({ isExpense, isIncome, isAnalysis }) => {
