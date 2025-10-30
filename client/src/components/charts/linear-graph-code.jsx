@@ -31,6 +31,7 @@ import Flexrow from "../section/flexrow";
 import { Numeral } from "numeral";
 
 export const LinearGraphCode = ({
+  graphHeightClass,
   isArea,
   graphInfo = {
     data: [],
@@ -93,9 +94,9 @@ export const LinearGraphCode = ({
         <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className={"max-h-[400px] w-full"}
+            className={cn("max-h-[400px] w-full", graphHeightClass)}
           >
-            {isArea === true && (
+            {isArea && (
               <AreaChart
                 accessibilityLayer
                 data={chartData}
@@ -138,7 +139,7 @@ export const LinearGraphCode = ({
                 />
               </AreaChart>
             )}
-            {isArea === false && (
+            {!isArea && (
               <BarChart
                 accessibilityLayer
                 data={chartData}
@@ -154,8 +155,10 @@ export const LinearGraphCode = ({
                   tickLine={false}
                   tickMargin={10}
                   axisLine={false}
+                  minTickGap={20}
                   className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
                   tickFormatter={(value) => value}
+                  interval={"preserveStartEnd"}
                 />
                 <ChartTooltip
                   cursor={false}

@@ -7,9 +7,12 @@ import SectionTitle from "@/components/section/section-title";
 import useTransactionConfig from "@/hooks/useTransactionConfig";
 import { Spinner } from "flowbite-react";
 import NewExpense from "../expense/NewExpense";
+import useTotalConfig from "@/hooks/useTotalConfig";
+import { ComboTable } from "@/components/table/combo-table";
 
 const ExpenseAnalysisIndex = () => {
   const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
+  const { IncomeExpenseCombo } = useTotalConfig();
   // NOTE: 1. Handle the loading state first
   if (expenseLoading) {
     // Replace with your preferred loading spinner component
@@ -42,17 +45,11 @@ const ExpenseAnalysisIndex = () => {
   // NOTE: 4. If all checks pass, render the main content
   return (
     <>
-      <Flexcol className="pt-20">
-        <SectionTitle title="Bar Graph" isExpense />
-        <LinearGraphData isExpense isAnalysis />
-      </Flexcol>
-      <Flexcol className="pt-20">
-        <SectionTitle title="Double Line Graph" isExpense />
-        <DualGraphData isExpense />
-      </Flexcol>
-      <Flexcol className="pt-20">
-        <SectionTitle title="Expense By Category Analysis" isExpense />
-        <ExpenseCategoryAnalysis />
+      <Flexcol>
+        <LinearGraphData graphHeightClass="max-h-[350px]" isExpense />
+        <LinearGraphData graphHeightClass="max-h-[350px]" isIncome />
+        <DualGraphData isDashboard />
+        <ComboTable isAnalysis data={IncomeExpenseCombo} />
       </Flexcol>
     </>
   );

@@ -11,7 +11,7 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
   //? ----- Total Config -----
   const { ExpenseOfMonth, IncomeOfMonth } = useTotalConfig();
   //? ----- Recurring Config -----
-  const { rcTotal } = useRecurringConfig();
+  const { RecurringData } = useRecurringConfig();
   //? ----- Filter Config -----
   const { currentFilter } = useFilterConfig();
   const FilterYear = Number(currentFilter.values.year);
@@ -21,11 +21,11 @@ const TotalCardForMonth = ({ isExpense, isReccuring, className }) => {
 
   //NOTE - Card Props
   const total =
-    (isReccuring && rcTotal.monthly) ??
+    (isReccuring && RecurringData.MonthlyTotal) ??
     (isExpense && ExpenseOfMonth) ??
     (!isExpense && IncomeOfMonth);
   const HeadText =
-    (isReccuring && "Monthly Recurring Expense") ||
+    (isReccuring && "Recurring Expense") ||
     (isExpense && "Monthly Expense") ||
     (!isExpense && "Monthly Income");
   const Color =

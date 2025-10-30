@@ -16,12 +16,12 @@ const TotalCard = ({ date, total, footerText, headText, color, className }) => {
         )}
       >
         {/** ===== top section ===== */}
-        <Flexrow className="font-medium">
-          <Flexrow className="items-center gap-2">
+        <Flexrow className="font-medium justify-between">
+          <Flexrow className="w-max items-center gap-2">
             <Icons.upbar className={cn(color)} />
             {headText}
           </Flexrow>
-          <Flexrow className="w-full items-center justify-end gap-2">
+          <Flexrow className="w-max items-center justify-end gap-2">
             <Icons.yearCal className={cn(color)} />
             {date}
           </Flexrow>

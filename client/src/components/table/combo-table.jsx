@@ -12,10 +12,29 @@ import TD from "./TD";
 import { cn } from "@/lib/utils";
 import { cardBgv2 } from "@/global/style";
 
-export const ComboTable = ({ data, inBudgeting }) => {
+export const ComboTable = ({ data, inBudgeting, isAnalysis }) => {
+  const headderRow =
+    (inBudgeting && (
+      <>
+        <TH className="pr-15">Month</TH>
+        <TH className="pr-5">Budget</TH>
+        <TH className="pr-5">Expense</TH>
+        <TH className="pr-5">Difference</TH>
+        <TH className="pr-5">%</TH>
+      </>
+    )) ||
+    (isAnalysis && (
+      <>
+        <TH className="pr-15">Of</TH>
+        <TH className="pr-5">Income</TH>
+        <TH className="pr-5">Expense</TH>
+        <TH className="pr-5">Difference</TH>
+        <TH className="pr-5">%</TH>
+      </>
+    ));
   return (
     <>
-      <Flexrow className={cn("overflow-hidden", cardBgv2,"bg-dark-a1.2")}>
+      <Flexrow className={cn("overflow-hidden", cardBgv2, "bg-dark-a1.2")}>
         <table className="w-full">
           <thead>
             <tr className="bg-dark-a5 text-slate-a1">
@@ -27,11 +46,7 @@ export const ComboTable = ({ data, inBudgeting }) => {
                   )}
                 />
               </TH>
-              <TH className="pr-15">Month</TH>
-              <TH className="pr-5">Budget</TH>
-              <TH className="pr-5">Expense</TH>
-              {inBudgeting && <TH className="pr-5">Difference</TH>}
-              <TH className="pr-5">%</TH>
+              {headderRow}
               <TH className="px-5"> </TH>
             </tr>
           </thead>
@@ -101,5 +116,3 @@ export const ComboTable = ({ data, inBudgeting }) => {
     </>
   );
 };
-
-

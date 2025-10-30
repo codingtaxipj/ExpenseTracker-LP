@@ -6,7 +6,7 @@ import { Icons } from "../icons";
 import { amountFloat } from "../utilityFilter";
 import { useGraphConfig } from "@/hooks/useGraphConfig";
 
-export const LinearGraphData = ({ isExpense, isIncome, isAnalysis }) => {
+export const LinearGraphData = ({ isExpense, isIncome, graphHeightClass }) => {
   const {
     ExpenseGraphData,
     IncomeGraphData,
@@ -108,6 +108,7 @@ export const LinearGraphData = ({ isExpense, isIncome, isAnalysis }) => {
         {/** NOTE - GRAPH SECTION  */}
         {hasDataPoints ? (
           <LinearGraphCode
+            graphHeightClass={graphHeightClass}
             isArea={isArea}
             graphInfo={GraphInfo}
             chartInfo={chartInfo}

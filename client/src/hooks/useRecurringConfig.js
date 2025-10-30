@@ -1,15 +1,11 @@
-import {
-  selectRecurringChartData,
-  selectRecurringExpenseList,
-  selectRecurringTotals,
-} from "@/redux/selectors/transaction-selector";
+import { selectRecurringCalculation } from "@/redux/selectors/total-selector";
+import { selectRecurringExpenseList } from "@/redux/selectors/transaction-selector";
 import { useSelector } from "react-redux";
 
 const useRecurringConfig = () => {
   // Directly select the final, memoized data. No useMemo needed.
   const RecurringList = useSelector(selectRecurringExpenseList);
-  const rcTotal = useSelector(selectRecurringTotals);
-  const recurringChartData = useSelector(selectRecurringChartData);
+  const RecurringData = useSelector(selectRecurringCalculation);
 
   // You can still select loading/error states if needed
   const { recurringLoading, recurringError } = useSelector(
@@ -18,8 +14,7 @@ const useRecurringConfig = () => {
 
   return {
     RecurringList,
-    rcTotal,
-    recurringChartData,
+    RecurringData,
     recurringLoading,
     recurringError,
   };

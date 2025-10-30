@@ -7,11 +7,10 @@ import { amountFloat } from "../utilityFilter";
 import { Icons } from "../icons";
 import { useGraphConfig } from "@/hooks/useGraphConfig";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
+import useTotalConfig from "@/hooks/useTotalConfig";
 
-export const DualGraphData = ({
-  isDashboard,
-  isExpense,
-}) => {
+export const DualGraphData = ({ isDashboard }) => {
   const {
     ExpenseGraphData,
     IncomeGraphData,
@@ -21,27 +20,10 @@ export const DualGraphData = ({
     TitleTotal,
   } = useGraphConfig({ isDashboard });
 
-  const incomeObj = IncomeGraphData.reduce((newObj, item) => {
-    newObj[item.indicator] = item.Amount;
-    return newObj;
-  }, {});
-
-  console.log("incomeObj", [IncomeGraphData]);
-  console.log("ExpenseGraphData", [ExpenseGraphData]);
-
-  const CombinedGraphData = ExpenseGraphData.map((m, i) => {
-    const eAmount = m.Amount;
-    const eIndicator = m.indicator;
-    const iAmount = incomeObj[eIndicator] || 0;
-    return {
-      indicator: eIndicator,
-      Expense: eAmount,
-      Income: iAmount,
-    };
-  });
+  const { IncomeExpenseCombo } = useTotalConfig();
 
   const DashboardGraphInfo = {
-    data: CombinedGraphData,
+    data: IncomeExpenseCombo,
     type1: "Expense",
     type1Color: "var(--color-exp-a1)",
     type2: "Income",

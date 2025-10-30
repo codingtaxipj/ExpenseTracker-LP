@@ -14,7 +14,11 @@ import useBudgetConfig, { getBudgetExpPercent } from "@/hooks/useBudgetConfig";
 import { Spinner } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import { deleteBudget } from "@/redux/slices/budget-slice";
-import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import {
+  CurrentMonth,
+  CurrentYear,
+  getMonthName,
+} from "@/utilities/calander-utility";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ComboTable } from "@/components/table/combo-table";
@@ -34,7 +38,6 @@ const BudgetIndex = () => {
     BudgetWithExpense,
   } = useBudgetConfig();
   const dispatch = useDispatch();
-  console.log("EBC", BudgetWithExpense);
 
   let isAnyBudgetExist = BudgetByMonth.some((b) => b.amount > 0);
 
@@ -42,7 +45,7 @@ const BudgetIndex = () => {
     useMemo(() => {
       const BudgetExpenseGraphData = BudgetWithExpense.map((b) => ({
         ...b,
-        indicator: b.month,
+        indicator: getMonthName(b.month),
       }));
       const bugetYearTotal = BudgetWithExpense.reduce(
         (sum, b) => b.budget + sum,

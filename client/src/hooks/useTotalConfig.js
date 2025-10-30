@@ -16,6 +16,8 @@ import {
   TotalOfSelectedMonth,
   TotalOfSelectedYear,
 } from "@/redux/selectors/total-selector";
+import { selectGraphData } from "@/redux/selectors/graph-selector";
+import { useMemo } from "react";
 
 const useTotalConfig = () => {
   const { TotalLoading, TotalError } = useSelector((state) => state.total);
@@ -94,6 +96,36 @@ const useTotalConfig = () => {
   const ExpenseInLastDays = getTotalOfTransaction(ExpenseOfLastDays);
   const IncomeInLastDays = getTotalOfTransaction(IncomeOfLastDays);
 
+  const { ExpenseGraphData, IncomeGraphData } = useSelector(selectGraphData);
+
+  const incomeObj = useMemo(
+    () =>
+      IncomeGraphData.reduce((newObj, item) => {
+        newObj[item.indicator] = item.Amount;
+        return newObj;
+      }, {}),
+    [IncomeGraphData],
+  );
+
+  const IncomeExpenseCombo = useMemo(
+    () =>
+      ExpenseGraphData.map((m, i) => {
+        const eAmount = m.Amount;
+        const eIndicator = m.indicator;
+        const iAmount = incomeObj[eIndicator] || 0;
+        return {
+          indicator: eIndicator,
+          Expense: eAmount,
+          Income: iAmount,
+          percent:
+            eAmount == 0 || iAmount == 0
+              ? 0
+              : getBudgetExpPercent(iAmount, eAmount),
+        };
+      }),
+    [ExpenseGraphData, incomeObj],
+  );
+
   return {
     YearsList,
     TotalByMonth_EXP,
@@ -122,6 +154,7 @@ const useTotalConfig = () => {
     IncomeInLastMonths,
     ExpenseInLastDays,
     IncomeInLastDays,
+    IncomeExpenseCombo,
   };
 };
 

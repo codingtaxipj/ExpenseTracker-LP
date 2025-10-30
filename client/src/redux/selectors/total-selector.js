@@ -4,7 +4,11 @@
 
 import { ArrayCheck } from "@/components/utility";
 import { createSelector } from "@reduxjs/toolkit";
-import { selectExpenseList, selectIncomeList } from "./transaction-selector";
+import {
+  selectExpenseList,
+  selectIncomeList,
+  selectRecurringExpenseList,
+} from "./transaction-selector";
 import { filterTypes, selectCurrentFilter } from "../slices/filter-slice";
 import moment from "moment";
 
@@ -347,3 +351,42 @@ export const TotalOfLastSelectedDays = createSelector(
     return { ExpenseOfLastDays, IncomeOfLastDays };
   },
 );
+
+export const selectRecurringCalculation = createSelector(
+  [selectRecurringExpenseList],
+  (recurringList) => {
+    if (!recurringList.length) return [];
+
+    let GraphData = Array.from({ length: 12 }, (_, i) => ({
+      month: i,
+      amount: 0,
+      year: 0,
+    }));
+
+    // total data calculation
+
+    const MonthlyTotal =
+      recurringList
+        .filter((r) => r.isReccuringBy === 1)
+        .reduce((sum, item) => item.ofAmount + sum, 0) || 0;
+    const YearlyTotal =
+      recurringList
+        .filter((r) => r.isReccuringBy === 2)
+        .reduce((sum, item) => item.ofAmount + sum, 0) || 0;
+
+    // graph data calculation
+    recurringList.forEach((tx) => {
+      const txMonth = moment(tx.onDate);
+      const targetMonth = GraphData.find((r) => r.month === txMonth.month());
+      if (targetMonth) {
+        targetMonth.amount += tx.ofAmount;
+        targetMonth.year = txMonth.year();
+      }
+    });
+
+    return { MonthlyTotal, YearlyTotal, GraphData };
+  },
+);
+
+
+

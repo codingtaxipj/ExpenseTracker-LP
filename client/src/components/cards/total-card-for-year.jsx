@@ -8,7 +8,7 @@ const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
   //? ----- Total Config -----
   const { ExpenseOfYear, IncomeOfYear } = useTotalConfig();
   //? ----- Recurring Config -----
-  const { rcTotal } = useRecurringConfig();
+  const { RecurringData } = useRecurringConfig();
   //? ----- Filter Config -----
   const { currentFilter } = useFilterConfig();
   const FilterYear = Number(currentFilter.values.year);
@@ -17,7 +17,7 @@ const TotalCardForYear = ({ isExpense, isReccuring, className }) => {
 
   //NOTE - Card Props
   const total =
-    (isReccuring && rcTotal.yearly) ??
+    (isReccuring && RecurringData.YearlyTotal) ??
     (isExpense && ExpenseOfYear) ??
     (!isExpense && IncomeOfYear);
   const HeadText =

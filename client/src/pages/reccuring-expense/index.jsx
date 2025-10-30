@@ -11,8 +11,7 @@ import useRecurringConfig from "@/hooks/useRecurringConfig";
 import ExpButton from "@/components/buttons/exp-button";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
-import {LinearGraphCode} from "@/components/charts/linear-graph-code";
-import { Icons } from "@/components/icons";
+import { LinearGraphCode } from "@/components/charts/linear-graph-code";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
 import SectionTitle from "@/components/section/section-title";
@@ -22,43 +21,54 @@ import NewReccuringExpense from "./NewReccuringExpense";
 
 // --- App Utilities ---
 import { amountFloat } from "@/components/utilityFilter";
-import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import {
+  CurrentMonth,
+  CurrentYear,
+  getMonthName,
+} from "@/utilities/calander-utility";
+import { GraphTitleSquare } from "@/components/analysis/linear-graph-data";
+import { Icons } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 const ReccuringExpenseIndex = () => {
-  const {
-    RecurringList,
-    rcTotal,
-    recurringChartData,
-    recurringLoading,
-    recurringError,
-  } = useRecurringConfig();
+  const { RecurringList, RecurringData, recurringLoading, recurringError } =
+    useRecurringConfig();
 
-  const barInfo = useMemo(
+  const { RecTotal, GraphData } = useMemo(() => {
+    const GraphData = RecurringData.GraphData.map((r) => ({
+      indicator: getMonthName(r.month),
+      Amount: r.amount,
+    }));
+    const RecTotal = RecurringData.MonthlyTotal + RecurringData.YearlyTotal;
+    return { RecTotal, GraphData };
+  }, [RecurringData]);
+
+  const graphInfo = useMemo(
     () => ({
-      data: recurringChartData,
+      data: GraphData,
       label: "Expense",
       color: "var(--color-rep-a1)",
     }),
-    [recurringChartData],
+    [RecurringData],
   );
 
   const chartInfo = useMemo(
     () => ({
       title: (
-        <Flexrow className="text-16px w-max items-center gap-1.25">
-          <GraphTitleSquare className={"bg-rep-a1"} />
-          Bar Graph - Total Recurring Expense
-          <HorizontalDivider className="bg-white" />
-          Rs.
-          <span className={"text-rep-a3"}>
-            {amountFloat(rcTotal.byMonth + rcTotal.byYear)}
+        <Flexrow className={"items-center gap-1.25"}>
+          <GraphTitleSquare className={cn("bg-rep-a1")} />
+          <span className="mr-5">
+            Recurring Expense in Year {CurrentYear()}
           </span>
+          <Icons.checkCircle className={cn("text-rep-a1")} />
+          <span>Rs.</span>
+          <span className={cn("text-rec-a1")}>{amountFloat(RecTotal)}</span>
         </Flexrow>
       ),
-      subtext: `Graph of Recurring Expenses in Year by Month`,
-      footertext: `Showing Total Recurring Expense of Each Month in a Year `,
+      subtext: `Tracking monthly recurring expenses`,
+      footertext: `Showing total recurring expense record of each month for year ${CurrentYear()} `,
     }),
-    [rcTotal],
+    [RecurringData],
   );
 
   // NOTE: 1. Handle the loading state first
@@ -111,13 +121,12 @@ const ReccuringExpenseIndex = () => {
       </Flexrow>
 
       <Flexcol className="pt-20">
-        <SectionTitle title="Recurring Expenses List" isExpense />
+        <LinearGraphCode
+          graphHeightClass="max-h-[350px]"
+          graphInfo={graphInfo}
+          chartInfo={chartInfo}
+        />
         <RecurringExpenseTable entries={RecurringList ?? []} />
-      </Flexcol>
-
-      <Flexcol className="pt-20">
-        <SectionTitle title="Bar Graph" isExpense />
-        <LinearGraphCode barInfo={barInfo} chartInfo={chartInfo} />
       </Flexcol>
     </>
   );
