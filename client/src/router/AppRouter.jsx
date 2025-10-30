@@ -35,11 +35,7 @@ const AppRouter = () => {
         <Route index element={<IncomeIndex />} />
         {formRoutes()}
       </Route>
-      <Route
-        path={PATH.expenseAnalysis}
-        element={<Analysis isExpense />}
-      ></Route>
-      <Route path={PATH.incomeAnalysis} element={<Analysis isIncome />}></Route>
+      <Route path={PATH.analysis} element={<Analysis />}></Route>
 
       <Route path={PATH.trip} element={<Trip />}>
         <Route index element={<TripIndex />} />
@@ -61,7 +57,7 @@ const AppRouter = () => {
       <Route path={PATH.budget} element={<Budget />}>
         <Route index element={<BudgetIndex />} />
       </Route>
-      <Route path="*" element={<NotFound />} /> 
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

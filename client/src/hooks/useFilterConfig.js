@@ -5,7 +5,7 @@ import {
 } from "@/redux/slices/filter-slice";
 import { useDispatch, useSelector } from "react-redux";
 import useTotalConfig from "./useTotalConfig";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 
 export const useFilterConfig = () => {

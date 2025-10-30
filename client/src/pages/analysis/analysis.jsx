@@ -1,14 +1,13 @@
 import NavMenu from "@/components/Navigation/NavMenu";
 import { PATH } from "@/router/routerConfig";
-import ExpenseAnalysisIndex from "./expense-analysis-index";
-import IncomeAnalysisIndex from "./income-analysis-index";
+import { Index } from ".";
 
-const Analysis = ({ isExpense, isIncome }) => {
+
+const Analysis = () => {
   return (
     <>
-      <NavMenu activeBtn={PATH.expenseAnalysis}>
-        {isExpense && <ExpenseAnalysisIndex />}
-        {isIncome && <IncomeAnalysisIndex />}
+      <NavMenu activeBtn={PATH.analysis}>
+        <Index />
       </NavMenu>
     </>
   );

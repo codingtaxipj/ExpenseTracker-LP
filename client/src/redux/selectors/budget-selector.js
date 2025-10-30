@@ -65,8 +65,7 @@ const createBudgetArray = (list = []) => {
       created: created,
     });
   }
-  console.log("list", list);
-  console.log("arr", arr);
+  
 
   return arr;
 };
@@ -76,8 +75,6 @@ export const BudgetExpenseComboOfSelectedYear = createSelector(
   (expense, budget) => {
     if (!budget.length) return [];
 
-    console.log("BC", budget);
-    console.log("EC", expense.ExpenseOfMonthOfYear);
 
     const arr = [];
 

@@ -22,7 +22,7 @@ import {
 } from "../ui/pagination";
 
 export const ComboTable = ({ data, isBudgeting, isAnalysis }) => {
-  console.log("DD", data);
+ 
 
   const headderRow =
     (isBudgeting && (

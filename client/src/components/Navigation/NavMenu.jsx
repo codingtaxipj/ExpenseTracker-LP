@@ -60,9 +60,9 @@ function Dashboard({ activeBtn, children }) {
     },
     {
       id: 4,
-      name: <span>Expense Analysis</span>,
+      name: <span>Analysis</span>,
       icon: <Icons.analysis />,
-      link: PATH.expenseAnalysis,
+      link: PATH.analysis,
     },
     {
       id: 5,
@@ -72,12 +72,6 @@ function Dashboard({ activeBtn, children }) {
     },
     {
       id: 6,
-      name: <span>Income Analysis</span>,
-      icon: <Icons.analysis />,
-      link: PATH.incomeAnalysis,
-    },
-    {
-      id: 7,
       name: <span>Budgeting</span>,
       icon: <Icons.calc />,
       link: PATH.budget,

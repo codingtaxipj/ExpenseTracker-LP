@@ -2,6 +2,7 @@ import { CurrentYear, getMonthName } from "@/utilities/calander-utility";
 import { useSelector } from "react-redux";
 import { getBudgetExpPercent } from "./useBudgetConfig";
 import {
+  selectedPrimeCategoryTotal,
   selectExpenseTotal_ByMonth,
   selectExpenseTotal_ByPrime,
   selectExpenseTotal_BySub,
@@ -10,6 +11,9 @@ import {
   selectIncomeTotal_ByPrime,
   selectIncomeTotal_BySub,
   selectIncomeTotal_ByYear,
+  selectSortedPrimeCategoryTotals,
+  selectSortedSubCategoryTotals,
+  selectSubCategoryTotals,
   selectYearsList,
   TotalOfLastSelectedDays,
   TotalOfLastSelectedMonths,
@@ -33,20 +37,6 @@ const useTotalConfig = () => {
   const TotalByMonth_INC = useSelector(selectIncomeTotal_ByMonth);
   const TotalByPrime_INC = useSelector(selectIncomeTotal_ByPrime);
   const TotalBySub_INC = useSelector(selectIncomeTotal_BySub);
-
-  const getTotalTransactionOfEachMonth = (list, year) => {
-    const data = list?.find((l) => l.year === year)?.monthList ?? [];
-    if (data.length === 0) return [];
-    const arr = [];
-    for (let j = 0; j < 12; j++) {
-      let e = data?.find((m) => m.month === j)?.total ?? 0;
-      arr.push({
-        month: j,
-        amount: e,
-      });
-    }
-    return arr;
-  };
 
   //NOTE - gets the total of given year (mostly used card)
   const getTotalOfYear = (list, year) =>
@@ -97,6 +87,13 @@ const useTotalConfig = () => {
   const IncomeInLastDays = getTotalOfTransaction(IncomeOfLastDays);
 
   const { ExpenseGraphData, IncomeGraphData } = useSelector(selectGraphData);
+
+  const ExpensePrimeCategory = useSelector(selectedPrimeCategoryTotal);
+  const SubCategory = useSelector(selectSubCategoryTotals);
+  const FilteredZerosSubCategory = useSelector(selectSortedSubCategoryTotals);
+  const FilteredZerosExpensePrimeCategory = useSelector(
+    selectSortedPrimeCategoryTotals,
+  );
 
   const incomeObj = useMemo(
     () =>
@@ -155,6 +152,10 @@ const useTotalConfig = () => {
     ExpenseInLastDays,
     IncomeInLastDays,
     IncomeExpenseCombo,
+    ExpensePrimeCategory,
+    SubCategory,
+    FilteredZerosExpensePrimeCategory,
+    FilteredZerosSubCategory,
   };
 };
 

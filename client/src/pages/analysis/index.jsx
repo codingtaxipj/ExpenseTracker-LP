@@ -13,10 +13,10 @@ import TotalCardForYear from "@/components/cards/total-card-for-year";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 
-const ExpenseAnalysisIndex = () => {
+export const Index = () => {
   const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
   const { IncomeExpenseCombo } = useTotalConfig();
-  console.log("DD@", IncomeExpenseCombo);
+
 
   // NOTE: 1. Handle the loading state first
   if (expenseLoading) {
@@ -78,4 +78,4 @@ const ExpenseAnalysisIndex = () => {
   );
 };
 
-export default ExpenseAnalysisIndex;
+
