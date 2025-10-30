@@ -197,7 +197,7 @@ const BudgetIndex = () => {
         />
       </Flexrow>
       <Flexrow className={"mt-5"}>
-        <ComboTable data={BudgetWithExpense} inBudgeting />
+        <ComboTable data={BudgetWithExpense} isBudgeting />
       </Flexrow>
     </>
   );
