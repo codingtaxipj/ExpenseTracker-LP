@@ -22,9 +22,9 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ComboTable } from "@/components/table/combo-table";
-import { DualGraphData } from "@/components/analysis/dual-graph-data";
+
 import { DualGraphCode } from "@/components/charts/dual-graph-code";
-import { Icons } from "@/components/icons";
+
 import { GraphTitleSquare } from "@/components/analysis/linear-graph-data";
 import { useMemo } from "react";
 

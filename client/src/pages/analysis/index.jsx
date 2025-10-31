@@ -12,11 +12,12 @@ import { ComboTable } from "@/components/table/combo-table";
 import TotalCardForYear from "@/components/cards/total-card-for-year";
 import TotalCardForMonth from "@/components/cards/total-card-for-month";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import PieGraphCode from "@/components/charts/pie-graph-code";
 
 export const Index = () => {
   const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
-  const { IncomeExpenseCombo } = useTotalConfig();
-
+  const { IncomeExpenseCombo, ExpensePrimeCategory, FilteredZerosSubCategory } =
+    useTotalConfig();
 
   // NOTE: 1. Handle the loading state first
   if (expenseLoading) {
@@ -48,6 +49,11 @@ export const Index = () => {
     return <NewExpense />;
   }
   // NOTE: 4. If all checks pass, render the main content
+
+  const graphInfo = {
+    data: ExpensePrimeCategory,
+    sub: FilteredZerosSubCategory.expenses,
+  };
   return (
     <>
       <Flexcol>
@@ -73,9 +79,8 @@ export const Index = () => {
         <LinearGraphData graphHeightClass="max-h-[350px]" isIncome />
         <DualGraphData isDashboard />
         <ComboTable isAnalysis data={IncomeExpenseCombo} />
+        <PieGraphCode graphInfo={graphInfo} />
       </Flexcol>
     </>
   );
 };
-
-
