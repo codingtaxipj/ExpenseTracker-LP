@@ -16,7 +16,7 @@ import PieGraphCode from "@/components/charts/pie-graph-code";
 
 export const Index = () => {
   const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
-  const { IncomeExpenseCombo, ExpensePrimeCategory, FilteredZerosSubCategory } =
+  const { IncomeExpenseCombo, ExpensePrimeCategory, FilteredZerosSubCategory,SubCategory } =
     useTotalConfig();
 
   // NOTE: 1. Handle the loading state first
@@ -52,7 +52,7 @@ export const Index = () => {
 
   const graphInfo = {
     data: ExpensePrimeCategory,
-    sub: FilteredZerosSubCategory.expenses,
+    sub: SubCategory.expenses,
   };
   return (
     <>

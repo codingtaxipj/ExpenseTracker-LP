@@ -119,17 +119,17 @@ export const PieGraphCode = ({
     }
   };
 
+
   // Custom Tooltip Formatter
   const myTooltipFormatter = (value, name, item) => {
     const indicatorColor = item.payload.fill || item.color;
-
     return (
-      <div key={item.dataKey} className="flex w-full items-center gap-2">
+      <div key={item.dataKey} className="gap-2 flex w-full items-center">
         <div
           className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
           style={{ backgroundColor: indicatorColor }}
         />
-        <div className="text-slate-a1 flex flex-1 justify-between leading-none font-medium">
+        <div className="text-slate-a1 flex gap-2 flex-1 justify-between leading-none font-medium">
           <span className="pr-1">{name} : </span>
           <span>{amountFloat(value)}</span>
         </div>
@@ -139,7 +139,7 @@ export const PieGraphCode = ({
 
   return (
     <>
-      <Card className={cn("flex-1 gap-0.5 px-8 py-10", cardBgv2)}>
+      <Card className={cn("flex-1 gap-0.5 px-10 py-10", cardBgv2)}>
         <Flexrow>
           <Flexcol className="gap-1.5">
             {activeEntry ? (
@@ -176,17 +176,10 @@ export const PieGraphCode = ({
             </span>
           </Flexcol>
           <Flexrow>
-            <SelectBar>
-              <SelectCard isExpense title={"Sort List"}>
-                <SelectFilter
-                  placeholder={"Select Prime Category"}
-                  onValueChange={handleSelectChange}
-                  value={activeEntry?.categoryName}
-                  list={chartData}
-                />
-              </SelectCard>
-            </SelectBar>
-            <Select>
+            <Select
+              value={activeEntry?.categoryName}
+              onValueChange={handleSelectChange}
+            >
               <SelectTrigger
                 className="ml-auto h-7 w-[160px] rounded-lg pl-2.5"
                 aria-label="Select a category"
@@ -208,6 +201,7 @@ export const PieGraphCode = ({
                             chartConfig[item.categoryName]?.color,
                         }}
                       />
+                      {item.categoryName}
                     </div>
                   </SelectItem>
                 ))}
@@ -216,20 +210,22 @@ export const PieGraphCode = ({
           </Flexrow>
         </Flexrow>
 
-        <Flexrow className={"w-max"}>
-          <CardContent>
+        <Flexrow>
+          <CardContent className="pb-0">
             <ChartContainer
               config={chartConfig}
               // Adjusted size for the left side
-              className={cn("h-[400px] w-1/2", graphHeightClass)}
+              className={cn("aspect-square h-[400px] w-max")}
             >
               <PieChart>
                 <ChartTooltip
                   cursor={false}
                   content={
                     <ChartTooltipContent
+                      className={"bg-dark-a1.2 border-dark-a6"}
                       formatter={myTooltipFormatter}
-                      hideLabel
+                      hideIndicator={false}
+                     
                     />
                   }
                 />
@@ -238,7 +234,7 @@ export const PieGraphCode = ({
                   data={chartData}
                   dataKey="amount"
                   nameKey="categoryName"
-                  innerRadius={50} // Your value
+                  innerRadius={60} // Your value
                   strokeWidth={0} // Your value
                   activeIndex={activeIndex}
                   activeShape={({ outerRadius = 0, ...props }) => (
@@ -267,8 +263,7 @@ export const PieGraphCode = ({
               </PieChart>
             </ChartContainer>
           </CardContent>
-
-          <Flexcol className="items-end">
+          <Flexcol className="flex-1 items-end">
             {activeSubCategories.length > 0 ? (
               activeSubCategories.map((sub) => (
                 <SubCategoryTile

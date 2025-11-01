@@ -10,7 +10,6 @@ import moment from "moment";
 
 const SelectFilter = ({
   list,
-  isChart,
   placeholder,
   onValueChange,
   className,
@@ -35,16 +34,10 @@ const SelectFilter = ({
                 className={
                   "bg-dark-sec !text-slate-1 text-12px data-[highlighted]:bg-dark-s3 mb-1 font-medium"
                 }
-                key={(isChart && items.id) || index}
-                value={(isChart && items.categoryName) || String(items)}
+                key={index}
+                value={String(items)}
               >
-                {
-                  isMonth
-                    ? moment().month(items).format("MMM") // If it's a month, format it
-                    : isChart
-                      ? items.categoryName
-                      : String(items) // Otherwise, show the categoryName or fallback to a string
-                }
+                {isMonth ? moment().month(items).format("MMM") : items}
               </SelectItem>
             );
           })}
