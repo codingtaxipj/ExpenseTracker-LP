@@ -14,84 +14,148 @@ import HorizontalDivider from "../strips/horizontal-divider";
 import { amountFloat } from "../utilityFilter";
 import { cardBgv2 } from "@/global/style";
 import { cn } from "@/lib/utils";
+import { useGraphConfig } from "@/hooks/useGraphConfig";
+import VerticalDevider from "../strips/vertical-devider";
+import { CardContent } from "../ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 const IncomeCategoryAnalysis = () => {
-  //NOTE - year state
-  const [year, setYear] = useState(CurrentYear());
-  //NOTE - sets the year to get the months data
-  const handleYearSelector = (year) => {
-    setYear(Number(year));
+  const { FilteredZerosSubCategory, SubCategory } = useTotalConfig();
+  const { GraphTitle, GraphSubText, GraphFootText, TitleTotal } =
+    useGraphConfig({ isExpense: false });
+
+  const chartData = SubCategory.income.map((s) => ({
+    indicator: s.categoryName,
+    Amount: s.amount,
+  }));
+  const color = "var(--color-inc)";
+  const label = "Income";
+
+  const chartConfig = {
+    [label]: {
+      label: label,
+      color: color,
+    },
   };
 
-  const {
-    TotalByYear_INC,
-    getTotalOfYear,
-    TotalBySub_INC,
-    getSubListOfYear,
-    YearsList,
-  } = useTotalConfig();
+  const myLabelFormatter = (value, payload) => {
+    return (
+      <span style={{ color: color }} className="font-medium">
+        For : {value}
+      </span>
+    );
+  };
 
-  const SubOfYear = getSubListOfYear(TotalBySub_INC, year);
-  const TotalIncomeYear = getTotalOfYear(TotalByYear_INC, year);
+  const myTooltipFormatter = (value, name, item, index, payload) => {
+    return (
+      <div key={item.dataKey} className="flex w-full items-center gap-2">
+        {/* Indicator */}
+        <div
+          className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+          style={{ backgroundColor: color }}
+        />
+        {/* Label and Value */}
+        <div className="text-slate-a1 flex flex-1 justify-between leading-none font-medium">
+          <span className="pr-1">{item.name || name} : </span>
+          <span>{amountFloat(value)}</span>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
-      <Flexcol>
-        <Flexrow>
-          <SelectBar>
-            <SelectCard title={"Select Year"}>
-              <SelectFilter
-                placeholder={"Select Year"}
-                onValueChange={handleYearSelector}
-                defaultValue={String(CurrentYear())}
-                list={YearsList}
-              ></SelectFilter>
-            </SelectCard>
-          </SelectBar>
+      <Flexcol className={cn("text-slate-a1 gap-2 p-10 px-12", cardBgv2)}>
+        <Flexrow className="items-center gap-2 font-medium">
+          <GraphTitleSquare className={"bg-inc-a2"} />
+          <span className="pr-2">{GraphTitle} </span>
+          <span className="text-14px">
+            <Icons.checkCircle className="text-inc-a3" />
+          </span>
+          <span>Total Income </span>
+          Rs.
+          <span className="text-inc-a3">{amountFloat(TitleTotal?.i)}</span>
         </Flexrow>
-        <Flexcol className={cn("text-slate-a1 gap-2 p-10 px-12", cardBgv2)}>
-          <Flexrow className="items-center gap-2 font-medium">
-            <GraphTitleSquare className={"bg-inc-a2"} />
-            <span className="pr-2">Income Category - {year} </span>
-            <span className="text-14px">
-              <Icons.checkCircle className="text-inc-a3" />
-            </span>
-            <span>Total Income </span>
-            <HorizontalDivider className="bg-white" />
-            Rs.
-            <span className="text-inc-a3">{amountFloat(TotalIncomeYear)}</span>
-          </Flexrow>
-          <Flexrow className={"!text-14px items-center gap-2 pb-8"}>
-            Expenses in Each Sub Categories of Selected Prime Category
-          </Flexrow>
-          <Flexrow className={"flex-wrap gap-2"}>
-            {SubOfYear.map((sc, idx) => (
-              <>
-                <Flexrow
-                  key={idx}
-                  className={cn(
-                    "text-14px !text-slate-a3 border-slate-a7 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
-                  )}
-                >
-                  <span className="text-14px">
-                    <Icons.checkCircle className={"text-inc-a2"} />
-                  </span>
-                  <span>{sc.subName}</span>
-                  <HorizontalDivider className="mx-0.25 bg-white" />
-                  <Flexrow className={"w-max items-center gap-0.75"}>
-                    <span className="text-12px">
-                      <Icons.rupee />
-                    </span>
-                    <span className="text-inc-a3">{sc.total}</span>
-                  </Flexrow>
-                </Flexrow>
-              </>
-            ))}
-          </Flexrow>
-          <Flexrow className={"!text-14px items-center gap-2 pt-8"}>
-            <Icons.textline /> Showing Total Income of Each Category in Year
-          </Flexrow>
-        </Flexcol>
+        <Flexrow className={"!text-14px items-center gap-2 pb-2"}>
+          Total Earning per Sub-Category of Income
+        </Flexrow>
+        <Flexrow className={"pb-5"} >
+          <CardContent className="flex-1 p-0">
+            <ChartContainer
+              config={chartConfig}
+              className={cn("max-h-[200px] w-full")}
+            >
+              <AreaChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 25,
+                  left: 20,
+                  right: 20,
+                }}
+              >
+                <CartesianGrid stroke="var(--color-dark-a6)" vertical={false} />
+                <XAxis
+                  dataKey="indicator"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  minTickGap={20}
+                  className="[&_.recharts-cartesian-axis-tick_text]:fill-slate-a4"
+                  tickFormatter={(value) => value}
+                  interval={"preserveStartEnd"}
+                />
+
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      className={"bg-dark-a1.2 border-dark-a6"}
+                      formatter={myTooltipFormatter}
+                      hideIndicator={false}
+                      labelFormatter={myLabelFormatter}
+                    />
+                  }
+                />
+
+                <Area
+                  dataKey={"Amount"}
+                  type="monotone"
+                  fill={color}
+                  fillOpacity={0.2}
+                  stroke={color}
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Flexrow>
+        <Flexrow className={"flex-wrap gap-2.5"}>
+          {FilteredZerosSubCategory.income.map((sc, idx) => (
+            <Flexrow
+              key={sc.id}
+              className={cn(
+                "text-14px !text-slate-a3 border-slate-a7 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
+              )}
+            >
+              <span className="text-14px">
+                <Icons.checkCircle className={"text-inc-a2"} />
+              </span>
+              <span>{sc.categoryName}</span>
+              <VerticalDevider className="mx-0.25 bg-white" />
+              <Flexrow className={"w-max items-center gap-0.75"}>
+                <span className="text-12px">
+                  <Icons.rupee />
+                </span>
+                <span className="text-inc-a3">{sc.amount}</span>
+              </Flexrow>
+            </Flexrow>
+          ))}
+        </Flexrow>
+        <Flexrow className={"!text-14px items-center gap-2 pt-5"}>
+          <Icons.textline />
+          {GraphFootText}
+        </Flexrow>
       </Flexcol>
     </>
   );

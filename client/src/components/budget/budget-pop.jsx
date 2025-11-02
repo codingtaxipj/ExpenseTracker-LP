@@ -39,7 +39,7 @@ const BudgetPop = ({ children, isEdit, isNew }) => {
   } = useForm({
     defaultValues: {
       userID: userID,
-      year: year - 1,
+      year: year,
       month: month,
     },
   });

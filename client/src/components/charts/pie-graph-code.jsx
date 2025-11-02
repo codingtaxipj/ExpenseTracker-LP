@@ -35,6 +35,7 @@ import { GraphTitleSquare } from "../analysis/linear-graph-data";
 import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
+import { useGraphConfig } from "@/hooks/useGraphConfig";
 
 // Helper component for the sub-category tile, using your provided JSX
 const SubCategoryTile = ({ subCategory, color }) => {
@@ -46,7 +47,7 @@ const SubCategoryTile = ({ subCategory, color }) => {
   return (
     <Flexrow
       className={cn(
-        "text-14px !text-slate-a3 border-slate-a7 hover:border-slate-a9 w-max cursor-pointer items-center gap-2 rounded-sm border px-2.5 py-1 font-medium",
+        "text-14px !text-slate-a3 h-max w-max cursor-pointer items-center gap-2 rounded-sm px-2.5 font-medium",
       )}
     >
       <span>
@@ -81,6 +82,9 @@ export const PieGraphCode = ({
 }) => {
   const chartData = graphInfo.data;
   const allSubCategoryData = graphInfo.sub;
+  const { GraphTitle, GraphSubText, GraphFootText } = useGraphConfig({
+    isExpense: true,
+  });
 
   // State to manage the active/highlighted slice
   const [activeIndex, setActiveIndex] = useState(0);
@@ -119,17 +123,16 @@ export const PieGraphCode = ({
     }
   };
 
-
   // Custom Tooltip Formatter
   const myTooltipFormatter = (value, name, item) => {
     const indicatorColor = item.payload.fill || item.color;
     return (
-      <div key={item.dataKey} className="gap-2 flex w-full items-center">
+      <div key={item.dataKey} className="flex w-full items-center gap-2">
         <div
           className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
           style={{ backgroundColor: indicatorColor }}
         />
-        <div className="text-slate-a1 flex gap-2 flex-1 justify-between leading-none font-medium">
+        <div className="text-slate-a1 flex flex-1 justify-between gap-2 leading-none font-medium">
           <span className="pr-1">{name} : </span>
           <span>{amountFloat(value)}</span>
         </div>
@@ -137,78 +140,154 @@ export const PieGraphCode = ({
     );
   };
 
+  const bgColor = chartConfig[activeEntry?.categoryName]?.color;
+
   return (
     <>
-      <Card className={cn("flex-1 gap-0.5 px-10 py-10", cardBgv2)}>
-        <Flexrow>
-          <Flexcol className="gap-1.5">
-            {activeEntry ? (
-              <Flexrow className={"w-max items-center gap-1.25"}>
-                <GraphTitleSquare
-                  style={{
-                    backgroundColor:
-                      chartConfig[activeEntry.categoryName]?.color,
-                  }}
-                />
-                <span className="mr-5">Categories in Expense</span>
-                <span
-                  style={{
-                    color: chartConfig[activeEntry.categoryName]?.color,
-                  }}
-                >
-                  {activeEntry.categoryName}
-                </span>
+      <Flexrow className="flex-wrap">
+        <Flexcol
+          className={cn("flex-1 justify-between gap-2 px-10 py-10", cardBgv2)}
+        >
+          {/** TOP SECTION */}
 
-                <span>Rs.</span>
-                <span
-                  style={{
-                    color: chartConfig[activeEntry.categoryName]?.color,
-                  }}
-                >
-                  {amountFloat(activeEntry.amount)}
-                </span>
-              </Flexrow>
-            ) : (
-              <span>{chartInfo.title || "Category Details"}</span>
-            )}
-            <span className="text-slate-a1 !text-14px pt-1.25">
-              Tracking categories expenses
+          <Flexcol className="gap-2">
+            <Flexrow
+              className={
+                "justfy-strat !text-16px items-center gap-1.5 font-medium"
+              }
+            >
+              <GraphTitleSquare
+                style={{
+                  backgroundColor: bgColor,
+                }}
+              />
+              <span className="mr-5">
+                {activeEntry?.categoryName} {""}
+                {GraphTitle}
+              </span>
+              <Icons.checkCircle
+                style={{
+                  color: bgColor,
+                }}
+              />
+              Rs.
+              <span
+                style={{
+                  color: bgColor,
+                }}
+              >
+                {amountFloat(activeEntry?.amount)}
+              </span>
+            </Flexrow>
+            <Flexrow>
+              <span className="text-slate-a1 !text-14px">{GraphSubText}</span>
+            </Flexrow>
+          </Flexcol>
+
+          {/** Middle SECTION */}
+
+          <ChartContainer
+            config={chartConfig}
+            // Adjusted size for the left side
+            className={cn("aspect-square h-[250px]")}
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    className={"bg-dark-a1.2 border-dark-a6"}
+                    formatter={myTooltipFormatter}
+                    hideIndicator={false}
+                  />
+                }
+              />
+              <Pie
+                data={chartData}
+                dataKey="amount"
+                nameKey="categoryName"
+                label
+              >
+                {chartData.map((entry) => (
+                  <Cell
+                    key={`cell-${entry.id}`}
+                    fill={chartConfig[entry?.categoryName]?.color}
+                    stroke={chartConfig[entry?.categoryName]?.color}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+
+          {/** BOTTOM SECTION */}
+
+          <Flexrow className="text-slate-a4 !text-14px items-center justify-start gap-2 pt-2.5">
+            <Icons.textline /> {GraphFootText}
+          </Flexrow>
+        </Flexcol>
+        <Flexcol
+          className={cn("flex-1 justify-between gap-2 px-10 py-10", cardBgv2)}
+        >
+          {/** TOP SECTION */}
+
+          <Flexcol className={"items-start gap-2"}>
+            <Flexrow className={"items-center gap-2"}>
+              <GraphTitleSquare
+                style={{
+                  backgroundColor: bgColor,
+                }}
+              />
+              <SelectCard noIcon title={" Breakdown for:"}>
+                <SelectFilter
+                  onValueChange={handleSelectChange}
+                  value={activeEntry?.categoryName}
+                  list={chartData}
+                  isChart
+              
+                />
+              </SelectCard>
+            </Flexrow>
+
+            <span className="text-slate-a1 !text-14px">
+              Total Spending per Sub-Category
             </span>
           </Flexcol>
-          <Flexrow>
-            <Select
-              value={activeEntry?.categoryName}
-              onValueChange={handleSelectChange}
-            >
-              <SelectTrigger
-                className="ml-auto h-7 w-[160px] rounded-lg pl-2.5"
-                aria-label="Select a category"
-              >
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent align="end" className="bg-dark-a1 rounded-xl">
-                {chartData.map((item) => (
-                  <SelectItem
-                    key={item.id}
-                    value={item.categoryName}
-                    className="text-slate-a1 data-[highlighted]:bg-dark-a3 rounded-lg [&_span]:flex"
-                  >
-                    <div className="flex items-center gap-2 text-xs">
-                      <span
-                        className="flex h-3 w-3 shrink-0 rounded-xs"
-                        style={{
-                          backgroundColor:
-                            chartConfig[item.categoryName]?.color,
-                        }}
-                      />
-                      {item.categoryName}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+          {/** Middle SECTION */}
+
+          <Flexcol className={"h-max items-start justify-center gap-2.5"}>
+            {activeSubCategories.map((sub) => (
+              <SubCategoryTile
+                key={sub.id}
+                subCategory={sub}
+                color={chartConfig[activeEntry?.categoryName]?.color}
+              />
+            ))}
+          </Flexcol>
+
+          {/** BOTTOM SECTION */}
+          <Flexrow className="text-slate-a4 !text-14px items-center justify-start gap-2 pt-2.5">
+            <Icons.textline /> Showing all sub-categories for{" "}
+            {activeEntry?.categoryName}
           </Flexrow>
-        </Flexrow>
+        </Flexcol>
+      </Flexrow>
+    </>
+  );
+};
+
+export default PieGraphCode;
+
+/**!SECTION
+ * 
+ * 
+ * 
+ * 
+ * 
+ *   
+        
+        
+       
 
         <Flexrow>
           <CardContent className="pb-0">
@@ -225,11 +304,10 @@ export const PieGraphCode = ({
                       className={"bg-dark-a1.2 border-dark-a6"}
                       formatter={myTooltipFormatter}
                       hideIndicator={false}
-                     
                     />
                   }
                 />
-                {/* --- UPDATED PIE PROPS per user request --- */}
+           
                 <Pie
                   data={chartData}
                   dataKey="amount"
@@ -249,9 +327,9 @@ export const PieGraphCode = ({
                   )}
                   // onMouseEnter removed as requested
                 >
-                  {/* --- END UPDATE --- */}
+                 
 
-                  {/* Apply colors to each cell */}
+                
                   {chartData.map((entry) => (
                     <Cell
                       key={`cell-${entry.id}`}
@@ -263,31 +341,25 @@ export const PieGraphCode = ({
               </PieChart>
             </ChartContainer>
           </CardContent>
-          <Flexcol className="flex-1 items-end">
+          <Flexrow className="gap-2 h-full flex-wrap justify-end items-center">
             {activeSubCategories.length > 0 ? (
-              activeSubCategories.map((sub) => (
-                <SubCategoryTile
-                  key={sub.id}
-                  subCategory={sub}
-                  color={chartConfig[activeEntry.categoryName]?.color}
-                />
+            
+                
               ))
             ) : (
               <div className="text-slate-a4 flex h-full items-center justify-center">
                 No sub-category expenses for {activeEntry?.categoryName}.
               </div>
             )}
-          </Flexcol>
+          </Flexrow>
         </Flexrow>
 
-        {chartInfo.footertext && (
-          <CardFooter className="text-slate-a4 !text-14px flex-row items-center justify-center gap-2 pt-2.5">
-            <Icons.textline /> {chartInfo.footertext}
+        <Flexrow className={"justify-between"}>
+          <CardFooter className="text-slate-a4 !text-14px flex-row items-center justify-start gap-2">
+            <Icons.textline /> Showing transaction records by category
           </CardFooter>
-        )}
-      </Card>
-    </>
-  );
-};
+          <Flexrow className={"w-max justify-end"}>uihoih</Flexrow>
+        </Flexrow>
 
-export default PieGraphCode;
+
+ */

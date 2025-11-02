@@ -152,7 +152,7 @@ export const TotalOfSelectedMonth = createSelector(
       income
         ?.find((e) => e.year === year)
         ?.monthList?.find((e) => e.month === month)?.total ?? 0;
- 
+
     return { ExpenseOfMonth, IncomeOfMonth };
   },
 );
@@ -163,14 +163,14 @@ export const TotalOfMonthOfSelectedYear = createSelector(
   [selectCurrentFilter, selectExpenseTotal_ByMonth, selectIncomeTotal_ByMonth],
   (filter, expense, income) => {
     const year = Number(filter.values.year);
-    const ExpenseOfMonthOfYear = createEachMonthArray(expense, year);
-    const IncomeOfMonthOfYear = createEachMonthArray(income, year);
+    const ExpenseOfMonthOfYear = createEachMonthArray(expense, year, "e");
+    const IncomeOfMonthOfYear = createEachMonthArray(income, year, "i");
 
     return { ExpenseOfMonthOfYear, IncomeOfMonthOfYear };
   },
 );
 //? ----- creates total of each month of selected year -----
-const createEachMonthArray = (list, year) => {
+const createEachMonthArray = (list, year, type = "e") => {
   const data = list?.find((l) => l.year === year)?.monthList ?? [];
   const arr = [];
   for (let j = 0; j < 12; j++) {
@@ -229,8 +229,6 @@ const getDailyTotalsOfMonth = (list, year, month) => {
       dailyArr[index].amount += tx.ofAmount;
     }
   }
-
-
 
   return dailyArr;
 };
@@ -416,29 +414,31 @@ const filterTransactionsByDate = (transactionList, filter) => {
   switch (type) {
     // --- Simple Rolling Dates ---
     case filterTypes.LAST_7_DAYS:
-      const last7 = moment(today).subtract(7, "days");
+      const last7 = moment().subtract(7, "days");
       return transactionList.filter((tx) => moment(tx.onDate).isAfter(last7));
     case filterTypes.LAST_15_DAYS:
-      const last15 = moment(today).subtract(15, "days");
+      const last15 = moment().subtract(15, "days");
       return transactionList.filter((tx) => moment(tx.onDate).isAfter(last15));
     case filterTypes.LAST_30_DAYS:
-      const last30 = moment(today).subtract(30, "days");
+      const last30 = moment().subtract(30, "days");
       return transactionList.filter((tx) => moment(tx.onDate).isAfter(last30));
 
     // --- Monthly Rolling Dates ---
     case filterTypes.LAST_3_MONTHS:
-      const last3 = moment(today).subtract(3, "months");
+      const last3 = moment().subtract(3, "months");
       return transactionList.filter((tx) => moment(tx.onDate).isAfter(last3));
     case filterTypes.LAST_6_MONTHS:
-      const last6 = moment(today).subtract(6, "months");
+      const last6 = moment().subtract(6, "months");
       return transactionList.filter((tx) => moment(tx.onDate).isAfter(last6));
     case filterTypes.LAST_9_MONTHS:
-      const last9 = moment(today).subtract(9, "months");
+      const last9 = moment().subtract(9, "months");
       return transactionList.filter((tx) => moment(tx.onDate).isAfter(last9));
 
     // --- Specific Date Filters ---
     case filterTypes.BY_MONTH:
-      const dateByMonth = moment().year(values.year).month(values.month);
+      const dateByMonth = moment()
+        .year(Number(values.year))
+        .month(Number(values.month));
       return transactionList.filter((tx) =>
         moment(tx.onDate).isSame(dateByMonth, "month"),
       );
@@ -462,18 +462,17 @@ export const selectedPrimeCategoryTotal = createSelector(
     const { type, values } = currentFilter;
     if (type === filterTypes.THIS_YEAR || type === filterTypes.BY_YEAR) {
       // Use pre-calculated data
-      const year =
-        type === filterTypes.THIS_YEAR ? moment().year() : values.year;
-      const yearData = expenseTotalByPrime.find((item) => item.year === year);
+      const year = Number(values.year);
 
-      if (yearData && yearData.primeList) {
+      const yearData = expenseTotalByPrime.find((item) => item.year === year);
+      if (yearData && yearData.primeList.length > 0) {
         // Safety check
         categoryTotals = yearData.primeList.reduce((acc, item) => {
           const matchingCategory = expenseCategories.find(
             (cat) => cat.title === item.name,
           );
           if (matchingCategory) {
-            acc[matchingCategory.id] = item.total;
+            acc[matchingCategory.title] = item.total;
           }
           return acc;
         }, {});
@@ -485,7 +484,8 @@ export const selectedPrimeCategoryTotal = createSelector(
         if (!acc[categoryId]) {
           acc[categoryId] = 0;
         }
-        acc[categoryId] += tx.amount; // Use tx.amount
+
+        acc[categoryId] += tx.ofAmount; // Use tx.amount
         return acc;
       }, {});
     }
@@ -495,7 +495,7 @@ export const selectedPrimeCategoryTotal = createSelector(
       return {
         id: category.id,
         categoryName: category.title,
-        amount: categoryTotals[category.id] || 0,
+        amount: categoryTotals[category.title] || 0,
       };
     });
 
@@ -508,7 +508,6 @@ const allExpenseSubCategories = expenseCategories.flatMap((prime) =>
   prime.subcategories.map((sub) => ({ ...sub, primeId: prime.id })),
 );
 // --- HELPER to get income subcategories ---
-
 
 const allIncomeSubCategories = incomeCategories[0].subcategories;
 
@@ -533,8 +532,7 @@ export const selectSubCategoryTotals = createSelector(
     const { type, values } = currentFilter;
 
     if (type === filterTypes.THIS_YEAR || type === filterTypes.BY_YEAR) {
-      const year =
-        type === filterTypes.THIS_YEAR ? moment().year() : values.year;
+      const year = Number(values.year);
 
       const expenseYearData = expenseTotalBySub.find(
         (item) => item.year === year,
@@ -547,7 +545,7 @@ export const selectSubCategoryTotals = createSelector(
             (sub) => sub.name === item.subName,
           );
           if (matchingSub) {
-            acc[matchingSub.id] = item.total;
+            acc[matchingSub.name] = item.total;
           }
           return acc;
         }, {});
@@ -559,12 +557,13 @@ export const selectSubCategoryTotals = createSelector(
 
       if (incomeYearData && incomeYearData.subList) {
         // Safety check
+
         incomeTotals = incomeYearData.subList.reduce((acc, item) => {
           const matchingSub = allIncomeSubCategories.find(
             (sub) => sub.name === item.subName,
           );
           if (matchingSub) {
-            acc[matchingSub.id] = item.total;
+            acc[matchingSub.name] = item.total;
           }
           return acc;
         }, {});
@@ -575,7 +574,7 @@ export const selectSubCategoryTotals = createSelector(
         if (!acc[subCategoryId]) {
           acc[subCategoryId] = 0;
         }
-        acc[subCategoryId] += tx.amount; // Use tx.amount
+        acc[subCategoryId] += tx.ofAmount; // Use tx.amount
         return acc;
       }, {});
 
@@ -584,7 +583,7 @@ export const selectSubCategoryTotals = createSelector(
         if (!acc[subCategoryId]) {
           acc[subCategoryId] = 0;
         }
-        acc[subCategoryId] += tx.amount; // Use tx.amount
+        acc[subCategoryId] += tx.ofAmount; // Use tx.amount
         return acc;
       }, {});
     }
@@ -595,7 +594,7 @@ export const selectSubCategoryTotals = createSelector(
         id: sub.id,
         primeId: sub.primeId,
         categoryName: sub.name,
-        amount: expenseTotals[sub.id] || 0,
+        amount: expenseTotals[sub.name] || 0,
       };
     });
 
@@ -603,9 +602,9 @@ export const selectSubCategoryTotals = createSelector(
     const finalIncomeData = allIncomeSubCategories.map((sub) => {
       return {
         id: sub.id,
-        primeId: "income", // Use id from static data
+        primeId: "Income", // Use id from static data
         categoryName: sub.name,
-        amount: incomeTotals[sub.id] || 0,
+        amount: incomeTotals[sub.name] || 0,
       };
     });
 
