@@ -5,8 +5,8 @@
 import { ArrayCheck } from "@/components/utility";
 import { createSelector } from "@reduxjs/toolkit";
 import {
-  selectExpenseList,
-  selectIncomeList,
+  selectGlobalFilteredExpense,
+  selectGlobalFilteredIncome,
   selectRecurringExpenseList,
 } from "./transaction-selector";
 import { filterTypes, selectCurrentFilter } from "../slices/filter-slice";
@@ -21,13 +21,13 @@ export const selectRawTotalData = createSelector([selectTotalState], (total) =>
   ArrayCheck(total.TotalData),
 );
 
-//? --- Data Sorting by Expense ---
+//NOTE - Data Sorting by Expense
 export const selectExpenseTotal = createSelector(
   [selectRawTotalData],
   (data) => (!data ? [] : data.filter((d) => d.isTypeExpense === true)),
 );
 
-//? --- Data Sorting by Income ---
+//NOTE - Data Sorting by Income
 export const selectIncomeTotal = createSelector([selectRawTotalData], (data) =>
   !data ? [] : data.filter((d) => d.isTypeExpense === false),
 );
@@ -123,7 +123,6 @@ export const selectYearsList = createSelector([selectRawTotalData], (data) =>
 /** ============================================================== */
 
 //NOTE - total of selected year filter
-
 export const TotalOfSelectedYear = createSelector(
   [selectCurrentFilter, selectExpenseTotal_ByYear, selectIncomeTotal_ByYear],
   (filter, expense, income) => {
@@ -137,7 +136,6 @@ export const TotalOfSelectedYear = createSelector(
 );
 
 //NOTE - total of selected year filter
-
 export const TotalOfSelectedMonth = createSelector(
   [selectCurrentFilter, selectExpenseTotal_ByMonth, selectIncomeTotal_ByMonth],
   (filter, expense, income) => {
@@ -158,7 +156,6 @@ export const TotalOfSelectedMonth = createSelector(
 );
 
 //NOTE - total of each months of selected year filter
-
 export const TotalOfMonthOfSelectedYear = createSelector(
   [selectCurrentFilter, selectExpenseTotal_ByMonth, selectIncomeTotal_ByMonth],
   (filter, expense, income) => {
@@ -169,6 +166,7 @@ export const TotalOfMonthOfSelectedYear = createSelector(
     return { ExpenseOfMonthOfYear, IncomeOfMonthOfYear };
   },
 );
+
 //? ----- creates total of each month of selected year -----
 const createEachMonthArray = (list, year, type = "e") => {
   const data = list?.find((l) => l.year === year)?.monthList ?? [];
@@ -186,9 +184,12 @@ const createEachMonthArray = (list, year, type = "e") => {
 };
 
 //NOTE - total of each dates of selected month filter
-
 export const TotalOfDatesOfSelectedMonth = createSelector(
-  [selectCurrentFilter, selectExpenseList, selectIncomeList],
+  [
+    selectCurrentFilter,
+    selectGlobalFilteredExpense,
+    selectGlobalFilteredIncome,
+  ],
   (filter, expense, income) => {
     const year = Number(filter.values.year);
     const month = Number(filter.values.month);
@@ -204,7 +205,7 @@ export const TotalOfDatesOfSelectedMonth = createSelector(
   },
 );
 
-//? ---- Generate array of transaction of dates by month selected -----
+//? ---- HELPER Generate array of transaction of dates by month selected -----
 const getDailyTotalsOfMonth = (list, year, month) => {
   // Get the number of days in the selected month
   const targetDate = moment().year(year).month(month);
@@ -217,11 +218,7 @@ const getDailyTotalsOfMonth = (list, year, month) => {
     amount: 0,
   }));
 
-  const monthList = list.filter((l) =>
-    moment(l.onDate).isSame(targetDate, "month"),
-  );
-
-  for (const tx of monthList) {
+  for (const tx of list) {
     const day = moment(tx.onDate).date(); // e.g., 15
     const index = day - 1; // 0-indexed for our array
     // Add the transaction's amount to the correct day's total
@@ -234,9 +231,12 @@ const getDailyTotalsOfMonth = (list, year, month) => {
 };
 
 //NOTE - total of last 9/6/3 - months of current year
-
 export const TotalOfLastSelectedMonths = createSelector(
-  [selectCurrentFilter, selectExpenseList, selectIncomeList],
+  [
+    selectCurrentFilter,
+    selectGlobalFilteredExpense,
+    selectGlobalFilteredIncome,
+  ],
   (filter, expense, income) => {
     let ofMonths;
 
@@ -244,20 +244,6 @@ export const TotalOfLastSelectedMonths = createSelector(
     else if (filter.type === filterTypes.LAST_6_MONTHS) ofMonths = 6;
     else if (filter.type === filterTypes.LAST_3_MONTHS) ofMonths = 3;
     else return { ExpenseOfLastMonths: [], IncomeOfLastMonths: [] };
-
-    // set start and end dates of months
-    const startDate = moment()
-      .subtract(ofMonths - 1, "months")
-      .startOf("month");
-    const endDate = moment().endOf("month");
-
-    // transaction list of data in btwn dates
-    const ExpenseList = expense.filter((e) =>
-      moment(e.onDate).isBetween(startDate, endDate, "day", []),
-    );
-    const IncomeList = income.filter((e) =>
-      moment(e.onDate).isBetween(startDate, endDate, "day", []),
-    );
 
     // empty array of objs of each month
     const ExpenseOfLastMonths = Array.from({ length: ofMonths }, (_, i) => {
@@ -273,14 +259,14 @@ export const TotalOfLastSelectedMonths = createSelector(
     const IncomeOfLastMonths = JSON.parse(JSON.stringify(ExpenseOfLastMonths));
 
     // caculating the total of dates matching month
-    ExpenseList.forEach((tx) => {
+    expense.forEach((tx) => {
       const txMonth = moment(tx.onDate).month();
       const targetMonth = ExpenseOfLastMonths.find((i) => i.month === txMonth);
       if (targetMonth) {
         targetMonth.amount += tx.ofAmount;
       }
     });
-    IncomeList.forEach((tx) => {
+    income.forEach((tx) => {
       const txMonth = moment(tx.onDate).month();
       const targetMonth = IncomeOfLastMonths.find((i) => i.month === txMonth);
       if (targetMonth) {
@@ -293,9 +279,12 @@ export const TotalOfLastSelectedMonths = createSelector(
 );
 
 //NOTE - total of last 30/15/7 days of current year
-
 export const TotalOfLastSelectedDays = createSelector(
-  [selectCurrentFilter, selectExpenseList, selectIncomeList],
+  [
+    selectCurrentFilter,
+    selectGlobalFilteredExpense,
+    selectGlobalFilteredIncome,
+  ],
   (filter, expense, income) => {
     let ofDates;
 
@@ -303,18 +292,6 @@ export const TotalOfLastSelectedDays = createSelector(
     else if (filter.type === filterTypes.LAST_15_DAYS) ofDates = 15;
     else if (filter.type === filterTypes.LAST_7_DAYS) ofDates = 7;
     else return { ExpenseOfLastDays: [], IncomeOfLastDays: [] };
-
-    // set start and end dates
-    const startDate = moment().subtract(ofDates, "days");
-    const endDate = moment();
-
-    // transaction list of data in btwn dates
-    const ExpenseList = expense.filter((e) =>
-      moment(e.onDate).isBetween(startDate, endDate, "day", []),
-    );
-    const IncomeList = income.filter((e) =>
-      moment(e.onDate).isBetween(startDate, endDate, "day", []),
-    );
 
     // empty array of objs of each month
     const ExpenseOfLastDays = Array.from({ length: ofDates }, (_, i) => {
@@ -329,7 +306,7 @@ export const TotalOfLastSelectedDays = createSelector(
     const IncomeOfLastDays = JSON.parse(JSON.stringify(ExpenseOfLastDays));
 
     // caculating the total of dates matching dates
-    ExpenseList.forEach((tx) => {
+    expense.forEach((tx) => {
       const txday = moment(tx.onDate);
       const targetDay = ExpenseOfLastDays.find((i) =>
         txday.isSame(i.day, "day"),
@@ -338,7 +315,7 @@ export const TotalOfLastSelectedDays = createSelector(
         targetDay.amount += tx.ofAmount;
       }
     });
-    IncomeList.forEach((tx) => {
+    income.forEach((tx) => {
       const txday = moment(tx.onDate);
       const targetDay = IncomeOfLastDays.find((i) =>
         txday.isSame(i.day, "day"),
@@ -349,6 +326,188 @@ export const TotalOfLastSelectedDays = createSelector(
     });
 
     return { ExpenseOfLastDays, IncomeOfLastDays };
+  },
+);
+
+//NOTE - total of prime category of selected global filter
+export const selectedPrimeCategoryTotal = createSelector(
+  [
+    selectGlobalFilteredExpense,
+    selectExpenseTotal_ByPrime,
+    selectCurrentFilter,
+  ],
+  (filteredTransactions, expenseTotalByPrime, currentFilter) => {
+    let categoryTotals = {};
+    // --- categoryTotals is obj containing {primeCategory : total} ---
+    const { type, values } = currentFilter;
+    const year = Number(values.year);
+
+    if (type === filterTypes.THIS_YEAR || type === filterTypes.BY_YEAR) {
+      // --- getting prime category total of year ---
+      const yearData = expenseTotalByPrime.find((item) => item.year === year);
+      if (yearData && yearData.primeList.length > 0) {
+        categoryTotals = yearData.primeList.reduce((acc, item) => {
+          const matchingCategory = expenseCategories.find(
+            (cat) => cat.title === item.name,
+          );
+          if (matchingCategory) {
+            acc[matchingCategory.title] = item.total;
+          }
+          return acc;
+        }, {});
+      }
+    } else {
+      // --- getting prime category total of selected global filter ---
+      categoryTotals = filteredTransactions.reduce((acc, tx) => {
+        const categoryId = tx.primeCategory;
+        if (!acc[categoryId]) {
+          acc[categoryId] = 0;
+        }
+        acc[categoryId] += tx.ofAmount;
+        return acc;
+      }, {});
+    }
+
+    // --- FINAL MAPPING making array of obj ---
+    const finalData = expenseCategories.map((category) => {
+      return {
+        categoryName: category.title,
+        amount: categoryTotals[category.title] || 0,
+      };
+    });
+
+    return finalData;
+  },
+);
+
+//NOTE - total of sub category of selected global filter
+export const selectSubCategoryTotals = createSelector(
+  [
+    selectGlobalFilteredExpense,
+    selectGlobalFilteredIncome,
+    selectExpenseTotal_BySub,
+    selectIncomeTotal_BySub,
+    selectCurrentFilter,
+  ],
+  (
+    filteredExpenses,
+    filteredIncome,
+    expenseTotalBySub,
+    incomeTotalBySub,
+    currentFilter,
+  ) => {
+    let expenseTotals = {};
+    let incomeTotals = {};
+
+    const { type, values } = currentFilter;
+    const year = Number(values.year);
+
+    if (type === filterTypes.THIS_YEAR || type === filterTypes.BY_YEAR) {
+      // --- getting Expense sub category total of year ---
+      const expenseYearData = expenseTotalBySub.find(
+        (item) => item.year === year,
+      );
+      if (expenseYearData && expenseYearData.subList) {
+        expenseTotals = expenseYearData.subList.reduce((acc, item) => {
+          const matchingSub = allExpenseSubCategories.find(
+            (sub) => sub.name === item.subName,
+          );
+          if (matchingSub) {
+            acc[matchingSub.name] = item.total;
+          }
+          return acc;
+        }, {});
+      }
+      // --- getting income sub category total of year ---
+      const incomeYearData = incomeTotalBySub.find(
+        (item) => item.year === year,
+      );
+      if (incomeYearData && incomeYearData.subList) {
+        incomeTotals = incomeYearData.subList.reduce((acc, item) => {
+          const matchingSub = allIncomeSubCategories.find(
+            (sub) => sub.name === item.subName,
+          );
+          if (matchingSub) {
+            acc[matchingSub.name] = item.total;
+          }
+          return acc;
+        }, {});
+      }
+    } else {
+      // --- getting expense sub category total of selected global filter ---
+      expenseTotals = filteredExpenses.reduce((acc, tx) => {
+        const subCategoryId = tx.subCategory;
+        if (!acc[subCategoryId]) {
+          acc[subCategoryId] = 0;
+        }
+        acc[subCategoryId] += tx.ofAmount;
+        return acc;
+      }, {});
+      // --- getting income sub category total of selected global filter ---
+      incomeTotals = filteredIncome.reduce((acc, tx) => {
+        const subCategoryId = tx.subCategory;
+        if (!acc[subCategoryId]) {
+          acc[subCategoryId] = 0;
+        }
+        acc[subCategoryId] += tx.ofAmount;
+        return acc;
+      }, {});
+    }
+
+    // --- FINAL MAPPING (Expenses) ---
+    const finalExpenseData = allExpenseSubCategories.map((sub) => {
+      return {
+        primeName: sub.primeName,
+        categoryName: sub.name,
+        amount: expenseTotals[sub.name] || 0,
+      };
+    });
+
+    // --- FINAL MAPPING (Income) ---
+    const finalIncomeData = allIncomeSubCategories.map((sub) => {
+      return {
+        primeName: "Income",
+        categoryName: sub.name,
+        amount: incomeTotals[sub.name] || 0,
+      };
+    });
+
+    return { expenses: finalExpenseData, income: finalIncomeData };
+  },
+);
+
+//? --- HELPER to flatten expense subcategories for mapping ---
+const allExpenseSubCategories = expenseCategories.flatMap((prime) =>
+  prime.subcategories.map((sub) => ({ ...sub, primeName: prime.title })),
+);
+//? --- HELPER to get income subcategories ---
+const allIncomeSubCategories = incomeCategories[0].subcategories;
+
+//NOTE - Prime Category : filter out 0 amounts, and sort by max to min amount
+export const selectSortedPrimeCategoryTotals = createSelector(
+  [selectedPrimeCategoryTotal],
+  (primeTotals) => {
+    return [...primeTotals]
+      .filter((item) => item.amount > 0)
+      .sort((a, b) => b.amount - a.amount);
+  },
+);
+
+//NOTE - Sub Category : filter out 0 amounts, and sort by max to min amount
+export const selectSortedSubCategoryTotals = createSelector(
+  [selectSubCategoryTotals],
+  (subTotals) => {
+    //--- expense ---
+    const sortedExpenses = [...subTotals.expenses]
+      .filter((item) => item.amount > 0)
+      .sort((a, b) => b.amount - a.amount);
+
+    //--- income ---
+    const sortedIncome = [...subTotals.income]
+      .filter((item) => item.amount > 0)
+      .sort((a, b) => b.amount - a.amount);
+
+    return { expenses: sortedExpenses, income: sortedIncome };
   },
 );
 
@@ -364,7 +523,6 @@ export const selectRecurringCalculation = createSelector(
     }));
 
     // total data calculation
-
     const MonthlyTotal =
       recurringList
         .filter((r) => r.isReccuringBy === 1)
@@ -385,256 +543,5 @@ export const selectRecurringCalculation = createSelector(
     });
 
     return { MonthlyTotal, YearlyTotal, GraphData };
-  },
-);
-
-export const selectFilteredCategory_exp = createSelector(
-  [selectExpenseList, selectCurrentFilter],
-  (expenseList, filter) => {
-    // Call the reusable helper function
-    return filterTransactionsByDate(expenseList, filter);
-  },
-);
-
-export const selectFilteredCategory_inc = createSelector(
-  [selectIncomeList, selectCurrentFilter],
-  (incomeList, filter) => {
-    // Call the reusable helper function
-    return filterTransactionsByDate(incomeList, filter);
-  },
-);
-
-const filterTransactionsByDate = (transactionList, filter) => {
-  if (!transactionList.length) return [];
-  const { type, values } = filter;
-
-  // Use the real 'today', not a hardcoded one
-  const today = moment();
-
-  switch (type) {
-    // --- Simple Rolling Dates ---
-    case filterTypes.LAST_7_DAYS:
-      const last7 = moment().subtract(7, "days");
-      return transactionList.filter((tx) => moment(tx.onDate).isAfter(last7));
-    case filterTypes.LAST_15_DAYS:
-      const last15 = moment().subtract(15, "days");
-      return transactionList.filter((tx) => moment(tx.onDate).isAfter(last15));
-    case filterTypes.LAST_30_DAYS:
-      const last30 = moment().subtract(30, "days");
-      return transactionList.filter((tx) => moment(tx.onDate).isAfter(last30));
-
-    // --- Monthly Rolling Dates ---
-    case filterTypes.LAST_3_MONTHS:
-      const last3 = moment().subtract(3, "months");
-      return transactionList.filter((tx) => moment(tx.onDate).isAfter(last3));
-    case filterTypes.LAST_6_MONTHS:
-      const last6 = moment().subtract(6, "months");
-      return transactionList.filter((tx) => moment(tx.onDate).isAfter(last6));
-    case filterTypes.LAST_9_MONTHS:
-      const last9 = moment().subtract(9, "months");
-      return transactionList.filter((tx) => moment(tx.onDate).isAfter(last9));
-
-    // --- Specific Date Filters ---
-    case filterTypes.BY_MONTH:
-      const dateByMonth = moment()
-        .year(Number(values.year))
-        .month(Number(values.month));
-      return transactionList.filter((tx) =>
-        moment(tx.onDate).isSame(dateByMonth, "month"),
-      );
-    case filterTypes.THIS_MONTH:
-      return transactionList.filter((tx) =>
-        moment(tx.onDate).isSame(today, "month"),
-      );
-
-    // --- Year filters are pre-calculated, so return empty ---
-    case filterTypes.BY_YEAR:
-    case filterTypes.THIS_YEAR:
-    default:
-      return [];
-  }
-};
-
-export const selectedPrimeCategoryTotal = createSelector(
-  [selectFilteredCategory_exp, selectExpenseTotal_ByPrime, selectCurrentFilter],
-  (filteredTransactions, expenseTotalByPrime, currentFilter) => {
-    let categoryTotals = {};
-    const { type, values } = currentFilter;
-    if (type === filterTypes.THIS_YEAR || type === filterTypes.BY_YEAR) {
-      // Use pre-calculated data
-      const year = Number(values.year);
-
-      const yearData = expenseTotalByPrime.find((item) => item.year === year);
-      if (yearData && yearData.primeList.length > 0) {
-        // Safety check
-        categoryTotals = yearData.primeList.reduce((acc, item) => {
-          const matchingCategory = expenseCategories.find(
-            (cat) => cat.title === item.name,
-          );
-          if (matchingCategory) {
-            acc[matchingCategory.title] = item.total;
-          }
-          return acc;
-        }, {});
-      }
-    } else {
-      // Calculate from filtered list
-      categoryTotals = filteredTransactions.reduce((acc, tx) => {
-        const categoryId = tx.primeCategory;
-        if (!acc[categoryId]) {
-          acc[categoryId] = 0;
-        }
-
-        acc[categoryId] += tx.ofAmount; // Use tx.amount
-        return acc;
-      }, {});
-    }
-
-    // --- FINAL MAPPING ---
-    const finalData = expenseCategories.map((category) => {
-      return {
-        id: category.id,
-        categoryName: category.title,
-        amount: categoryTotals[category.title] || 0,
-      };
-    });
-
-    return finalData;
-  },
-);
-
-// --- HELPER to flatten expense subcategories for mapping ---
-const allExpenseSubCategories = expenseCategories.flatMap((prime) =>
-  prime.subcategories.map((sub) => ({ ...sub, primeId: prime.id })),
-);
-// --- HELPER to get income subcategories ---
-
-const allIncomeSubCategories = incomeCategories[0].subcategories;
-
-export const selectSubCategoryTotals = createSelector(
-  [
-    selectFilteredCategory_exp,
-    selectFilteredCategory_inc,
-    selectExpenseTotal_BySub,
-    selectIncomeTotal_BySub,
-    selectCurrentFilter,
-  ],
-  (
-    filteredExpenses,
-    filteredIncome,
-    expenseTotalBySub,
-    incomeTotalBySub,
-    currentFilter,
-  ) => {
-    let expenseTotals = {};
-    let incomeTotals = {};
-
-    const { type, values } = currentFilter;
-
-    if (type === filterTypes.THIS_YEAR || type === filterTypes.BY_YEAR) {
-      const year = Number(values.year);
-
-      const expenseYearData = expenseTotalBySub.find(
-        (item) => item.year === year,
-      );
-
-      if (expenseYearData && expenseYearData.subList) {
-        // Safety check
-        expenseTotals = expenseYearData.subList.reduce((acc, item) => {
-          const matchingSub = allExpenseSubCategories.find(
-            (sub) => sub.name === item.subName,
-          );
-          if (matchingSub) {
-            acc[matchingSub.name] = item.total;
-          }
-          return acc;
-        }, {});
-      }
-
-      const incomeYearData = incomeTotalBySub.find(
-        (item) => item.year === year,
-      );
-
-      if (incomeYearData && incomeYearData.subList) {
-        // Safety check
-
-        incomeTotals = incomeYearData.subList.reduce((acc, item) => {
-          const matchingSub = allIncomeSubCategories.find(
-            (sub) => sub.name === item.subName,
-          );
-          if (matchingSub) {
-            acc[matchingSub.name] = item.total;
-          }
-          return acc;
-        }, {});
-      }
-    } else {
-      expenseTotals = filteredExpenses.reduce((acc, tx) => {
-        const subCategoryId = tx.subCategory;
-        if (!acc[subCategoryId]) {
-          acc[subCategoryId] = 0;
-        }
-        acc[subCategoryId] += tx.ofAmount; // Use tx.amount
-        return acc;
-      }, {});
-
-      incomeTotals = filteredIncome.reduce((acc, tx) => {
-        const subCategoryId = tx.subCategory;
-        if (!acc[subCategoryId]) {
-          acc[subCategoryId] = 0;
-        }
-        acc[subCategoryId] += tx.ofAmount; // Use tx.amount
-        return acc;
-      }, {});
-    }
-
-    // --- FINAL MAPPING (Expenses) ---
-    const finalExpenseData = allExpenseSubCategories.map((sub) => {
-      return {
-        id: sub.id,
-        primeId: sub.primeId,
-        categoryName: sub.name,
-        amount: expenseTotals[sub.name] || 0,
-      };
-    });
-
-    // --- FINAL MAPPING (Income) ---
-    const finalIncomeData = allIncomeSubCategories.map((sub) => {
-      return {
-        id: sub.id,
-        primeId: "Income", // Use id from static data
-        categoryName: sub.name,
-        amount: incomeTotals[sub.name] || 0,
-      };
-    });
-
-    return { expenses: finalExpenseData, income: finalIncomeData };
-  },
-);
-
-export const selectSortedPrimeCategoryTotals = createSelector(
-  [selectedPrimeCategoryTotal],
-  (primeTotals) => {
-    // Create a copy, filter out 0 amounts, and sort
-    return [...primeTotals]
-      .filter((item) => item.amount > 0)
-      .sort((a, b) => b.amount - a.amount); // Sort high-to-low
-  },
-);
-
-export const selectSortedSubCategoryTotals = createSelector(
-  [selectSubCategoryTotals],
-  (subTotals) => {
-    // Process expenses
-    const sortedExpenses = [...subTotals.expenses]
-      .filter((item) => item.amount > 0)
-      .sort((a, b) => b.amount - a.amount); // Sort high-to-low
-
-    // Process income
-    const sortedIncome = [...subTotals.income]
-      .filter((item) => item.amount > 0)
-      .sort((a, b) => b.amount - a.amount); // Sort high-to-low
-
-    return { expenses: sortedExpenses, income: sortedIncome };
   },
 );

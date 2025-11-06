@@ -42,22 +42,28 @@ const SUB_CATS = getSubCategories(expenseCategories);
 
 const ExpenseIndex = () => {
   /** =========== Transaction Config =========== */
-  const { ExpenseList, expenseLoading, expenseError } = useTransactionConfig();
+  const {
+    ExpenseList,
+    FilteredExpenses,
+    expenseLoading,
+    expenseError,
+    TransactionFilters,
+    TransactionSorts,
+    listFilter,
+    sortList,
+    prime,
+    availableSubs,
+    sub,
+    handleListFilter,
+    handlePrimeFilter,
+    handleSubFilter,
+    handleListSort,
+    handleOrder,
+    handleReset,
+    expensePrimes,
+  } = useTransactionConfig();
 
-  // --- UI State ---
-  const [filter, setFilter] = useState("Default");
-
-  //! make below handler as callback when complete
-  const handlePrimeCat = (value) => {
-    console.log("Prime : ", value);
-  };
-  const handleSubCat = (value) => {
-    console.log("Sub : ", value);
-  };
-
-  const handleSortBy = useCallback((value) => {
-    setFilter(value);
-  }, []);
+  console.log("subs", sub);
 
   // NOTE: 1. Handle the loading state first
   if (expenseLoading) {
@@ -116,14 +122,23 @@ const ExpenseIndex = () => {
 
       <Flexcol className="pt-20">
         <SectionTitle title="Expenses Transactions List" isExpense />
+
         <Flexrow>
           <SelectBar>
-            <SelectCard isExpense title={"Sort List"}>
+            <SelectCard isExpense title={"Filter:"}>
               <SelectFilter
                 placeholder={"Select Type"}
-                onValueChange={handleSortBy}
-                defaultValue={sortBy.default}
-                list={SORT_LIST}
+                value={listFilter}
+                onValueChange={handleListFilter}
+                list={Object.values(TransactionFilters)}
+              />
+            </SelectCard>
+            <SelectCard isExpense title={"Sort:"}>
+              <SelectFilter
+                placeholder={"Select Type"}
+                value={sortList}
+                onValueChange={handleListSort}
+                list={Object.values(TransactionSorts)}
               />
             </SelectCard>
           </SelectBar>
@@ -131,74 +146,52 @@ const ExpenseIndex = () => {
           <Flexrow className={"text-18px items-center gap-2.5"}>
             <ExpButton
               custom_iconbtn
-              custom_toolContent="Amount Ascending"
+              custom_toolContent="Change Order"
               className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+              onClick={() => handleOrder()}
             >
-              <Icons.asc />
+              <Icons.list_order />
             </ExpButton>
             <ExpButton
               custom_iconbtn
-              custom_toolContent="Amount Descending"
+              custom_toolContent="Reset"
               className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+              onClick={() => handleReset()}
             >
-              <Icons.desc />
-            </ExpButton>
-            <ExpButton
-              custom_iconbtn
-              custom_toolContent="Reverse Order"
-              className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
-            >
-              <Icons.listSort />
+              <Icons.list_reset />
             </ExpButton>
           </Flexrow>
         </Flexrow>
 
-        {/* <Flexrow className={"w-max gap-2"}>
-            
-          </Flexrow> */}
-
-        {filter !== sortBy.default && (
-          <>
+        {(listFilter === TransactionFilters.BY_PRIME ||
+          listFilter === TransactionFilters.BY_SUB) && (
+          <Flexrow>
             <SelectBar>
-              <SelectCard isExpense title={"Sort List"}>
-                {filter === sortBy.primeCategory && (
-                  <SelectFilter
-                    placeholder={"Select Prime Category"}
-                    onValueChange={handlePrimeCat}
-                    list={PRIME_CATS}
-                  />
-                )}
-                {filter === sortBy.subCategory && (
-                  <SelectFilter
-                    placeholder={"Select Sub Category"}
-                    onValueChange={handleSubCat}
-                    list={SUB_CATS}
-                  />
-                )}
-                {filter === sortBy.date && "Date 1 to Date 2"}
-                {filter === sortBy.amount && "Amount 1 to Amount 2"}
-                {filter === sortBy.trip && (
-                  <SelectFilter
-                    placeholder={"Select Trip"}
-                    defaultValue={"2024"}
-                    list={[2024, 2025, 2026]}
-                  />
-                )}
-                {filter === sortBy.repeating && (
-                  <SelectFilter
-                    placeholder={"Repeat By"}
-                    defaultValue={"2024"}
-                    list={[2024, 2025, 2026]}
-                  />
-                )}
+              <SelectCard isExpense title={"Category : "}>
+                <SelectFilter
+                  placeholder={"Select Type"}
+                  value={prime}
+                  onValueChange={handlePrimeFilter}
+                  list={expensePrimes}
+                />
               </SelectCard>
+              {listFilter === TransactionFilters.BY_SUB && (
+                <SelectCard noIcon isExpense title={"Sub : "}>
+                  <SelectFilter
+                    placeholder={"Select Type"}
+                    value={sub}
+                    onValueChange={handleSubFilter}
+                    list={availableSubs}
+                  />
+                </SelectCard>
+              )}
             </SelectBar>
-          </>
+          </Flexrow>
         )}
 
         {/** =========== List Component =========== */}
 
-        <TransactionListTable isExpesne entries={ExpenseList ?? []} />
+        <TransactionListTable isExpesne entries={FilteredExpenses ?? []} />
       </Flexcol>
 
       {/** =========== Bar Graph =========== */}

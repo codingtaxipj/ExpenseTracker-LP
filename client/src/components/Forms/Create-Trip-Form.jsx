@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Icons } from "../icons";
 import Flexcol from "../section/flexcol";
 import Flexrow from "../section/flexrow";
@@ -17,13 +17,15 @@ import SelectBar from "../selectFilter/SelectBar";
 import SelectCard from "../selectFilter/SelectCard";
 import SelectFilter from "../selectFilter/SelectFilter";
 import HorizontalDivider from "../strips/horizontal-divider";
-import { cardBg, cardBgv2 } from "@/global/style";
+import { bgDarkA3, cardBg, cardBgv2 } from "@/global/style";
 import ExpButton from "../buttons/exp-button";
+import TypewriterAni from "../TypewriterAni";
 
 const CreateTripForm = () => {
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const [open, setOpen] = useState(false);
+  const [isTitleFocused, setIsTitleFocused] = useState(false);
 
   /**
    * =============================================================
@@ -141,19 +143,29 @@ const CreateTripForm = () => {
 
   return (
     <>
-      <Flexcol
-        className={cn("h-max w-full p-8", cardBg, "from-trip-a1 to-trip-a3")}
-      >
-        <Flexrow className="text-18px text-dark-a2 items-center gap-2 font-medium">
+      <Flexcol className={cn("h-max w-full rounded-lg p-8", bgDarkA3)}>
+        <Flexrow className="text-18px items-center gap-2 font-medium">
           <Icons.trip />
-          <span>Trip Title ?</span>
+          <span>Your New Adventures Calling</span>
         </Flexrow>
-        <Flexrow className="border-dark-a2 items-center border-b-1">
+        <Flexrow className="relative items-center">
+          {!isTitleFocused && (
+            <TypewriterAni
+              textArr={[
+                "Himalayan Adventure",
+                "Goa Beach Trip",
+                "Business Conference",
+              ]}
+              PreText="..."
+              isTrip
+            />
+          )}
           <input
-            className="text-24px placeholder:text-slate-a1/70 w-full rounded-md border-none px-1 py-1 font-bold outline-none"
+            className="text-24px placeholder:text-slate-a1/70 border-slate-a2 focus:border-trip-a2 focus:ring-trip-a2 relative z-10 w-full border-b-1 px-1 py-1 font-bold outline-none"
             type="text"
-            placeholder="Himalayan Adventure ..."
             {...register("tripTitle", { required: "* Trip title is required" })}
+            onFocus={() => setIsTitleFocused(true)}
+            onBlur={() => setIsTitleFocused(false)}
           />
         </Flexrow>
         <ErrorFieldTrip
@@ -162,6 +174,7 @@ const CreateTripForm = () => {
         />
         <Flexrow className="justify-end">
           <ExpButton
+            type="button"
             onClick={async () => {
               const isValid = await trigger("tripTitle");
               if (isValid) {
@@ -170,7 +183,7 @@ const CreateTripForm = () => {
               }
             }}
             custom_textbtn
-            className={"text-trip-a4 bg-dark-a2"}
+            className={"text-dark-a2 bg-trip-a2"}
           >
             <Icons.add_plus className="text-18px" />
             <span className="text-14px">Create Trip</span>
@@ -196,6 +209,7 @@ const CreateTripForm = () => {
                     {step === 4 && "How are you Traveling?"}
                   </span>
                   <ExpButton
+                    type="button"
                     onClick={resetForm}
                     custom_iconbtn
                     className={"p-2.5"}
@@ -283,12 +297,19 @@ const CreateTripForm = () => {
                           name="abroadInfo"
                           control={control}
                           rules={{
-                            validate: (value) =>
-                              tripType !== 1 ||
-                              (value && value.country) ||
-                              "Country details are required for international trips",
+                            validate: (value, formValues) => {
+                              if (formValues.tripType !== 1) {
+                                return true;
+                              }
+
+                              if (value && value.country) {
+                                return true; // Valid!
+                              }
+
+                              return "Country details are required for international trips";
+                            },
                           }}
-                          render={() => (
+                          render={({ field }) => (
                             <SelectBar className={cn("bg-dark-a5 shadow-none")}>
                               <SelectCard
                                 noIcon
@@ -299,12 +320,13 @@ const CreateTripForm = () => {
                                   placeholder={"Select"}
                                   onValueChange={handleSelectCountry}
                                   list={getCountryNames()}
+                                  value={field.value?.country || ""}
                                 />
                               </SelectCard>
                             </SelectBar>
                           )}
                         />
-                        <ErrorFieldTrip error={errors.abroadInfo?.message} />
+                        <ErrorFieldTrip error={errors?.abroadInfo?.message} />
                         {abroadInfo && (
                           <Flexrow className={"text-14px w-max items-center"}>
                             <span>{abroadInfo.country}</span>
@@ -364,6 +386,7 @@ const CreateTripForm = () => {
               {/* --- Footer Buttons --- */}
               <Flexrow className={"text-14px"}>
                 <ExpButton
+                  type="button"
                   onClick={prevStep}
                   custom_textbtn
                   className={"bg-trip-a2 text-dark-a2"}
@@ -371,6 +394,7 @@ const CreateTripForm = () => {
                   Back
                 </ExpButton>
                 <ExpButton
+                  type="button"
                   onClick={nextStep}
                   custom_textbtn
                   className={"bg-trip-a2 text-dark-a2"}

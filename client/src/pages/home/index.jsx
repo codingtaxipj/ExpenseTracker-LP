@@ -13,6 +13,7 @@ import useRecurringConfig from "@/hooks/useRecurringConfig";
 
 import { DualGraphCode } from "@/components/charts/dual-graph-code";
 import { DualGraphData } from "@/components/analysis/dual-graph-data";
+import { IconLibrary } from "@/components/IconLibearay";
 
 const HomeIndex = () => {
   const { RecentTransactionList } = useTransactionConfig();
@@ -95,6 +96,9 @@ const HomeIndex = () => {
           entries={RecentTransactionList ?? []}
         />
       </Flexcol>
+   
+       <IconLibrary/>
+    
     </>
   );
 };

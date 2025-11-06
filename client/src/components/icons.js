@@ -14,7 +14,7 @@ import {
   FaCarSide,
   FaEdit,
 } from "react-icons/fa";
-import { BsBarChartFill } from "react-icons/bs";
+import { BsBarChartFill, BsFillSuitcase2Fill } from "react-icons/bs";
 
 import { IoFilter, IoAddCircle } from "react-icons/io5";
 
@@ -25,6 +25,7 @@ import {
   FaArrowTrendUp,
   FaIndianRupeeSign,
   FaRegWindowMaximize,
+  FaPlaneDeparture,
 } from "react-icons/fa6";
 
 import {
@@ -35,6 +36,7 @@ import {
   BiCheck,
   BiSolidCalendarEdit,
   BiSolidCalendarPlus,
+  BiReset,
 } from "react-icons/bi";
 import { RiShareForwardFill } from "react-icons/ri";
 import { HiPencil } from "react-icons/hi";
@@ -75,10 +77,9 @@ export const Icons = {
   formlabel: BiSolidLabel,
   asc: BiSortUp,
   desc: BiSortDown,
-  listSort: BiSort,
+
   check: BiCheck,
   repeat: MdEventRepeat,
-  trip: FaCarSide,
   pencil: HiPencil,
   caledit: BiSolidCalendarEdit,
   calnew: BiSolidCalendarPlus,
@@ -100,4 +101,9 @@ export const Icons = {
   add_plus: IoMdAdd,
   delete_bin: RiDeleteBin5Fill,
   edit: RiEdit2Fill,
+  trip_abroad: FaPlaneDeparture,
+  trip_domestic: FaCarSide,
+  trip: BsFillSuitcase2Fill,
+  list_reset: BiReset,
+  list_order: BiSort,
 };

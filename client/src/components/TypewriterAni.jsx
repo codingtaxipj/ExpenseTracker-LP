@@ -1,6 +1,12 @@
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-const TypewriterAni = () => {
+const TypewriterAni = ({
+  isDashboard,
+  isTrip,
+  textArr = ["Income", "Expense"],
+  PreText = "Manage Your Daily",
+}) => {
   const [currentNameIndex, setCurrentNameIndex] = useState(0);
   const [currentText, setCurrentText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -8,7 +14,7 @@ const TypewriterAni = () => {
   const deletingSpeed = 75;
 
   useEffect(() => {
-    const names = ["Income", "Expense"];
+    const names = textArr;
     const currentName = names[currentNameIndex];
     let timeout;
 
@@ -33,11 +39,24 @@ const TypewriterAni = () => {
   }, [currentText, isDeleting, currentNameIndex]);
 
   return (
-    <div className="text-slate-a1 font-pop-sb text-[32px]" >
-      <span className="" >Manage Your Daily </span>
-      <span className="uppercase font-pop-b text-exp-a1">{currentText}</span>
-      <span className="cursor pl-[0.5px] border-r-[1px] border-r-slate-a1"></span>
-    </div>
+    <>
+      {isDashboard && (
+        <div className={cn("text-slate-a1 font-pop-sb text-[32px]")}>
+          <span className=""> {PreText} </span>
+          <span className="font-pop-b text-exp-a1 uppercase">
+            {currentText}
+          </span>
+          <span className="cursor border-r-slate-a1 border-r-[1px] pl-[0.5px]"></span>
+        </div>
+      )}
+      {isTrip && (
+        <div className={cn("text-24px !text-slate-a1 absolute font-bold")}>
+          <span className=""> {PreText} </span>
+          <span className="text-trip-a3">{currentText}</span>
+          <span className="cursor border-r-slate-a1 border-r-[1px] pl-[0.5px]"></span>
+        </div>
+      )}
+    </>
   );
 };
 
