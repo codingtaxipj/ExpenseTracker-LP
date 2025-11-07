@@ -3,6 +3,8 @@ import {
   getPrimeCategories,
   getSubOfPrime,
   getSubOfPrime_Exp,
+  getSubOfPrime_Inc,
+  incomeCategories,
 } from "@/global/categories";
 import {
   selectExpenseList,
@@ -14,7 +16,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-const useTransactionConfig = () => {
+const useTransactionConfig = ({ isExpense = false } = {}) => {
   const {
     expenseLoading,
     expenseError,
@@ -29,13 +31,17 @@ const useTransactionConfig = () => {
   const FilteredIncomeList = useSelector(selectGlobalFilteredIncome);
 
   //? --- filter for transactions ---
-  const TransactionFilters = {
+  const TransactionFilters = (isExpense && {
     DEFAULT: "Default",
     IS_TRIP: "Trip Transactions",
     IS_RECURRING: "Recurring Transactions",
     BY_PRIME: "Prime Category",
     BY_SUB: "Sub Category",
+  }) || {
+    DEFAULT: "Default",
+    BY_INCOME_CATEGORY: "By Category",
   };
+
   //? --- sorting for transactions ---
   const TransactionSorts = {
     BY_DATE: "By Date",
@@ -46,9 +52,9 @@ const useTransactionConfig = () => {
 
   //NOTE - states for filter and sort
   const [listFilter, setListFilter] = useState(TransactionFilters.DEFAULT);
-  const [prime, setPrime] = useState(expensePrimes[0]);
+  const [prime, setPrime] = useState(isExpense ? expensePrimes[0] : "Income");
   const [availableSubs, setAvailableSubs] = useState(() =>
-    getSubOfPrime_Exp(prime),
+    isExpense ? getSubOfPrime_Exp(prime) : getSubOfPrime_Inc(),
   );
   const [sub, setSub] = useState(availableSubs[0]);
   const [sortList, setSortList] = useState(TransactionSorts.BY_DATE);
@@ -62,21 +68,55 @@ const useTransactionConfig = () => {
   const handleOrder = () => setSortOrder((d) => (d === 1 ? 2 : 1));
   const handleReset = () => {
     setListFilter(TransactionFilters.DEFAULT);
-    setPrime(expensePrimes[0]);
+    setPrime(isExpense ? expensePrimes[0] : "Income");
     setSortList(TransactionSorts.BY_DATE);
     setSortOrder(1);
   };
 
   //? --- update sub list on selecting prime --
   useEffect(() => {
-    const newSubList = getSubOfPrime_Exp(prime);
+    const newSubList = isExpense
+      ? getSubOfPrime_Exp(prime)
+      : getSubOfPrime_Inc();
     setAvailableSubs(newSubList);
     setSub(newSubList[0]);
-  }, [prime]);
+  }, [prime, isExpense]);
+
+  const FilteredIncome = useMemo(() => {
+    if (!FilteredIncomeList.length) return [];
+    let filteredList = FilteredIncomeList;
+    if (listFilter === TransactionFilters.BY_INCOME_CATEGORY) {
+      return filteredList.filter(
+        (e) => e.primeCategory === prime && e.subCategory === sub,
+      );
+    }
+    const sortedList = [...filteredList];
+
+    sortedList.sort((a, b) => {
+      let aVal, bVal;
+
+      if (sortList === TransactionSorts.BY_AMOUNT) {
+        aVal = a.ofAmount;
+        bVal = b.ofAmount;
+      } else {
+        // Default to date
+        aVal = new Date(a.onDate);
+        bVal = new Date(b.onDate);
+      }
+
+      if (sortOrder === 1) {
+        return aVal - bVal;
+      } else {
+        return bVal - aVal;
+      }
+    });
+
+    return sortedList;
+  }, [FilteredIncomeList, sub, sortList, sortOrder, listFilter, prime]);
 
   //NOTE - Filtered Expense List
   const FilteredExpenses = useMemo(() => {
-    if (!ExpenseList) return [];
+    if (!FilteredExpenseList.length) return [];
     let filteredList = FilteredExpenseList;
 
     if (listFilter === TransactionFilters.IS_TRIP) {
@@ -93,9 +133,8 @@ const useTransactionConfig = () => {
         (e) => e.primeCategory === prime && e.subCategory === sub,
       );
     }
-    const sortedList = [...filteredList];
 
-    console.log("list", sortedList);
+    const sortedList = [...filteredList];
 
     sortedList.sort((a, b) => {
       let aVal, bVal;
@@ -131,6 +170,7 @@ const useTransactionConfig = () => {
     RecentTransactionList,
     recentTransactionsLoading,
     FilteredExpenses,
+    FilteredIncome,
     TransactionFilters,
     TransactionSorts,
     listFilter,

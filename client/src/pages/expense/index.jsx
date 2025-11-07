@@ -43,7 +43,7 @@ const ExpenseIndex = () => {
     handleOrder,
     handleReset,
     expensePrimes,
-  } = useTransactionConfig();
+  } = useTransactionConfig({ isExpense: true });
 
   console.log("subs", sub);
 

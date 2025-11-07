@@ -198,6 +198,10 @@ export const getSubOfPrime_Exp = (prime) => {
   const category = expenseCategories.find((item) => item.title === prime);
   return category ? category.subcategories.map((item) => item.name) : [];
 };
+export const getSubOfPrime_Inc = (prime = "Income") => {
+  const category = incomeCategories.find((item) => item.title === prime);
+  return category ? category.subcategories.map((item) => item.name) : [];
+};
 
 const allCats = [...expenseCategories, ...incomeCategories];
 export const getPrimeColor = (prime) =>

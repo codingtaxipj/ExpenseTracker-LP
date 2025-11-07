@@ -25,10 +25,30 @@ import NewIncome from "./NewIncome";
 // --- App Utilities & Config ---
 import { PATH } from "@/router/routerConfig";
 import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
+import SelectBar from "@/components/selectFilter/SelectBar";
+import SelectCard from "@/components/selectFilter/SelectCard";
+import SelectFilter from "@/components/selectFilter/SelectFilter";
+import { cn } from "@/lib/utils";
 
 const IncomeIndex = () => {
   const navigate = useNavigate();
-  const { IncomeList, incomeLoading, incomeError } = useTransactionConfig();
+  const {
+    IncomeList,
+    incomeLoading,
+    incomeError,
+    FilteredIncome,
+    listFilter,
+    TransactionFilters,
+    TransactionSorts,
+    sortList,
+    availableSubs,
+    sub,
+    handleOrder,
+    handleReset,
+    handleListFilter,
+    handleSubFilter,
+    handleListSort,
+  } = useTransactionConfig();
 
   // NOTE: 1. Handle the loading state first
   if (incomeLoading) {
@@ -79,8 +99,60 @@ const IncomeIndex = () => {
       </Flexcol>
 
       <Flexcol className="pt-20">
-        <SectionTitle title="Income Transaction List" isIncome />
-        <TransactionListTable entries={IncomeList ?? []} />
+        <Flexrow>
+          <SelectBar>
+            <SelectCard isExpense title={"Filter:"}>
+              <SelectFilter
+                placeholder={"Select Type"}
+                value={listFilter}
+                onValueChange={handleListFilter}
+                list={Object.values(TransactionFilters)}
+              />
+            </SelectCard>
+            <SelectCard isExpense title={"Sort:"}>
+              <SelectFilter
+                placeholder={"Select Type"}
+                value={sortList}
+                onValueChange={handleListSort}
+                list={Object.values(TransactionSorts)}
+              />
+            </SelectCard>
+          </SelectBar>
+
+          <Flexrow className={"text-18px items-center gap-2.5"}>
+            <ExpButton
+              custom_iconbtn
+              custom_toolContent="Change Order"
+              className={cn("bg-dark-a5", "hover:bg-inc-a3 hover:text-dark-a1")}
+              onClick={() => handleOrder()}
+            >
+              <Icons.list_order />
+            </ExpButton>
+            <ExpButton
+              custom_iconbtn
+              custom_toolContent="Reset"
+              className={cn("bg-dark-a5", "hover:bg-inc-a3 hover:text-dark-a1")}
+              onClick={() => handleReset()}
+            >
+              <Icons.list_reset />
+            </ExpButton>
+          </Flexrow>
+        </Flexrow>
+        {listFilter === TransactionFilters.BY_INCOME_CATEGORY && (
+          <Flexrow>
+            <SelectBar>
+              <SelectCard noIcon isExpense title={"Sub : "}>
+                <SelectFilter
+                  placeholder={"Select Type"}
+                  value={sub}
+                  onValueChange={handleSubFilter}
+                  list={availableSubs}
+                />
+              </SelectCard>
+            </SelectBar>
+          </Flexrow>
+        )}
+        <TransactionListTable entries={FilteredIncome ?? []} />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle isIncome title="Income Bar Graph" />
