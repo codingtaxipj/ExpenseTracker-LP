@@ -1,6 +1,3 @@
-// --- React Core ---
-import { useState, useCallback } from "react";
-
 // --- 3rd Party Libraries ---
 import { Spinner } from "flowbite-react";
 import { cn } from "@/lib/utils";
@@ -11,34 +8,19 @@ import useTransactionConfig from "@/hooks/useTransactionConfig";
 // --- App Components ---
 import { LinearGraphData } from "@/components/analysis/linear-graph-data";
 import ExpButton from "@/components/buttons/exp-button";
-import TotalCardForMonth from "@/components/cards/total-card-for-month";
-import TotalCardForYear from "@/components/cards/total-card-for-year";
 import { Icons } from "@/components/icons";
 import MonthCalander from "@/components/month-calender";
 import Flexcol from "@/components/section/flexcol";
 import Flexrow from "@/components/section/flexrow";
-import MaxCategorySection from "@/components/section/max-category-section";
-import SectionTitle from "@/components/section/section-title";
+
 import SelectBar from "@/components/selectFilter/SelectBar";
 import SelectCard from "@/components/selectFilter/SelectCard";
 import SelectFilter from "@/components/selectFilter/SelectFilter";
-import BudgetStrip from "@/components/strips/budget-strip";
+
 import TransactionListTable from "@/components/table/transaction-list-table";
 import NewExpense from "./NewExpense";
 
-// --- Global Variables & Utilities ---
-import {
-  expenseCategories,
-  getPrimeCategories,
-  getSubCategories,
-} from "@/global/categories";
-import { sortBy } from "@/global/globalVariables";
-
 import { bgDarkA3 } from "@/global/style";
-
-const SORT_LIST = Object.values(sortBy);
-const PRIME_CATS = getPrimeCategories(expenseCategories);
-const SUB_CATS = getSubCategories(expenseCategories);
 
 const ExpenseIndex = () => {
   /** =========== Transaction Config =========== */
@@ -116,13 +98,6 @@ const ExpenseIndex = () => {
         <Flexrow className="items-center justify-evenly px-5">
           <LinearGraphData isExpense />
         </Flexrow>
-      </Flexcol>
-
-      {/** =========== List and List Filter =========== */}
-
-      <Flexcol className="pt-20">
-        <SectionTitle title="Expenses Transactions List" isExpense />
-
         <Flexrow>
           <SelectBar>
             <SelectCard isExpense title={"Filter:"}>
@@ -189,36 +164,10 @@ const ExpenseIndex = () => {
           </Flexrow>
         )}
 
-        {/** =========== List Component =========== */}
-
         <TransactionListTable isExpesne entries={FilteredExpenses ?? []} />
-      </Flexcol>
-
-      {/** =========== Bar Graph =========== */}
-
-      <Flexcol className="pt-20">
-        <SectionTitle title="Expense Bar Graph" isExpense />
-      </Flexcol>
-
-      {/** =========== Max Expenses =========== */}
-
-      <Flexcol className="pt-20">
-        <SectionTitle title="Top 5 Maximum Expense Categories" isExpense />
-        <MaxCategorySection isExpense />
       </Flexcol>
     </>
   );
 };
 
 export default ExpenseIndex;
-
-export const AmountField = () => {
-  return (
-    <>
-      <input
-        className="text-14px number-filed-arrow-none bg-darkBlack w-25 rounded-md px-3 py-1 outline-none"
-        type="number"
-      />
-    </>
-  );
-};

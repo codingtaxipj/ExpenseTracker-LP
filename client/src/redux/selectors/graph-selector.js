@@ -7,7 +7,6 @@ import {
   TotalOfMonthOfSelectedYear,
 } from "./total-selector";
 import { getDate, getMonthName } from "@/utilities/calander-utility";
-import moment from "moment";
 
 export const selectGraphData = createSelector(
   [
