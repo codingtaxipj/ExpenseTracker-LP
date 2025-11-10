@@ -440,6 +440,7 @@ export default Form;
 // --- Custom Date Picker Component ---
 export const SelectDate = ({
   selected,
+  className,
   onSelect,
   placeholder = "Select a date",
 }) => {
@@ -450,9 +451,11 @@ export const SelectDate = ({
         <Button
           className={cn(
             "border-dark-a3 bg-dark-a3 hover:bg-dark-a2 focus:bg-dark-a2 text-slate-a2 w-full justify-between border text-left",
+
             {
               "text-muted-foreground": !selected,
             },
+            className,
           )}
         >
           {selected ? moment(selected).format("LL") : placeholder}

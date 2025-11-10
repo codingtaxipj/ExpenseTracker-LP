@@ -46,6 +46,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { useForm, Controller } from "react-hook-form";
 import { ErrorField, FieldLabel, FormField, SelectDate } from "../Forms/Form";
 import SelectFilter from "../selectFilter/SelectFilter";
+import TransactionEditForm from "../Forms/transaction-edit-form";
 
 const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
   //Pagination
@@ -60,8 +61,8 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
   const bgColor = isExpesne ? "bg-exp-a3" : "bg-inc-a2";
 
   const dispatch = useDispatch();
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
   const deleteToast = (ID, userID = 123456) => {
     return new Promise((resolve) => {
       toast.custom((t) => (
@@ -203,22 +204,11 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
         ))}
       </Flexcol>
 
-      <Dialog
-        open={!!selectedTransaction}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setSelectedTransaction(null);
-          }
-        }}
-      >
-        <DialogContent className="bg-dark-a3 border-dark-a4 [&>button]:hidden">
-          <EditForm
-            transaction={selectedTransaction}
-            isExpesne={isExpesne}
-            onClose={() => setSelectedTransaction(null)}
-          />
-        </DialogContent>
-      </Dialog>
+      <TransactionEditForm
+        transaction={selectedTransaction}
+        isExpesne={isExpesne}
+        setSelectedTransaction={setSelectedTransaction}
+      />
 
       {!isRecent && (
         <Pagination className="mt-4">
@@ -256,214 +246,6 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
         </Pagination>
       )}
     </>
-  );
-};
-
-const EditForm = ({ transaction, isExpesne, onClose }) => {
-  const dispatch = useDispatch();
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm();
-
-  const isTrip = watch("isTripExpense");
-  const isRecurring = watch("isReccuringExpense");
-  const selectedPrimeCat = watch("primeCategory");
-  const [showSubCategoryWarning, setShowSubCategoryWarning] = useState(false);
-
-  const listOfPrimeCats = useMemo(() => {
-    return isExpesne
-      ? getPrimeCategories(expenseCategories)
-      : getPrimeCategories(incomeCategories);
-  }, [isExpesne]);
-
-  const listOfSubCat = useMemo(() => {
-    return getSubOfPrime(selectedPrimeCat, isExpesne);
-  }, [selectedPrimeCat, isExpesne]);
-
-  useEffect(() => {
-    if (transaction) {
-      reset({
-        ...transaction,
-        onDate: new Date(transaction.onDate),
-        ofAmount: transaction.ofAmount,
-      });
-
-      setShowSubCategoryWarning(false);
-    }
-  }, [transaction, reset]);
-
-  useEffect(() => {
-    if (transaction && listOfSubCat.length > 0) {
-      if (selectedPrimeCat !== transaction.primeCategory) {
-        setValue("subCategory", listOfSubCat[0], { shouldValidate: true });
-      }
-    }
-  }, [listOfSubCat, selectedPrimeCat, setValue, transaction, watch]);
-
-  const onSubmit = async (data) => {
-    try {
-      console.log("Data Edited", data);
-    } catch (error) {
-      toast.error("Update Failed", { description: error });
-    }
-  };
-
-  // Helper for tag buttons
-  const toggleTag = (fieldName) => {
-    setValue(fieldName, !watch(fieldName), { shouldDirty: true });
-  };
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <DialogHeader>
-        <DialogTitle>Edit Transaction</DialogTitle>
-        <DialogDescription>
-          Make changes to your transaction here. Click save when you're done.
-        </DialogDescription>
-      </DialogHeader>
-
-      {/* Form Fields: Titles on left, inputs on right */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-3 py-4">
-        {/* Amount */}
-        <FieldLabel label="Amount" />
-        <Flexrow className="border-slate-a7 items-center gap-1 border-b">
-          <Icons.rupee className="text-sm" />
-          <input
-            className="inputType-number w-full bg-transparent py-1 outline-none"
-            type="number"
-            {...register("ofAmount", {
-              required: "Amount is required",
-              valueAsNumber: true,
-            })}
-          />
-        </Flexrow>
-        <ErrorField error={errors.ofAmount} className="col-start-2" />
-
-        {/* Date */}
-        <FieldLabel label="Date" />
-        <Controller
-          name="onDate"
-          control={control}
-          rules={{ required: "Date is required" }}
-          render={({ field }) => (
-            <SelectDate // Assuming this is your date picker
-              onSelect={field.onChange}
-              selected={field.value}
-            />
-          )}
-        />
-        <ErrorField error={errors.onDate} className="col-start-2" />
-
-        {/* Prime Category */}
-        <FieldLabel label="Prime Category" />
-        <Controller
-          name="primeCategory"
-          control={control}
-          rules={{ required: "Prime category is required" }}
-          render={({ field }) => (
-            <SelectFilter
-              placeholder="Select Prime Category"
-              onValueChange={(value) => {
-                field.onChange(value);
-                // --- Show warning ---
-                setShowSubCategoryWarning(true);
-              }}
-              list={listOfPrimeCats}
-              value={field.value || ""}
-            />
-          )}
-        />
-        <ErrorField error={errors.primeCategory} className="col-start-2" />
-        {/* --- MODIFICATION: Sub Category Dropdown --- */}
-        <FieldLabel label="Category" />
-        <Controller
-          name="subCategory"
-          control={control}
-          rules={{ required: "Category is required" }}
-          render={({ field }) => (
-            <SelectFilter
-              placeholder="Select Sub Category"
-              onValueChange={(value) => {
-                field.onChange(value);
-                // --- Hide warning ---
-                setShowSubCategoryWarning(false);
-              }}
-              list={listOfSubCat} // List is now dynamic based on useMemo
-              value={field.value || ""}
-            />
-          )}
-        />
-
-        {/* --- ADDED: Warning Message --- */}
-        {showSubCategoryWarning && (
-          <p className="text-12px text-rr col-start-2 italic">
-            Note: Sub-category was auto-reset. Please confirm selection.
-          </p>
-        )}
-        <ErrorField error={errors.subCategory} className="col-start-2" />
-
-        {/* Note */}
-        <FieldLabel label="Note" />
-        <textarea
-          rows={3}
-          className="bg-dark-a5 border-slate-a7 w-full rounded-md border px-3 py-1 outline-none"
-          {...register("isNote")}
-        />
-      </div>
-
-      {/* Tags (as requested) */}
-      <FormField>
-        <FieldLabel label="Tags" />
-        <Flexrow className="gap-2">
-          <ExpButton
-            type="button"
-            onClick={() => toggleTag("isTripExpense")}
-            className={cn(
-              "text-12px",
-              isTrip ? "bg-trip-a2 text-white" : "bg-dark-a5 text-slate-a4",
-            )}
-          >
-            <Icons.trip /> Trip Expense
-          </ExpButton>
-          <ExpButton
-            type="button"
-            onClick={() => toggleTag("isReccuringExpense")}
-            className={cn(
-              "text-12px",
-              isRecurring ? "bg-rep-a2 text-white" : "bg-dark-a5 text-slate-a4",
-            )}
-          >
-            <Icons.repeat /> Recurring Expense
-          </ExpButton>
-        </Flexrow>
-      </FormField>
-
-      <DialogFooter className="mt-4">
-        <DialogClose asChild>
-          <ExpButton
-            type="button"
-            custom_textbtn
-            className="bg-dark-a5 text-slate-a4"
-          >
-            Cancel
-          </ExpButton>
-        </DialogClose>
-        <ExpButton
-          type="submit"
-          custom_textbtn
-          className={isExpesne ? "bg-exp-a3" : "bg-inc-a2"}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </ExpButton>
-      </DialogFooter>
-    </form>
   );
 };
 
