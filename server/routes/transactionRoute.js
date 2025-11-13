@@ -15,6 +15,9 @@ import {
   insertExpense,
   insertIncome,
   insertRecurringExpense,
+  updateExpense,
+  updateIncome,
+  updateRecurringExpense,
 } from "../controllers/transaction-controller.js";
 
 const transactionRouter = express.Router();
@@ -26,6 +29,16 @@ transactionRouter.post(
   "/add-recurring-expense",
   recurringValidation,
   insertRecurringExpense
+);
+
+//* ====================== UPADTE API ======================
+
+transactionRouter.post("/update-expense", expenseValidation, updateExpense);
+transactionRouter.post("/update-income", incomeValidation, updateIncome);
+transactionRouter.post(
+  "/update-recurring-expense",
+  recurringValidation,
+  updateRecurringExpense
 );
 
 //* ====================== DELETE API ======================

@@ -368,10 +368,17 @@ export const updateExpense = async (req, res) => {
       await session.abortTransaction();
       return res.status(404).json({ message: "Expense not found to update." });
     }
-    
-    if (exp.ofAmount !== data.ofAmount || moment()) {
+
+    const changeInDate = moment(exp.onDate).isSame(data.onDate, "day");
+
+    if (
+      exp.ofAmount !== data.ofAmount ||
+      !changeInDate ||
+      exp.primeCategory !== data.primeCategory ||
+      exp.subCategory !== data.subCategory
+    ) {
+      await decrementTotal(exp, session);
       await insertTotal(data, session);
-      await updateMinMax(data, session);
       runDispatch = true;
     }
     await session.commitTransaction();
@@ -402,9 +409,15 @@ export const updateIncome = async (req, res) => {
       await session.abortTransaction();
       return res.status(404).json({ message: "Income not found to update." });
     }
-    if (inc.ofAmount !== data.ofAmount) {
+    const changeInDate = moment(inc.onDate).isSame(data.onDate, "day");
+    if (
+      inc.ofAmount !== data.ofAmount ||
+      !changeInDate ||
+      inc.primeCategory !== data.primeCategory ||
+      inc.subCategory !== data.subCategory
+    ) {
+      await decrementTotal(inc, session);
       await insertTotal(data, session);
-      await updateMinMax(data, session);
       runDispatch = true;
     }
     await session.commitTransaction();
@@ -424,7 +437,6 @@ export const updateRecurringExpense = async (req, res) => {
   try {
     session.startTransaction();
     const data = req.body;
-    let runDispatch = false;
     const recExp = await recurringExpModal.findOneAndUpdate(
       { userID: data.userID, _id: data._id },
       data,
@@ -437,13 +449,8 @@ export const updateRecurringExpense = async (req, res) => {
         .status(404)
         .json({ message: "Recurring Expense Entry not found to update." });
     }
-    if (recExp.ofAmount !== data.ofAmount) {
-      await insertTotal(data, session);
-      await updateMinMax(data, session);
-      runDIspatch = true;
-    }
     await session.commitTransaction();
-    res.status(200).json({ update: true, runDispatch: runDispatch });
+    res.status(200).json({ update: true });
   } catch (error) {
     await session.abortTransaction();
     console.error("Update Recurring Expense Entry aborted:", error);

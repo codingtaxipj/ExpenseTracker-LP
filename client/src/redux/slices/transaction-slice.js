@@ -21,6 +21,7 @@ const initialState = {
   recentTransactionsLoading: false,
 
   // --- States for MUTATION (insert, delete, update) operations ---
+  //? insert
   insertExpenseLoading: false,
   insertExpenseError: null,
 
@@ -30,11 +31,22 @@ const initialState = {
   insertIncomeLoading: false,
   insertIncomeError: null,
 
+  //? delete
   deleteExpenseLoading: false,
   deleteExpenseError: null,
 
   deleteIncomeLoading: false,
   deleteIncomeError: null,
+
+  //? update
+  updateExpenseLoading: false,
+  updateExpenseError: null,
+
+  updateRecurringLoading: false,
+  updateRecurringError: null,
+
+  updateIncomeLoading: false,
+  updateIncomeError: null,
 };
 
 /**
@@ -88,7 +100,13 @@ export const updateExpense = createAsyncThunk(
   async ({ data }, { dispatch, rejectWithValue }) => {
     try {
       const res = await apiCLient.post("/transaction/update-expense", data);
-      return res.data;
+      const { update, runDispatch } = res.data;
+      if (runDispatch) {
+        dispatch(fetchTotal());
+      }
+      if (update) {
+        return data;
+      }
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -149,6 +167,23 @@ export const insertIncome = createAsyncThunk(
     }
   },
 );
+export const updateIncome = createAsyncThunk(
+  "transaction/updateIncome",
+  async ({ data }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.post("/transaction/update-income", data);
+      const { update, runDispatch } = res.data;
+      if (runDispatch) {
+        dispatch(fetchTotal());
+      }
+      if (update) {
+        return data;
+      }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
 
 export const deleteIncome = createAsyncThunk(
   "transaction/deleteIncome",
@@ -203,6 +238,23 @@ export const insertRecurringExpense = createAsyncThunk(
         dispatch(fetchMM());
       }
       return res.data; // This will be { newRecurringExpense, newExpense }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+export const updateRecurringExpense = createAsyncThunk(
+  "transaction/updateRecurringExpense",
+  async ({ data }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.post(
+        "/transaction/update-recurring-expense",
+        data,
+      );
+      const { update } = res.data;
+      if (update) {
+        return data;
+      }
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -312,6 +364,35 @@ const transaction = createSlice({
       })
       /**
        ** =========================================
+       ** Update Expense
+       ** =========================================
+       */
+      .addCase(updateExpense.pending, (state) => {
+        state.updateExpenseLoading = true;
+        state.updateExpenseError = null;
+      })
+      .addCase(updateExpense.fulfilled, (state, action) => {
+        state.updateExpenseLoading = false;
+        const index = state.expenseData.findIndex(
+          (i) => i._id === action.payload._id,
+        );
+        if (index !== -1) {
+          state.expenseData[index] = { ...action.payload };
+        }
+        const indexforrecent = state.recentTransactions.findIndex(
+          (i) => i._id === action.payload._id,
+        );
+        if (indexforrecent !== -1) {
+          state.recentTransactions[indexforrecent] = { ...action.payload };
+        }
+      })
+
+      .addCase(updateExpense.rejected, (state, action) => {
+        state.updateExpenseLoading = false;
+        state.updateExpenseError = action.payload;
+      })
+      /**
+       ** =========================================
        ** Delete Expense
        ** =========================================
        */
@@ -392,6 +473,28 @@ const transaction = createSlice({
         state.insertRecurringLoading = false;
         state.insertRecurringError = action.payload;
       })
+      /**
+       ** =========================================
+       ** Update Recurring Expense
+       ** =========================================
+       */
+      .addCase(updateRecurringExpense.pending, (state) => {
+        state.updateRecurringLoading = true;
+        state.updateRecurringError = null;
+      })
+      .addCase(updateRecurringExpense.fulfilled, (state, action) => {
+        state.updateRecurringLoading = false;
+        const index = state.recurringData.findIndex(
+          (i) => i._id === action.payload._id,
+        );
+        if (index !== -1) {
+          state.recurringData[index] = { ...action.payload };
+        }
+      })
+      .addCase(updateRecurringExpense.rejected, (state, action) => {
+        state.updateRecurringLoading = false;
+        state.updateRecurringError = action.payload;
+      })
 
       /**
        ** =========================================
@@ -435,6 +538,34 @@ const transaction = createSlice({
       .addCase(insertIncome.rejected, (state, action) => {
         state.insertIncomeLoading = false;
         state.insertIncomeError = action.payload;
+      })
+      /**
+       ** =========================================
+       ** Update Income
+       ** =========================================
+       */
+      .addCase(updateIncome.pending, (state) => {
+        state.updateIncomeLoading = true;
+        state.updateIncomeError = null;
+      })
+      .addCase(updateIncome.fulfilled, (state, action) => {
+        state.updateIncomeLoading = false;
+        const index = state.incomeData.findIndex(
+          (i) => i._id === action.payload._id,
+        );
+        if (index !== -1) {
+          state.incomeData[index] = { ...action.payload };
+        }
+        const indexforrecent = state.recentTransactions.findIndex(
+          (i) => i._id === action.payload._id,
+        );
+        if (indexforrecent !== -1) {
+          state.recentTransactions[indexforrecent] = { ...action.payload };
+        }
+      })
+      .addCase(updateIncome.rejected, (state, action) => {
+        state.updateIncomeLoading = true;
+        state.updateIncomeError = action.payload;
       })
       /**
        ** =========================================

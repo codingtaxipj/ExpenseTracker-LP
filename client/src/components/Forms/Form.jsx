@@ -462,7 +462,7 @@ export const SelectDate = ({
           <Icons.dayCal />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+      <PopoverContent className="w-auto overflow-hidden z-[10000] pointer-events-auto p-0" align="start">
         <Calendar
           mode="single"
           fromYear={new Date().getFullYear() - 5}

@@ -22,8 +22,15 @@ import ExpButton from "../buttons/exp-button";
 import SelectFilter from "../selectFilter/SelectFilter";
 import Flexrow from "../section/flexrow";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { insertRecurringExpense } from "@/redux/slices/transaction-slice";
+import {
+  insertRecurringExpense,
+  updateExpense,
+  updateIncome,
+  updateRecurringExpense,
+} from "@/redux/slices/transaction-slice";
 import { Checkbox } from "../ui/checkbox";
+import { toast } from "sonner";
+import moment from "moment";
 
 const TransactionEditForm = ({
   transaction,
@@ -113,10 +120,32 @@ const TransactionEditForm = ({
   }, [transaction, isRecurringExpense, reset]);
 
   const onSubmit = async (data) => {
+    const date = data.onDate;
+    data.onDate = moment(date).toISOString();
     try {
-      console.log("Data Edited", data);
+      let result;
+      if (isExpesne) {
+        result = dispatch(updateExpense({ data })).unwrap();
+      } else if (isIncome) {
+        result = dispatch(updateIncome({ data })).unwrap();
+      } else if (isRecurring) {
+        result = dispatch(updateRecurringExpense({ data })).unwrap();
+      }
+      setSelectedTransaction(null);
+      toast.success("Transaction Added!", {
+        description: `Entry Updated Successfully!`,
+        action: {
+          label: "Ok!",
+          onClick: () => {
+            reset();
+          },
+        },
+      });
     } catch (error) {
-      toast.error("Update Failed", { description: error });
+      toast.error("Update Failed!", {
+        description: error,
+        action: { label: "Try Again" },
+      });
     }
   };
 
@@ -172,7 +201,7 @@ const TransactionEditForm = ({
               render={({ field }) => (
                 <SelectDate
                   className="border-dark-a2 bg-dark-a1 focus:bg-dark-a1 hover:bg-dark-a1 w-full rounded-md border p-2 outline-none"
-                  onSelect={field.onChange}
+                  onSelect={(date) => field.onChange(date)}
                   selected={field.value}
                 />
               )}
