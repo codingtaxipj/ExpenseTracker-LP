@@ -22,21 +22,24 @@ import ExpButton from "../buttons/exp-button";
 import SelectFilter from "../selectFilter/SelectFilter";
 import Flexrow from "../section/flexrow";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { insertRecurringExpense } from "@/redux/slices/transaction-slice";
+import { Checkbox } from "../ui/checkbox";
 
 const TransactionEditForm = ({
   transaction,
   isExpesne,
-  isRec,
+  isIncome,
+  isRecurring,
   setSelectedTransaction,
 }) => {
   const bgColor =
     (isExpesne && "bg-exp-a1") ||
-    (!isExpesne && "bg-inc-a1") ||
-    (isRec && "bg-rep-a1");
+    (isIncome && "bg-inc-a1") ||
+    (isRecurring && "bg-rep-a1");
   const txtColor =
     (isExpesne && "text-exp-a1") ||
-    (!isExpesne && "text-inc-a1") ||
-    (isRec && "text-rep-a1");
+    (isIncome && "text-inc-a1") ||
+    (isRecurring && "text-rep-a1");
   const dispatch = useDispatch();
   const {
     register,
@@ -48,16 +51,18 @@ const TransactionEditForm = ({
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const isTrip = watch("isTripExpense");
-  const isRecurring = watch("isReccuringExpense");
+  isRecurring && console.log("recurr", transaction);
+
+  const isTripExpense = watch("isTripExpense");
+  const isRecurringExpense = isExpesne ? watch("isRecurringExpense") : false;
   const selectedPrimeCat = watch("primeCategory");
   const [showSubCategoryWarning, setShowSubCategoryWarning] = useState(false);
 
   const listOfPrimeCats = useMemo(() => {
-    return isExpesne
+    return isExpesne || isRecurring
       ? getPrimeCategories(expenseCategories)
       : getPrimeCategories(incomeCategories);
-  }, [isExpesne]);
+  }, [isExpesne, isRecurring]);
 
   // --- MODIFICATION: Get list of sub-categories based on selected prime ---
   const listOfSubCat = useMemo(() => {
@@ -65,8 +70,8 @@ const TransactionEditForm = ({
     // FALL BACK to 'transaction.primeCategory' for the initial render.
     const prime = selectedPrimeCat || transaction?.primeCategory;
     if (!prime) return [];
-    return getSubOfPrime(prime, isExpesne);
-  }, [selectedPrimeCat, transaction, isExpesne]); // Added 'transaction' dependency
+    return getSubOfPrime(prime, isExpesne || isRecurring);
+  }, [selectedPrimeCat, transaction, isExpesne, isRecurring]); // Added 'transaction' dependency
 
   useEffect(() => {
     // Make sure the form is populated (transaction exists) AND the list of subs is ready
@@ -85,15 +90,27 @@ const TransactionEditForm = ({
 
   useEffect(() => {
     if (transaction) {
+      const recData = transaction.ofRecurring;
+      const tripData = transaction.ofTrip;
       reset({
         ...transaction,
         onDate: new Date(transaction.onDate),
         ofAmount: transaction.ofAmount,
+        lastPaymentDate:
+          (isRecurring && transaction.lastPaymentDate) ||
+          (isExpesne && isRecurringExpense && recData
+            ? new Date(recData.lastPaymentDate)
+            : false),
+        isReccuringBy:
+          (isRecurring && transaction.isReccuringBy) ||
+          (isExpesne && isRecurringExpense && recData
+            ? recData.isReccuringBy
+            : false),
       });
 
       setShowSubCategoryWarning(false);
     }
-  }, [transaction, reset]);
+  }, [transaction, isRecurringExpense, reset]);
 
   const onSubmit = async (data) => {
     try {
@@ -216,6 +233,63 @@ const TransactionEditForm = ({
             )}
             <ErrorField error={errors.subCategory} className="col-start-2" />
 
+            {/* if isRecurring */}
+            {(isRecurringExpense || isRecurring) && (
+              <>
+                <FieldLabel
+                  iconColor={txtColor}
+                  label="Expense Recurring Type"
+                />
+
+                <Controller
+                  name="isReccuringBy"
+                  rules={{
+                    required: "Recurring Expense Type is Required",
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Flexrow className={"text-16px"}>
+                      {[1, 2].map((type) => (
+                        <Flexrow
+                          key={type}
+                          className={"w-max items-center gap-2"}
+                        >
+                          {console.log("check val", field.value)}
+
+                          <Checkbox
+                            className="data-[state=checked]:bg-rep-a3 border-slate-a7 hover:cursor-pointer"
+                            // 1. Read from field.value
+                            checked={field.value === type}
+                            // 2. Use field.onChange to set the new value
+                            onCheckedChange={() => {
+                              const newValue =
+                                field.value === type ? null : type;
+                              field.onChange(newValue);
+                            }}
+                          />
+                          <span>By {type === 1 ? "Month" : "Year"}</span>
+                        </Flexrow>
+                      ))}
+                    </Flexrow>
+                  )}
+                />
+
+                <FieldLabel iconColor={txtColor} label="Payment Deadline!" />
+                <Controller
+                  name="lastPaymentDate"
+                  control={control}
+                  rules={{ required: "Date is required" }}
+                  render={({ field }) => (
+                    <SelectDate
+                      className="border-dark-a2 bg-dark-a1 focus:bg-dark-a1 hover:bg-dark-a1 w-full rounded-md border p-2 outline-none"
+                      onSelect={field.onChange}
+                      selected={field.value}
+                    />
+                  )}
+                />
+              </>
+            )}
+
             {/* Note */}
             <FieldLabel label="Note" iconColor={txtColor} />
             <textarea
@@ -227,7 +301,7 @@ const TransactionEditForm = ({
             <FieldLabel label="Tags" iconColor={txtColor} />
             <FormField>
               <Flexrow className="gap-2">
-                {isTrip && (
+                {isTripExpense && (
                   <ExpButton
                     as="div"
                     custom_textbtn
@@ -239,7 +313,7 @@ const TransactionEditForm = ({
                     Trip Expense
                   </ExpButton>
                 )}
-                {isRecurring && (
+                {isRecurringExpense && (
                   <ExpButton
                     as="div"
                     custom_textbtn
@@ -263,7 +337,7 @@ const TransactionEditForm = ({
                     Expense Transaction
                   </ExpButton>
                 )}
-                {!isExpesne && (
+                {isIncome && (
                   <ExpButton
                     as="div"
                     custom_textbtn
@@ -290,10 +364,7 @@ const TransactionEditForm = ({
             <ExpButton
               type="submit"
               custom_textbtn
-              className={cn(
-                isExpesne ? "bg-exp-a3" : "bg-inc-a2",
-                "text-dark-a1",
-              )}
+              className={cn(bgColor, "text-dark-a1")}
               disabled={isSubmitting}
             >
               {isSubmitting ? "Saving..." : "Save Changes"}

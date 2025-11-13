@@ -48,7 +48,7 @@ import { ErrorField, FieldLabel, FormField, SelectDate } from "../Forms/Form";
 import SelectFilter from "../selectFilter/SelectFilter";
 import TransactionEditForm from "../Forms/transaction-edit-form";
 
-const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
+const TransactionListTable = ({ isRecent, isExpesne, isIncome, entries }) => {
   //Pagination
   const ITEMS_PER_PAGE = 10;
   const [page, setPage] = useState(1);
@@ -58,7 +58,7 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
   const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   //const emptyRows = ITEMS_PER_PAGE - currentPageItems.length;
 
-  const bgColor = isExpesne ? "bg-exp-a3" : "bg-inc-a2";
+  const bgColor = (isExpesne && "bg-exp-a3") || (isIncome && "bg-inc-a2");
 
   const dispatch = useDispatch();
 
@@ -82,13 +82,15 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
               className="bg-ggbg"
               onClick={async () => {
                 try {
-                  const result = isExpesne
-                    ? await dispatch(
+                  const result =
+                    (isExpesne &&
+                      (await dispatch(
                         deleteExpense({ expID: ID, userID }),
-                      ).unwrap()
-                    : await dispatch(
+                      ).unwrap())) ||
+                    (isIncome &&
+                      (await dispatch(
                         deleteIncome({ incID: ID, userID }),
-                      ).unwrap();
+                      ).unwrap()));
                   toast.dismiss(t.id);
                   toast.success("Transaction Deleted !", {
                     description: `Amount : ${result.ofAmount} | Category : ${result.subCategory},${result.primeCategory}`,
@@ -186,7 +188,7 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
                     onClick={() => setSelectedTransaction(data)}
                     className={cn(
                       "text-slate-a1",
-                      isExpesne ? "bg-exp-aa" : "bg-inc-a0",
+                      (isExpesne && "bg-exp-aa") || (isIncome && "bg-inc-a0"),
                     )}
                   />
                 </TooltipStrip>
@@ -207,6 +209,7 @@ const TransactionListTable = ({ isRecent, isExpesne, entries }) => {
       <TransactionEditForm
         transaction={selectedTransaction}
         isExpesne={isExpesne}
+        isIncome={isIncome}
         setSelectedTransaction={setSelectedTransaction}
       />
 

@@ -152,7 +152,7 @@ const IncomeIndex = () => {
             </SelectBar>
           </Flexrow>
         )}
-        <TransactionListTable entries={FilteredIncome ?? []} />
+        <TransactionListTable isIncome entries={FilteredIncome ?? []} />
       </Flexcol>
       <Flexcol className="pt-20">
         <SectionTitle isIncome title="Income Bar Graph" />

@@ -168,10 +168,7 @@ const CreateTripForm = () => {
             onBlur={() => setIsTitleFocused(false)}
           />
         </Flexrow>
-        <ErrorFieldTrip
-          className={"text-dark-a2"}
-          error={errors.tripTitle?.message}
-        />
+        <ErrorFieldTrip error={errors.tripTitle?.message} />
         <Flexrow className="justify-end">
           <ExpButton
             type="button"
@@ -385,14 +382,16 @@ const CreateTripForm = () => {
 
               {/* --- Footer Buttons --- */}
               <Flexrow className={"text-14px"}>
-                <ExpButton
-                  type="button"
-                  onClick={prevStep}
-                  custom_textbtn
-                  className={"bg-trip-a2 text-dark-a2"}
-                >
-                  Back
-                </ExpButton>
+                {step !== 2 && (
+                  <ExpButton
+                    type="button"
+                    onClick={prevStep}
+                    custom_textbtn
+                    className={"bg-trip-a2 text-dark-a2"}
+                  >
+                    Back
+                  </ExpButton>
+                )}
                 <ExpButton
                   type="button"
                   onClick={nextStep}

@@ -83,6 +83,18 @@ export const insertExpense = createAsyncThunk(
   },
 );
 
+export const updateExpense = createAsyncThunk(
+  "transaction/updateExpense",
+  async ({ data }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.post("/transaction/update-expense", data);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
 export const deleteExpense = createAsyncThunk(
   "transaction/deleteExpense",
   async ({ userID, expID }, { dispatch, rejectWithValue }) => {
@@ -191,6 +203,23 @@ export const insertRecurringExpense = createAsyncThunk(
         dispatch(fetchMM());
       }
       return res.data; // This will be { newRecurringExpense, newExpense }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+export const deleteRecurringExpense = createAsyncThunk(
+  "transaction/deleteRecurringExpense",
+  async ({ userID, recExpID }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await apiCLient.delete(
+        `/transaction/delete-recurring-expense/${userID}/${recExpID}`,
+      );
+
+      dispatch(fetchRecurringExpense());
+
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.message);
     }

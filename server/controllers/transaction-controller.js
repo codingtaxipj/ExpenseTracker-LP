@@ -7,6 +7,7 @@ import {
 } from "../models/transaction-modal.js";
 import { decrementTotal, insertTotal } from "./total-controller.js";
 import { updateMinMax } from "./minmax-controller.js";
+import moment from "moment";
 
 /**
  * *==================== FETCH Functions ====================
@@ -210,8 +211,17 @@ export const insertRecurringExpense = async (req, res) => {
     if (savedRecurringExpense.isReccuringStatus === 0) {
       // Assuming 0 means PAID
       const expenseData = {
-        ...savedRecurringExpense,
+        userID: savedRecurringExpense.userID,
+        isTypeExpense: savedRecurringExpense.isTypeExpense,
+        isNote: savedRecurringExpense.isNote,
+        primeCategory: savedRecurringExpense.primeCategory,
+        subCategory: savedRecurringExpense.subCategory,
+        onDate: savedRecurringExpense.onDate,
+        ofAmount: savedRecurringExpense.ofAmount,
+        isRecurringExpense: true,
         ofRecurring: savedRecurringExpense._id,
+        isTripExpense: false,
+        ofTrip: null,
       };
       const newExpense = new expenseModal(expenseData);
       savedExpense = await newExpense.save({ session });
@@ -303,6 +313,142 @@ export const deleteIncome = async (req, res) => {
     console.error("Delete Income Transaction aborted:", error);
     return res.status(500).json({
       message: error.message || "Failed to Delete Income Transaction",
+    });
+  } finally {
+    session.endSession();
+  }
+};
+
+export const deleteRecurringExpense = async (req, res) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const { userID, recExpID } = req.params;
+    // --- Operation 1: Delete the recurring expense ---
+    const recData = await recurringExpModal.findOneAndDelete(
+      { userID, _id: recExpID },
+      { session }
+    );
+    // Handle "not found" inside the transaction
+    if (!recData) {
+      // Abort the process before sending the response
+      await session.abortTransaction();
+      return res.status(404).json({ message: "Recurring Expense not found." });
+    }
+    await session.commitTransaction();
+    res.status(200).json(recData);
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Delete Recurring Expense Entry aborted:", error);
+    return res.status(500).json({
+      message: error.message || "Failed to Delete Recurring Expense Entry",
+    });
+  } finally {
+    session.endSession();
+  }
+};
+
+/**
+ * *==================== UPDATE Functions ====================
+ */
+
+export const updateExpense = async (req, res) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const data = req.body;
+    let runDispatch = false;
+    const exp = await expenseModal.findOneAndUpdate(
+      { userID: data.userID, _id: data._id },
+      data,
+      { new: false, runValidators: true, timestamps: true, session: session }
+    );
+    if (!exp) {
+      // Abort the transaction before sending the response
+      await session.abortTransaction();
+      return res.status(404).json({ message: "Expense not found to update." });
+    }
+    
+    if (exp.ofAmount !== data.ofAmount || moment()) {
+      await insertTotal(data, session);
+      await updateMinMax(data, session);
+      runDispatch = true;
+    }
+    await session.commitTransaction();
+    res.status(200).json({ update: true, runDispatch: runDispatch });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Update Expense Transaction aborted:", error);
+    return res.status(500).json({
+      message: error.message || "Failed to Update Expense Transaction",
+    });
+  } finally {
+    session.endSession();
+  }
+};
+export const updateIncome = async (req, res) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const data = req.body;
+    let runDispatch = false;
+    const inc = await incomeModal.findOneAndUpdate(
+      { userID: data.userID, _id: data._id },
+      data,
+      { new: false, runValidators: true, timestamps: true, session: session }
+    );
+    if (!inc) {
+      // Abort the transaction before sending the response
+      await session.abortTransaction();
+      return res.status(404).json({ message: "Income not found to update." });
+    }
+    if (inc.ofAmount !== data.ofAmount) {
+      await insertTotal(data, session);
+      await updateMinMax(data, session);
+      runDispatch = true;
+    }
+    await session.commitTransaction();
+    res.status(200).json({ update: true, runDispatch: runDispatch });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Update Income Transaction aborted:", error);
+    return res.status(500).json({
+      message: error.message || "Failed to Update Income Transaction",
+    });
+  } finally {
+    session.endSession();
+  }
+};
+export const updateRecurringExpense = async (req, res) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const data = req.body;
+    let runDispatch = false;
+    const recExp = await recurringExpModal.findOneAndUpdate(
+      { userID: data.userID, _id: data._id },
+      data,
+      { new: false, runValidators: true, timestamps: true, session: session }
+    );
+    if (!recExp) {
+      // Abort the transaction before sending the response
+      await session.abortTransaction();
+      return res
+        .status(404)
+        .json({ message: "Recurring Expense Entry not found to update." });
+    }
+    if (recExp.ofAmount !== data.ofAmount) {
+      await insertTotal(data, session);
+      await updateMinMax(data, session);
+      runDIspatch = true;
+    }
+    await session.commitTransaction();
+    res.status(200).json({ update: true, runDispatch: runDispatch });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Update Recurring Expense Entry aborted:", error);
+    return res.status(500).json({
+      message: error.message || "Failed to Update Recurring Expense Entry",
     });
   } finally {
     session.endSession();

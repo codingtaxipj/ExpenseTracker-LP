@@ -8,6 +8,7 @@ import {
 import {
   deleteExpense,
   deleteIncome,
+  deleteRecurringExpense,
   fetchExpense,
   fetchIncome,
   fetchRecurringExpense,
@@ -29,6 +30,10 @@ transactionRouter.post(
 
 //* ====================== DELETE API ======================
 transactionRouter.delete("/delete-expense/:userID/:expID", deleteExpense);
+transactionRouter.delete(
+  "/delete-recurring-expense/:userID/:recExpID",
+  deleteRecurringExpense
+);
 transactionRouter.delete("/delete-income/:userID/:incID", deleteIncome);
 
 //* ====================== FETCH API ======================

@@ -35,11 +35,11 @@ const ReccuringExpenseIndex = () => {
     useRecurringConfig();
 
   const { RecTotal, GraphData } = useMemo(() => {
-    const GraphData = RecurringData.GraphData.map((r) => ({
+    const GraphData = RecurringData?.GraphData?.map((r) => ({
       indicator: getMonthName(r.month),
       Amount: r.amount,
     }));
-    const RecTotal = RecurringData.MonthlyTotal + RecurringData.YearlyTotal;
+    const RecTotal = RecurringData?.MonthlyTotal + RecurringData?.YearlyTotal;
     return { RecTotal, GraphData };
   }, [RecurringData]);
 
