@@ -7,7 +7,7 @@ const IconCircle = ({ setIcon, bgColor, className }) => {
     <>
       <div
         className={cn(
-          "!text-16px flex w-fit items-center justify-center rounded-full p-2.5 text-white",
+          "!text-28px flex w-fit items-center justify-center rounded-md p-2.5 text-white",
           className,
         )}
         style={{ backgroundColor: getPrimeColor(bgColor) }}

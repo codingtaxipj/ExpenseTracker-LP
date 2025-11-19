@@ -145,39 +145,110 @@
 }
 
 @font-face {
-  font-family: Popins-Regular;
-  src: url("../src/assets/Fonts/Poppins/Poppins-Regular.ttf");
+  font-family: "Lato-Black";
+  src: url("../src/assets/Fonts/lato/Lato-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-BlackItalic";
+  src: url("../src/assets/Fonts/lato/Lato-BlackItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-Bold";
+  src: url("../src/assets/Fonts/lato/Lato-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-BoldItalic";
+  src: url("../src/assets/Fonts/lato/Lato-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-Italic";
+  src: url("../src/assets/Fonts/lato/Lato-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-Light";
+  src: url("../src/assets/Fonts/lato/Lato-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-LightItalic";
+  src: url("../src/assets/Fonts/lato/Lato-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-Regular";
+  src: url("../src/assets/Fonts/lato/Lato-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-Thin";
+  src: url("../src/assets/Fonts/lato/Lato-Thin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lato-ThinItalic";
+  src: url("../src/assets/Fonts/lato/Lato-ThinItalic.ttf") format("truetype");
 }
 @font-face {
-  font-family: Popins-Italic;
-  src: url("../src/assets/Fonts/Poppins/Poppins-Italic.ttf");
+  font-family: "Sink";
+  src: url("../src/assets/Fonts/sink/Sink.ttf") format("truetype");
 }
 @font-face {
-  font-family: Popins-Bold;
-  src: url("../src/assets/Fonts/Poppins/Poppins-Bold.ttf");
+  font-family: "Barlow-Light";
+  src: url("../src/assets/Fonts/Barlow/Barlow-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
 }
+
 @font-face {
-  font-family: Popins-Medium;
-  src: url("../src/assets/Fonts/Poppins/Poppins-Medium.ttf");
+  font-family: "Barlow-Regular";
+  src: url("../src/assets/Fonts/Barlow/Barlow-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
 }
+
 @font-face {
-  font-family: Popins-MediumItalic;
-  src: url("../src/assets/Fonts/Poppins/Poppins-MediumItalic.ttf");
+  font-family: "Barlow-SemiBold";
+  src: url("../src/assets/Fonts/Barlow/Barlow-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
+
 @font-face {
-  font-family: Popins-semiBold;
-  src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
+  font-family: "Barlow-SemiBoldItalic";
+  src: url("../src/assets/Fonts/Barlow/Barlow-SemiBoldItalic.ttf")
+    format("truetype");
+  font-weight: 600;
+  font-style: italic;
 }
+
 @font-face {
-  font-family: Popins-semiBoldItalic;
-  src: url("../src/assets/Fonts/Poppins/Poppins-SemiBold.ttf");
+  font-family: "Barlow-Bold";
+  src: url("../src/assets/Fonts/Barlow/Barlow-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
 }
+
+@font-face {
+  font-family: "Barlow-BoldItalic";
+  src: url("../src/assets/Fonts/Barlow/Barlow-BoldItalic.ttf")
+    format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
 @theme {
-  --font-pop-r: "Popins-Regular";
-  --font-pop-i: "Popins-Italic";
-  --font-pop-b: "Popins-Bold";
-  --font-pop-sb: "Popins-semiBold";
-  --font-pop-m: "Popins-Medium";
+  --font-title: "Sink";
+  --font-para-r: "Lato-Regular";
+  --font-para2-b: "Barlow-SemiBold";
+  --font-para-i: "Lato-Italic";
+  --font-para-b: "Lato-Bold";
+  --font-para-bb: "Lato-Black";
+  --font-para-ib: "Lato-BoldItalic";
 }
 
 @custom-variant dark (&:is(.dark *));

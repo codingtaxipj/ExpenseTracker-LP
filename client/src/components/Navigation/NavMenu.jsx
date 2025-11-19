@@ -23,6 +23,8 @@ import {
   UserSettings,
 } from "./top-bar";
 import { AddExp, AddInc, BudgetBarIndicator } from "./bottom-bar";
+import specely from "@/assets/specely.png";
+import TypewriterAni from "../TypewriterAni";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
@@ -141,7 +143,7 @@ function Dashboard({ activeBtn, children }) {
                   key={n.id}
                   custom_textbtn
                   className={cn(
-                    "!text-14px w-full justify-start space-x-0.75 p-1 px-2",
+                    "!text-14px font-para-b w-full justify-start space-x-0.75 p-1 px-2",
                     selectedStyle(n.link),
                   )}
                   onClick={() => navigate(n.link)}
@@ -153,8 +155,23 @@ function Dashboard({ activeBtn, children }) {
             </Flexcol>
 
             <div className="!text-slate-1 border-dark-a3 relative flex-1 overflow-hidden rounded-md border bg-[radial-gradient(circle,_#161616_20%,_#080808_100%)]">
-              <div className="scrollBar absolute inset-0 z-20 m-1.25 overflow-y-auto p-16">
-                {children}
+              {/* Scrollable content */}
+              <div className="scrollBar absolute inset-0 z-20 overflow-y-auto">
+                <div className="p-16 pb-0">{children}</div>
+                <div className="relative flex w-full flex-col gap-1 pt-20 overflow-hidden px-20">
+                  <Flexrow
+                    className={
+                      "justify-center"
+                    }
+                  >
+                   {/*  <TypewriterAni isDashboard /> */}
+                  </Flexrow>
+                  <img
+                    src={specely}
+                    alt="logo"
+                    className="relative left-1/2 w-full max-w-[1100px] h-auto -translate-x-1/2"
+                  />
+                </div>
               </div>
             </div>
           </Flexrow>

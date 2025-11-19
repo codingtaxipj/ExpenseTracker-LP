@@ -15,5 +15,5 @@ export const bgDarkA3 = "border-dark-a4 bg-dark-a3";
 export const baseBtn =
   "flex flex-row items-center justify-center gap-1.5 cursor-pointer";
 export const Btn_icon = "p-2.5 rounded-sm";
-export const Btn_text = "px-5 py-2 rounded-sm font-medium";
+export const Btn_text = "px-5 py-2 rounded-sm";
 export const Btn_card = " h-[10rem] w-[20rem] rounded-md font-medium ";

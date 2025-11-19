@@ -5,7 +5,7 @@ const TypewriterAni = ({
   isDashboard,
   isTrip,
   textArr = ["Income", "Expense"],
-  PreText = "Manage Your Daily",
+  PreText = "Simply, Manage",
 }) => {
   const [currentNameIndex, setCurrentNameIndex] = useState(0);
   const [currentText, setCurrentText] = useState("");
@@ -41,9 +41,9 @@ const TypewriterAni = ({
   return (
     <>
       {isDashboard && (
-        <div className={cn("text-slate-a1 font-pop-sb text-[32px]")}>
+        <div className={cn("text-slate-a1 font-para-b text-[42px]")}>
           <span className=""> {PreText} </span>
-          <span className="font-pop-b text-exp-a1 uppercase">
+          <span className="text-exp-a1">
             {currentText}
           </span>
           <span className="cursor border-r-slate-a1 border-r-[1px] pl-[0.5px]"></span>

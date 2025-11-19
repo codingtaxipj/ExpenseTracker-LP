@@ -140,14 +140,14 @@ const TransactionListTable = ({ isRecent, isExpesne, isIncome, entries }) => {
             <Flexrow className={cn("px-5 py-2.5", cardBg)}>
               <Flexrow className="w-max items-center">
                 <IconCircle
-                  className={"!text-24px rounded-lg"}
+                 
                   bgColor={data.primeCategory}
                   setIcon={data.subCategory}
                 />
               </Flexrow>
               <Flexcol className="gap-0.5">
-                <p className="text-22px font-medium">{data.subCategory}</p>
-                <Flexrow className="text-12px w-max gap-2.5">
+                <p className="text-22px font-para-b">{data.subCategory}</p>
+                <Flexrow className="text-14px font-para-r w-max gap-2.5">
                   <Flexrow className={"w-max items-center gap-1.25"}>
                     <span
                       className="size-3 rounded-xs"
@@ -177,7 +177,7 @@ const TransactionListTable = ({ isRecent, isExpesne, isIncome, entries }) => {
                   </Flexrow>
                 </Flexrow>
               </Flexcol>
-              <Flexrow className="text-28px w-max items-center gap-1.25 font-bold">
+              <Flexrow className="text-28px font-para-bb w-max items-center gap-1.25">
                 <Icons.rupee className="text-18px" />
                 {amountFloat(data.ofAmount)}
               </Flexrow>
