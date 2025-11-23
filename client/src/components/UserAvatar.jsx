@@ -180,7 +180,7 @@ const UserAvatar = () => {
 
   return (
     <>
-      <Avatar className="mx-2 size-[60px] cursor-pointer rounded-md">
+      <Avatar className="m-2 size-[60px] cursor-pointer rounded-md">
         <AvatarImage
           onClick={() => setIsMenuOpen(true)}
           src={finalAvatarUrl}

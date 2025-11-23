@@ -135,13 +135,17 @@
 }
 @theme {
   --text-12px: 12px;
+  --text-12.5: 12.5px;
+  --text-15.5: 15.5px;
   --text-14px: 14px;
   --text-16px: 16px;
   --text-18px: 18px;
+  --text-20px: 20px;
   --text-22px: 22px;
   --text-24px: 24px;
   --text-28px: 28px;
   --text-32px: 32px;
+  --text-36px: 36px;
 }
 
 @font-face {
@@ -210,6 +214,12 @@
   font-weight: 400;
   font-style: normal;
 }
+@font-face {
+  font-family: "Barlow-Medium";
+  src: url("../src/assets/Fonts/Barlow/Barlow-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
 
 @font-face {
   font-family: "Barlow-SemiBold";
@@ -244,7 +254,12 @@
 @theme {
   --font-title: "Sink";
   --font-para-r: "Lato-Regular";
+  --font-para2-r: "Barlow-Regular";
+  --font-para-l: "Lato-Light";
+  --font-para2-l: "Barlow-Light";
+  --font-para2-m: "Barlow-Medium";
   --font-para2-b: "Barlow-SemiBold";
+  --font-para2-bb: "Barlow-Bold";
   --font-para-i: "Lato-Italic";
   --font-para-b: "Lato-Bold";
   --font-para-bb: "Lato-Black";

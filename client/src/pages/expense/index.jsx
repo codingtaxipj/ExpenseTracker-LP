@@ -79,28 +79,39 @@ const ExpenseIndex = () => {
   // NOTE: 4. If all checks pass, render the main content
   return (
     <>
-      <Flexrow
-        className={cn(
-          "!text-14px mb-5 w-full gap-2.5 rounded-sm border px-5 py-0.5",
-          bgDarkA3,
-        )}
-      >
-        Image will be here
-      </Flexrow>
-      <Flexcol className="gap-8">
-        {/** =========== Top - cards & Calender =========== */}
-
-        <Flexrow className="items-center justify-center gap-10">
-          <MonthCalander isExpense list={ExpenseList ?? []} />
-          <ExpButton addExpense />
+      <Flexcol className="gap-10">
+        <Flexrow className={"rounded-lg"}>
+          <div className="text-dark-a0 flex max-h-full min-h-[200px] w-[350px] items-center justify-center rounded-lg bg-amber-400">
+            image here
+          </div>
+          <div className="flex flex-col justify-center">
+            {/*  <MonthCalander isExpense list={ExpenseList ?? []} /> */}
+            <span className="font-title text-36px tracking-wide">
+              Track Your Expenses
+            </span>
+            <ExpButton className={"max-w-[240px]"} addExpense />
+          </div>
         </Flexrow>
         {/** =========== Top - Budget Strip & Add Exp Btn =========== */}
-        <Flexrow className="items-center justify-evenly px-5">
-          <LinearGraphData isExpense />
+
+        <LinearGraphData isExpense />
+ <Flexrow className={"bg-dark-a0 rounded-lg"}>
+          <div className="text-dark-a0 flex h-[200px] w-[350px] items-center justify-center rounded-lg bg-amber-400">
+            image here
+          </div>
+          <div className="font-title text-36px flex items-center tracking-wide">
+            <span>Your Latest Transactions</span>
+          </div>
         </Flexrow>
+       <Flexcol className="gap-2.5">
+        
+
         <Flexrow>
-          <SelectBar>
-            <SelectCard isExpense title={"Filter:"}>
+          <SelectBar className={"bg-exp-a3 text-dark-a3 gap-1.25"}>
+            <span>
+              <Icons.filter_funnel className="text-18px" />
+            </span>
+            <SelectCard  title={"List Filter"}>
               <SelectFilter
                 placeholder={"Select Type"}
                 value={listFilter}
@@ -108,7 +119,7 @@ const ExpenseIndex = () => {
                 list={Object.values(TransactionFilters)}
               />
             </SelectCard>
-            <SelectCard isExpense title={"Sort:"}>
+            <SelectCard>
               <SelectFilter
                 placeholder={"Select Type"}
                 value={sortList}
@@ -122,7 +133,7 @@ const ExpenseIndex = () => {
             <ExpButton
               custom_iconbtn
               custom_toolContent="Change Order"
-              className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+              className={cn("bg-dark-a3", "hover:bg-exp-a3 hover:text-dark-a3")}
               onClick={() => handleOrder()}
             >
               <Icons.list_order />
@@ -130,7 +141,7 @@ const ExpenseIndex = () => {
             <ExpButton
               custom_iconbtn
               custom_toolContent="Reset"
-              className={cn("bg-dark-a5", "hover:bg-exp-a3 hover:text-dark-a1")}
+              className={cn("bg-dark-a3", "hover:bg-exp-a3 hover:text-dark-a3")}
               onClick={() => handleReset()}
             >
               <Icons.list_reset />
@@ -140,18 +151,11 @@ const ExpenseIndex = () => {
 
         {(listFilter === TransactionFilters.BY_PRIME ||
           listFilter === TransactionFilters.BY_SUB) && (
-          <Flexrow>
-            <SelectBar>
-              <SelectCard isExpense title={"Category : "}>
-                <SelectFilter
-                  placeholder={"Select Type"}
-                  value={prime}
-                  onValueChange={handlePrimeFilter}
-                  list={expensePrimes}
-                />
-              </SelectCard>
+          <Flexrow className={"w-max"}>
+            <SelectBar className={"bg-exp-a3 text-dark-a3 gap-1.25"}>
+             
               {listFilter === TransactionFilters.BY_SUB && (
-                <SelectCard noIcon isExpense title={"Sub : "}>
+                <SelectCard className={"pr-2"} title={"Sub Category "}>
                   <SelectFilter
                     placeholder={"Select Type"}
                     value={sub}
@@ -160,10 +164,27 @@ const ExpenseIndex = () => {
                   />
                 </SelectCard>
               )}
+              <SelectCard
+               
+                title={
+                  listFilter === TransactionFilters.BY_SUB
+                    ? "of Prime "
+                    : "Category"
+                }
+              >
+                <SelectFilter
+                  placeholder={"Select Type"}
+                  value={prime}
+                  onValueChange={handlePrimeFilter}
+                  list={expensePrimes}
+                />
+              </SelectCard>
             </SelectBar>
           </Flexrow>
         )}
 
+       
+       </Flexcol>
         <TransactionListTable isExpesne entries={FilteredExpenses ?? []} />
       </Flexcol>
     </>

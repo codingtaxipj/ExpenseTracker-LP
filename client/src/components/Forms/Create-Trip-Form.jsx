@@ -143,10 +143,10 @@ const CreateTripForm = () => {
 
   return (
     <>
-      <Flexcol className={cn("h-max w-full rounded-lg p-8", bgDarkA3)}>
-        <Flexrow className="text-18px items-center gap-2 font-medium">
+      <Flexcol className={cn("h-full w-full rounded-lg p-8 gap-1.25 ", bgDarkA3)}>
+        <Flexrow className=" items-center gap-2 text-24px">
           <Icons.trip />
-          <span>Your New Adventures Calling</span>
+          <span className="font-title tracking-wide " >Your New Adventures Calling</span>
         </Flexrow>
         <Flexrow className="relative items-center">
           {!isTitleFocused && (
@@ -156,7 +156,6 @@ const CreateTripForm = () => {
                 "Goa Beach Trip",
                 "Business Conference",
               ]}
-              PreText="..."
               isTrip
             />
           )}
@@ -169,7 +168,7 @@ const CreateTripForm = () => {
           />
         </Flexrow>
         <ErrorFieldTrip error={errors.tripTitle?.message} />
-        <Flexrow className="justify-end">
+        <Flexrow className="justify-end mt-5">
           <ExpButton
             type="button"
             onClick={async () => {
@@ -182,7 +181,7 @@ const CreateTripForm = () => {
             custom_textbtn
             className={"text-dark-a2 bg-trip-a2"}
           >
-            <Icons.add_plus className="text-18px" />
+            <Icons.add_list className="text-18px" />
             <span className="text-14px">Create Trip</span>
           </ExpButton>
         </Flexrow>

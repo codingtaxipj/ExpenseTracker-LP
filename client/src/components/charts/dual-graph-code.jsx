@@ -77,10 +77,12 @@ export const DualGraphCode = ({
   return (
     <>
       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
-        <CardHeader className="items-center pb-5 pl-10">
-          {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
+        <CardHeader className="items-center pb-5 gap-1.25 pl-10">
+          {chartInfo.title && (
+            <CardTitle className={"!font-para2-r text-16px"}>{chartInfo.title}</CardTitle>
+          )}
           {chartInfo.subtext && (
-            <CardDescription className="text-slate-a1 pt-1.25">
+            <CardDescription className="text-slate-a1 font-para2-r text-[14px]">
               {chartInfo.subtext}
             </CardDescription>
           )}
@@ -129,7 +131,6 @@ export const DualGraphCode = ({
                   fill={graphInfo.type1Color}
                   fillOpacity={0.4}
                   stroke={graphInfo.type1Color}
-             
                 />
                 <Area
                   dataKey={graphInfo.type2}
@@ -137,7 +138,6 @@ export const DualGraphCode = ({
                   fill={graphInfo.type2Color}
                   fillOpacity={0.4}
                   stroke={graphInfo.type2Color}
-                
                 />
               </AreaChart>
             )}
@@ -145,7 +145,7 @@ export const DualGraphCode = ({
         </CardContent>
 
         {chartInfo.footertext && (
-          <CardFooter className="text-slate-a4 !text-14px flex-row items-center justify-center gap-2 pt-2.5">
+          <CardFooter className="text-slate-a4 font-para2-r !text-14px flex-row items-center justify-center gap-2 pt-4">
             <Icons.textline /> {chartInfo.footertext}
           </CardFooter>
         )}

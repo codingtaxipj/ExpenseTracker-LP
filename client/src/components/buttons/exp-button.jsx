@@ -1,7 +1,7 @@
 import { baseBtn, Btn_card, Btn_icon, Btn_text } from "@/global/style";
 import { cn } from "@/lib/utils";
 import { PATH } from "@/router/routerConfig";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Icons } from "../icons";
 import BudgetPop from "../budget/budget-pop";
 import TooltipStrip from "../strips/tooltip-strip";
@@ -32,6 +32,7 @@ const ExpButton = ({
 }) => {
   const Component = as;
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <>
       {/** ============================ */}
@@ -67,9 +68,11 @@ const ExpButton = ({
       {addExpense && (
         <Component
           className={cn(baseBtn, Btn_text, "bg-exp-a3 text-dark-a1", className)}
-          onClick={() => navigate(PATH.addExpense)}
+          onClick={() =>
+            navigate(PATH.addExpense, { state: { from: location } })
+          }
         >
-          <Icons.add_plus className="text-18px" />
+          <Icons.add_list className="text-18px" />
           <span className="text-14px"> New Expense</span>
         </Component>
       )}
@@ -79,7 +82,7 @@ const ExpButton = ({
           className={cn(baseBtn, Btn_text, "bg-inc-a3 text-dark-a1", className)}
           onClick={() => navigate(PATH.addIncome)}
         >
-          <Icons.add_plus className="text-18px" />
+          <Icons.add_list className="text-18px" />
           <span className="text-14px"> New Income</span>
         </Component>
       )}
@@ -89,7 +92,7 @@ const ExpButton = ({
           className={cn(baseBtn, Btn_text, "bg-rep-a3 text-dark-a1", className)}
           onClick={() => navigate(PATH.addRepeatingExpense)}
         >
-          <Icons.add_plus className="text-18px" />
+          <Icons.add_list className="text-18px" />
           <span className="text-14px"> New Reccuring Expense</span>
         </Component>
       )}
@@ -103,7 +106,7 @@ const ExpButton = ({
           )}
           onClick={() => navigate(PATH.addRepeatingExpense)}
         >
-          <Icons.add_plus className="text-18px" />
+          <Icons.add_list className="text-18px" />
           <span className="text-14px"> New Reccuring Expense</span>
         </Component>
       )}
@@ -113,7 +116,7 @@ const ExpButton = ({
           className={cn(baseBtn, Btn_text, "bg-rep-a3 text-dark-a1", className)}
           onClick={() => navigate(PATH.addRepeatingExpense)}
         >
-          <Icons.add_plus className="text-18px" />
+          <Icons.add_list className="text-18px" />
           <span className="text-14px"> New Reccuring Expense</span>
         </Component>
       )}
@@ -162,7 +165,7 @@ const ExpButton = ({
                 className,
               )}
             >
-              {(setBudget_iconbtn && <Icons.edit />) ||
+              {(setBudget_iconbtn && <Icons.add_list />) ||
                 (newBudget_iconbtn && <Icons.calnew />) ||
                 (editBudget_iconbtn && <Icons.edit />)}
             </Component>
@@ -177,7 +180,7 @@ const ExpButton = ({
           {...props}
           className={cn(baseBtn, Btn_icon, "bg-exp-a3 text-dark-a1", className)}
         >
-          <Icons.gotoPage className="text-18px" />
+          <Icons.gotoPage />
         </Component>
       )}
       {/** ============================ */}

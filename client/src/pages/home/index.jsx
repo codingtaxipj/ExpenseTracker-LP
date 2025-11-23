@@ -31,6 +31,15 @@ const HomeIndex = () => {
         <Flexrow className="w-1/2 justify-end">FF</Flexrow>
       </Flexrow> */}
 
+      <Flexrow className={"border-dark-a1 bg-dark-a0 mb-5 rounded-lg border"}>
+        <div className="text-dark-a0 flex h-[200px] w-[350px] items-center justify-center rounded-lg bg-amber-400">
+          image here
+        </div>
+        <div className="flex items-center">
+          <TypewriterAni isDashboard />
+        </div>
+      </Flexrow>
+
       <Flexrow className={"mb-5 flex-wrap"}>
         <DualGraphData isDashboard />
         <BudgetStrip className="w-full lg:flex-1 lg:basis-[280px]" />
@@ -51,7 +60,6 @@ const HomeIndex = () => {
             year={CurrentYear()}
             month={CurrentMonth()}
           />
-
           <TotalCardForYear
             isReccuring
             className="w-full lg:flex-1 lg:basis-[280px]"
@@ -65,14 +73,13 @@ const HomeIndex = () => {
         </Flexrow>
       </Flexrow>
 
-      <Flexrow
-        className={cn(
-          "!text-14px mb-5 w-full gap-2.5 rounded-sm border px-5 py-0.5",
-          bgDarkA3,
-        )}
-      >
-        <Flexrow className="w-1/2 justify-start">Latest Transactions</Flexrow>
-        <Flexrow className="w-1/2 justify-end">FF</Flexrow>
+      <Flexrow className={"border-dark-a1 bg-dark-a0 mb-5 rounded-lg border"}>
+        <div className="text-dark-a0 flex h-[200px] w-[350px] items-center justify-center rounded-lg bg-amber-400">
+          image here
+        </div>
+        <div className="font-title text-36px flex items-center tracking-wide">
+          <span>Your Latest Transactions</span>
+        </div>
       </Flexrow>
       <Flexcol>
         <TransactionListTable
@@ -81,8 +88,7 @@ const HomeIndex = () => {
           entries={RecentTransactionList ?? []}
         />
       </Flexcol>
-
-      {/*   <IconLibrary /> */}
+      <IconLibrary />
     </>
   );
 };

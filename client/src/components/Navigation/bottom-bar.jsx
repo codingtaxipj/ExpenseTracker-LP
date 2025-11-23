@@ -5,15 +5,45 @@ import { cn } from "@/lib/utils";
 import { baseBtn, Btn_text } from "@/global/style";
 import { Icons } from "../icons";
 import { useNavigate } from "react-router-dom";
+import ExpButton from "../buttons/exp-button";
+import useBudgetConfig from "@/hooks/useBudgetConfig";
+import { useFilterConfig } from "@/hooks/useFilterConfig";
+import { useMemo } from "react";
+import useTotalConfig from "@/hooks/useTotalConfig";
+import { CurrentMonth, CurrentYear } from "@/utilities/calander-utility";
 
 export const BudgetBarIndicator = () => {
+  const { BudgetByMonth } = useBudgetConfig();
+  const { FilterMonth } = useFilterConfig();
+  const currentBudget = useMemo(
+    () => BudgetByMonth?.find((b) => b.month === FilterMonth),
+    [BudgetByMonth, FilterMonth],
+  );
+  const { TotalByMonth_EXP, getTotalInMonthOfYear } = useTotalConfig();
+  const exp = getTotalInMonthOfYear(
+    TotalByMonth_EXP,
+    CurrentYear(),
+    CurrentMonth(),
+  );
+
+  const budgetRemaining = currentBudget?.amount - exp;
+  const percent = Math.max(
+    0,
+    Math.min(Math.round((exp / currentBudget?.amount) * 100), 100),
+  );
   return (
-    <Flexrow className={"items-center gap-2"}>
-      <span>Rs 5000</span>
+    <Flexrow className={"text-14px font-para2-m items-center gap-2"}>
+      <Icons.calc className="text-12px" />
+      <span>Budget</span>
       <VerticalDevider />
-      <span>Monthly Budget</span>
-      <div className="h-1.5 w-[25%] rounded-md bg-amber-300"></div>
-      <span>Remaining Rs 200</span>
+      <span>Spent : Rs {exp}</span>
+      <div className="bg-dark-a6 h-2.5 w-[25%] rounded-sm">
+        <div
+          style={{ width: `${percent}%` }}
+          className="bg-bud-a1 h-full rounded-sm"
+        />
+      </div>
+      <span>Remaining : Rs {budgetRemaining}</span>
     </Flexrow>
   );
 };
@@ -21,24 +51,26 @@ export const BudgetBarIndicator = () => {
 export const AddExp = () => {
   const navigate = useNavigate();
   return (
-    <button
-      className={cn(baseBtn, Btn_text, "text-slate-a1")}
+    <ExpButton
+      custom_textbtn
+      className={cn("text-dark-a1 bg-exp-a3 font-para2-m w-max")}
       onClick={() => navigate(PATH.addExpense)}
     >
-      <Icons.add_plus className="text-18px" />
+      <Icons.add_list className="text-18px" />
       <span className="text-14px"> New Expense</span>
-    </button>
+    </ExpButton>
   );
 };
 export const AddInc = () => {
   const navigate = useNavigate();
   return (
-    <button
-      className={cn(baseBtn, Btn_text, "text-slate-a1")}
+    <ExpButton
+      custom_textbtn
+      className={cn("text-dark-a1 bg-inc-a2 font-para2-m w-max")}
       onClick={() => navigate(PATH.addIncome)}
     >
-      <Icons.add_plus className="text-18px" />
+      <Icons.add_list className="text-18px" />
       <span className="text-14px"> New Income</span>
-    </button>
+    </ExpButton>
   );
 };

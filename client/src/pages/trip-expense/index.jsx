@@ -1,6 +1,6 @@
 // --- React Core ---
 import { useState, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // --- 3rd Party Libraries ---
 import moment from "moment";
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/pagination";
 
 // --- App Utilities ---
-import { cardBg } from "@/global/style";
+import { bgDarkA3, cardBg } from "@/global/style";
 import { cn } from "@/lib/utils";
 import { PATH } from "@/router/routerConfig";
 import { Spinner } from "flowbite-react";
@@ -32,6 +32,7 @@ import { GraphTitleSquare } from "@/components/analysis/linear-graph-data";
 
 const TripIndex = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     TripList,
     TripLoading,
@@ -99,11 +100,23 @@ const TripIndex = () => {
 
   return (
     <>
-      <Flexrow className={"items-center"}>
-        <CreateTripForm />
-      </Flexrow>
-      <Flexcol className="pt-20">
-        <SectionTitle title="Trips" isTrip />
+      <Flexcol>
+        <Flexrow className={"rounded-lg"}>
+          <div className="text-dark-a0 flex max-h-full min-h-[200px] w-[350px] items-center justify-center rounded-lg bg-amber-400">
+            image here
+          </div>
+          <div className="flex flex-1 flex-col justify-center">
+            {/*  <MonthCalander isExpense list={ExpenseList ?? []} /> */}
+            <CreateTripForm />
+          </div>
+        </Flexrow>
+        <Flexrow
+          className={cn(
+            "!text-14px mt-5 w-full gap-2.5",
+          )}
+        >
+          <span className="font-title text-[32px] tracking-wide" >Your Amazing Adventures Catalog </span>
+        </Flexrow>
 
         <Flexrow className={"flex-wrap justify-center gap-5"}>
           {currentPageItems.map((trip) => (
@@ -165,10 +178,12 @@ const TripIndex = () => {
                     custom_iconbtn
                     custom_toolContent={"Add Trip Expense"}
                     onClick={() =>
-                      navigate(`${trip._id}/${PATH.addTripExpense}`)
+                      navigate(`${trip._id}/${PATH.addTripExpense}`, {
+                        state: { from: location },
+                      })
                     }
                   >
-                    <Icons.add_circle_v2 />
+                    <Icons.add_list />
                   </ExpButton>
                 </Flexrow>
               </Flexrow>

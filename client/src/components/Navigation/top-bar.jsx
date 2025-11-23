@@ -7,8 +7,20 @@ import { cn } from "@/lib/utils";
 import { IoMdSettings } from "react-icons/io";
 import SelectFilter from "../selectFilter/SelectFilter";
 import { useFilterConfig } from "@/hooks/useFilterConfig";
+import SelectBar from "../selectFilter/SelectBar";
+import SelectCard from "../selectFilter/SelectCard";
+import Flexrow from "../section/flexrow";
 
-const style = "!text-12px w-max  space-x-0.75 p-1";
+const style = "!text-12px w-max font-para2-m space-x-0.75 p-1";
+
+export const Logo = () => {
+  return (
+    <div className="font-title tracking-wide">
+      <span className="text-slate-a2">Spese</span>
+      <span className="text-exp-a0">ly</span>
+    </div>
+  );
+};
 
 export const ActiveDate = () => {
   const currentDate = moment().format("DD MMMM, YYYY");
@@ -49,7 +61,13 @@ export const PageTitle = ({ nav, activeBtn }) => {
 
 export const UserLogout = () => {
   return (
-    <ExpButton custom_textbtn className={style}>
+    <ExpButton
+      custom_textbtn
+      className={cn(
+        style,
+        "text-14px hover:bg-dark-a5 w-full justify-start px-2",
+      )}
+    >
       <FaPowerOff />
       Logout
     </ExpButton>
@@ -58,7 +76,13 @@ export const UserLogout = () => {
 
 export const UserSettings = () => {
   return (
-    <ExpButton custom_textbtn className={style}>
+    <ExpButton
+      custom_textbtn
+      className={cn(
+        style,
+        "text-14px hover:bg-dark-a5 w-full justify-start px-2",
+      )}
+    >
       <IoMdSettings />
       Settings
     </ExpButton>
@@ -80,8 +104,12 @@ export const GlobalFilter = () => {
 
   return (
     <>
+      <Flexrow className={"text-dark-a3 w-max items-center gap-1"}>
+        <Icons.filter_global className={cn("text-[16px]")} />
+        <span className="text-14px font-para2-b">Global Filter</span>
+      </Flexrow>
       <SelectFilter
-        className={"min-w-35"}
+        className={"bg-dark-a3 min-w-35"}
         onValueChange={handleFilterChange}
         value={currentFilter.type}
         list={Object.values(filterTypes)}
@@ -90,7 +118,7 @@ export const GlobalFilter = () => {
         currentFilter.type === filterTypes.BY_MONTH) && (
         <>
           <SelectFilter
-            className={"min-w-20"}
+            className={"bg-dark-a3 min-w-35"}
             onValueChange={handleYearChange}
             value={year}
             list={YearsList}
@@ -98,7 +126,7 @@ export const GlobalFilter = () => {
           {currentFilter.type === filterTypes.BY_MONTH && (
             <SelectFilter
               isMonth
-              className={"min-w-20"}
+              className={"bg-dark-a3 min-w-35"}
               onValueChange={handleMonthChange}
               value={month}
               list={MonthList}

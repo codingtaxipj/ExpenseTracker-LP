@@ -82,10 +82,14 @@ export const LinearGraphCode = ({
   return (
     <>
       <Card className={cn("flex-1 gap-0.5 px-3 py-9", cardBgv2)}>
-        <CardHeader className="items-center pb-5 pl-10">
-          {chartInfo.title && <CardTitle>{chartInfo.title}</CardTitle>}
+        <CardHeader className="items-center gap-1.25 pb-5 pl-10">
+          {chartInfo.title && (
+            <CardTitle className={"font-para2-r text-[15.5px]"}>
+              {chartInfo.title}
+            </CardTitle>
+          )}
           {chartInfo.subtext && (
-            <CardDescription className="text-slate-a1 pt-1.25">
+            <CardDescription className="text-slate-a1 font-para2-r text-[14px]">
               {chartInfo.subtext}
             </CardDescription>
           )}
@@ -94,7 +98,7 @@ export const LinearGraphCode = ({
         <CardContent className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
-            className={cn("max-h-[400px] w-full", graphHeightClass)}
+            className={cn("max-h-[350px] w-full", graphHeightClass)}
           >
             {isArea && (
               <AreaChart
@@ -185,7 +189,7 @@ export const LinearGraphCode = ({
           </ChartContainer>
         </CardContent>
         {chartInfo.footertext && (
-          <CardFooter className="text-slate-a4 !text-14px flex-row items-center justify-center gap-2 pt-2.5">
+          <CardFooter className="text-slate-a4 !text-14px font-para2-r flex-row items-center justify-center gap-2 pt-4">
             <Icons.textline /> {chartInfo.footertext}
           </CardFooter>
         )}

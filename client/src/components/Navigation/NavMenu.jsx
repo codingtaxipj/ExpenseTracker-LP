@@ -18,6 +18,7 @@ import {
   ActiveClock,
   ActiveDate,
   GlobalFilter,
+  Logo,
   PageTitle,
   UserLogout,
   UserSettings,
@@ -25,12 +26,14 @@ import {
 import { AddExp, AddInc, BudgetBarIndicator } from "./bottom-bar";
 import specely from "@/assets/specely.png";
 import TypewriterAni from "../TypewriterAni";
+import { IoMdSettings } from "react-icons/io";
 
 function Dashboard({ activeBtn, children }) {
   const navigate = useNavigate();
 
   function selectedStyle(toSet) {
-    if (activeBtn === toSet) return "bg-slate-a1 [&>span]:text-dark-a1";
+    if (activeBtn === toSet)
+      return "bg-slate-a1 text-dark-a1 [&>span]:text-dark-a1";
     else return "hover:bg-dark-a6 text-salte-a1";
   }
 
@@ -82,60 +85,51 @@ function Dashboard({ activeBtn, children }) {
 
   return (
     <>
-      <Flexrow className="bg-dark-a1 justify-center">
+      <Flexrow className="bg-dark-a0 justify-center">
         {/** ----- Main Body ---- */}
         <Flexcol className="!text-slate-a1 h-screen max-w-[1600px] gap-2.5 p-5">
           {/** ----- Top Bar ---- */}
-          <Flexrow
-            className={cn(
-              "!text-14px w-full gap-2.5 rounded-sm border px-5 py-0.5",
-              bgDarkA3,
-            )}
-          >
+          <Flexrow className={cn("!text-14px w-full gap-2.5")}>
             <Flexrow
               className={cn(
-                "flex-1 basis-1 items-center justify-start gap-2.5",
+                "items-center justify-start gap-2.5 rounded-sm px-4 py-0.5",
+                bgDarkA3,
               )}
             >
+              <Logo />
+              <VerticalDevider />
               <ActiveClock />
               <VerticalDevider />
               <ActiveDate />
               <VerticalDevider />
               <PageTitle nav={nav} activeBtn={activeBtn} />
             </Flexrow>
-            <Flexrow className={"flex-1 basis-1 items-center justify-center"}>
+            <Flexrow
+              className={
+                "bg-exp-a3 flex-1 basis-1 items-center gap-2.5 rounded-sm px-4"
+              }
+            >
               <GlobalFilter />
             </Flexrow>
-            <Flexrow
-              className={cn("flex-1 basis-1 items-center justify-end gap-2.5")}
-            >
-              <UserSettings />
-              <VerticalDevider />
-              <UserLogout />
-            </Flexrow>
           </Flexrow>
-
           {/** ----- Top Bar Ends ---- */}
 
           {/** ----- Middle ---- */}
           <Flexrow className="flex-1 gap-2.5">
             <Flexcol
-              className={cn(
-                "w-48 gap-0.75 rounded-md border px-2.5 py-6",
-                bgDarkA3,
-              )}
+              className={cn("w-48 gap-0.75 rounded-md px-2.5 py-2.5", bgDarkA3)}
             >
               <UserAvatar />
               <ExpButton
                 custom_iconbtn
-                className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2"
+                className="!text-14px text-slate-a1 justify-start space-x-0.75 px-2 py-1"
               >
                 <FaUser className="text-slate-a5" />
                 <span>codingtaxipj</span>
               </ExpButton>
               <Separator
                 className={
-                  "bg-slate-br1 mx-auto my-4 data-[orientation=horizontal]:w-[95%]"
+                  "bg-slate-br1 mx-auto my-2 data-[orientation=horizontal]:w-[95%]"
                 }
               />
               {nav.map((n) => (
@@ -143,7 +137,7 @@ function Dashboard({ activeBtn, children }) {
                   key={n.id}
                   custom_textbtn
                   className={cn(
-                    "!text-14px font-para-b w-full justify-start space-x-0.75 p-1 px-2",
+                    "!text-14px font-para2-b w-full justify-start space-x-0.75 p-1 px-2",
                     selectedStyle(n.link),
                   )}
                   onClick={() => navigate(n.link)}
@@ -152,24 +146,36 @@ function Dashboard({ activeBtn, children }) {
                   {n.name}
                 </ExpButton>
               ))}
+              <Flexcol className="flex-1 justify-end gap-0.5">
+                <Separator
+                  className={
+                    "bg-slate-br1 mx-auto my-2 data-[orientation=horizontal]:w-[95%]"
+                  }
+                />
+                <ExpButton
+                  custom_textbtn
+                  className={cn(
+                    "!text-12px font-para2-b w-full justify-start space-x-0.75 p-1 px-2",
+                    selectedStyle(PATH.setting),
+                  )}
+                  onClick={() => navigate(PATH.setting)}
+                >
+                  <IoMdSettings />
+                  Settings
+                </ExpButton>
+                <UserLogout />
+              </Flexcol>
             </Flexcol>
 
-            <div className="!text-slate-1 border-dark-a3 relative flex-1 overflow-hidden rounded-md border bg-[radial-gradient(circle,_#161616_20%,_#080808_100%)]">
+            <div className="!text-slate-1 border-dark-a3 bg-dark-a1 relative flex-1 overflow-hidden rounded-md border">
               {/* Scrollable content */}
               <div className="scrollBar absolute inset-0 z-20 overflow-y-auto">
                 <div className="p-16 pb-0">{children}</div>
-                <div className="relative flex w-full flex-col gap-1 pt-20 overflow-hidden px-20">
-                  <Flexrow
-                    className={
-                      "justify-center"
-                    }
-                  >
-                   {/*  <TypewriterAni isDashboard /> */}
-                  </Flexrow>
+                <div className="relative flex w-full flex-col gap-1 overflow-hidden px-20 pt-20">
                   <img
                     src={specely}
                     alt="logo"
-                    className="relative left-1/2 w-full max-w-[1100px] h-auto -translate-x-1/2"
+                    className="relative left-1/2 h-auto w-full max-w-[1100px] -translate-x-1/2"
                   />
                 </div>
               </div>
@@ -178,18 +184,19 @@ function Dashboard({ activeBtn, children }) {
           {/** ----- Middle Ends ---- */}
 
           {/** ----- Bottom Bar ---- */}
-          <Flexrow
-            className={cn(
-              "!text-14px w-full gap-2.5 rounded-sm border px-5 py-0.5",
-              bgDarkA3,
-            )}
-          >
-            <Flexrow className={cn("w-1/2 items-center justify-start gap-2.5")}>
+          <Flexrow className={cn("!text-14px w-full gap-2.5")}>
+            <Flexrow
+              className={cn(
+                "items-center justify-start gap-2.5 rounded-sm px-4 py-1.5",
+                bgDarkA3,
+              )}
+            >
               <BudgetBarIndicator />
             </Flexrow>
-            <Flexrow className={cn("w-1/2 items-center justify-end gap-2.5")}>
+            <Flexrow
+              className={"flex-1 basis-1 items-center gap-2.5 rounded-sm"}
+            >
               <AddExp />
-              <VerticalDevider />
               <AddInc />
             </Flexrow>
           </Flexrow>

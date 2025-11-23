@@ -31,13 +31,13 @@ const BudgetStrip = ({ isHome, className }) => {
     <>
       <Flexrow
         className={cn(
-          "text-slate-a1 w-max cursor-default items-center gap-2 font-medium",
+          "text-slate-a1 w-max cursor-default items-center gap-2",
           className,
         )}
       >
         <Flexrow
           className={cn(
-            "text-14px bg-dark-a5 shadow-dark-a1 mr-2 w-max flex-1 items-center gap-2.5 px-5 py-2 shadow-md",
+            "text-14px bg-dark-a3 shadow-dark-a1 mr-2 w-max flex-1 items-center gap-2.5 px-5 py-2 shadow-md font-para2-m ",
             "rounded-sm",
           )}
         >

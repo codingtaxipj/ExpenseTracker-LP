@@ -18,6 +18,8 @@ import TripIndex from "@/pages/trip-expense/index.jsx";
 import TripDetails from "@/pages/trip-expense/trip-details.jsx";
 import TripExpenseForm from "@/components/Forms/trip-expense-form.jsx";
 import Analysis from "@/pages/analysis/analysis.jsx";
+import Setting from "@/pages/user-setting/setting.jsx";
+import SettingIndex from "@/pages/user-setting/index.jsx";
 
 const AppRouter = () => {
   return (
@@ -44,6 +46,7 @@ const AppRouter = () => {
           path={`:tripid/${PATH.addTripExpense}`}
           element={<TripExpenseForm />}
         />
+        {formRoutes()}
       </Route>
 
       <Route path={PATH.repeat} element={<Reccuring />}>
@@ -52,10 +55,16 @@ const AppRouter = () => {
           path={PATH.addRepeatingExpense}
           element={<ReccuringExpenseForm />}
         />
+        {formRoutes()}
       </Route>
 
       <Route path={PATH.budget} element={<Budget />}>
         <Route index element={<BudgetIndex />} />
+        {formRoutes()}
+      </Route>
+      <Route path={PATH.setting} element={<Setting />}>
+        <Route index element={<SettingIndex />} />
+        {formRoutes()}
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

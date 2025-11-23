@@ -98,10 +98,13 @@ const IncomeIndex = () => {
         </Flexrow>
       </Flexcol>
 
-      <Flexcol className="pt-20">
+      <Flexcol className="pt-20 gap-2.5">
         <Flexrow>
-          <SelectBar>
-            <SelectCard isExpense title={"Filter:"}>
+          <SelectBar className={"bg-inc-a3 text-dark-a3 gap-1.25"}>
+            <span>
+              <Icons.filter_funnel className="text-18px" />
+            </span>
+            <SelectCard title={"List Filter"}>
               <SelectFilter
                 placeholder={"Select Type"}
                 value={listFilter}
@@ -109,7 +112,7 @@ const IncomeIndex = () => {
                 list={Object.values(TransactionFilters)}
               />
             </SelectCard>
-            <SelectCard isExpense title={"Sort:"}>
+            <SelectCard >
               <SelectFilter
                 placeholder={"Select Type"}
                 value={sortList}
@@ -123,7 +126,7 @@ const IncomeIndex = () => {
             <ExpButton
               custom_iconbtn
               custom_toolContent="Change Order"
-              className={cn("bg-dark-a5", "hover:bg-inc-a3 hover:text-dark-a1")}
+              className={cn("bg-dark-a3", "hover:bg-inc-a3 hover:text-dark-a3")}
               onClick={() => handleOrder()}
             >
               <Icons.list_order />
@@ -131,7 +134,7 @@ const IncomeIndex = () => {
             <ExpButton
               custom_iconbtn
               custom_toolContent="Reset"
-              className={cn("bg-dark-a5", "hover:bg-inc-a3 hover:text-dark-a1")}
+              className={cn("bg-dark-a3", "hover:bg-inc-a3 hover:text-dark-a3")}
               onClick={() => handleReset()}
             >
               <Icons.list_reset />
@@ -139,9 +142,9 @@ const IncomeIndex = () => {
           </Flexrow>
         </Flexrow>
         {listFilter === TransactionFilters.BY_INCOME_CATEGORY && (
-          <Flexrow>
-            <SelectBar>
-              <SelectCard noIcon isExpense title={"Sub : "}>
+          <Flexrow className={"w-max"}>
+             <SelectBar className={"bg-inc-a3 text-dark-a3 gap-1.25"}>
+              <SelectCard noIcon isExpense title={"Category"}>
                 <SelectFilter
                   placeholder={"Select Type"}
                   value={sub}
@@ -152,10 +155,11 @@ const IncomeIndex = () => {
             </SelectBar>
           </Flexrow>
         )}
-        <TransactionListTable isIncome entries={FilteredIncome ?? []} />
+       
       </Flexcol>
+       <TransactionListTable isIncome entries={FilteredIncome ?? []} />
       <Flexcol className="pt-20">
-        <SectionTitle isIncome title="Income Bar Graph" />
+       
         <LinearGraphData isIncome />
       </Flexcol>
       <Flexcol className="pt-20">

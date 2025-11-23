@@ -5,6 +5,7 @@ import {
   MdCancel,
   MdSpaceDashboard,
   MdEditNote,
+  MdFilterAlt,
 } from "react-icons/md";
 import {
   FaCalendar,
@@ -13,6 +14,7 @@ import {
   FaCalendarDay,
   FaCarSide,
   FaEdit,
+  FaShare,
 } from "react-icons/fa";
 import { BsBarChartFill, BsFillSuitcase2Fill } from "react-icons/bs";
 
@@ -40,7 +42,7 @@ import {
 } from "react-icons/bi";
 import { RiShareForwardFill } from "react-icons/ri";
 import { HiPencil } from "react-icons/hi";
-import { TbCancel } from "react-icons/tb";
+import { TbCancel, TbPlaylistAdd } from "react-icons/tb";
 
 import { CgAdd } from "react-icons/cg";
 
@@ -57,7 +59,9 @@ import {
   RiDeleteBin5Fill,
   RiEdit2Fill,
   RiExternalLinkFill,
+  RiGlobalFill,
 } from "react-icons/ri";
+import { PiListFill } from "react-icons/pi";
 
 export const Icons = {
   analysis: MdCalculate,
@@ -91,14 +95,15 @@ export const Icons = {
   view: IoMdEye,
   del: MdDelete,
   toDelete: MdDelete,
-  gotoPage: RiExternalLinkFill,
+  gotoPage: FaShare,
   pageNext: IoIosArrowForward,
   pageBack: IoIosArrowBack,
   cross: MdCancel,
   calander_date: FaCalendarDay,
   dashbaord: MdSpaceDashboard,
-  add_circle_v2: CgAdd,
+  add_circle: CgAdd,
   add_plus: IoMdAdd,
+  add_list: TbPlaylistAdd,
   delete_bin: RiDeleteBin5Fill,
   edit: RiEdit2Fill,
   trip_abroad: FaPlaneDeparture,
@@ -106,4 +111,7 @@ export const Icons = {
   trip: BsFillSuitcase2Fill,
   list_reset: BiReset,
   list_order: BiSort,
+  filter_list: PiListFill,
+  filter_global: RiGlobalFill,
+  filter_funnel: MdFilterAlt,
 };

@@ -15,6 +15,9 @@ const SelectFilter = ({
   placeholder,
   onValueChange,
   className,
+  triggerClass,
+  contentClass,
+  itemClass,
   isMonth,
   value,
 }) => {
@@ -23,21 +26,28 @@ const SelectFilter = ({
       <Select value={String(value)} onValueChange={onValueChange}>
         <SelectTrigger
           className={cn(
-            "bg-dark-prime text-12px data-[placeholder]:text-slate-1 [&_svg:not([class*='text-'])]:text-slate-1 min-w-50 rounded-md border-0 focus-visible:ring-[0px] data-[size=default]:h-7 [&_svg]:opacity-100",
+            "bg-dark-a3 !text-12px text-slate-a1 data-[placeholder]:text-slate-1 [&_svg:not([class*='text-'])]:text-slate-1 font-para2-m min-w-50 rounded-sm border-0 focus-visible:ring-[0px] data-[size=default]:h-7 [&_svg]:opacity-100",
             className,
+            triggerClass,
           )}
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent className="bg-dark-prime shadow-dark-p2 min-w-45 border-0">
+        <SelectContent
+          className={cn(
+            "bg-dark-a3 shadow-dark-p2 min-w-45 border-0",
+            contentClass,
+          )}
+        >
           {isChart &&
             list.map((item) => (
               <SelectItem
                 key={item.id}
                 value={item.categoryName}
-                className={
-                  "bg-dark-sec !text-slate-1 text-12px data-[highlighted]:bg-dark-s3 flex-inline mb-1 gap-2 font-medium"
-                }
+                className={cn(
+                  "bg-dark-a3 !text-slate-1 text-12px data-[highlighted]:bg-dark-a6 flex-inline font-para2-m mb-1 gap-2",
+                  itemClass,
+                )}
               >
                 <span
                   className="flex h-3 w-3 shrink-0 rounded-xs"
@@ -53,9 +63,10 @@ const SelectFilter = ({
           {!isChart &&
             list.map((items, index) => (
               <SelectItem
-                className={
-                  "bg-dark-sec !text-slate-1 text-12px data-[highlighted]:bg-dark-s3 mb-1 font-medium"
-                }
+                className={cn(
+                  "bg-dark-a3 !text-slate-1 text-12px data-[highlighted]:bg-dark-a5 flex-inline font-para2-m mb-1 gap-2",
+                  itemClass,
+                )}
                 key={index}
                 value={String(items)}
               >

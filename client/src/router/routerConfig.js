@@ -11,7 +11,8 @@ const PATH = {
   trip: "/trip",
   repeat: "/recurring-expense",
   budget: "/budget",
-  addTripExpense:"add-trip-expense"
+  addTripExpense: "add-trip-expense",
+  setting: "/settings",
 };
 
 export { PATH };

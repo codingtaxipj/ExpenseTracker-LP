@@ -140,12 +140,15 @@ const Form = ({
    * * ANCHOR UI Logic & Navigation
    * ==============================================================
    */
-  const desegmentPath = () => {
-    const segments = location.pathname.split("/").filter(Boolean);
-    segments.pop();
-    return "/" + segments.join("/");
+  const handleCancel = () => {
+    const from = location.state?.from;
+
+    if (from) {
+      navigate(from.pathname + (from.search || ""), { replace: true });
+    } else {
+      navigate(-1); // fallback
+    }
   };
-  const handleCancel = () => navigate(desegmentPath());
 
   const dateLabel =
     (isReccuring && "Bill Generation Date") ||
@@ -462,7 +465,10 @@ export const SelectDate = ({
           <Icons.dayCal />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto overflow-hidden z-[10000] pointer-events-auto p-0" align="start">
+      <PopoverContent
+        className="pointer-events-auto z-[10000] w-auto overflow-hidden p-0"
+        align="start"
+      >
         <Calendar
           mode="single"
           fromYear={new Date().getFullYear() - 5}
